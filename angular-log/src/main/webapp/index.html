@@ -47,9 +47,11 @@
         <div class="alert alert-error hidden" id="error-info">
             Hidden Error
         </div>
-        <div class="row">
-
-            <div class="span6 offset3" ng-controller="LogsCtrl">
+        <div class="row" ng-controller="LogsCtrl">
+            <div class="span2 pull-left">
+                <pre>Number of <br/>entries: {{size.value}}</pre>
+            </div>
+            <div class="span6 offset1">
                 <form name="myForm">
                     <div class="row">
                         <textarea name="message" rows="5" style="width: 95%" ng-model="entryText" required
@@ -65,21 +67,17 @@
                 </form>
                 <div class="row">
                     <div ng-repeat="entry in logs">
-                        <pre>
-                         <span class="pull-left">{{entry.text}}</span>
-                         <i><small class="pull-left">Sent by {{entry.author}} at {{entry.date}}</small></i>
+                         <pre>
+                            <span class="pull-left">{{entry.text}}</span>
+                            <i><small class="pull-left">Sent by {{entry.author}} at {{entry.date}}</small></i>
                          </pre>
-
                     </div>
-                    <span class="well well-small">Number of entries: {{size.value}}</span>
                 </div>
             </div>
             <div class="span3 pull-right" ng-controller="UptimeCtrl">
                 <pre>Server uptime <br/>in seconds: {{uptime.value}}</pre>
             </div>
         </div>
-
-
     </div>
 
 </body>
