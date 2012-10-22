@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>MyLog AngularJSś</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+    <script src="assets/js/jquery-1.8.2-min.js"></script>
+
+    <!-- angular stuff -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.min.js"></script>
+    <script src="angular/log.js"></script>
+    <script src="angular/logService.js"></script>
+    <script src="angular/utilService.js"></script>
+</head>
+<body style="padding-top: 50px;" ng-app="log">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="#">AngularJS MyLog</a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li class="active"><a href="#">Home</a></li>
+                    </ul>
+                    <ul class="nav pull-right">
+                        <li><a href="#contact">Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="alert alert-success hidden" id="success-info">
+            Hidden Info
+        </div>
+        <div class="alert alert-error hidden" id="error-info">
+            Hidden Error
+        </div>
+        <div class="row">
+
+            <div class="span6 offset3" ng-controller="LogsCtrl">
+                <form name="myForm">
+                    <div class="row">
+                        <textarea name="message" rows="5" style="width: 95%" ng-model="entryText" required
+                                  ng-minlength="5" ng-maxlength="140" placeholder="Type your message here">
+                        </textarea>
+                        <span class="text-error" ng-show="myForm.message.$error.maxlength">Message is too long!</span>
+                        <span class="text-error" ng-show="myForm.message.$error.minlength">Message is too short</span>
+                        <span class="text-error" ng-show="myForm.message.$dirty && myForm.message.$error.required">Message is required</span>
+                        <div>
+                            <input type="submit" ng-click="addEntry()" ng-disabled="myForm.$invalid" class="btn btn-primary" value="Send message"/>
+                        </div><br/>
+                    </div>
+                </form>
+                <div class="row">
+                    <div ng-repeat="entry in logs">
+                        <pre>
+                         <span class="pull-left">{{entry.text}}</span>
+                         <i><small class="pull-left">Sent by {{entry.author}} at {{entry.date}}</small></i>
+                         </pre>
+
+                    </div>
+                    <span class="well well-small">Number of entries: {{size.value}}</span>
+                </div>
+            </div>
+            <div class="span3 pull-right" ng-controller="UptimeCtrl">
+                <pre>Server uptime <br/>in seconds: {{uptime.value}}</pre>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+</html>
