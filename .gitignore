@@ -5,3 +5,4 @@
 target/
 *.sh
 *.log
+.DS_Store
