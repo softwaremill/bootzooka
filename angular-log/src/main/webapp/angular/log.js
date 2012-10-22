@@ -1,5 +1,13 @@
-angular.module('log', ['logService', 'logCounterService', 'utilService']);
+angular.module('log', ['logService', 'logCounterService', 'utilService']).
+    config(function($routeProvider) {
 
+        $routeProvider.
+            when('/', {controller:LogsCtrl, templateUrl:'partials/main.html'}).
+
+            when("/login", {controller: LogsCtrl, templateUrl: "partials/login.html"}).
+
+            otherwise({redirectTo:'/'})
+    })
 
 function UptimeCtrl($scope, UtilService) {
     var uptime = UtilService.loadUptime();
