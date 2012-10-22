@@ -1,10 +1,10 @@
-angular.module('log', ['logService', 'logCounterService', 'utilService']).
+angular.module('log', ['logService', 'logCounterService', 'utilService', 'userService']).
     config(function($routeProvider) {
 
         $routeProvider.
             when('/', {controller:LogsCtrl, templateUrl:'partials/main.html'}).
 
-            when("/login", {controller: LogsCtrl, templateUrl: "partials/login.html"}).
+            when("/login", {controller: UserCtrl, templateUrl: "partials/login.html"}).
 
             otherwise({redirectTo:'/'})
     })
@@ -31,5 +31,12 @@ function LogsCtrl($scope, LogService, LogCounterService) {
 
         $scope.entryText = '';
     }
+
+}
+
+
+function UserCtrl($scope, UserService) {
+
+    console.log("UserCtrl ready!")
 
 }
