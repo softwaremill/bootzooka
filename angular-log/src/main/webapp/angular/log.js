@@ -16,14 +16,12 @@ function LogsCtrl($scope, LogService, LogCounterService) {
     $scope.entryText = '';
 
     $scope.addEntry = function() {
-//        console.log("scope.size 0 = " + $scope.size.value)
-
-        LogService.addNew($scope.entryText)
+        $scope.logs = LogService.addNew($scope.entryText, function() {
+            $scope.logs = LogService.query();
+            $scope.size = LogCounterService.countLogs();
+        })
 
         $scope.entryText = '';
-        $scope.logs = LogService.query();
-        $scope.size = LogCounterService.countLogs();
-//        console.log("scope.size = " + $scope.size.value)
     }
 
 }

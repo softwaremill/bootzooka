@@ -6,18 +6,15 @@ angular.module('logService', ['ngResource']).
             }
         );
 
-        LogService.loadLogs = function(cb) {
-            return LogService.query();
-        }
-
-        LogService.addNew = function(entryText) {
+        LogService.addNew = function(entryText, successFunction) {
             var json = new Object()
             json.text = entryText;
             json.author = "Anonymous"
             var date = new Date();
             json.date = date.getDate()+"/" + (date.getMonth()+1) +"/"+ date.getFullYear() +
                 " " + date.getHours() +":" + date.getMinutes()
-            LogService.save(angular.toJson(json))
+            var refreshedList = null;
+            LogService.save(angular.toJson(json), successFunction)
         }
 
         return LogService;
