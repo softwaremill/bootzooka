@@ -1,5 +1,13 @@
-angular.module('log', ['logService', 'logCounterService', 'utilService']);
+angular.module('log', ['logService', 'logCounterService', 'utilService', 'userService']).
+    config(function($routeProvider) {
 
+        $routeProvider.
+            when('/', {controller:LogsCtrl, templateUrl:'partials/main.html'}).
+
+            when("/login", {controller: UserCtrl, templateUrl: "partials/login.html"}).
+
+            otherwise({redirectTo:'/'})
+    })
 
 function UptimeCtrl($scope, UtilService) {
     var uptime = UtilService.loadUptime();
@@ -16,14 +24,19 @@ function LogsCtrl($scope, LogService, LogCounterService) {
     $scope.entryText = '';
 
     $scope.addEntry = function() {
-//        console.log("scope.size 0 = " + $scope.size.value)
-
-        LogService.addNew($scope.entryText)
+        $scope.logs = LogService.addNew($scope.entryText, function() {
+            $scope.logs = LogService.query();
+            $scope.size = LogCounterService.countLogs();
+        })
 
         $scope.entryText = '';
-        $scope.logs = LogService.query();
-        $scope.size = LogCounterService.countLogs();
-//        console.log("scope.size = " + $scope.size.value)
     }
+
+}
+
+
+function UserCtrl($scope, UserService) {
+
+    console.log("UserCtrl ready!")
 
 }
