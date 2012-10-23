@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client side Log Demo</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="js/mustache.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function loadEntries() {
+            var template;
+            $.get('mustache/log-entries-template.html', function(file) {
+                template = file;
+            });
+
+            var data = {};
+
+            $.getJSON('log', function(d) {
+                data = d;
+            });
+
+            $(document).ajaxStop(function() {
+                html = Mustache.to_html(template, data);
+                $('#entries').html(html);
+            });
+        }
+
+        function addNewEntry(form) {
+            $.post('log', $('#form').serialize());
+            loadEntries();
+            return false;
+        }
+
+        $(function(){
+            loadEntries();
+        });
+
+    </script>
+</head>
+<body>
+
+<div class="form">
+    <form id="form">
+        <label for="author">Author</label> <br/>
+            <input id="author" name="author" type="text"/> <br/>
+        <label for="text">Text</label> <br/>
+            <textarea id="text" name="text"></textarea> <br/>
+        <input type="submit" onclick="addNewEntry()"/>
+    </form>
+</div>
+
+<div id="entries"></div>
+
+</body>
+</html>

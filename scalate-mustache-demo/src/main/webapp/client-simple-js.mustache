@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client side Simple JS Demo</title>
+    <script src="js/mustache.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript">
+
+    var model = {viewModel: 'To jest test!'};
+    var template = '<h1>{' + '{viewModel}' + '}</h1>'; // hack to allow parse on the client side
+
+    html = Mustache.to_html(template, model);
+    document.write(html);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Log</title>
+    <style>
+        .form {
+            margin-left: 20px;
+        }
+        .entries {
+            margin-left: 10px;
+        }
+        .entries li {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form">
+        <form action="log" method="post">
+            <label for="author">Author</label> <br/>
+                <input id="author" name="author" type="text"/> <br/>
+            <label for="text">Text</label> <br/>
+                <textarea id="text" name="text"/> <br/>
+            <input type="submit"/>
+        </form>
+    </div>
+
+    <div class="entries">
+        <h3>Entries</h3>
+        <ul>
+        {{#logs}}
+            <li>
+                {{#it}}
+                    {{> entry}}
+                {{/it}}
+            </li>
+        {{/logs}}
+        </ul>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>First Mustache page!</title>
+</head>
+<body>
+
+<div id="container">
+    <form action="/user/update" method="post">
+        Name: <input name="name" value="{{#user}}{{name}}{{/user}}"/>
+            <input type="submit"/>
+    </form>
+</div>
+
+</body>
+</html>

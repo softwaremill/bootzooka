@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+{{#html}}
+<head>
+    {{#head}}
+        {{title}}
+        {{script}}
+        {{style}}
+    {{/head}}
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div id="header">
+    <img src="/images/project-logo.png"/>
+    <ul>
+        <li><a href="/">home</a></li>
+        <li><a href="/client-simple-js.html">Client side Simple JS Demo</a></li>
+        <li><a href="/client-jquery.html">Client side jQuery Demo</a></li>
+        <li><a href="/user">Jersey with Mustache Demo</a></li>
+        <li><a href="/log">My Log Demo</a></li>
+        <li><a href="/client-log.html">Client My Log Demo</a></li>
+    </ul>
+</div>
+<div id="content">
+    {{#body}}
+        <hr/>
+        {{_}}
+    {{/body}}
+</div>
+<div id="footer"></div>
+</body>
+{{/html}}
+</html>

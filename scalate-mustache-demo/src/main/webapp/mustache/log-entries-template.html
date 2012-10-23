@@ -1,0 +1,17 @@
+<div class="entries">
+    <h3>Entries</h3>
+    <ul>
+    {{#logs}}
+        <li>
+            {{#it}}
+            <div>
+                Author: {{author}}, date: {{date}}
+            </div>
+            <div>
+                Text: {{text}}
+            </div>                
+            {{/it}}
+        </li>
+    {{/logs}}
+    </ul>
+</div>

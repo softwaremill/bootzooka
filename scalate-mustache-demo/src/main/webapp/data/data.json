@@ -1,0 +1,8 @@
+{
+    "name": "Lukasz Lenart",
+    "cities": [
+        {"label": "Warszawa"},
+        {"label": "Kielce"},
+        {"label": "Wadowice"}
+    ]
+}

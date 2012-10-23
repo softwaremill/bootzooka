@@ -1,0 +1,321 @@
+<!--
+
+    Copyright (C) 2009-2011 the original author or authors.
+    See the notice.md file distributed with this work for additional
+    information regarding copyright ownership.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pl.softwaremill.demo</groupId>
+    <artifactId>scalate-mustache-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>Scalate Mustache Demo</name>
+    <description>Web Application Using Scalate, Scala and JAXRS/Jersey</description>
+
+    <prerequisites>
+        <maven>2.0.9</maven>
+    </prerequisites>
+
+    <properties>
+        <!-- environment settings -->
+        <jetty-port>8080</jetty-port>
+        <scalate.workdir>${basedir}/target/_scalate</scalate.workdir>
+        <scalate.package.resources>pl.softwaremill.demo.scalate.resources</scalate.package.resources>
+        <scalate.mode>development</scalate.mode>
+
+        <!-- version info -->
+        <jersey-version>1.9</jersey-version>
+        <jetty-version>7.2.1.v20101111</jetty-version>
+        <logback-version>0.9.26</logback-version>
+        <scala-version>2.9.1</scala-version>
+        <scala.version>2.9.1</scala.version>
+        <scalate-version>1.5.3</scalate-version>
+        <servlet-api-version>2.5</servlet-api-version>
+
+        <!-- plugins -->
+        <jetty-plugin-version>7.2.1.v20101111</jetty-plugin-version>
+        <scala-plugin-version>2.15.0</scala-plugin-version>
+        <surefire-plugin-version>2.6</surefire-plugin-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>${scala-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet-api-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource.scalate</groupId>
+            <artifactId>scalate-guice</artifactId>
+            <version>${scalate-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource.scalate</groupId>
+            <artifactId>scalate-page</artifactId>
+            <version>${scalate-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-scala</artifactId>
+            <version>1.8</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+-->
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-version}</version>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.joda</groupId>
+            <artifactId>joda-convert</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- testing -->
+
+        <dependency>
+            <groupId>org.fusesource.scalate</groupId>
+            <artifactId>scalate-test</artifactId>
+            <version>${scalate-version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+
+    <repositories>
+        <repository>
+            <id>repo1.maven</id>
+            <name>Maven Central Repo</name>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>fusesource.m2</id>
+            <name>FuseSource Community Release Repository</name>
+            <url>http://repo.fusesource.com/nexus/content/repositories/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>fusesource.m2-snapshot</id>
+            <name>FuseSource Community Snapshot Repository</name>
+            <url>http://repo.fusesource.com/nexus/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>java.net.m2</id>
+            <name>java.net Maven 2 Repo</name>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <id>openqa-releases</id>
+            <name>OpenQA Releases</name>
+            <url>http://archiva.openqa.org/repository/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>glassfish-repo-archive</id>
+            <name>Nexus repository collection for Glassfish</name>
+            <url>http://maven.glassfish.org/content/groups/glassfish</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>scala</id>
+            <name>Scala Tools</name>
+            <url>http://scala-tools.org/repo-releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>snapshots.scala-tools.org</id>
+            <name>Scala-Tools Maven2 Snapshot Repository</name>
+            <url>http://scala-tools.org/repo-snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <!--updatePolicy>never</updatePolicy-->
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <!--updatePolicy>never</updatePolicy-->
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Apache Development Snapshot Repository</name>
+            <url>https://repository.apache.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>${scala-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                    <args>
+                        <!-- arg>-unchecked</arg -->
+                        <arg>-deprecation</arg>
+                    </args>
+                    <scalaVersion>${scala-version}</scalaVersion>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire-plugin-version}</version>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <!-- these settings are mandatory to avoid SureFire giving a bogus system property to the web container -->
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <useManifestOnlyJar>false</useManifestOnlyJar>
+                    <includes>
+                        <include>**/*Test.*</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jetty-plugin-version}</version>
+                <configuration>
+                    <webAppConfig>
+                        <contextPath>/</contextPath>
+                    </webAppConfig>
+                    <stopKey>CTRL+C</stopKey>
+                    <stopPort>8081</stopPort>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>scalate.workdir</name>
+                            <value>${scalate.workdir}</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>scalate.package.resources</name>
+                            <value>${scalate.package.resources}</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>scalate.mode</name>
+                            <value>${scalate.mode}</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <scanTargets>
+                        <scanTarget>WEB-INF/web.xml</scanTarget>
+                    </scanTargets>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.fusesource.scalate</groupId>
+                <artifactId>maven-scalate-plugin</artifactId>
+                <version>${scalate-version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>precompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
