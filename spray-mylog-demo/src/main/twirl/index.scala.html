@@ -1,0 +1,37 @@
+@(entries: List[pl.softwaremill.demo.spray.MyLog])
+
+@import pl.softwaremill.demo.spray._
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>MyLog</title>
+</head>
+
+<body>
+
+@html.header()
+
+<form action="update" method="post">
+    Author: <input name="author" type="text"> <br/>
+    Text: <input name="text" type="text"> <br/>
+    <input type="submit">
+</form>
+
+<ul>
+    @item(myLog: MyLog) = {
+    <li class="active">
+        ID: @myLog.id - Author: @myLog.author <br/>
+        Text: @myLog.text <br/>
+        Date: @myLog.date
+    </li>
+    }
+</ul>
+
+@entries.map(item)
+
+@html.footer()
+
+</body>
+</html>
