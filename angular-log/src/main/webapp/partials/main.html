@@ -27,10 +27,11 @@
                          <pre>
                             <span class="pull-left">{{entry.text}}</span>
                             <i><small class="pull-left">Sent by {{entry.author}} at {{entry.date}}</small></i>
-                            <i><small class="pull-left"><a ng-click="deleteEntry(entry.id)">Delete this entry</a></small></i>
+                            <i><small class="pull-left"><a ng-click="deleteEntry(entry.id)">Delete this entry</a></small></i>&nbsp&nbsp
+                            <i><small class="pull-left"><a href="#/entry/{{entry.id}}">Edit</a></small></i>
                          </pre>
             </div>
-            <div ng-show="{size == 0}">There are no entries. Be the first author!</div>
+            <div ng-show="size == 0">There are no entries. Be the first author!</div>
         </div>
     </div>
     <div class="span3 pull-right" ng-controller="UptimeCtrl">

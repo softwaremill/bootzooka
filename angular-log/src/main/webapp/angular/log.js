@@ -4,6 +4,7 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
         $routeProvider.
             when('/', {controller:LogsCtrl, templateUrl:'partials/main.html'}).
             when("/login", {controller: UserCtrl, templateUrl: "partials/login.html"}).
+            when("/entry/:entryId", {controller: LogsCtrl, templateUrl: "partials/entry.html"}).
             otherwise({redirectTo:'/'})
     })
 
@@ -30,10 +31,24 @@ function LogsCtrl($scope, LogService, LogCounterService) {
     }
 
     $scope.deleteEntry = function(logEntryId) {
-        $scope.logs = LogService.deleteEntry(logEntryId, function() {
+        LogService.deleteEntry(logEntryId, function() {
             $scope.logs = LogService.query();
             $scope.size = LogCounterService.countLogs();
         })
+    }
+}
+
+
+function LogEditCtrl($scope, LogService, $routeParams, $location) {
+
+    $scope.logId = $routeParams.entryId;
+
+    $scope.log = LogService.load($scope.logId)
+    console.log("ctrl.log = " + $scope.log)
+
+    $scope.updateEntry = function() {
+        LogService.update($scope.log);
+        $location.path("");
     }
 }
 

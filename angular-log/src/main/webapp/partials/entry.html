@@ -1,0 +1,24 @@
+
+<div class="row" ng-controller="LogEditCtrl">
+    <div class="span6 offset3">
+        <form name="myForm">
+            <div class="row">
+                <textarea name="message" rows="5" style="width: 95%" ng-model="log.text" required
+                          ng-minlength="5" ng-maxlength="140" placeholder="Type your message here">
+                </textarea>
+
+                <span class="text-error" ng-show="myForm.message.$error.maxlength">Message is too long!</span>
+                <span class="text-error" ng-show="myForm.message.$error.minlength">Message is too short</span>
+                <span class="text-error" ng-show="myForm.message.$dirty && myForm.message.$error.required">Message is required</span>
+                <br/><input type="text" name="author" ng-model="log.author" required
+                       ng-minlength="5" ng-maxlength="140" placeholder="Type author name here">
+                <span class="text-error" ng-show="myForm.author.$error.maxlength">Author is too long!</span>
+                <span class="text-error" ng-show="myForm.author.$error.minlength">Author is too short</span>
+                <span class="text-error" ng-show="myForm.author.$dirty && myForm.author.$error.required">Author is required</span>
+                <div>
+                    <input type="submit" ng-click="updateEntry()" ng-disabled="myForm.$invalid" class="btn btn-primary" value="Update message"/>
+                </div><br/>
+            </div>
+        </form>
+    </div>
+</div>

@@ -18,6 +18,23 @@ class LogService {
   }
 
   @GET
+  @Produces(Array("application/json"))
+  @Path("{entryId}")
+  def getLog(@PathParam("entryId") entryId: Long):LogObject = {
+    println("Get single Log " + entryId);
+
+    val entryOpt: Option[LogObject] = Entries.list.find((p: LogObject) => {
+      p.id == entryId
+    })
+
+    if (entryOpt.isDefined) {
+      println("Zwracam " + entryOpt.get)
+      return entryOpt.get
+    }
+    else { null }
+  }
+
+  @GET
   @Path("/logs-count")
   @Produces(Array("application/json"))
   def getLogsCount() = {
@@ -26,11 +43,26 @@ class LogService {
 
   @POST
   @Consumes(Array("application/json"))
-  def addNew(entry: LogObject) = {
+  def addOrUpdate(entry: LogObject) = {
 
-    val newEntry: LogObject = new LogObject(Entries.nextId(), entry.text, entry.date, entry.author)
-    Entries.list = Entries.list.::(newEntry)
-    println("added new " + newEntry.toString)
+    if(entry.id <= 0) {
+      val newEntry: LogObject = new LogObject(Entries.nextId(), entry.text, entry.date, entry.author)
+      Entries.list = Entries.list.::(newEntry)
+      println("added new " + newEntry.toString)
+    }
+    else {
+      val entryOpt: Option[LogObject] = Entries.list.find((p: LogObject) => {
+        p.id == entry.id
+      })
+
+      if (entryOpt.isDefined) {
+        val logObject: LogObject = entryOpt.get
+        logObject.text = entry.text
+        logObject.author = entry.author
+        logObject.date = entry.date
+        println("Updated " + entry)
+      }
+    }
   }
 
   @DELETE

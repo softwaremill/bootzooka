@@ -6,16 +6,16 @@ import org.codehaus.jackson.annotate.JsonProperty
 class LogObject(anId: Long, t: String, d: String, a: String) {
 
   @JsonProperty
-  val id = anId;
+  var id = anId;
 
   @JsonProperty
-  val text = t;
+  var text = t;
 
   @JsonProperty
-  val date = d;
+  var date = d;
 
   @JsonProperty
-  val author = a;
+  var author = a;
 
   def this() = {
     this(0, null, null, null)
