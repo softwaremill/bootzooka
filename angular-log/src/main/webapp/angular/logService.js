@@ -1,13 +1,13 @@
 angular.module('logService', ['ngResource']).
     factory('LogService', function($resource) {
-        var LogService = $resource('/logs', { },
+        var LogService = $resource('/logs/:id', { },
             {
                 addNew: {method: 'POST'}
             }
         );
 
         LogService.addNew = function(entryText, successFunction) {
-            var json = new Object()
+            var json = new Object();
             json.text = entryText;
             json.author = "Anonymous"
             var date = new Date();
@@ -16,6 +16,17 @@ angular.module('logService', ['ngResource']).
             var refreshedList = null;
             LogService.save(angular.toJson(json), successFunction)
         }
+
+//        LogService.deleteEntry = function(logObjectId, successFunction) {
+//            var json = new Object();
+//            json.value = logObjectId;
+//            LogService.remove(angular.toJson(json), successFunction);
+//        }
+
+        LogService.deleteEntry = function(logObjectId, successFunction) {
+            console.log("delete " + logObjectId)
+            return LogService.remove({id: logObjectId}, successFunction);
+        };
 
         return LogService;
     });

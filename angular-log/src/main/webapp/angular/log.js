@@ -24,12 +24,19 @@ function LogsCtrl($scope, LogService, LogCounterService) {
     $scope.entryText = '';
 
     $scope.addEntry = function() {
-        $scope.logs = LogService.addNew($scope.entryText, function() {
+        LogService.addNew($scope.entryText, function() {
             $scope.logs = LogService.query();
             $scope.size = LogCounterService.countLogs();
         })
 
         $scope.entryText = '';
+    }
+
+    $scope.deleteEntry = function(logEntryId) {
+        $scope.logs = LogService.deleteEntry(logEntryId, function() {
+            $scope.logs = LogService.query();
+            $scope.size = LogCounterService.countLogs();
+        })
     }
 
 }

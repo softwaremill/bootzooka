@@ -3,7 +3,10 @@ package pl.softwaremill.angular_log.entities
 import java.util.Date
 import org.codehaus.jackson.annotate.JsonProperty
 
-class LogObject(t: String, d: String, a: String) {
+class LogObject(anId: Long, t: String, d: String, a: String) {
+
+  @JsonProperty
+  val id = anId;
 
   @JsonProperty
   val text = t;
@@ -15,10 +18,10 @@ class LogObject(t: String, d: String, a: String) {
   val author = a;
 
   def this() = {
-    this(null, null, null)
+    this(0, null, null, null)
   }
 
   override def toString = {
-    "[LogObject: text = " + text +", author = " + author +", date = " + date + "]";
+    "[LogObject: id = " + id + ", text = " + text +", author = " + author +", date = " + date + "]";
   }
 }
