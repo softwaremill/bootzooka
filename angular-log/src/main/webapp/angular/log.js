@@ -36,6 +36,10 @@ function LogsCtrl($scope, LogService, LogCounterService) {
             $scope.size = LogCounterService.countLogs();
         })
     }
+
+    $scope.noEntries = function() {
+        return 0 === $scope.size.value;
+    }
 }
 
 
@@ -44,7 +48,6 @@ function LogEditCtrl($scope, LogService, $routeParams, $location) {
     $scope.logId = $routeParams.entryId;
 
     $scope.log = LogService.load($scope.logId)
-    console.log("ctrl.log = " + $scope.log)
 
     $scope.updateEntry = function() {
         LogService.update($scope.log);
