@@ -3,16 +3,13 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
 
         $routeProvider.
             when('/', {controller:LogsCtrl, templateUrl:'partials/main.html'}).
-
             when("/login", {controller: UserCtrl, templateUrl: "partials/login.html"}).
-
             otherwise({redirectTo:'/'})
     })
 
 function UptimeCtrl($scope, UtilService) {
     var uptime = UtilService.loadUptime();
     $scope.uptime = uptime;
-
 }
 
 
@@ -38,12 +35,9 @@ function LogsCtrl($scope, LogService, LogCounterService) {
             $scope.size = LogCounterService.countLogs();
         })
     }
-
 }
 
 
 function UserCtrl($scope, UserService) {
-
     console.log("UserCtrl ready!")
-
 }
