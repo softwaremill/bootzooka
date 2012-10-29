@@ -59,7 +59,7 @@ class LogService {
           existingEntry.date = entry.date
           println("Updated " + existingEntry)
         }
-        case _ => null
+        case _ => { }
       }
     }
   }
@@ -72,8 +72,9 @@ class LogService {
 
     entryOpt match {
       case Some(entry) => Entries.list = Entries.list diff List(entry)
-      case _ => null
+      case _ => { }
     }
+
   }
 }
 
@@ -88,7 +89,7 @@ object Entries {
   var list: List[LogObject] = List(
     new LogObject(4, "Still hot, the latest tweet", new DateTime().toString("HH:mm dd/MM/yyyy"), "Teofilia Chrust"),
     new LogObject(3, "This is really long tweet. This is really long tweet. This is really long tweet. " +
-      "This is really long tweet. This is really long tweet. This is really long tweet.",
+      "This is really long tweet.",
       new DateTime().withDate(2012, 8, 29).toString("HH:mm dd/MM/yyyy"), "Remigiusz Niemowa"),
     new LogObject(2, "Nothing less, nothing more, just second tweet",
       new DateTime().withDate(2012, 6, 4).toString("HH:mm dd/MM/yyyy"), "Krystian Krostka"),
