@@ -6,7 +6,7 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
             when("/login", {controller: UserCtrl, templateUrl: "partials/login.html"}).
             when("/entry/:entryId", {controller: LogsCtrl, templateUrl: "partials/entry.html"}).
             otherwise({redirectTo:'/'})
-    })
+    });
 
 function UptimeCtrl($scope, UtilService) {
     var uptime = UtilService.loadUptime();
@@ -25,21 +25,21 @@ function LogsCtrl($scope, LogService, LogCounterService) {
         LogService.addNew($scope.entryText, function() {
             $scope.logs = LogService.query();
             $scope.size = LogCounterService.countLogs();
-        })
+        });
 
         $scope.entryText = '';
-    }
+    };
 
     $scope.deleteEntry = function(logEntryId) {
         LogService.deleteEntry(logEntryId, function() {
             $scope.logs = LogService.query();
             $scope.size = LogCounterService.countLogs();
         })
-    }
+    };
 
     $scope.noEntries = function() {
         return 0 === $scope.size.value;
-    }
+    };
 }
 
 
@@ -47,7 +47,7 @@ function LogEditCtrl($scope, LogService, $routeParams, $location) {
 
     $scope.logId = $routeParams.entryId;
 
-    $scope.log = LogService.load($scope.logId)
+    $scope.log = LogService.load($scope.logId);
 
     $scope.updateEntry = function() {
         LogService.update($scope.log);
