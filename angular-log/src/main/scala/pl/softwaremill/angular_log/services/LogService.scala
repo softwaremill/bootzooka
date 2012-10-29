@@ -63,6 +63,7 @@ class LogService {
           logObject.date = entry.date
           println("Updated " + entry)
         }
+        case _ => null
       }
     }
   }
@@ -75,6 +76,7 @@ class LogService {
 
     entryOpt match {
       case Some(entry) => Entries.list = Entries.list diff List(entry)
+      case _ => null
     }
   }
 }
