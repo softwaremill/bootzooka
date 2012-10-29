@@ -12,7 +12,7 @@ class LogService {
   @GET
   @Produces(Array("application/json"))
   def getLogs():java.util.List[LogObject] = {
-    println("Get logs");
+    println("Get logs")
     val javaList: java.util.List[LogObject] = Entries.list
     javaList
   }
@@ -21,17 +21,14 @@ class LogService {
   @Produces(Array("application/json"))
   @Path("{entryId}")
   def getLog(@PathParam("entryId") entryId: Long):LogObject = {
-    println("Get single Log " + entryId);
+    println("Get single Log " + entryId)
 
     val entryOpt: Option[LogObject] = Entries.list.find((p: LogObject) => {
       p.id == entryId
     })
 
     entryOpt match {
-      case Some(entry) => {
-        println("Zwracam " + entryOpt.get)
-        return entryOpt.get
-      }
+      case Some(entry) => entry
       case _ => null
     }
   }
@@ -39,7 +36,7 @@ class LogService {
   @GET
   @Path("/logs-count")
   @Produces(Array("application/json"))
-  def getLogsCount() = {
+  def getLogsCount = {
      new LongResponseWrapper(Entries.list.size)
   }
 
@@ -56,12 +53,11 @@ class LogService {
       val entryOpt: Option[LogObject] = Entries.list.find( _.id == entry.id )
 
       entryOpt match {
-        case Some(entry) => {
-          val logObject: LogObject = entryOpt.get
-          logObject.text = entry.text
-          logObject.author = entry.author
-          logObject.date = entry.date
-          println("Updated " + entry)
+        case Some(existingEntry) => {
+          existingEntry.text = entry.text
+          existingEntry.author = entry.author
+          existingEntry.date = entry.date
+          println("Updated " + existingEntry)
         }
         case _ => null
       }
@@ -82,10 +78,10 @@ class LogService {
 }
 
 object Entries {
-  var id:Long  = 10;
+  var id:Long  = 10
 
   def nextId(): Long = {
-    id = id +1;
+    id = id + 1
     id
   }
 
