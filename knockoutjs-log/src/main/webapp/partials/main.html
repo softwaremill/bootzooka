@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="span2 pull-left">
+        <pre>Number of <br/>entries: {{size.value}}</pre>
+    </div>
+    <div class="span6 offset1">
+        <form name="myForm">
+            <div class="row">
+                <textarea name="message" rows="5" style="width: 95%" placeholder="Type your message here">
+                </textarea>
+                <!-- some validation here -->
+                <div>
+                    <input type="submit" class="btn btn-primary" value="Send message"/>
+                </div><br/>
+            </div>
+        </form>
+        <div class="row">
+            <div>
+                 <pre>
+                    <span class="pull-left">{{entry.text}}</span>
+                    <i><small class="pull-left">Sent by {{entry.author}} at {{entry.date}}</small></i>
+                    <i><small class="pull-left"><a href="#">Delete this entry</a></small></i>&nbsp&nbsp
+                    <i><small class="pull-left"><a href="#/entry/{{entry.id}}">Edit</a></small></i>
+                 </pre>
+            </div>
+            <div>There are no entries. Be the first author!</div>
+        </div>
+    </div>
+    <div class="span3 pull-right">
+        <pre>Server uptime <br/>in seconds: {{uptime.value}}</pre>
+    </div>
+</div>
