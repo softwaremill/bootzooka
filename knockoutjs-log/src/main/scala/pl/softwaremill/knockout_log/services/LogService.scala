@@ -39,6 +39,7 @@ class LogService {
   @Path("/logs-count")
   @Produces(Array("application/json"))
   def getLogsCount = {
+    println("Count")
     new LongResponseWrapper(Entries.list.size)
   }
 
