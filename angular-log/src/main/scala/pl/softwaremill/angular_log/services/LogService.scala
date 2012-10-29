@@ -27,11 +27,13 @@ class LogService {
       p.id == entryId
     })
 
-    if (entryOpt.isDefined) {
-      println("Zwracam " + entryOpt.get)
-      return entryOpt.get
+    entryOpt match {
+      case Some(entry) => {
+        println("Zwracam " + entryOpt.get)
+        return entryOpt.get
+      }
+      case _ => null
     }
-    else { null }
   }
 
   @GET
@@ -51,16 +53,16 @@ class LogService {
       println("added new " + newEntry.toString)
     }
     else {
-      val entryOpt: Option[LogObject] = Entries.list.find((p: LogObject) => {
-        p.id == entry.id
-      })
+      val entryOpt: Option[LogObject] = Entries.list.find( _.id == entry.id )
 
-      if (entryOpt.isDefined) {
-        val logObject: LogObject = entryOpt.get
-        logObject.text = entry.text
-        logObject.author = entry.author
-        logObject.date = entry.date
-        println("Updated " + entry)
+      entryOpt match {
+        case Some(entry) => {
+          val logObject: LogObject = entryOpt.get
+          logObject.text = entry.text
+          logObject.author = entry.author
+          logObject.date = entry.date
+          println("Updated " + entry)
+        }
       }
     }
   }
@@ -69,12 +71,10 @@ class LogService {
   @Path("{entryId}")
   def remove(@PathParam("entryId") entryId: Long) = {
     println("Removing entry with id " + entryId)
-    val entryOpt: Option[LogObject] = Entries.list.find((p: LogObject) => {
-      p.id == entryId
-    })
+    val entryOpt: Option[LogObject] = Entries.list.find( _.id == entryId )
 
-    if (entryOpt.isDefined) {
-      Entries.list = Entries.list diff List(entryOpt.get)
+    entryOpt match {
+      case Some(entry) => Entries.list = Entries.list diff List(entry)
     }
   }
 }
