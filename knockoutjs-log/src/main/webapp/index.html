@@ -37,35 +37,37 @@
     </div>
 
     <div class="row">
-        <div class="span2 pull-left">
-            <pre>Number of <br/>entries: <span data-bind="text: size"></span></pre>
+        <div id="sizeDiv" class="span2 pull-left">
+            <pre>Number of <br/>entries: <span data-bind="text: size.value"></span></pre>
         </div>
         <div class="span6 offset1">
-            <form name="myForm" data-bind="submit: addEntry">
+            <div id="entriesDiv">
+                <form name="myForm" data-bind="submit: addEntry">
+                    <div class="row">
+                        <textarea name="message" rows="5" style="width: 95%" placeholder="Type your message here"
+                                data-bind="value: newEntry">
+                        </textarea>
+                        <!-- some validation here -->
+                        <div>
+                            <input type="submit" class="btn btn-primary" value="Send message"/>
+                        </div><br/>
+                    </div>
+                </form>
                 <div class="row">
-                    <textarea name="message" rows="5" style="width: 95%" placeholder="Type your message here"
-                            data-bind="value: newEntry">
-                    </textarea>
-                    <!-- some validation here -->
-                    <div>
-                        <input type="submit" class="btn btn-primary" value="Send message"/>
-                    </div><br/>
+                    <div data-bind="foreach: entries">
+                     <pre>
+                        <span class="pull-left" data-bind="text: text"></span>
+                        <i><small class="pull-left">Sent by <span data-bind="text: author"></span> at <span data-bind="text: date"></span></small></i>
+                        <i><small class="pull-left"><a href="#">Delete this entry</a></small></i>&nbsp&nbsp
+                        <i><small class="pull-left"><a href="#/entry/{{entry.id}}">Edit</a></small></i>
+                     </pre>
+                    </div>
                 </div>
-            </form>
-            <div class="row">
-                <div data-bind="foreach: entries">
-                 <pre>
-                    <span class="pull-left" data-bind="text: text"></span>
-                    <i><small class="pull-left">Sent by <span data-bind="text: author"></span> at <span data-bind="text: date"></span></small></i>
-                    <i><small class="pull-left"><a href="#">Delete this entry</a></small></i>&nbsp&nbsp
-                    <i><small class="pull-left"><a href="#/entry/{{entry.id}}">Edit</a></small></i>
-                 </pre>
-                </div>
-                <div data-bind="visible: size == 0">There are no entries. Be the first author!</div>
+                <div data-bind="visible: entries().length == 0">There are no entries. Be the first author!</div>
             </div>
         </div>
-        <div class="span3 pull-right">
-            <pre>Server uptime <br/>in seconds: <span data-bind="text: uptime"></span></pre>
+        <div id="uptimeDiv" class="span3 pull-right">
+            <pre>Server uptime <br/>in seconds: <span data-bind="text: uptime.value"></span></pre>
         </div>
     </div>
 

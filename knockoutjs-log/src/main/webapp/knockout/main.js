@@ -1,21 +1,17 @@
 
-
-var entriesModel = {
-    entries: ko.observableArray([]),
-    size: ko.observable(0),
-    uptime: ko.observable(0),
-    newEntry: ko.observable(""),
-    init: false
-}
+var entriesModel;
+var sizeModel;
+var uptimeModel;
 
 function loadEntries() {
 
     $.get("/logs", function(data) {
         console.log(data);
-        if(entriesModel.init === false) {
+        if(entriesModel == null) {
+            entriesModel = new Object();
+            entriesModel.newEntry = ko.observable("");
             entriesModel.entries = ko.mapping.fromJS(data);
-            ko.applyBindings(entriesModel);
-            entriesModel.init = true;
+            ko.applyBindings(entriesModel, document.getElementById("entriesDiv"));
         }
         else {
             ko.mapping.fromJS(data, entriesModel.entries);
@@ -25,16 +21,28 @@ function loadEntries() {
 
 function getCount() {
     $.get("/logs/logs-count", function(data) {
-        console.log("count =" + data);
-        entriesModel.size = ko.mapping.fromJS(data).value;
+        if(sizeModel == null) {
+            sizeModel = new Object();
+            sizeModel.size = ko.mapping.fromJS(data);
+            ko.applyBindings(sizeModel, document.getElementById("sizeDiv"));
+        }
+        else {
+            ko.mapping.fromJS(data, sizeModel.size);
+        }
     });
 }
 
 
 function getUptime() {
     $.get("/uptime", function(data) {
-        entriesModel.uptime = ko.mapping.fromJS(data).value;
-        console.log("uptime =" + entriesModel.uptime());
+        if(uptimeModel == null) {
+            uptimeModel = new Object();
+            uptimeModel.uptime = ko.mapping.fromJS(data);
+            ko.applyBindings(uptimeModel, document.getElementById("uptimeDiv"));
+        }
+        else {
+            ko.mapping.fromJS(data, uptimeModel.uptime);
+        }
     });
 }
 
@@ -61,6 +69,9 @@ function addEntry() {
         data: json,
         success: function(){
             loadEntries();
+            getCount();
+            getUptime();
+            entriesModel.newEntry("");
         }
     });
 
@@ -71,6 +82,6 @@ function addEntry() {
 $(function() {
     console.log("Init...");
     loadEntries();
-//    getCount();
-//    getUptime();
+    getCount();
+    getUptime();
 })
