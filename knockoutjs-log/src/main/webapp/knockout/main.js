@@ -97,13 +97,24 @@ function addEntry() {
         });
     }
 
-
-
     return false
 }
 
-function isFormValid() {
-    $("#myForm").valid();
+function deleteEntry(entry) {
+
+    $.ajax({
+        url: "logs/" + entry.id(),
+        type: "DELETE",
+        dataType: "text",
+        contentType: "application/json",
+        success: function() {
+            loadEntries();
+            getCount();
+            getUptime();
+        }
+    });
+
+    return false;
 }
 
 
