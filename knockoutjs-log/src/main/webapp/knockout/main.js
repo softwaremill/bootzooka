@@ -3,14 +3,30 @@ var entriesModel;
 var sizeModel;
 var uptimeModel;
 
+
+ko.validation.configure({
+    registerExtenders: true,
+    messagesOnModified: true,
+    insertMessages: true,
+    parseInputAttributes: true,
+    messageTemplate: null
+});
+
+
 function loadEntries() {
 
     $.get("/logs", function(data) {
         console.log(data);
         if(entriesModel == null) {
             entriesModel = new Object();
-            entriesModel.newEntry = ko.observable("");
-            entriesModel.entries = ko.mapping.fromJS(data);
+            entriesModel.newEntry = ko.observable()
+                .extend({
+                    required: true,
+                    minLength: 5,
+                    maxLength: 140 }
+            );
+            entriesModel.entries = ko.mapping.fromJS(data)
+            entriesModel.errors = ko.validation.group(entriesModel);
             ko.applyBindings(entriesModel, document.getElementById("entriesDiv"));
         }
         else {
@@ -47,35 +63,47 @@ function getUptime() {
 }
 
 function addEntry() {
-    console.log("Button clicked");
-    console.log(entriesModel.newEntry());
+
+    if (entriesModel.errors().length > 0) {
+        entriesModel.errors.showAllMessages();
+    }
+    else {
+        console.log("Button clicked");
+        console.log(entriesModel.newEntry());
 
 
-    var value = new Object();
-    value.text = entriesModel.newEntry();
-    value.author = "Anonymous";
-    var date = new Date();
-    value.date = date.getDate()+"/" + (date.getMonth()+1) +"/"+ date.getFullYear() +
-        " " + date.getHours() +":" + date.getMinutes();
-    var json = ko.mapping.toJSON(value);
+        var value = new Object();
+        value.text = entriesModel.newEntry();
+        value.author = "Anonymous";
+        var date = new Date();
+        value.date = date.getDate()+"/" + (date.getMonth()+1) +"/"+ date.getFullYear() +
+            " " + date.getHours() +":" + date.getMinutes();
+        var json = ko.mapping.toJSON(value);
 
-    console.log("json =" + json);
+        console.log("json =" + json);
 
-    $.ajax({
-        url: "logs",
-        type: "POST",
-        dataType: "text",
-        contentType: "application/json",
-        data: json,
-        success: function(){
-            loadEntries();
-            getCount();
-            getUptime();
-            entriesModel.newEntry("");
-        }
-    });
+        $.ajax({
+            url: "logs",
+            type: "POST",
+            dataType: "text",
+            contentType: "application/json",
+            data: json,
+            success: function(){
+                loadEntries();
+                getCount();
+                getUptime();
+                entriesModel.newEntry("");
+            }
+        });
+    }
+
+
 
     return false
+}
+
+function isFormValid() {
+    $("#myForm").valid();
 }
 
 
