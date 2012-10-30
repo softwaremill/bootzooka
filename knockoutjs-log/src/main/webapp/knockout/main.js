@@ -12,15 +12,15 @@ function loadEntries() {
 
     $.get("/logs", function(data) {
         console.log(data);
-        entriesModel.entries = ko.mapping.fromJS(data);
-        console.log("model = " + entriesModel.entries());
         if(entriesModel.init === false) {
+            entriesModel.entries = ko.mapping.fromJS(data);
             ko.applyBindings(entriesModel);
             entriesModel.init = true;
-            console.log("ApplyBinding executed");
+        }
+        else {
+            ko.mapping.fromJS(data, entriesModel.entries);
         }
     });
-
 }
 
 function getCount() {
