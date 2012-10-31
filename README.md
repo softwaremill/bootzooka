@@ -4,6 +4,6 @@ Rezultaty naszych prac z testowania, badania i podejmowania decyzji na temat sto
 
 Root zawiera oddzielne katalogi z projektmai używającymi różnych technologii i bibliotek.
 
-#### ==> angular-log
+### Więcej informacji
 
-Projekt używający AngularJS na frontendzie oraz Jersey jako implementacji REST-a, backend w Scali.
+Bardziej szczegółowe opisy na temat przetestowanych technologii są na naszym firmowym Wiki w sekcji SML Boostrtap: https://softwaremill.atlassian.net/wiki/display/DEV/SML+Bootstrap
