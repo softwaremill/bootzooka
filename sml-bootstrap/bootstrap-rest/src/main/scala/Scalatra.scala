@@ -1,4 +1,5 @@
-import pl.softwaremill.bootstrap.rest.{RestServlet, MyLogServlet}
+import java.util.Date
+import pl.softwaremill.bootstrap.rest.{EntriesServlet, UptimeServlet}
 import org.scalatra._
 import javax.servlet.ServletContext
 
@@ -8,11 +9,13 @@ import javax.servlet.ServletContext
  * run at application start (e.g. database configurations), and init params.
  */
 class Scalatra extends LifeCycle {
+
+  val PREFIX = "/rest"
+
   override def init(context: ServletContext) {
 
     // Mount one or more servlets
-    context.mount(new MyLogServlet, "/*")
-
-    context.mount(new RestServlet, "/rest")
+    context.mount(new EntriesServlet, PREFIX + "/entries")
+    context.mount(new UptimeServlet, PREFIX + "/uptime")
   }
 }

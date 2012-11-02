@@ -6,7 +6,7 @@ import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.domain.Entry
 import org.scalatra.util.NotEmpty
 
-class RestServlet extends ScalatraServlet with ScalateSupport with JsonHelpers {
+class EntriesServlet extends ScalatraServlet with JsonHelpers {
 
   before() {
     contentType = "application/json;charset=UTF-8"
@@ -29,7 +29,16 @@ class RestServlet extends ScalatraServlet with ScalateSupport with JsonHelpers {
     Json(EntryService.loadAll)
   }
 
+  get("/count") {
+    Json(EntryService.count)
+  }
+
   post("/") {
+    //todo  TomekD fix adding new entry feature
+    println("Post received...")
+    println(this.request.getParameterNames.hasMoreElements)
+    println(params.keys mkString ", ")
+    println(params.values mkString ", ")
     (params.get("author"), params.get("text")) match {
       case (NotEmpty(username), NotEmpty(password)) =>
         EntryService.add(new Entry(0, params("author"), params("text")))
