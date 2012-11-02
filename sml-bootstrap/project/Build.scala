@@ -46,31 +46,37 @@ object SmlBootstrapBuild extends Build {
     "bootstrap-root",
     file("."),
     settings = buildSettings
-  ) aggregate(domain, dao, service, rest, ui)
+  ) aggregate(common, domain, dao, service, rest, ui)
+
+  lazy val common: Project = Project(
+    "bootstrap-common",
+    file("bootstrap-common"),
+    settings = buildSettings
+  )
 
   lazy val domain: Project = Project(
     "bootstrap-domain",
     file("bootstrap-domain"),
     settings = buildSettings
-  )
+  ) dependsOn(common)
 
   lazy val dao: Project = Project(
     "bootstrap-dao",
     file("bootstrap-dao"),
     settings = buildSettings
-  ) dependsOn (domain)
+  ) dependsOn (domain, common)
 
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
     settings = buildSettings
-  ) dependsOn (domain, dao)
+  ) dependsOn (domain, dao, common)
 
   lazy val rest: Project = Project(
     "bootstrap-rest",
     file("bootstrap-rest"),
     settings = buildSettings ++ Seq(libraryDependencies := scalatraStack ++ Seq(jettyOrbit))
-  ) dependsOn (service, domain)
+  ) dependsOn (service, domain, common)
 
   lazy val ui: Project = Project(
     "bootstrap-ui",
