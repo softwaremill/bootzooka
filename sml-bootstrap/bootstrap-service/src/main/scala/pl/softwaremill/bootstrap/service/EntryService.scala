@@ -2,6 +2,7 @@ package pl.softwaremill.bootstrap.service
 
 import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.dao.EntryDAO
+import pl.softwaremill.bootstrap.common.BootstrapUtils
 
 object EntryService {
 
@@ -21,7 +22,7 @@ object EntryService {
     EntryDAO.remove(entryId)
   }
 
-  def load(entryId: Int) {
+  def load(entryId: Int) = {
     EntryDAO.load(entryId)
   }
 
