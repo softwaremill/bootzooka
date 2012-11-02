@@ -26,12 +26,12 @@ object EntryDAO {
     list.size
   }
 
-  def add(entry: Entry) = {
+  def add(entry: Entry) {
     entry.id = nextId()
     list = list :+ entry
   }
 
-  def remove(entryId: Int) = {
+  def remove(entryId: Int) {
     val entryOpt: Option[Entry] = list.find( _.id == entryId )
 
     entryOpt match {
@@ -49,7 +49,7 @@ object EntryDAO {
     }
   }
 
-  def update(entry: Entry) = {
+  def update(entry: Entry) {
     val entryOpt: Option[Entry] = list.find( _.id == entry.id )
 
     entryOpt match {
