@@ -14,6 +14,10 @@ object BuildSettings {
   import Resolvers._
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
+    organization  := "pl.softwaremill",
+    version       := "0.0.1-SNAPSHOT",
+    scalaVersion  := "2.9.1",
+
     resolvers     := bootstrapResolvers,
     scalacOptions += "-unchecked",
     classpathTypes ~= (_ + "orbit")
@@ -27,10 +31,9 @@ object Dependencies {
   val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % "2.1.1" % "test"
   val liftJson = "net.liftweb" %% "lift-json" % "2.5-M1"
   val liftJsonExt = "net.liftweb" %% "lift-json-ext" % "2.5-M1"
+  val scalatraStack = Seq(scalatra, scalate, scalatraSpec2, liftJson, liftJsonExt, logback)
 
   val jettyOrbit = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
-
-  val scalatraStack = Seq(scalatra, scalate, scalatraSpec2, liftJson, liftJsonExt, logback, jettyOrbit)
 }
 
 object SmlBootstrapBuild extends Build {
@@ -38,33 +41,34 @@ object SmlBootstrapBuild extends Build {
   import BuildSettings._
 
   lazy val parent: Project = Project(
-    "boostrap-root",
+    "bootstrap-root",
     file("."),
-    settings = buildSettings ++ Seq(libraryDependencies := scalatraStack)
-  ) //aggregate(data, service, rest, ui)
+    settings = buildSettings
+  ) aggregate(ui,rest)
 
   //  lazy val data: Project = Project(
   //    "bootstrap-data",
-  //    file("boostrap-data"),
+  //    file("bootstrap-data"),
   //    settings = buildSettings
   //  )
   //
   //  lazy val service: Project = Project(
   //    "bootstrap-service",
-  //    file("boostrap-service"),
+  //    file("bootstrap-service"),
   //    settings = buildSettings
   //  ) dependsOn(data)
   //
-  //  lazy val rest: Project = Project(
-  //    "bootstrap-rest",
-  //    file("boostrap-rest"),
-  //    settings = buildSettings
-  //  ) dependsOn(data, service)
-  //
-  //  lazy val ui: Project = Project(
-  //    "bootstrap-ui",
-  //    file("boostrap-ui"),
-  //    settings = buildSettings
-  //  ) dependsOn(rest, data, service)
+    lazy val rest: Project = Project(
+      "bootstrap-rest",
+      file("bootstrap-rest"),
+      settings = buildSettings ++ Seq(libraryDependencies := scalatraStack ++ Seq(jettyOrbit))
+    )
+
+
+    lazy val ui: Project = Project(
+      "bootstrap-ui",
+      file("bootstrap-ui"),
+      settings = buildSettings ++ Seq(libraryDependencies := Seq(jettyOrbit))
+    ) dependsOn(rest)
 
 }
