@@ -1,4 +1,4 @@
-package pl.softwaremill.demo.scalatra
+package pl.softwaremill.bootstrap.rest
 
 trait JsonHelpers {
 

@@ -1,7 +1,8 @@
-package pl.softwaremill.demo.scalatra
+package pl.softwaremill.bootstrap.rest
 
 import org.scalatra._
 import scalate.ScalateSupport
+import pl.softwaremill.bootstrap.service.EntryService
 
 
 class MyLogServlet extends ScalatraServlet with ScalateSupport {
@@ -13,7 +14,7 @@ class MyLogServlet extends ScalatraServlet with ScalateSupport {
   }
 
   get("/") {
-    mustache("index", "logs" -> Entries.list)
+    mustache("index", "logs" -> EntryService.loadAll)
   }
 
   notFound {

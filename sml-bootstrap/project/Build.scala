@@ -11,14 +11,15 @@ object Resolvers {
 }
 
 object BuildSettings {
+
   import Resolvers._
 
-  val buildSettings = Defaults.defaultSettings ++ Seq (
-    organization  := "pl.softwaremill",
-    version       := "0.0.1-SNAPSHOT",
-    scalaVersion  := "2.9.1",
+  val buildSettings = Defaults.defaultSettings ++ Seq(
+    organization := "pl.softwaremill",
+    version := "0.0.1-SNAPSHOT",
+    scalaVersion := "2.9.1",
 
-    resolvers     := bootstrapResolvers,
+    resolvers := bootstrapResolvers,
     scalacOptions += "-unchecked",
     classpathTypes ~= (_ + "orbit")
   )
@@ -27,7 +28,7 @@ object BuildSettings {
 object Dependencies {
   val logback = "ch.qos.logback" % "logback-classic" % "1.0.6"
   val scalatra = "org.scalatra" % "scalatra" % "2.1.1"
-  val scalate  = "org.scalatra" % "scalatra-scalate" % "2.1.1"
+  val scalate = "org.scalatra" % "scalatra-scalate" % "2.1.1"
   val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % "2.1.1" % "test"
   val liftJson = "net.liftweb" %% "lift-json" % "2.5-M1"
   val liftJsonExt = "net.liftweb" %% "lift-json-ext" % "2.5-M1"
@@ -37,6 +38,7 @@ object Dependencies {
 }
 
 object SmlBootstrapBuild extends Build {
+
   import Dependencies._
   import BuildSettings._
 
@@ -44,31 +46,36 @@ object SmlBootstrapBuild extends Build {
     "bootstrap-root",
     file("."),
     settings = buildSettings
-  ) aggregate(ui,rest)
+  ) aggregate(domain, dao, service, rest, ui)
 
-  //  lazy val data: Project = Project(
-  //    "bootstrap-data",
-  //    file("bootstrap-data"),
-  //    settings = buildSettings
-  //  )
-  //
-  //  lazy val service: Project = Project(
-  //    "bootstrap-service",
-  //    file("bootstrap-service"),
-  //    settings = buildSettings
-  //  ) dependsOn(data)
-  //
-    lazy val rest: Project = Project(
-      "bootstrap-rest",
-      file("bootstrap-rest"),
-      settings = buildSettings ++ Seq(libraryDependencies := scalatraStack ++ Seq(jettyOrbit))
-    )
+  lazy val domain: Project = Project(
+    "bootstrap-domain",
+    file("bootstrap-domain"),
+    settings = buildSettings
+  )
 
+  lazy val dao: Project = Project(
+    "bootstrap-dao",
+    file("bootstrap-dao"),
+    settings = buildSettings
+  ) dependsOn (domain)
 
-    lazy val ui: Project = Project(
-      "bootstrap-ui",
-      file("bootstrap-ui"),
-      settings = buildSettings ++ Seq(libraryDependencies := Seq(jettyOrbit))
-    ) dependsOn(rest)
+  lazy val service: Project = Project(
+    "bootstrap-service",
+    file("bootstrap-service"),
+    settings = buildSettings
+  ) dependsOn (domain, dao)
+
+  lazy val rest: Project = Project(
+    "bootstrap-rest",
+    file("bootstrap-rest"),
+    settings = buildSettings ++ Seq(libraryDependencies := scalatraStack ++ Seq(jettyOrbit))
+  ) dependsOn (service, domain)
+
+  lazy val ui: Project = Project(
+    "bootstrap-ui",
+    file("bootstrap-ui"),
+    settings = buildSettings ++ Seq(libraryDependencies := Seq(jettyOrbit))
+  ) dependsOn (rest)
 
 }

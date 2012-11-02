@@ -1,4 +1,4 @@
-import pl.softwaremill.demo.scalatra._
+import pl.softwaremill.bootstrap.rest.{RestServlet, MyLogServlet}
 import org.scalatra._
 import javax.servlet.ServletContext
 

@@ -1,8 +1,10 @@
-package pl.softwaremill.demo.scalatra
+package pl.softwaremill.bootstrap.rest
 
-import org.scalatra._
-import scalate.ScalateSupport
-import util.NotEmpty
+import org.scalatra.ScalatraServlet
+import org.scalatra.scalate.ScalateSupport
+import pl.softwaremill.bootstrap.service.EntryService
+import pl.softwaremill.bootstrap.domain.Entry
+import org.scalatra.util.NotEmpty
 
 class RestServlet extends ScalatraServlet with ScalateSupport with JsonHelpers {
 
@@ -13,9 +15,9 @@ class RestServlet extends ScalatraServlet with ScalateSupport with JsonHelpers {
   get("/:id") {
     SafeInt(params("id")) match {
       case id: Option[Int] =>
-        Entries.list.find(_.id == id.getOrElse(-1)) match {
-          case log: Some[LogObject] =>
-            Json(log)
+        EntryService.load(id.getOrElse(-1)) match {
+          case entry: Some[Entry] =>
+            Json(entry)
           case None =>
             null
         }
@@ -24,13 +26,13 @@ class RestServlet extends ScalatraServlet with ScalateSupport with JsonHelpers {
   }
 
   get("/") {
-    Json(Entries.list)
+    Json(EntryService.loadAll)
   }
 
   post("/") {
     (params.get("author"), params.get("text")) match {
       case (NotEmpty(username), NotEmpty(password)) =>
-        Entries.list = LogObject(Entries.list.length + 1, params("author"), params("text")) :: Entries.list
+        EntryService.add(new Entry(0, params("author"), params("text")))
       case _ =>
         null
     }
@@ -39,12 +41,7 @@ class RestServlet extends ScalatraServlet with ScalateSupport with JsonHelpers {
   delete("/:id") {
     SafeInt(params("id")) match {
       case id: Option[Int] =>
-        Entries.list.find(_.id == id.getOrElse(-1)) match {
-          case log: Some[LogObject] =>
-            Entries.list = Entries.list - log.getOrElse(null)
-          case None =>
-            null
-        }
+        EntryService.remove(id.getOrElse(-1))
       case _ => null
     }
   }
