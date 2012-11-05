@@ -27,6 +27,7 @@ function LogsCtrl($scope, LogService, LogCounterService) {
         });
 
         $scope.entryText = '';
+        $scope.myForm.$pristine = true;
     };
 
     $scope.deleteEntry = function(logEntryId) {
