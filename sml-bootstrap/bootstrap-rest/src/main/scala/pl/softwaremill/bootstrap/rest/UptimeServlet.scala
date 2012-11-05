@@ -17,9 +17,7 @@ class UptimeServlet extends ScalatraServlet with JacksonJsonSupport with JValueR
   }
 
   get("/") {
-    val uptime = (new Date().getTime - serverStartDate.getTime) / 1000
-    println(uptime)
-    JsonWrapper(uptime)
+    JsonWrapper((new Date().getTime - serverStartDate.getTime) / 1000)
   }
 
 }

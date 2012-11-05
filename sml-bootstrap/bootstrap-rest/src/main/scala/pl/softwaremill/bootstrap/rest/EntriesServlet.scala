@@ -5,7 +5,7 @@ import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.domain.Entry
 import org.scalatra.json.{JValueResult, JacksonJsonSupport}
 import org.json4s.{DefaultFormats, Formats}
-import pl.softwaremill.bootstrap.common.JsonWrapper
+import pl.softwaremill.bootstrap.common.{SafeInt, JsonWrapper}
 
 class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
 
@@ -19,10 +19,8 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
     SafeInt(params("id")) match {
       case id: Option[Int] =>
         EntryService.load(id.getOrElse(-1)) match {
-          case entry: Some[Entry] =>
-            entry
-          case None =>
-            null
+          case entry: Entry => entry
+          case _ => null
         }
       case _ => null
     }
@@ -37,8 +35,14 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
   }
 
   post("/") {
-    val newEntry: Entry = parsedBody.extract[Entry]
-    EntryService.add(newEntry)
+    val entry: Entry = parsedBody.extract[Entry]
+    if(entry.id > 0) {
+      EntryService.update(entry)
+    }
+    else {
+      EntryService.add(entry)
+    }
+
   }
 
   delete("/:id") {
@@ -49,20 +53,4 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
     }
   }
 
-}
-
-object SafeInt {
-  val IntPattern = "-?([0-9]+)"
-
-  def apply(o: Option[String]): Option[Int] = apply(o.getOrElse(""))
-
-  def apply(o: String): Option[Int] = if (o.matches(IntPattern)) Some(o.toInt) else None
-
-  def unapply(o: String): Option[Int] = if (o.matches(IntPattern)) Some(o.toInt) else None
-
-  def orNone(i: Any): Option[Int] = i match {
-    case i: Int => Some(i)
-    case l: Long => Some(l.toInt)
-    case _ => None
-  }
 }

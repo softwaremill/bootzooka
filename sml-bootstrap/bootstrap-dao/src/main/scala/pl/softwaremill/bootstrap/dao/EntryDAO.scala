@@ -40,12 +40,12 @@ object EntryDAO {
     }
   }
 
-  def load(entryId: Int) = {
+  def load(entryId: Int): Entry = {
     val entryOpt: Option[Entry] = list.find( _.id == entryId )
 
     entryOpt match {
       case Some(entry) => entry
-      case _ => Nil
+      case _ => null
     }
   }
 
