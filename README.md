@@ -4,7 +4,7 @@ Rezultaty naszych prac z testowania, badania i podejmowania decyzji na temat sto
 
 Root zawiera dwa katalogi:
 
-- research: zbiór niewielkich projektów PoC z użyciem różnych technologii
+- research: przeniesiony do własnego repo https://github.com/softwaremill/next-research
 
 - sml-boostrap: projekt bootstrap już z ustalonymi technologiami
 
