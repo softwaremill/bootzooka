@@ -3,9 +3,9 @@ package pl.softwaremill.bootstrap.rest
 import org.scalatra.ScalatraServlet
 import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.domain.Entry
-import org.scalatra.util.NotEmpty
 import org.scalatra.json.{JValueResult, JacksonJsonSupport}
 import org.json4s.{DefaultFormats, Formats}
+import pl.softwaremill.bootstrap.common.JsonWrapper
 
 class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
 
@@ -33,7 +33,7 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
   }
 
   get("/count") {
-    EntryService.count
+    JsonWrapper(EntryService.count)
   }
 
   post("/") {

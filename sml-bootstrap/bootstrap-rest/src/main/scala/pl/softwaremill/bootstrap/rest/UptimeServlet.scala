@@ -4,6 +4,7 @@ import org.scalatra.ScalatraServlet
 import java.util.Date
 import org.scalatra.json.{JacksonJsonSupport, JValueResult}
 import org.json4s.{Formats, DefaultFormats}
+import pl.softwaremill.bootstrap.common.JsonWrapper
 
 class UptimeServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
 
@@ -11,13 +12,14 @@ class UptimeServlet extends ScalatraServlet with JacksonJsonSupport with JValueR
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 
-
   before() {
     contentType = formats("json")
   }
 
   get("/") {
-    (new Date().getTime - serverStartDate.getTime) / 1000
+    val uptime = (new Date().getTime - serverStartDate.getTime) / 1000
+    println(uptime)
+    JsonWrapper(uptime)
   }
 
 }
