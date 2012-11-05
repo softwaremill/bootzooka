@@ -1,15 +1,18 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra.ScalatraServlet
-import org.scalatra.scalate.ScalateSupport
 import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.domain.Entry
 import org.scalatra.util.NotEmpty
+import org.scalatra.json.{JValueResult, JacksonJsonSupport}
+import org.json4s.{DefaultFormats, Formats}
 
-class EntriesServlet extends ScalatraServlet with JsonHelpers {
+class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
+
+  protected implicit val jsonFormats: Formats = DefaultFormats
 
   before() {
-    contentType = "application/json;charset=UTF-8"
+    contentType = formats("json")
   }
 
   get("/:id") {
@@ -17,7 +20,7 @@ class EntriesServlet extends ScalatraServlet with JsonHelpers {
       case id: Option[Int] =>
         EntryService.load(id.getOrElse(-1)) match {
           case entry: Some[Entry] =>
-            Json(entry)
+            entry
           case None =>
             null
         }
@@ -26,25 +29,16 @@ class EntriesServlet extends ScalatraServlet with JsonHelpers {
   }
 
   get("/") {
-    Json(EntryService.loadAll)
+    EntryService.loadAll
   }
 
   get("/count") {
-    Json(EntryService.count)
+    EntryService.count
   }
 
   post("/") {
-    //todo  TomekD fix adding new entry feature
-    println("Post received...")
-    println(this.request.getParameterNames.hasMoreElements)
-    println(params.keys mkString ", ")
-    println(params.values mkString ", ")
-    (params.get("author"), params.get("text")) match {
-      case (NotEmpty(username), NotEmpty(password)) =>
-        EntryService.add(new Entry(0, params("author"), params("text")))
-      case _ =>
-        null
-    }
+    val newEntry: Entry = parsedBody.extract[Entry]
+    EntryService.add(newEntry)
   }
 
   delete("/:id") {

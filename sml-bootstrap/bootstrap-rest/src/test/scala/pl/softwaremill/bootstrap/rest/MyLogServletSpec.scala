@@ -9,7 +9,7 @@ class MyLogServletSpec extends ScalatraSpec {
     "should return status 200" ! root200 ^
     end
 
-  addServlet(classOf[MyLogServlet], "/*")
+  addServlet(classOf[EntriesServlet], "/*")
 
   def root200 = get("/") {
     status must_== 200

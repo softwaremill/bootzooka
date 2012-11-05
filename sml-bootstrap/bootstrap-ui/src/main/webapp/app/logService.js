@@ -10,8 +10,7 @@ angular.module('logService', ['ngResource']).
         LogService.addNew = function(entryText, successFunction) {
             var json = new Object();
             json.text = entryText;
-//            json.author = "Anonymous";
-            console.log("json = " + angular.toJson(json));
+            json.author = "Anonymous";
             LogService.save(angular.toJson(json), successFunction);
         };
 

@@ -17,7 +17,7 @@ object BuildSettings {
   val buildSettings = Defaults.defaultSettings ++ Seq(
     organization := "pl.softwaremill",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.9.1",
+    scalaVersion := "2.9.2",
 
     resolvers := bootstrapResolvers,
     scalacOptions += "-unchecked",
@@ -27,12 +27,11 @@ object BuildSettings {
 
 object Dependencies {
   val logback = "ch.qos.logback" % "logback-classic" % "1.0.6"
-  val scalatra = "org.scalatra" % "scalatra" % "2.1.1"
-  val scalate = "org.scalatra" % "scalatra-scalate" % "2.1.1"
+  val scalatra = "org.scalatra" % "scalatra" % "2.2.0-RC1"
   val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % "2.1.1" % "test"
-  val liftJson = "net.liftweb" %% "lift-json" % "2.5-M1"
-  val liftJsonExt = "net.liftweb" %% "lift-json-ext" % "2.5-M1"
-  val scalatraStack = Seq(scalatra, scalate, scalatraSpec2, liftJson, liftJsonExt, logback)
+  val scalatraJson = "org.scalatra" % "scalatra-json" % "2.2.0-RC1"
+  val json4s = "org.json4s"   %% "json4s-jackson" % "3.0.0"
+  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback)
 
   val jettyOrbit = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
 }

@@ -28,7 +28,7 @@ object EntryDAO {
 
   def add(entry: Entry) {
     entry.id = nextId()
-    list = list :+ entry
+    list = entry +: list
   }
 
   def remove(entryId: Int) {
