@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+
+{{=[{ }]=}}
+
 <head>
     <title>MyLog in Scalatra</title>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
@@ -45,15 +48,15 @@
         <td>Text</td>
         <td>Action</td>
     </tr>
-    {{#logs}}
+    [{#logs}]
     <tr>
-        {{#.}}
-        <td>{{author}}</td>
-        <td>{{text}}</td>
-        <td><a href="#" onclick="return deleteLog({{id}})">delete</a></td>
-        {{/.}}
+        [{#.}]
+        <td>[{author}]</td>
+        <td>[{text}]</td>
+        <td><a href="#" onclick="return deleteLog([{id}])">delete</a></td>
+        [{/.}]
     </tr>
-    {{/logs}}
+    [{/logs}]
 </table>
 
 </body>
