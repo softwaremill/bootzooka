@@ -1,10 +1,6 @@
 angular.module('logService', ['ngResource']).
     factory('LogService', function($resource) {
-        var LogService = $resource('rest/entries/:id', { },
-            {
-                addNew: {method: 'POST'},
-                update: {method: 'POST'}
-            }
+        var LogService = $resource('rest/entries/:id', { }, { }
         );
 
         LogService.addNew = function(entryText, successFunction) {
@@ -15,11 +11,7 @@ angular.module('logService', ['ngResource']).
         };
 
         LogService.load = function(logObjectId) {
-            var entry = LogService.get({id: logObjectId});
-            console.log(entry);
-            console.log(entry.author);
-            console.log(entry.toString());
-            return entry;
+            return LogService.get({id: logObjectId});
         };
 
         LogService.update =  function(logObject) {
