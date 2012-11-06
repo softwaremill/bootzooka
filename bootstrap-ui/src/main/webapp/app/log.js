@@ -8,45 +8,50 @@ angular.module('log', ['logService', 'logCounterService', 'utilService']).
     });
 
 function UptimeCtrl($scope, UtilService) {
-    var uptime = UtilService.loadUptime();
-    $scope.uptime = uptime;
+    $scope.uptime = UtilService.loadUptime();
 }
 
 
 function LogsCtrl($scope, LogService, LogCounterService) {
 
-    var logs = LogService.query();
-    $scope.logs = logs;
+    var self = this;
+
+    $scope.logs = LogService.query();
     $scope.size = LogCounterService.countLogs();
     $scope.entryText = '';
 
     $scope.addEntry = function() {
         LogService.addNew($scope.entryText, function() {
-            $scope.logs = LogService.query();
-            $scope.size = LogCounterService.countLogs();
+            self.reloadEntries();
+            self.resetForm();
         });
-
-        $scope.entryText = '';
-        $scope.myForm.$pristine = true;
     };
 
     $scope.deleteEntry = function(logEntryId) {
         LogService.deleteEntry(logEntryId, function() {
-            $scope.logs = LogService.query();
-            $scope.size = LogCounterService.countLogs();
+            self.reloadEntries();
         })
     };
 
     $scope.noEntries = function() {
         return 0 === $scope.size.value;
     };
+
+    this.reloadEntries = function() {
+        $scope.logs = LogService.query();
+        $scope.size = LogCounterService.countLogs();
+    }
+
+    this.resetForm = function() {
+        $scope.entryText = '';
+        $scope.myForm.$pristine = true;
+    }
 }
 
 
 function LogEditCtrl($scope, LogService, $routeParams, $location) {
 
     $scope.logId = $routeParams.entryId;
-
     $scope.log = LogService.load($scope.logId);
 
     $scope.updateEntry = function() {
