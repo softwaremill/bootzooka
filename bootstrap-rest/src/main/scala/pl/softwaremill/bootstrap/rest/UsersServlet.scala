@@ -1,0 +1,32 @@
+package pl.softwaremill.bootstrap.rest
+
+import org.scalatra.{Unauthorized, ScalatraServlet}
+import org.scalatra.json.{JValueResult, JacksonJsonSupport}
+import org.json4s.{DefaultFormats, Formats}
+import pl.softwaremill.bootstrap.common.{JsonWrapper}
+
+class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
+
+    protected implicit val jsonFormats: Formats = DefaultFormats
+
+    before() {
+      contentType = formats("json")
+    }
+
+    post("/") {
+
+      val login = (parsedBody \ "login").extract[String]
+      println("login = " + login)
+      println("password = " + (parsedBody \ "password").extract[String])
+      println("rememberme = " + (parsedBody \ "rememberme").extract[Boolean])
+
+      if(login.equalsIgnoreCase("admin")) {
+        JsonWrapper("Johny Admin")
+      }
+      else {
+        Unauthorized("Invalid login and/or password");
+      }
+    }
+
+  }
+
