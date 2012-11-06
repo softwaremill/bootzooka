@@ -15,6 +15,8 @@ class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueRe
 
     post("/") {
 
+      println("body =" + parsedBody)
+
       val login = (parsedBody \ "login").extract[String]
       println("login = " + login)
       println("password = " + (parsedBody \ "password").extract[String])
@@ -24,7 +26,7 @@ class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueRe
         JsonWrapper("Johny Admin")
       }
       else {
-        Unauthorized("Invalid login and/or password");
+        halt(401, "Invalid login and/or password");
       }
     }
 
