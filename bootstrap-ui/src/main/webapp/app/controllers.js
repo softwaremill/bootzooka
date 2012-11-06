@@ -50,3 +50,34 @@ function LogEditCtrl($scope, LogService, $routeParams, $location) {
         $location.path("");
     }
 }
+
+
+function LoginCtrl($scope, UserService, $location) {
+
+    var self = this;
+
+    $scope.user = new Object();
+    $scope.user.login = '';
+    $scope.user.password = '';
+    $scope.user.rememberme = false;
+
+    $scope.loggedUser = new Object();
+
+    $scope.login = function() {
+        if($scope.loginForm.$invalid === false) {
+            console.log("Submitting");
+            $scope.loggedUser = UserService.loginUser($scope.user, self.loginOk, self.loginFailed);
+        }
+    }
+
+
+    this.loginOk = function(data) {
+        console.log("Login ok");
+        console.log("data = " + data.value);
+    }
+
+    this.loginFailed = function(data) {
+        console.log("Login failed");
+        console.log("status = " + data.status);
+    }
+}
