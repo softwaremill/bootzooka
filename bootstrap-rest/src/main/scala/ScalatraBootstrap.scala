@@ -4,11 +4,11 @@ import org.scalatra._
 import javax.servlet.ServletContext
 
 /**
- * This is the Scalatra bootstrap file. You can use it to mount servlets or
+ * This is the ScalatraBootstrap bootstrap file. You can use it to mount servlets or
  * filters. It's also a good place to put initialization code which needs to
  * run at application start (e.g. database configurations), and init params.
  */
-class Scalatra extends LifeCycle {
+class ScalatraBootstrap extends LifeCycle {
 
   val PREFIX = "/rest"
 
@@ -18,5 +18,9 @@ class Scalatra extends LifeCycle {
     context.mount(new EntriesServlet, PREFIX + "/entries")
     context.mount(new UptimeServlet, PREFIX + "/uptime")
     context.mount(new UsersServlet, PREFIX + "/users")
+
+    // Let's set the environment
+    context.setInitParameter("org.scalatra.environment", "production")
   }
+
 }
