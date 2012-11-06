@@ -7,25 +7,30 @@ function LogsCtrl($scope, LogService, LogCounterService) {
 
     var self = this;
 
+    $scope.entryText = '';
+    $scope.message = '';
+
     this.reloadEntries = function() {
         $scope.logs = LogService.query();
         $scope.size = LogCounterService.countLogs();
     }
 
     this.reloadEntries();
-    $scope.entryText = '';
+
 
     $scope.addEntry = function() {
         LogService.addNew($scope.entryText, function() {
             self.reloadEntries();
             $scope.entryText = '';
             $scope.myForm.$pristine = true;
+            showMessage("Message posted");
         });
     };
 
     $scope.deleteEntry = function(logEntryId) {
         LogService.deleteEntry(logEntryId, function() {
             self.reloadEntries();
+            showMessage("Message removed");
         })
     };
 
