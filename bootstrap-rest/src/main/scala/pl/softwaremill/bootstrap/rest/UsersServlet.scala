@@ -1,9 +1,10 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.scalatra.{Unauthorized, ScalatraServlet}
+import org.scalatra._
 import org.scalatra.json.{JValueResult, JacksonJsonSupport}
 import org.json4s.{DefaultFormats, Formats}
 import pl.softwaremill.bootstrap.common.{JsonWrapper}
+import pl.softwaremill.bootstrap.common.JsonWrapper
 
 class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
 
@@ -30,5 +31,6 @@ class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueRe
       }
     }
 
+    errorHandler = { case t => throw new RuntimeException("Something went terribly wrong") }
   }
 
