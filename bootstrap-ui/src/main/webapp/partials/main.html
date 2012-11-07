@@ -9,7 +9,7 @@
         <pre>Number of <br/>entries: {{size.value}}</pre>
     </div>
     <div class="span6 offset1">
-        <form name="myForm">
+        <form name="myForm" ng-show="isLogged()">
             <div class="row">
                 <textarea name="message" rows="5" style="width: 95%" ng-model="entryText" required
                           ng-minlength="5" ng-maxlength="140" placeholder="Type your message here">
@@ -22,6 +22,9 @@
                 </div>
             </div>
         </form>
+        <div class="row" ng-show="isNotLogged()">
+            <div>Please login to add new entries</div><br/>
+        </div>
         <div class="row hidden feedback" id="feedback">
         </div>
         <div class="row">

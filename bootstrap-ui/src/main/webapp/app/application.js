@@ -8,7 +8,7 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
             otherwise({redirectTo:'/'})
     })
 
-    .run(function($rootScope, $cookieStore) {
+    .run(function($rootScope) {
 
         $rootScope.loggedUser = null;
 
@@ -16,15 +16,24 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
             return $rootScope.loggedUser != null;
         }
 
+        $rootScope.isNotLogged = function() {
+            return $rootScope.loggedUser == null;
+        }
+
         $rootScope.logUser = function(user) {
-            $rootScope.loggedUser = user;
+            $rootScope.loggedUser = new Object();
+            $rootScope.loggedUser.name = user;
+
         }
 
         $rootScope.logout = function() {
+            console.log("logout");
             $rootScope.loggedUser = null;
+            showInfoMessage("Logged out successfully");
+            console.log("logout done");
         }
     })
 
-    .run(function($rootScope, $cookieStore) {
+    .run(function($rootScope) {
          //todo autologin basing on cookies should be here
     });
