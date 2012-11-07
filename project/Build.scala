@@ -26,12 +26,16 @@ object BuildSettings {
 }
 
 object Dependencies {
+
+  val scalatraVersion = "2.2.0-RC1"
+
   val logback = "ch.qos.logback" % "logback-classic" % "1.0.6"
-  val scalatra = "org.scalatra" % "scalatra" % "2.2.0-RC1"
+  val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
   val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % "2.1.1" % "test"
-  val scalatraJson = "org.scalatra" % "scalatra-json" % "2.2.0-RC1"
+  val scalatraJson = "org.scalatra" % "scalatra-json" % scalatraVersion
   val json4s = "org.json4s"   %% "json4s-jackson" % "3.0.0"
-  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback)
+  val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion
+  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth)
 
   val jettyOrbit = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
 }
