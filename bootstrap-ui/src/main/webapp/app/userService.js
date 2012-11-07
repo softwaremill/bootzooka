@@ -7,7 +7,7 @@ angular.module('userService', ['ngResource']).
         );
 
         UserService.loginUser = function(user, successFunction, errorFunction) {
-            return UserService.login(angular.toJson(user), successFunction, errorFunction);
+            UserService.login(angular.toJson(user), successFunction, errorFunction);
         };
 
         return UserService;

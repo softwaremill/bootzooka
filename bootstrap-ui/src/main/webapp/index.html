@@ -42,7 +42,9 @@
                         <li class="active"><a href="/#/">Home</a></li>
                     </ul>
                     <ul class="nav pull-right">
-                        <li><a href="#/login">Login</a></li>
+                        <li ng-show="isLogged()==false"><a href="#/login">Login</a></li>
+                        <li ng-show="isLogged()" style="padding-top: 10px; color: white;">Logged as {{loggedUser}}</li>
+                        <li ng-show="isLogged()"><a href="#" ng-click="logout()">Logout</a></li>
                     </ul>
                 </div>
             </div>

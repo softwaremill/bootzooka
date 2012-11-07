@@ -61,12 +61,13 @@ function LoginCtrl($scope, UserService, $location) {
     $scope.user.password = '';
     $scope.user.rememberme = false;
 
-    $scope.loggedUser = new Object();
-
     $scope.login = function() {
+        // set dirty to show error messages on empty fields when submit is clicked
+        $scope.loginForm.login.$dirty = true;
+        $scope.loginForm.password.$dirty = true;
+
         if($scope.loginForm.$invalid === false) {
-            console.log("Submitting");
-            $scope.loggedUser = UserService.loginUser($scope.user, self.loginOk, self.loginFailed);
+            UserService.loginUser($scope.user, self.loginOk, self.loginFailed);
         }
     }
 
@@ -74,6 +75,9 @@ function LoginCtrl($scope, UserService, $location) {
     this.loginOk = function(data) {
         console.log("Login ok");
         console.log("data = " + data.value);
+        $scope.logUser(data.value);
+        $location.path("");
+        console.log("logged user = " + $scope.loggedUser);
     }
 
     this.loginFailed = function(data) {
