@@ -57,6 +57,11 @@ function LogEditCtrl($scope, LogService, $routeParams, $location) {
         LogService.update($scope.log);
         $location.path("");
     }
+
+    $scope.isOwnerOfEntry = function() {
+        var isOwner = $scope.log.author === $scope.loggedUser.name;
+        return isOwner;
+    }
 }
 
 

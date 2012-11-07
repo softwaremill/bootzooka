@@ -1,6 +1,6 @@
 
 <div class="row" ng-controller="LogEditCtrl">
-    <div class="span6 offset3">
+    <div class="span6 offset3" ng-show="isLogged() && isOwnerOfEntry()">
         <form name="myForm">
             <div class="row">
                 <textarea name="message" rows="5" style="width: 95%" ng-model="log.text" required
