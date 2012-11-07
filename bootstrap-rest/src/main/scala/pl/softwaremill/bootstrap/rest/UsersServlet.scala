@@ -3,10 +3,9 @@ package pl.softwaremill.bootstrap.rest
 import org.scalatra._
 import org.scalatra.json.{JValueResult, JacksonJsonSupport}
 import org.json4s.{DefaultFormats, Formats}
-import pl.softwaremill.bootstrap.common.{JsonWrapper}
-import pl.softwaremill.bootstrap.common.JsonWrapper
+import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 
-class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
+class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with AuthenticationSupport {
 
     protected implicit val jsonFormats: Formats = DefaultFormats
 
@@ -14,23 +13,8 @@ class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueRe
       contentType = formats("json")
     }
 
-    post("/") {
+  override def login: String = (parsedBody \ "login").extract[String]
+  override def password: String = (parsedBody \ "password").extract[String]
 
-      println("body =" + parsedBody)
-
-      val login = (parsedBody \ "login").extract[String]
-      println("login = " + login)
-      println("password = " + (parsedBody \ "password").extract[String])
-      println("rememberme = " + (parsedBody \ "rememberme").extract[Boolean])
-
-      if(login.equalsIgnoreCase("admin")) {
-        JsonWrapper("Johny Admin")
-      }
-      else {
-        halt(401, "Invalid login and/or password");
-      }
-    }
-
-    errorHandler = { case t => throw new RuntimeException("Something went terribly wrong") }
-  }
+}
 
