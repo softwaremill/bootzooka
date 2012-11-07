@@ -6,8 +6,9 @@ import pl.softwaremill.bootstrap.domain.Entry
 import org.scalatra.json.{JValueResult, JacksonJsonSupport}
 import org.json4s.{DefaultFormats, Formats}
 import pl.softwaremill.bootstrap.common.{SafeInt, JsonWrapper}
+import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 
-class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
+class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with AuthenticationSupport {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 
@@ -35,21 +36,50 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
   }
 
   post("/") {
-    val entry: Entry = parsedBody.extract[Entry]
-    if(entry.id > 0) {
-      EntryService.update(entry)
+    if(isAuthenticated == false) {
+      halt(401, "User not logged in")
     }
     else {
-      EntryService.add(entry)
-    }
+      val entry: Entry = parsedBody.extract[Entry]
+      if(entry.id > 0) {
+        val existingEntry: Entry = EntryService.load(entry.id)
 
+        if (existingEntry != null) {
+          if(existingEntry.author.equals(user)) {
+            existingEntry.text = entry.text
+            EntryService.update(existingEntry)
+          }
+          else {
+            halt(403, "Action forbidden for this user")
+          }
+        }
+
+      }
+      else {
+        EntryService.add(entry)
+      }
+    }
   }
 
   delete("/:id") {
-    SafeInt(params("id")) match {
-      case id: Option[Int] =>
-        EntryService.remove(id.getOrElse(-1))
-      case _ => null
+    if(isAuthenticated == false) {
+      halt(401, "User not logged in")
+    }
+    else {
+      SafeInt(params("id")) match {
+        case id: Option[Int] =>
+          val existingEntry: Entry = EntryService.load(id.getOrElse(-1))
+
+          if (existingEntry != null) {
+            if(existingEntry.author.equals(user)) {
+              EntryService.remove(existingEntry.id);
+            }
+            else {
+              halt(403, "Action forbidden for this user")
+            }
+          }
+        case _ => null
+      }
     }
   }
 
