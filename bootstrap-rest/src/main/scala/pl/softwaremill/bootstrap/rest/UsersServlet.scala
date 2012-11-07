@@ -10,11 +10,13 @@ class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueRe
     protected implicit val jsonFormats: Formats = DefaultFormats
 
     before() {
-      contentType = formats("json")
+        contentType = formats("json")
+
     }
 
   override def login: String = (parsedBody \ "login").extract[String]
   override def password: String = (parsedBody \ "password").extract[String]
+  override def rememberMe: Boolean = (parsedBody \ "rememberMe").extract[Boolean]
 
 }
 
