@@ -18,9 +18,6 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new EntriesServlet, PREFIX + "/entries")
     context.mount(new UptimeServlet, PREFIX + "/uptime")
     context.mount(new UsersServlet, PREFIX + "/users")
-
-    // Let's set the environment
-    context.setInitParameter("org.scalatra.environment", "production")
   }
 
 }
