@@ -72,7 +72,7 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
           if (existingEntry != null) {
             if(existingEntry.author.equals(user)) {
-              EntryService.remove(existingEntry.id);
+              EntryService.remove(existingEntry.id)
             }
             else {
               halt(403, "Action forbidden for this user")
