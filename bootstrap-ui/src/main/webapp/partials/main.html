@@ -29,12 +29,15 @@
         </div>
         <div class="row">
             <div ng-repeat="entry in logs">
-                         <pre>
-                            <span class="pull-left">{{entry.text}}</span>
-                            <i><small class="pull-left">Sent by {{entry.author}}</small></i>
-                            <i><small class="pull-left"><a ng-click="deleteEntry(entry.id)">Delete this entry</a></small></i>&nbsp&nbsp
-                            <i><small class="pull-left"><a href="#/entry/{{entry.id}}">Edit</a></small></i>
-                         </pre>
+                 <div class="thumbnail">
+                    <p class="entryText">{{entry.text}}</p>
+                    <i><small>Sent by {{entry.author}}</small></i>
+                     <span ng-show="isOwnerOf(entry)">
+                         <i><small><a ng-click="deleteEntry(entry.id)">Delete this entry</a></small></i>&nbsp
+                         <i><small><a href="#/entry/{{entry.id}}">Edit</a></small></i>
+                    </span>
+                 </div>
+                 <br/>
             </div>
             <div ng-show="noEntries()">There are no entries. Be the first author!</div>
         </div>

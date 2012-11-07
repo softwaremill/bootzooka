@@ -37,6 +37,14 @@ function LogsCtrl($scope, LogService, LogCounterService) {
     $scope.noEntries = function() {
         return 0 === $scope.size.value;
     };
+
+
+    $scope.isOwnerOf = function(entry) {
+        console.log(entry.text);
+        console.log($scope.isLogged());
+        console.log($scope.loggedUser);
+        return $scope.isLogged() && entry.author === $scope.loggedUser.name;
+    }
 }
 
 
