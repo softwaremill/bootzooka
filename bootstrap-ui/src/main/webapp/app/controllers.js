@@ -43,7 +43,7 @@ function LogsCtrl($scope, LogService, LogCounterService) {
         console.log(entry.text);
         console.log($scope.isLogged());
         console.log($scope.loggedUser);
-        return $scope.isLogged() && entry.author === $scope.loggedUser.name;
+        return $scope.isLogged() && entry.author === $scope.loggedUser.login;
     }
 }
 
@@ -59,7 +59,7 @@ function LogEditCtrl($scope, LogService, $routeParams, $location) {
     }
 
     $scope.isOwnerOfEntry = function() {
-        var isOwner = $scope.log.author === $scope.loggedUser.name;
+        var isOwner = $scope.log.author === $scope.loggedUser.login;
         return isOwner;
     }
 }

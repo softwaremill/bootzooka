@@ -21,8 +21,7 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
         }
 
         $rootScope.logUser = function(user) {
-            $rootScope.loggedUser = new Object();
-            $rootScope.loggedUser.name = user;
+            $rootScope.loggedUser = user;
 
         }
 
