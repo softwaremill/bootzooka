@@ -27,10 +27,8 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
         }
 
         $rootScope.logout = function() {
-            console.log("logout");
             $rootScope.loggedUser = null;
             showInfoMessage("Logged out successfully");
-            console.log("logout done");
         }
     })
 

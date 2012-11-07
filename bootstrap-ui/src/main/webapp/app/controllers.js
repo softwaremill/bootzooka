@@ -86,11 +86,8 @@ function LoginCtrl($scope, UserService, $location) {
 
 
     this.loginOk = function(data) {
-        console.log("Login ok");
-        console.log("data = " + data.value);
         $scope.logUser(data.value);
         $location.path("");
-        console.log("logged user = " + $scope.loggedUser);
     }
 
     this.loginFailed = function(data) {
