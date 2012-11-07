@@ -1,6 +1,14 @@
 .feedback {
-    text-color: green;
-    background: #b2ffaa;
     padding: 10px 10px 10px 10px;
     margin-bottom: 5px;
+}
+
+.info {
+    text-color: green;
+    background: #b2ffaa;
+}
+
+.error {
+    text-color: red;
+    background: #ffb1a6;
 }

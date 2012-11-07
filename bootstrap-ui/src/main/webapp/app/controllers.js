@@ -23,14 +23,14 @@ function LogsCtrl($scope, LogService, LogCounterService) {
             self.reloadEntries();
             $scope.entryText = '';
             $scope.myForm.$pristine = true;
-            showMessage("Message posted");
+            showInfoMessage("Message posted");
         });
     };
 
     $scope.deleteEntry = function(logEntryId) {
         LogService.deleteEntry(logEntryId, function() {
             self.reloadEntries();
-            showMessage("Message removed");
+            showInfoMessage("Message removed");
         })
     };
 
@@ -77,7 +77,6 @@ function LoginCtrl($scope, UserService, $location) {
     }
 
     this.loginFailed = function(data) {
-        console.log("Login failed");
-        console.log("status = " + data.status);
+        showErrorMessage("Invalid login and/or password.")
     }
 }
