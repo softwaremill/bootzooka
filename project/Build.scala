@@ -31,7 +31,7 @@ object Dependencies {
 
   val logback = "ch.qos.logback" % "logback-classic" % "1.0.6"
   val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
-  val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % "2.1.1" % "test"
+  val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % scalatraVersion % "test"
   val scalatraJson = "org.scalatra" % "scalatra-json" % scalatraVersion
   val json4s = "org.json4s"   %% "json4s-jackson" % "3.0.0"
   val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion
