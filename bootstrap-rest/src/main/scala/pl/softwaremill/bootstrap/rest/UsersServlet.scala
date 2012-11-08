@@ -5,7 +5,7 @@ import org.scalatra.json.{JValueResult, JacksonJsonSupport}
 import org.json4s.{DefaultFormats, Formats}
 import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 
-class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with AuthenticationSupport {
+class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with CookieSupport with AuthenticationSupport {
 
     protected implicit val jsonFormats: Formats = DefaultFormats
 
@@ -14,9 +14,26 @@ class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueRe
 
     }
 
-  override def login: String = (parsedBody \ "login").extract[String]
-  override def password: String = (parsedBody \ "password").extract[String]
-  override def rememberMe: Boolean = (parsedBody \ "rememberMe").extract[Boolean]
+  override def login: String = {
+      (parsedBody \ "login").extractOpt[String] match {
+          case Some(s) => s
+          case _ => ""
+      }
+  }
+
+  override def password: String = {
+      (parsedBody \ "password").extractOpt[String] match {
+          case Some(s) => s
+          case _ => ""
+      }
+  }
+
+  override def rememberMe: Boolean = {
+      (parsedBody \ "rememberme").extractOpt[Boolean] match {
+          case Some(b) => b
+          case _ => false
+      }
+  }
 
 }
 
