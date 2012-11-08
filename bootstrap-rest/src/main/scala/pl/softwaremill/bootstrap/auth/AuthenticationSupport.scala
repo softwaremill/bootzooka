@@ -38,25 +38,24 @@ trait AuthenticationSupport extends ScentrySupport[User] {
 
     protected def rememberMe: Boolean = false
 
-    before() {
-        if (!isAuthenticated) {
-              scentry.authenticate("RememberMe")
-        }
-    }
-
     post() {
         val userOpt: Option[User] = authenticate()
         userOpt match {
             case Some(user) =>
-                println("Matched user %s".format(user))
                 JsonWrapper(user)
             case _ =>
                 halt(401, "Invalid login and/or password")
         }
     }
 
+    get() {
+        isAuthenticated match {
+            case true => user
+            case false => halt(401, "Not logged in!")
+        }
+    }
+
     get("/logout") {
-        println("logout")
         logOut()
     }
 
