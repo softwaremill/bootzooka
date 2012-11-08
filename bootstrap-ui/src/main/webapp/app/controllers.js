@@ -19,7 +19,7 @@ function LogsCtrl($scope, LogService, LogCounterService) {
 
 
     $scope.addEntry = function() {
-        LogService.addNew($scope.entryText, $scope.loggedUser.name, function() {
+        LogService.addNew($scope.entryText, $scope.loggedUser.login, function() {
             self.reloadEntries();
             $scope.entryText = '';
             $scope.myForm.$pristine = true;
@@ -40,9 +40,6 @@ function LogsCtrl($scope, LogService, LogCounterService) {
 
 
     $scope.isOwnerOf = function(entry) {
-        console.log(entry.text);
-        console.log($scope.isLogged());
-        console.log($scope.loggedUser);
         return $scope.isLogged() && entry.author === $scope.loggedUser.login;
     }
 }

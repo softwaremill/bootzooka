@@ -14,4 +14,16 @@ angular.module('userService', ['ngResource']).
     });
 
 
+angular.module('logoutService', ['ngResource']).
+    factory('LogoutService', function($resource) {
+        var LogoutService = $resource('rest/users/logout', { }, { } );
+
+        LogoutService.logout = function(successFunction) {
+            LogoutService.query(null, successFunction);
+        };
+
+        return LogoutService;
+    });
+
+
 
