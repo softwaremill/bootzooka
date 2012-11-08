@@ -9,8 +9,8 @@ trait AuthenticationSupport extends ScentrySupport[User] {
     self: ScalatraBase =>
 
     override protected def registerAuthStrategies {
-        scentry.register("UserPassword", app => new UserPasswordStrategy(app, login, password))
-        scentry.register("RememberMe", app => new RememberMeStrategy(app.asInstanceOf[ScalatraBase with CookieSupport], rememberMe))
+        scentry.register(RememberMe.name, app => new RememberMeStrategy(app.asInstanceOf[ScalatraBase with CookieSupport], rememberMe))
+        scentry.register(UserPassword.name, app => new UserPasswordStrategy(app, login, password))
     }
 
     protected def fromSession = {
@@ -37,6 +37,12 @@ trait AuthenticationSupport extends ScentrySupport[User] {
     protected def password: String = ""
 
     protected def rememberMe: Boolean = false
+
+    before() {
+        if (!isAuthenticated) {
+            scentry.authenticate(RememberMe.name)
+        }
+    }
 
     post() {
         val userOpt: Option[User] = authenticate()

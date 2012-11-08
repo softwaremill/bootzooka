@@ -8,12 +8,11 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
     val COOKIE_KEY = "rememberMe"
     private val oneWeek = 7 * 24 * 3600
 
-    override def isValid = {
-        app.cookies.get(COOKIE_KEY).isDefined
-    }
+    override def name: String = UserPassword.name
 
     override def afterAuthenticate(winningStrategy: String, user: User) {
-        if (winningStrategy == "RememberMe" || (winningStrategy == "UserPassword" && rememberMe)) {
+        println(winningStrategy)
+        if (winningStrategy == name || (winningStrategy == UserPassword.name && rememberMe)) {
             val token = user.token
             app.response.addHeader("Set-Cookie",
                 Cookie(COOKIE_KEY, token)(CookieOptions(secure = false, maxAge = oneWeek, httpOnly = true)).toCookieString)
@@ -35,9 +34,14 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
     }
 
     override def beforeLogout(user: User) {
-        app.cookies.get(COOKIE_KEY) foreach {
-            _ => app.cookies.update(COOKIE_KEY, null)
-        }
+        app.response.addHeader("Set-Cookie",
+            Cookie(COOKIE_KEY, "")(CookieOptions(secure = false, maxAge = oneWeek, httpOnly = true)).toCookieString)
     }
+
+}
+
+object RememberMe {
+
+    val name = "RememberMe"
 
 }
