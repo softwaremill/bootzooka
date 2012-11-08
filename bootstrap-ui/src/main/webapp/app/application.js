@@ -72,8 +72,6 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
                 function(data) {
                     $rootScope.loggedUser = data;
                 },
-                function() {
-                    showErrorMessage("Please login!")
-                }
+                function() { }
         )
     });
