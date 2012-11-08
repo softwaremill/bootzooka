@@ -37,16 +37,10 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
   // create new entry
   put("/") {
-    if (isAuthenticated == false) {
-      println("not logged in!!")
-      halt(401, "User not logged in")
-    }
-
+    haltIfNotAuthorized
     val entry: Entry = parsedBody.extract[Entry]
 
-    if (entry.id >= 0) {
-      halt(403, "Action forbidden")
-    }
+    haltWithForbiddenIf(entry.id >= 0)
 
     entry.author = user.login
     EntryService.add(entry)
@@ -54,49 +48,45 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
   // update existing entry
   post("/") {
-    if (isAuthenticated == false) {
-      println("not logged in!!")
-      halt(401, "User not logged in")
-    }
+    haltIfNotAuthorized
     val entry: Entry = parsedBody.extract[Entry]
 
-    if (entry.id < 0) {
-      halt(403, "Action forbidden")
-    }
+    haltWithForbiddenIf(entry.id < 0)
 
     val existingEntry: Entry = EntryService.load(entry.id)
 
     if (existingEntry != null) {
-      if (existingEntry.author.equals(user.login)) {
-        existingEntry.text = entry.text
-        EntryService.update(existingEntry)
-      }
-      else {
-        halt(403, "Action forbidden")
-      }
+      haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
+
+      existingEntry.text = entry.text
+      EntryService.update(existingEntry)
     }
   }
 
+
   delete("/:id") {
+    haltIfNotAuthorized
+
+    SafeInt(params("id")) match {
+      case id: Option[Int] =>
+        val existingEntry: Entry = EntryService.load(id.getOrElse(-1))
+
+        if (existingEntry != null) {
+          haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
+          EntryService.remove(existingEntry.id)
+        }
+      case _ => null
+    }
+  }
+
+  def haltIfNotAuthorized {
     if (isAuthenticated == false) {
       halt(401, "User not logged in")
     }
-    else {
-      SafeInt(params("id")) match {
-        case id: Option[Int] =>
-          val existingEntry: Entry = EntryService.load(id.getOrElse(-1))
+  }
 
-          if (existingEntry != null) {
-            if (existingEntry.author.equals(user)) {
-              EntryService.remove(existingEntry.id)
-            }
-            else {
-              halt(403, "Action forbidden for this user")
-            }
-          }
-        case _ => null
-      }
-    }
+  def haltWithForbiddenIf(f: Boolean) {
+    if (f) halt(403, "Action forbidden")
   }
 
 }
