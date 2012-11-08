@@ -35,35 +35,50 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
     JsonWrapper(EntryService.count)
   }
 
-  post("/") {
-    if(isAuthenticated == false) {
+  // create new entry
+  put("/") {
+    if (isAuthenticated == false) {
       println("not logged in!!")
       halt(401, "User not logged in")
     }
-    else {
-      println("Already logged in as " + user)
-      val entry: Entry = parsedBody.extract[Entry]
-      if(entry.id > 0) {
-        val existingEntry: Entry = EntryService.load(entry.id)
 
-        if (existingEntry != null) {
-          if(existingEntry.author.equals(user)) {
-            existingEntry.text = entry.text
-            EntryService.update(existingEntry)
-          }
-          else {
-            halt(403, "Action forbidden for this user")
-          }
-        }
+    val entry: Entry = parsedBody.extract[Entry]
+
+    if (entry.id >= 0) {
+      halt(403, "Action forbidden")
+    }
+
+    entry.author = user.login
+    EntryService.add(entry)
+  }
+
+  // update existing entry
+  post("/") {
+    if (isAuthenticated == false) {
+      println("not logged in!!")
+      halt(401, "User not logged in")
+    }
+    val entry: Entry = parsedBody.extract[Entry]
+
+    if (entry.id < 0) {
+      halt(403, "Action forbidden")
+    }
+
+    val existingEntry: Entry = EntryService.load(entry.id)
+
+    if (existingEntry != null) {
+      if (existingEntry.author.equals(user.login)) {
+        existingEntry.text = entry.text
+        EntryService.update(existingEntry)
       }
       else {
-        EntryService.add(entry)
+        halt(403, "Action forbidden")
       }
     }
   }
 
   delete("/:id") {
-    if(isAuthenticated == false) {
+    if (isAuthenticated == false) {
       halt(401, "User not logged in")
     }
     else {
@@ -72,7 +87,7 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
           val existingEntry: Entry = EntryService.load(id.getOrElse(-1))
 
           if (existingEntry != null) {
-            if(existingEntry.author.equals(user)) {
+            if (existingEntry.author.equals(user)) {
               EntryService.remove(existingEntry.id)
             }
             else {

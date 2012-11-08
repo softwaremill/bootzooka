@@ -19,7 +19,7 @@ function LogsCtrl($scope, LogService, LogCounterService) {
 
 
     $scope.addEntry = function() {
-        LogService.addNew($scope.entryText, $scope.loggedUser.login, function() {
+        LogService.addNew($scope.entryText, function () {
             self.reloadEntries();
             $scope.entryText = '';
             $scope.myForm.$pristine = true;

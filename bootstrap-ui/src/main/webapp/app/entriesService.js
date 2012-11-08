@@ -1,13 +1,14 @@
 angular.module('logService', ['ngResource']).
     factory('LogService', function($resource) {
-        var LogService = $resource('rest/entries/:id', { }, { }
+        var LogService = $resource('rest/entries/:id', { }, {
+
+            insert: { method: "PUT"} }
         );
 
-        LogService.addNew = function(entryText, author, successFunction) {
+        LogService.addNew = function (entryText, successFunction) {
             var json = new Object();
             json.text = entryText;
-            json.author = author;
-            LogService.save(angular.toJson(json), successFunction);
+            LogService.insert(angular.toJson(json), successFunction);
         };
 
         LogService.load = function(logObjectId) {
@@ -15,7 +16,10 @@ angular.module('logService', ['ngResource']).
         };
 
         LogService.update =  function(logObject) {
-            LogService.save(logObject);
+            var json = new Object();
+            json.text = logObject.text;
+            json.id = logObject.id;
+            LogService.save(angular.toJson(json));
         };
 
         LogService.deleteEntry = function(logObjectId, successFunction) {
