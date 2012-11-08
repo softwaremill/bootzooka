@@ -37,9 +37,11 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
   post("/") {
     if(isAuthenticated == false) {
+      println("not logged in!!")
       halt(401, "User not logged in")
     }
     else {
+      println("Already logged in as " + user)
       val entry: Entry = parsedBody.extract[Entry]
       if(entry.id > 0) {
         val existingEntry: Entry = EntryService.load(entry.id)
@@ -53,7 +55,6 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
             halt(403, "Action forbidden for this user")
           }
         }
-
       }
       else {
         EntryService.add(entry)
