@@ -11,7 +11,6 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
     override def name: String = UserPassword.name
 
     override def afterAuthenticate(winningStrategy: String, user: User) {
-        println(winningStrategy)
         if (winningStrategy == name || (winningStrategy == UserPassword.name && rememberMe)) {
             val token = user.token
             app.response.addHeader("Set-Cookie",
