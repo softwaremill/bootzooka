@@ -1,5 +1,6 @@
-angular.module('log', ['logService', 'logCounterService', 'utilService', 'userService', 'logoutService']).
-    config(function($routeProvider) {
+angular.module('log', ['logService', 'logCounterService', 'utilService', 'userService', 'logoutService'])
+
+    .config(function($routeProvider) {
 
         $routeProvider.
             when('/', {controller:LogsCtrl, templateUrl:'partials/main.html'}).
@@ -66,6 +67,13 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
         }
     })
 
-    .run(function($rootScope) {
-         //todo autologin basing on cookies should be here
+    .run(function($rootScope, UserService) {
+        UserService.validate(
+                function(data) {
+                    $rootScope.loggedUser = data;
+                },
+                function() {
+                    showErrorMessage("Please login!")
+                }
+        )
     });
