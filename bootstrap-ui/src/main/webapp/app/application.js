@@ -18,8 +18,8 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
             function error(response) {
                 // user is not logged in, remove user data from rootScope
                 console.log("response =" + response);
-                if (response.status.code === 401) {
-                    console.log("401");
+                if (response.status === 401) {
+                    showInfoMessage("Your session timed out. Please login again.")
                     $rootScope.loggedUser = null;
                 }
                 else if(response.status === 403) {
@@ -27,7 +27,7 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
                     // do nothing, user is trying to modify data without privileges
                 }
                 else {
-                    showErrorMessage("Service not responsing. Please try again later")
+                    showErrorMessage("Service not responsing. Please try again later.")
                 }
                 // otherwise
                 return $q.reject(response);
