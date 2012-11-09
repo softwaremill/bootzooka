@@ -3,9 +3,9 @@ angular.module('log', ['logService', 'logCounterService', 'utilService', 'userSe
     .config(function($routeProvider) {
 
         $routeProvider.
-            when('/', {controller:LogsCtrl, templateUrl:'partials/main.html'}).
-            when("/entry/:entryId", {controller: LogsCtrl, templateUrl: "partials/entry.html"}).
-            when("/login", {controller: LoginCtrl, templateUrl: "partials/login.html"}).
+            when('/', {controller:EntriesController, templateUrl:'partials/main.html'}).
+            when("/entry/:entryId", {controller: EntriesController, templateUrl: "partials/entry.html"}).
+            when("/login", {controller: LoginController, templateUrl: "partials/login.html"}).
             otherwise({redirectTo:'/'})
     })
 

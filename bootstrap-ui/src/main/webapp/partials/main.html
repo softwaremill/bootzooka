@@ -4,7 +4,7 @@
 <div class="alert alert-error hidden" id="error-info">
     Hidden Error
 </div>
-<div class="row" ng-controller="LogsCtrl">
+<div class="row" ng-controller="EntriesController">
     <div class="span2 pull-left">
         <pre>Number of <br/>entries: {{size.value}}</pre>
     </div>
@@ -42,7 +42,7 @@
             <div ng-show="noEntries()">There are no entries. Be the first author!</div>
         </div>
     </div>
-    <div class="span3 pull-right" ng-controller="UptimeCtrl">
+    <div class="span3 pull-right" ng-controller="UptimeController">
         <pre>Server uptime <br/>in seconds: {{uptime.value}}</pre>
     </div>
 </div>

@@ -1,9 +1,9 @@
 
-function UptimeCtrl($scope, UtilService) {
+function UptimeController($scope, UtilService) {
     $scope.uptime = UtilService.loadUptime();
 }
 
-function LogsCtrl($scope, LogService, LogCounterService) {
+function EntriesController($scope, LogService, LogCounterService) {
 
     var self = this;
 
@@ -45,7 +45,7 @@ function LogsCtrl($scope, LogService, LogCounterService) {
 }
 
 
-function LogEditCtrl($scope, LogService, $routeParams, $location) {
+function EntryEditController($scope, LogService, $routeParams, $location) {
 
     $scope.logId = $routeParams.entryId;
     $scope.log = LogService.load($scope.logId);
@@ -62,7 +62,7 @@ function LogEditCtrl($scope, LogService, $routeParams, $location) {
 }
 
 
-function LoginCtrl($scope, UserService, $location) {
+function LoginController($scope, UserService, $location) {
 
     var self = this;
 
