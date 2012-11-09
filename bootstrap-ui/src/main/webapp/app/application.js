@@ -4,7 +4,7 @@ angular.module('log', ['entriesService', 'entriesCounterService', 'utilService',
 
         $routeProvider.
             when('/', {controller:EntriesController, templateUrl:'partials/main.html'}).
-            when("/entry/:entryId", {controller: EntriesController, templateUrl: "partials/entry.html"}).
+            when("/entry/:entryId", {controller: EntryEditController, templateUrl: "partials/entry.html"}).
             when("/login", {controller: LoginController, templateUrl: "partials/login.html"}).
             otherwise({redirectTo:'/'})
     })
