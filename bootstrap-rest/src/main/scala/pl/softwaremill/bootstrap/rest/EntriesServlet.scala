@@ -10,83 +10,83 @@ import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 
 class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with AuthenticationSupport {
 
-  protected implicit val jsonFormats: Formats = DefaultFormats
+    protected implicit val jsonFormats: Formats = DefaultFormats
 
-  before() {
-    contentType = formats("json")
-  }
+    before() {
+        contentType = formats("json")
+    }
 
-  get("/:id") {
-    SafeInt(params("id")) match {
-      case id: Option[Int] =>
-        EntryService.load(id.getOrElse(-1)) match {
-          case entry: Entry => entry
-          case _ => null
+    get("/:id") {
+        SafeInt(params("id")) match {
+            case id: Option[Int] =>
+                EntryService.load(id.getOrElse(-1)) match {
+                    case entry: Entry => entry
+                    case _ => null
+                }
+            case _ => null
         }
-      case _ => null
     }
-  }
 
-  get("/") {
-    EntryService.loadAll
-  }
-
-  get("/count") {
-    JsonWrapper(EntryService.count)
-  }
-
-  // create new entry
-  put("/") {
-    haltIfNotAuthorized
-    val entry: Entry = parsedBody.extract[Entry]
-
-    haltWithForbiddenIf(entry.id >= 0)
-
-    entry.author = user.login
-    EntryService.add(entry)
-  }
-
-  // update existing entry
-  post("/") {
-    haltIfNotAuthorized
-    val entry: Entry = parsedBody.extract[Entry]
-
-    haltWithForbiddenIf(entry.id < 0)
-
-    val existingEntry: Entry = EntryService.load(entry.id)
-
-    if (existingEntry != null) {
-      haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
-
-      existingEntry.text = entry.text
-      EntryService.update(existingEntry)
+    get("/") {
+        EntryService.loadAll
     }
-  }
 
+    get("/count") {
+        JsonWrapper(EntryService.count)
+    }
 
-  delete("/:id") {
-    haltIfNotAuthorized
+    // create new entry
+    put("/") {
+        haltIfNotAuthorized
+        val entry: Entry = parsedBody.extract[Entry]
 
-    SafeInt(params("id")) match {
-      case id: Option[Int] =>
-        val existingEntry: Entry = EntryService.load(id.getOrElse(-1))
+        haltWithForbiddenIf(entry.id >= 0)
+
+        entry.author = user.login
+        EntryService.add(entry)
+    }
+
+    // update existing entry
+    post("/") {
+        haltIfNotAuthorized
+        val entry: Entry = parsedBody.extract[Entry]
+
+        haltWithForbiddenIf(entry.id < 0)
+
+        val existingEntry: Entry = EntryService.load(entry.id)
 
         if (existingEntry != null) {
-          haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
-          EntryService.remove(existingEntry.id)
+            haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
+
+            existingEntry.text = entry.text
+            EntryService.update(existingEntry)
         }
-      case _ => null
     }
-  }
 
-  def haltIfNotAuthorized {
-    if (isAuthenticated == false) {
-      halt(401, "User not logged in")
+
+    delete("/:id") {
+        haltIfNotAuthorized
+
+        SafeInt(params("id")) match {
+            case id: Option[Int] =>
+                val existingEntry: Entry = EntryService.load(id.getOrElse(-1))
+
+                if (existingEntry != null) {
+                    haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
+                    EntryService.remove(existingEntry.id)
+                }
+            case _ => null
+        }
     }
-  }
 
-  def haltWithForbiddenIf(f: Boolean) {
-    if (f) halt(403, "Action forbidden")
-  }
+    def haltIfNotAuthorized {
+        if (isAuthenticated == false) {
+            halt(401, "User not logged in")
+        }
+    }
+
+    def haltWithForbiddenIf(f: Boolean) {
+        if (f) halt(403, "Action forbidden")
+    }
 
 }
