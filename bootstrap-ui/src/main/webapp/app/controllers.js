@@ -17,6 +17,13 @@ function EntriesController($scope, EntriesService, EntriesCounterService) {
 
     this.reloadEntries();
 
+    self.refresherId = setInterval(function() {
+        self.reloadEntries();
+    }, 4000);
+
+    $scope.$on("$routeChangeStart", function(next, current) {
+        clearInterval(self.refresherId);
+    });
 
     $scope.addEntry = function() {
         EntriesService.addNew($scope.entryText, function () {
