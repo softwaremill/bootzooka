@@ -14,7 +14,7 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
         if (winningStrategy == name || (winningStrategy == UserPassword.name && rememberMe)) {
             val token = user.token
             app.response.addHeader("Set-Cookie",
-                Cookie(COOKIE_KEY, token)(CookieOptions(secure = false, maxAge = oneWeek, httpOnly = true)).toCookieString)
+                Cookie(COOKIE_KEY, token)(CookieOptions(path = "/", secure = false, maxAge = oneWeek, httpOnly = true)).toCookieString)
         }
     }
 
@@ -34,7 +34,7 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
 
     override def beforeLogout(user: User) {
         app.response.addHeader("Set-Cookie",
-            Cookie(COOKIE_KEY, "")(CookieOptions(secure = false, maxAge = oneWeek, httpOnly = true)).toCookieString)
+            Cookie(COOKIE_KEY, "")(CookieOptions(path = "/", secure = false, maxAge = 0, httpOnly = true)).toCookieString)
     }
 
 }
