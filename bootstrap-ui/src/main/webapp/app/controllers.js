@@ -3,7 +3,7 @@ function UptimeController($scope, UtilService) {
     $scope.uptime = UtilService.loadUptime();
 }
 
-function EntriesController($scope, LogService, LogCounterService) {
+function EntriesController($scope, EntriesService, EntriesCounterService) {
 
     var self = this;
 
@@ -11,15 +11,15 @@ function EntriesController($scope, LogService, LogCounterService) {
     $scope.message = '';
 
     this.reloadEntries = function() {
-        $scope.logs = LogService.query();
-        $scope.size = LogCounterService.countLogs();
+        $scope.logs = EntriesService.query();
+        $scope.size = EntriesCounterService.countLogs();
     }
 
     this.reloadEntries();
 
 
     $scope.addEntry = function() {
-        LogService.addNew($scope.entryText, function () {
+        EntriesService.addNew($scope.entryText, function () {
             self.reloadEntries();
             $scope.entryText = '';
             $scope.myForm.$pristine = true;
@@ -28,7 +28,7 @@ function EntriesController($scope, LogService, LogCounterService) {
     };
 
     $scope.deleteEntry = function(logEntryId) {
-        LogService.deleteEntry(logEntryId, function() {
+        EntriesService.deleteEntry(logEntryId, function() {
             self.reloadEntries();
             showInfoMessage("Message removed");
         })
@@ -45,13 +45,13 @@ function EntriesController($scope, LogService, LogCounterService) {
 }
 
 
-function EntryEditController($scope, LogService, $routeParams, $location) {
+function EntryEditController($scope, EntriesService, $routeParams, $location) {
 
     $scope.logId = $routeParams.entryId;
-    $scope.log = LogService.load($scope.logId);
+    $scope.log = EntriesService.load($scope.logId);
 
     $scope.updateEntry = function() {
-        LogService.update($scope.log);
+        EntriesService.update($scope.log);
         $location.path("");
     }
 

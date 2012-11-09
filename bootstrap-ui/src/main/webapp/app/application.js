@@ -1,4 +1,4 @@
-angular.module('log', ['logService', 'logCounterService', 'utilService', 'userService', 'logoutService'])
+angular.module('log', ['entriesService', 'entriesCounterService', 'utilService', 'userService', 'logoutService'])
 
     .config(function($routeProvider) {
 
