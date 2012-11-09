@@ -55,14 +55,22 @@ trait AuthenticationSupport extends ScentrySupport[User] {
     }
 
     get() {
-        isAuthenticated match {
-            case true => user
-            case false => halt(401, "Not logged in!")
-        }
+        haltIfNotAuthenticated()
+        user
     }
 
     get("/logout") {
         logOut()
+    }
+
+    def haltIfNotAuthenticated() {
+        if (isAuthenticated == false) {
+            halt(401, "User not logged in")
+        }
+    }
+
+    def haltWithForbiddenIf(f: Boolean) {
+        if (f) halt(403, "Action forbidden")
     }
 
 }

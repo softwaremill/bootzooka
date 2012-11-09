@@ -37,7 +37,7 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
     // create new entry
     put("/") {
-        haltIfNotAuthorized
+        haltIfNotAuthenticated()
         val entry: Entry = parsedBody.extract[Entry]
 
         haltWithForbiddenIf(entry.id >= 0)
@@ -48,7 +48,7 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
     // update existing entry
     post("/") {
-        haltIfNotAuthorized
+        haltIfNotAuthenticated()
         val entry: Entry = parsedBody.extract[Entry]
 
         haltWithForbiddenIf(entry.id < 0)
@@ -65,7 +65,7 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
 
     delete("/:id") {
-        haltIfNotAuthorized
+        haltIfNotAuthenticated()
 
         SafeInt(params("id")) match {
             case id: Option[Int] =>
@@ -77,16 +77,6 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
                 }
             case _ => null
         }
-    }
-
-    def haltIfNotAuthorized {
-        if (isAuthenticated == false) {
-            halt(401, "User not logged in")
-        }
-    }
-
-    def haltWithForbiddenIf(f: Boolean) {
-        if (f) halt(403, "Action forbidden")
     }
 
 }
