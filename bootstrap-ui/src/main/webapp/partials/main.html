@@ -30,8 +30,8 @@
         <div class="row">
             <div ng-repeat="entry in logs">
                  <div class="thumbnail">
-                    <p class="entryText">{{entry.text}}</p>
-                    <i><small>Sent by {{entry.author}}</small></i>
+                    <p class="entryText" ng-bind-html="entry.text|newlines"></p>
+                    <i><small>Sent by {{entry.author }}</small></i>
                      <span ng-show="isOwnerOf(entry)">
                          <i><small><a ng-click="deleteEntry(entry.id)">Delete this entry</a></small></i>&nbsp
                          <i><small><a href="#/entry/{{entry.id}}">Edit</a></small></i>

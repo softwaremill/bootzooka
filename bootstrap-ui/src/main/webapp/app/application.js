@@ -1,4 +1,4 @@
-angular.module('log', ['entriesService', 'entriesCounterService', 'utilService', 'userService', 'logoutService'])
+angular.module('log', ['entriesService', 'entriesCounterService', 'utilService', 'userService', 'logoutService', 'bootstrapFilters', 'ngSanitize'])
 
     .config(function($routeProvider) {
 
@@ -73,4 +73,12 @@ angular.module('log', ['entriesService', 'entriesCounterService', 'utilService',
                 },
                 function() { }
         )
+    });
+
+
+angular.module('bootstrapFilters', []).
+    filter('newlines', function () {
+        return function (text) {
+            return text.replace(/\n/g, '<br/>');
+        };
     });
