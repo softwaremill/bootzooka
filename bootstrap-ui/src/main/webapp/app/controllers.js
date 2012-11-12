@@ -1,28 +1,39 @@
 
 function UptimeController($scope, UtilService) {
-    $scope.uptime = UtilService.loadUptime();
+    UtilService.loadUptime(function(data) {
+        $scope.uptime = data.value;
+    });
 }
 
-function EntriesController($scope, EntriesService, EntriesCounterService) {
+function EntriesController($scope, $timeout, EntriesService, EntriesCounterService) {
 
     var self = this;
 
     $scope.entryText = '';
     $scope.message = '';
+    $scope.size = 0;
 
     this.reloadEntries = function() {
-        $scope.logs = EntriesService.query();
-        $scope.size = EntriesCounterService.countLogs();
+        EntriesCounterService.countLogs(function(data) {
+            $scope.size = data.value;
+        });
+
+        EntriesService.loadAll(function(data) {
+            $scope.logs = data;
+        });
     }
 
     this.reloadEntries();
 
-    self.refresherId = setInterval(function() {
+    this.reloadEventId = $timeout(function reloadEntriesLoop() {
         self.reloadEntries();
-    }, 4000);
+        console.log("Reloading...")
+        self.reloadEventId = $timeout(reloadEntriesLoop, 3000);
+    }, 3000);
 
     $scope.$on("$routeChangeStart", function(next, current) {
-        clearInterval(self.refresherId);
+        console.log("cancelling");
+        $timeout.cancel(self.reloadEventId);
     });
 
     $scope.addEntry = function() {
@@ -55,7 +66,11 @@ function EntriesController($scope, EntriesService, EntriesCounterService) {
 function EntryEditController($scope, EntriesService, $routeParams, $location) {
 
     $scope.logId = $routeParams.entryId;
-    $scope.log = EntriesService.load($scope.logId);
+    $scope.log = new Object();
+
+    EntriesService.load($scope.logId, function(data) {
+        $scope.log = data;
+    });
 
     $scope.updateEntry = function() {
         EntriesService.update($scope.log);
