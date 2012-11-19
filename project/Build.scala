@@ -59,7 +59,7 @@ object SmlBootstrapBuild extends Build {
     lazy val common: Project = Project(
         "bootstrap-common",
         file("bootstrap-common"),
-        settings = buildSettings ++ Seq(libraryDependencies := Seq(scalaTest))
+        settings = buildSettings ++ Seq(libraryDependencies ++= Seq(scalaTest))
     )
 
     lazy val domain: Project = Project(
