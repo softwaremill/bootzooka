@@ -3,30 +3,30 @@ package pl.softwaremill.bootstrap.service
 import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.dao.EntryDAO
 
-object EntryService {
+class EntryService(entryDAO: EntryDAO) {
 
   def loadAll = {
-    EntryDAO.loadAll
+    entryDAO.loadAll
   }
 
   def count(): Long = {
-    EntryDAO.count()
+    entryDAO.count()
   }
 
   def add(entry: Entry) {
-    EntryDAO.add(entry)
+    entryDAO.add(entry)
   }
 
   def remove(entryId: Int) {
-    EntryDAO.remove(entryId)
+    entryDAO.remove(entryId)
   }
 
   def load(entryId: Int) = {
-    EntryDAO.load(entryId)
+    entryDAO.load(entryId)
   }
 
   def update(entry: Entry) {
-    EntryDAO.update(entry)
+    entryDAO.update(entry)
   }
 
 

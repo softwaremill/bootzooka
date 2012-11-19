@@ -1,7 +1,9 @@
 import java.util.Date
+import pl.softwaremill.bootstrap.dao.EntryDAO
 import pl.softwaremill.bootstrap.rest.{UsersServlet, EntriesServlet, UptimeServlet}
 import org.scalatra._
 import javax.servlet.ServletContext
+import pl.softwaremill.bootstrap.service.EntryService
 
 /**
  * This is the ScalatraBootstrap bootstrap file. You can use it to mount servlets or
@@ -15,7 +17,7 @@ class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
 
     // Mount one or more servlets
-    context.mount(new EntriesServlet, PREFIX + "/entries")
+    context.mount(new EntriesServlet(new EntryService(new EntryDAO())), PREFIX + "/entries")
     context.mount(new UptimeServlet, PREFIX + "/uptime")
     context.mount(new UsersServlet, PREFIX + "/users")
   }

@@ -2,7 +2,7 @@ package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.Entry
 
-object EntryDAO {
+class EntryDAO {
 
     // simulates single table in database
     private var list = List(

@@ -8,7 +8,8 @@ import org.json4s.{DefaultFormats, Formats}
 import pl.softwaremill.bootstrap.common.{SafeInt, JsonWrapper}
 import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 
-class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with AuthenticationSupport {
+class EntriesServlet(entryService: EntryService)
+    extends ScalatraServlet with JacksonJsonSupport with JValueResult with AuthenticationSupport {
 
     protected implicit val jsonFormats: Formats = DefaultFormats
 
@@ -18,17 +19,17 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
     get("/:id") {
         SafeInt(params("id")) match {
-            case Some(id) => EntryService.load(id)
+            case Some(id) => entryService.load(id)
             case _ => null
         }
     }
 
     get("/") {
-        EntryService.loadAll
+        entryService.loadAll
     }
 
     get("/count") {
-        JsonWrapper(EntryService.count)
+        JsonWrapper(entryService.count())
     }
 
     // create new entry
@@ -39,7 +40,7 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
         haltWithForbiddenIf(entry.id >= 0)
 
         entry.author = user.login
-        EntryService.add(entry)
+        entryService.add(entry)
     }
 
     // update existing entry
@@ -49,13 +50,13 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
         haltWithForbiddenIf(entry.id < 0)
 
-        val existingEntry: Entry = EntryService.load(entry.id)
+        val existingEntry: Entry = entryService.load(entry.id)
 
         if (existingEntry != null) {
             haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
 
             existingEntry.text = entry.text
-            EntryService.update(existingEntry)
+            entryService.update(existingEntry)
         }
     }
 
@@ -65,11 +66,11 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
         SafeInt(params("id")) match {
             case id: Option[Int] =>
-                val existingEntry: Entry = EntryService.load(id.getOrElse(-1))
+                val existingEntry: Entry = entryService.load(id.getOrElse(-1))
 
                 if (existingEntry != null) {
                     haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
-                    EntryService.remove(existingEntry.id)
+                    entryService.remove(existingEntry.id)
                 }
             case _ => null
         }
