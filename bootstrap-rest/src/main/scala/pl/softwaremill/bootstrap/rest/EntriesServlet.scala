@@ -18,11 +18,7 @@ class EntriesServlet extends ScalatraServlet with JacksonJsonSupport with JValue
 
     get("/:id") {
         SafeInt(params("id")) match {
-            case id: Option[Int] =>
-                EntryService.load(id.getOrElse(-1)) match {
-                    case entry: Entry => entry
-                    case _ => null
-                }
+            case Some(id) => EntryService.load(id)
             case _ => null
         }
     }
