@@ -1,9 +1,12 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra.test.specs2._
+import pl.softwaremill.bootstrap.service.EntryService
+import org.specs2.mock.Mockito
+import pl.softwaremill.bootstrap.domain.Entry
 
 // For more on Specs2, see http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html
-class EntriesServletSpec extends ScalatraSpec {
+class EntriesServletSpec extends ScalatraSpec with Mockito {
 
     def is =
         "GET / on EntriesServlet" ^
@@ -15,7 +18,14 @@ class EntriesServletSpec extends ScalatraSpec {
 
     end
 
-    addServlet(classOf[EntriesServlet], "/*")
+    def mockedService: EntryService = {
+        val m = mock[EntryService]
+        m.count() returns 4
+        m.loadAll returns List(Entry(1, "Jas Kowalski", "Important message"))
+        m
+    }
+
+    addServlet(new EntriesServlet(mockedService), "/*")
 
     def root200 = get("/") {
         status must_== 200
@@ -26,11 +36,11 @@ class EntriesServletSpec extends ScalatraSpec {
     }
 
     def jsonEntries = get("/") {
-        body must startWith("[{") and endWith("}]")
+        body must contain("[{\"id\":1,\"author\":\"Jas Kowalski\",\"text\":\"Important message\"}]")
     }
 
     def countEntries = get("/count") {
-        body must contain("{\"value\":3}")
+        body must contain("{\"value\":4}")
     }
 
 }
