@@ -8,16 +8,16 @@ import pl.softwaremill.bootstrap.common.JsonWrapper
 
 class UptimeServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
 
-  val serverStartDate = new Date()
+    val serverStartDate = new Date()
 
-  protected implicit val jsonFormats: Formats = DefaultFormats
+    protected implicit val jsonFormats: Formats = DefaultFormats
 
-  before() {
-    contentType = formats("json")
-  }
+    before() {
+        contentType = formats("json")
+    }
 
-  get("/") {
-    JsonWrapper((new Date().getTime - serverStartDate.getTime) / 1000)
-  }
+    get("/") {
+        JsonWrapper((new Date().getTime - serverStartDate.getTime) / 1000)
+    }
 
 }

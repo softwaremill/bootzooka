@@ -14,26 +14,26 @@ class UsersServlet extends ScalatraServlet with JacksonJsonSupport with JValueRe
 
     }
 
-  override def login: String = {
-      (parsedBody \ "login").extractOpt[String] match {
-          case Some(s) => s
-          case _ => ""
-      }
-  }
+    override def login: String = {
+        (parsedBody \ "login").extractOpt[String] match {
+            case Some(s) => s
+            case _ => ""
+        }
+    }
 
-  override def password: String = {
-      (parsedBody \ "password").extractOpt[String] match {
-          case Some(s) => s
-          case _ => ""
-      }
-  }
+    override def password: String = {
+        (parsedBody \ "password").extractOpt[String] match {
+            case Some(s) => s
+            case _ => ""
+        }
+    }
 
-  override def rememberMe: Boolean = {
-      (parsedBody \ "rememberme").extractOpt[Boolean] match {
-          case Some(b) => b
-          case _ => false
-      }
-  }
+    override def rememberMe: Boolean = {
+        (parsedBody \ "rememberme").extractOpt[Boolean] match {
+            case Some(b) => b
+            case _ => false
+        }
+    }
 
 }
 
