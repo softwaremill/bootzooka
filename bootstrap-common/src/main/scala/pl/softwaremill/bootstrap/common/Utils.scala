@@ -11,11 +11,8 @@ object Utils {
 
     def checkbox(s: String): Boolean = {
         s match {
-            case "yes" => true
-            case "y" => true
-            case "1" => true
-            case "true" => true
-            case _ => false
+            case null => false
+            case _ => s.toLowerCase == "true"
         }
     }
 
