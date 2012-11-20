@@ -48,7 +48,7 @@ trait AuthenticationSupport extends ScentrySupport[User] {
     val userOpt: Option[User] = authenticate()
     userOpt match {
       case Some(user) =>
-        JsonWrapper(user)
+        user
       case _ =>
         halt(401, "Invalid login and/or password")
     }
