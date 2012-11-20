@@ -38,10 +38,9 @@ object Dependencies {
   val scalatraJson = "org.scalatra" % "scalatra-json" % scalatraVersion
   val json4s = "org.json4s" %% "json4s-jackson" % "3.0.0"
   val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion
-  val scalaTest = "org.scalatest" %% "scalatest" % "1.8" % "test"
   val jodaTime = "joda-time" % "joda-time" % "2.0"
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
-  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, jodaTime, scalaTest, specs2)
+  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, jodaTime, specs2)
 
   val jettyOrbit = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
 
@@ -61,7 +60,7 @@ object SmlBootstrapBuild extends Build {
   lazy val common: Project = Project(
     "bootstrap-common",
     file("bootstrap-common"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(scalaTest))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(specs2))
   )
 
   lazy val domain: Project = Project(

@@ -6,9 +6,7 @@ import org.json4s.{Formats, DefaultFormats}
 import pl.softwaremill.bootstrap.common.JsonWrapper
 import org.joda.time.{Duration, DateTime}
 
-class UptimeServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
-
-  val serverStartDate = new DateTime()
+class UptimeServlet(serverStartDate: DateTime) extends ScalatraServlet with JacksonJsonSupport with JValueResult {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 
