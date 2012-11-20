@@ -1,46 +1,46 @@
 angular.module('entriesService', ['ngResource']).
     factory('EntriesService', function($resource) {
-        var EntriesService = $resource('rest/entries/:id', { }, {
+        var entriesService = $resource('rest/entries/:id', { }, {
 
             insert: { method: "PUT"} }
         );
 
-        EntriesService.loadAll = function(successFunction) {
-            EntriesService.query(null, successFunction);
+        entriesService.loadAll = function(successFunction) {
+            entriesService.query(null, successFunction);
         };
 
-        EntriesService.addNew = function (entryText, successFunction) {
+        entriesService.addNew = function (entryText, successFunction) {
             var json = new Object();
             json.text = entryText;
-            EntriesService.insert(angular.toJson(json), successFunction);
+            entriesService.insert(angular.toJson(json), successFunction);
         };
 
-        EntriesService.load = function(logObjectId, successFunction) {
-            EntriesService.get({id: logObjectId}, successFunction);
+        entriesService.load = function(logObjectId, successFunction) {
+            entriesService.get({id: logObjectId}, successFunction);
         };
 
-        EntriesService.update =  function(logObject) {
+        entriesService.update =  function(logObject) {
             var json = new Object();
             json.text = logObject.text;
             json.id = logObject.id;
-            EntriesService.save(angular.toJson(json));
+            entriesService.save(angular.toJson(json));
         };
 
-        EntriesService.deleteEntry = function(logObjectId, successFunction) {
-            EntriesService.remove({id: logObjectId}, successFunction);
+        entriesService.deleteEntry = function(logObjectId, successFunction) {
+            entriesService.remove({id: logObjectId}, successFunction);
         };
 
-        return EntriesService;
+        return entriesService;
     });
 
 angular.module('entriesCounterService', ['ngResource']).
     factory("EntriesCounterService", function($resource) {
-        var EntriesCounterService = $resource("/rest/entries/count");
+        var entriesCounterService = $resource("/rest/entries/count");
 
-        EntriesCounterService.countLogs = function(successFunction) {
-            EntriesCounterService.get(successFunction);
+        entriesCounterService.countLogs = function(successFunction) {
+            entriesCounterService.get(successFunction);
         };
 
-        return EntriesCounterService;
+        return entriesCounterService;
     });
 

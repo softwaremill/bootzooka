@@ -1,10 +1,10 @@
 angular.module('utilService', ['ngResource']).
     factory('UtilService', function($resource) {
-        var UtilService = $resource('/rest/uptime');
+        var utilService = $resource('/rest/uptime');
 
-        UtilService.loadUptime = function(successFunction) {
-            return UtilService.get(successFunction);
+        utilService.loadUptime = function(successFunction) {
+            return utilService.get(successFunction);
         };
 
-        return UtilService;
+        return utilService;
     });
