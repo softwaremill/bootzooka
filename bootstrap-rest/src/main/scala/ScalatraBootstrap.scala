@@ -1,5 +1,3 @@
-import java.util.Date
-import org.joda.time.DateTime
 import pl.softwaremill.bootstrap.dao.EntryDAO
 import pl.softwaremill.bootstrap.rest.{UsersServlet, EntriesServlet, UptimeServlet}
 import org.scalatra._
@@ -19,7 +17,7 @@ class ScalatraBootstrap extends LifeCycle {
 
     // Mount one or more servlets
     context.mount(new EntriesServlet(new EntryService(new EntryDAO())), PREFIX + "/entries")
-    context.mount(new UptimeServlet(new DateTime()), PREFIX + "/uptime")
+    context.mount(new UptimeServlet(), PREFIX + "/uptime")
     context.mount(new UsersServlet, PREFIX + "/users")
   }
 

@@ -39,6 +39,7 @@ object Dependencies {
   val json4s = "org.json4s" %% "json4s-jackson" % "3.0.0"
   val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion
   val jodaTime = "joda-time" % "joda-time" % "2.0"
+  val jodaConvert = "org.joda" % "joda-convert" % "1.2"
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
   val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, jodaTime, specs2)
 
@@ -60,7 +61,7 @@ object SmlBootstrapBuild extends Build {
   lazy val common: Project = Project(
     "bootstrap-common",
     file("bootstrap-common"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(specs2))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(specs2, jodaTime, jodaConvert))
   )
 
   lazy val domain: Project = Project(

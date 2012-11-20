@@ -1,12 +1,11 @@
 package pl.softwaremill.bootstrap.rest
 
-import pl.softwaremill.bootstrap.common.JsonWrapper
-import org.joda.time.{Duration, DateTime}
+import pl.softwaremill.bootstrap.common.{UptimeSupport, JsonWrapper}
 
-class UptimeServlet(serverStartDate: DateTime) extends BootstrapServlet {
+class UptimeServlet extends BootstrapServlet with UptimeSupport {
 
   get("/") {
-    JsonWrapper(new Duration(serverStartDate, new DateTime()).getStandardSeconds)
+    JsonWrapper(serverUptime())
   }
 
 }

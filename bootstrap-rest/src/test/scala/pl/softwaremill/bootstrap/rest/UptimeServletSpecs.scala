@@ -1,7 +1,6 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra.test.specs2.ScalatraSpec
-import org.joda.time.DateTime
 
 class UptimeServletSpecs extends ScalatraSpec {
 
@@ -11,7 +10,7 @@ class UptimeServletSpecs extends ScalatraSpec {
     `bust must contain value 10`
   end
 
-  addServlet(new UptimeServlet(new DateTime().minusSeconds(9)), "/*")
+  addServlet(new MockedUptimeServlet(), "/*")
 
   def `should return status 200` = get("/") {
     status should equalTo(200)
@@ -23,6 +22,14 @@ class UptimeServletSpecs extends ScalatraSpec {
 
   def `bust must contain value 10` = get("/") {
     body should contain("{\"value\":10}")
+  }
+
+}
+
+class MockedUptimeServlet extends UptimeServlet {
+
+  override def serverUptime() = {
+    10
   }
 
 }
