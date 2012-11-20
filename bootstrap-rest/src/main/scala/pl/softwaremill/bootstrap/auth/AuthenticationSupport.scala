@@ -27,7 +27,10 @@ trait AuthenticationSupport extends ScentrySupport[User] {
     case usr: User => usr.login
   }
 
-  protected def scentryConfig = (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]
+  // Define type to avoid casting as (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]
+  type ScentryConfiguration = ScentryConfig
+
+  protected def scentryConfig = new ScentryConfig {}
 
   /**
    * Override to configure login process, must be only done on Login form
