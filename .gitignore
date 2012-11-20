@@ -3,6 +3,5 @@
 *.iws
 .idea/
 target/
-*.sh
 *.log
 .DS_Store
