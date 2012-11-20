@@ -1,18 +1,9 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.scalatra.ScalatraServlet
-import org.scalatra.json.{JacksonJsonSupport, JValueResult}
-import org.json4s.{Formats, DefaultFormats}
 import pl.softwaremill.bootstrap.common.JsonWrapper
 import org.joda.time.{Duration, DateTime}
 
-class UptimeServlet(serverStartDate: DateTime) extends ScalatraServlet with JacksonJsonSupport with JValueResult {
-
-  protected implicit val jsonFormats: Formats = DefaultFormats
-
-  before() {
-    contentType = formats("json")
-  }
+class UptimeServlet(serverStartDate: DateTime) extends BootstrapServlet {
 
   get("/") {
     JsonWrapper(new Duration(serverStartDate, new DateTime()).getStandardSeconds)

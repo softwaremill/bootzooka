@@ -1,21 +1,11 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.scalatra.ScalatraServlet
 import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.domain.Entry
-import org.scalatra.json.{JValueResult, JacksonJsonSupport}
-import org.json4s.{DefaultFormats, Formats}
 import pl.softwaremill.bootstrap.common.{SafeInt, JsonWrapper}
 import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 
-class EntriesServlet(entryService: EntryService)
-  extends ScalatraServlet with JacksonJsonSupport with JValueResult with AuthenticationSupport {
-
-  protected implicit val jsonFormats: Formats = DefaultFormats
-
-  before() {
-    contentType = formats("json")
-  }
+class EntriesServlet(entryService: EntryService) extends BootstrapServlet with AuthenticationSupport {
 
   get("/:id") {
     SafeInt(params("id")) match {
