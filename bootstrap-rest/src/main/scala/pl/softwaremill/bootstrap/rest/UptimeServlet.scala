@@ -8,16 +8,16 @@ import org.joda.time.{Duration, DateTime}
 
 class UptimeServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
 
-    val serverStartDate = new DateTime()
+  val serverStartDate = new DateTime()
 
-    protected implicit val jsonFormats: Formats = DefaultFormats
+  protected implicit val jsonFormats: Formats = DefaultFormats
 
-    before() {
-        contentType = formats("json")
-    }
+  before() {
+    contentType = formats("json")
+  }
 
-    get("/") {
-        JsonWrapper(new Duration(serverStartDate, new DateTime()).getStandardSeconds)
-    }
+  get("/") {
+    JsonWrapper(new Duration(serverStartDate, new DateTime()).getStandardSeconds)
+  }
 
 }

@@ -10,20 +10,20 @@ import pl.softwaremill.bootstrap.rest.EntriesServlet
 
 class RememberMeStrategySpec extends MutableScalatraSpec with Mockito {
 
-    "RememberMe" should {
-        val httpResponse = mock[HttpServletResponse]
-        val app = mock[EntriesServlet]
+  "RememberMe" should {
+    val httpResponse = mock[HttpServletResponse]
+    val app = mock[EntriesServlet]
 
-        app.cookies returns new SweetCookies(Map(("rememberMe", User("admin", "admin").token)), httpResponse)
+    app.cookies returns new SweetCookies(Map(("rememberMe", User("admin", "admin").token)), httpResponse)
 
-        val rememberMe = true
-        val strategy = new RememberMeStrategy(app, rememberMe)
-        val user: Option[User] = strategy.authenticate()
+    val rememberMe = true
+    val strategy = new RememberMeStrategy(app, rememberMe)
+    val user: Option[User] = strategy.authenticate()
 
-        "authenticate user base on cookie" in {
-            user must not be equalTo(None)
-            user.get.login must be equalTo("admin")
-        }
+    "authenticate user base on cookie" in {
+      user must not be equalTo(None)
+      user.get.login must be equalTo ("admin")
     }
+  }
 
 }
