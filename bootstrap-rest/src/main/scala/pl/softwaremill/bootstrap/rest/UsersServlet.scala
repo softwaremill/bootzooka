@@ -8,24 +8,15 @@ import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 class UsersServlet extends BootstrapServlet with CookieSupport with AuthenticationSupport {
 
   override def login: String = {
-    (parsedBody \ "login").extractOpt[String] match {
-      case Some(s) => s
-      case _ => ""
-    }
+    (parsedBody \ "login").extractOpt[String].getOrElse("")
   }
 
   override def password: String = {
-    (parsedBody \ "password").extractOpt[String] match {
-      case Some(s) => s
-      case _ => ""
-    }
+    (parsedBody \ "password").extractOpt[String].getOrElse("")
   }
 
   override def rememberMe: Boolean = {
-    (parsedBody \ "rememberme").extractOpt[Boolean] match {
-      case Some(b) => b
-      case _ => false
-    }
+    (parsedBody \ "rememberme").extractOpt[Boolean].getOrElse(false)
   }
 
 }
