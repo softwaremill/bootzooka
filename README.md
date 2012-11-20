@@ -1,14 +1,10 @@
 ## Bootstrap 
 
-Rezultaty naszych prac z testowania, badania i podejmowania decyzji na temat stosu technologicznego do przyszłych projektów.
+Simple showcase project to allow quick start with development process.
 
-Root zawiera dwa katalogi:
+Project is divided in separated modules by basically we have UI which base on AngularJS and REST backend based on Scalatra.
+Backend can be interchanged as there is no dependency between frontend and backend.
 
-- research: przeniesiony do własnego repo https://github.com/softwaremill/next-research
+More information can be found here: https://softwaremill.atlassian.net/wiki/display/DEV/SML+Bootstrap
 
-- sml-boostrap: projekt bootstrap już z ustalonymi technologiami
-
-### Więcej informacji
-
-Bardziej szczegółowe opisy na temat przetestowanych technologii są na naszym firmowym Wiki w sekcji SML Boostrtap: https://softwaremill.atlassian.net/wiki/display/DEV/SML+Bootstrap
-
+When project will be opensourced more will come :-)
