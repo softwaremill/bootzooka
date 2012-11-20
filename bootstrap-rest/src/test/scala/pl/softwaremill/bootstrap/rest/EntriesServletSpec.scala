@@ -32,7 +32,7 @@ class EntriesServletSpec extends ScalatraSpec with Mockito {
   }
 
   def contentJson = get("/") {
-    header.get("Content-Type").get contains "application/json"
+    header("Content-Type") contains "application/json"
   }
 
   def jsonEntries = get("/") {
