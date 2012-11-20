@@ -85,13 +85,13 @@ object SmlBootstrapBuild extends Build {
   lazy val rest: Project = Project(
     "bootstrap-rest",
     file("bootstrap-rest"),
-    settings = buildSettings ++ Seq(libraryDependencies := scalatraStack ++ Seq(jettyOrbit))
+    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ Seq(jettyOrbit))
   ) dependsOn(service, domain, common)
 
   lazy val ui: Project = Project(
     "bootstrap-ui",
     file("bootstrap-ui"),
-    settings = buildSettings ++ Seq(libraryDependencies := Seq(jettyOrbit))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(jettyOrbit))
   ) dependsOn (rest)
 
 }
