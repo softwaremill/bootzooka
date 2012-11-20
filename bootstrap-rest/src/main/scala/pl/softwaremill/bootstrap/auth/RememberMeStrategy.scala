@@ -8,7 +8,7 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
   val COOKIE_KEY = "rememberMe"
   private val oneWeek = 7 * 24 * 3600
 
-  override def name: String = UserPassword.name
+  override def name: String = RememberMe.name
 
   override def afterAuthenticate(winningStrategy: String, user: User) {
     if (winningStrategy == name || (winningStrategy == UserPassword.name && rememberMe)) {
