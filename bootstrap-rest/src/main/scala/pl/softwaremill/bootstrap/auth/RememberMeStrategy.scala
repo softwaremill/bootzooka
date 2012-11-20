@@ -5,8 +5,8 @@ import org.scalatra.auth.ScentryStrategy
 
 class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rememberMe: Boolean) extends ScentryStrategy[User] {
 
-  val COOKIE_KEY = "rememberMe"
-  private val oneWeek = 7 * 24 * 3600
+  private val CookieKey = "rememberMe"
+  private val OneWeek = 7 * 24 * 3600
 
   override def name: String = RememberMe.name
 
@@ -14,12 +14,12 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
     if (winningStrategy == name || (winningStrategy == UserPassword.name && rememberMe)) {
       val token = user.token
       app.response.addHeader("Set-Cookie",
-        Cookie(COOKIE_KEY, token)(CookieOptions(path = "/", secure = false, maxAge = oneWeek, httpOnly = true)).toCookieString)
+        Cookie(CookieKey, token)(CookieOptions(path = "/", secure = false, maxAge = OneWeek, httpOnly = true)).toCookieString)
     }
   }
 
   override def authenticate() = {
-    val token: String = app.cookies.get(COOKIE_KEY) match {
+    val token: String = app.cookies.get(CookieKey) match {
       case Some(v) => v
       case None => ""
     }
@@ -29,7 +29,7 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
 
   override def beforeLogout(user: User) {
     app.response.addHeader("Set-Cookie",
-      Cookie(COOKIE_KEY, "")(CookieOptions(path = "/", secure = false, maxAge = 0, httpOnly = true)).toCookieString)
+      Cookie(CookieKey, "")(CookieOptions(path = "/", secure = false, maxAge = 0, httpOnly = true)).toCookieString)
   }
 
 }
