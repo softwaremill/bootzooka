@@ -17,10 +17,7 @@ class UserPasswordStrategy(protected val app: ScalatraBase, login: String, passw
       user =>
         user.login == login && user.password == password
     }
-    userOpt match {
-      case Some(user) => Option(user)
-      case _ => None
-    }
+    userOpt
   }
 
 }
