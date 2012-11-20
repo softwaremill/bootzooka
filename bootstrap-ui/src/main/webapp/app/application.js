@@ -1,4 +1,4 @@
-angular.module('log', ['entriesService', 'entriesCounterService', 'utilService', 'userService', 'logoutService', 'bootstrapFilters', 'ngSanitize'])
+angular.module('log', ['entriesService', 'entriesCounterService', 'utilService', 'authService', 'bootstrapFilters', 'ngSanitize'])
 
     .config(function($routeProvider) {
 
@@ -19,7 +19,7 @@ angular.module('log', ['entriesService', 'entriesCounterService', 'utilService',
             function error(response) {
                 // user is not logged in, remove user data from rootScope
                 if (response.status === 401) {
-                    if(rootScope.loggedUser != null) {
+                    if($rootScope.loggedUser != null) {
                         showInfoMessage("Your session timed out. Please login again.")
                         $rootScope.loggedUser = null;
                     }
@@ -42,38 +42,8 @@ angular.module('log', ['entriesService', 'entriesCounterService', 'utilService',
         $httpProvider.responseInterceptors.push(interceptor);
     }])
 
-    .run(function($rootScope, LogoutService) {
-
-        $rootScope.loggedUser = null;
-
-        $rootScope.isLogged = function() {
-            return $rootScope.loggedUser != null;
-        }
-
-        $rootScope.isNotLogged = function() {
-            return $rootScope.loggedUser == null;
-        }
-
-        $rootScope.logUser = function(user) {
-            $rootScope.loggedUser = user;
-
-        }
-
-        $rootScope.logout = function() {
-            LogoutService.logout(new function() {
-                $rootScope.loggedUser = null;
-                showInfoMessage("Logged out successfully");
-            });
-        }
-    })
-
-    .run(function($rootScope, UserService) {
-        UserService.validate(
-                function(data) {
-                    $rootScope.loggedUser = data;
-                },
-                function() { }
-        )
+    .run(function($rootScope, AuthService) {
+        AuthService.validate();
     });
 
 

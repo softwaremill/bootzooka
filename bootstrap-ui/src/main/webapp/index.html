@@ -25,7 +25,7 @@
 
     <script src="app/entriesService.js"></script>
     <script src="app/utilService.js"></script>
-    <script src="app/userService.js"></script>
+    <script src="app/authService.js"></script>
 </head>
 <body style="padding-top: 50px;" ng-app="log">
 
@@ -42,7 +42,7 @@
                     <ul class="nav">
                         <li class="active"><a href="/#/">Home</a></li>
                     </ul>
-                    <ul class="nav pull-right">
+                    <ul class="nav pull-right" ng-controller="EntriesController">
                         <li ng-show="isNotLogged()"><a href="#/login">Login</a></li>
                         <li ng-show="isLogged()" style="padding-top: 10px; color: white;">Logged as {{loggedUser.login}}</li>
                         <li ng-show="isLogged()"><a href ng-click="logout();">Logout</a></li>

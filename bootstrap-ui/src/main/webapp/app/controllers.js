@@ -5,7 +5,7 @@ function UptimeController($scope, UtilService) {
     });
 }
 
-function EntriesController($scope, $timeout, EntriesService, EntriesCounterService) {
+function EntriesController($scope, $timeout, EntriesService, EntriesCounterService, AuthService) {
 
     var self = this;
 
@@ -27,12 +27,10 @@ function EntriesController($scope, $timeout, EntriesService, EntriesCounterServi
 
     this.reloadEventId = $timeout(function reloadEntriesLoop() {
         self.reloadEntries();
-        console.log("Reloading...")
         self.reloadEventId = $timeout(reloadEntriesLoop, 3000);
     }, 3000);
 
     $scope.$on("$routeChangeStart", function(next, current) {
-        console.log("cancelling");
         $timeout.cancel(self.reloadEventId);
     });
 
@@ -53,17 +51,29 @@ function EntriesController($scope, $timeout, EntriesService, EntriesCounterServi
     };
 
     $scope.noEntries = function() {
-        return 0 === $scope.size.value;
+        return 0 === $scope.size;
     };
 
-
     $scope.isOwnerOf = function(entry) {
-        return $scope.isLogged() && entry.author === $scope.loggedUser.login;
+        return AuthService.isLogged() && entry.author === $scope.loggedUser.login;
+    }
+
+    $scope.isLogged = function() {
+        return AuthService.isLogged()
+    }
+
+    $scope.isNotLogged = function() {
+        return AuthService.isNotLogged()
+    }
+
+    $scope.logout = function() {
+        AuthService.logout();
+        showInfoMessage("Logged out successfully");
     }
 }
 
 
-function EntryEditController($scope, EntriesService, $routeParams, $location) {
+function EntryEditController($scope, EntriesService, $routeParams, $location, AuthService) {
 
     $scope.logId = $routeParams.entryId;
     $scope.log = new Object();
@@ -81,10 +91,18 @@ function EntryEditController($scope, EntriesService, $routeParams, $location) {
         var isOwner = $scope.log.author === $scope.loggedUser.login;
         return isOwner;
     }
+
+    $scope.isLogged = function() {
+        return AuthService.isLogged()
+    }
+
+    $scope.isNotLogged = function() {
+        return AuthService.isNotLogged()
+    }
 }
 
 
-function LoginController($scope, UserService, $location) {
+function LoginController($scope, AuthService, $location) {
 
     var self = this;
 
@@ -99,13 +117,12 @@ function LoginController($scope, UserService, $location) {
         $scope.loginForm.password.$dirty = true;
 
         if($scope.loginForm.$invalid === false) {
-            UserService.loginUser($scope.user, self.loginOk, self.loginFailed);
+            AuthService.login($scope.user, self.loginOk, self.loginFailed);
         }
     }
 
 
     this.loginOk = function(data) {
-        $scope.logUser(data.value);
         $location.path("");
     }
 
