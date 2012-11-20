@@ -1,5 +1,6 @@
 import sbt._
 import Keys._
+import com.gu.SbtJasminePlugin._
 
 object Resolvers {
 
@@ -91,7 +92,7 @@ object SmlBootstrapBuild extends Build {
   lazy val ui: Project = Project(
     "bootstrap-ui",
     file("bootstrap-ui"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(jettyOrbit))
+    settings = buildSettings ++ jasmineSettings ++ Seq(libraryDependencies ++= Seq(jettyOrbit))
   ) dependsOn (rest)
 
 }
