@@ -35,7 +35,7 @@ class EntriesServlet(entryService: EntryService)
   // create new entry
   put("/") {
     haltIfNotAuthenticated()
-    val entry: Entry = parsedBody.extract[Entry]
+    val entry = parsedBody.extract[Entry]
 
     haltWithForbiddenIf(entry.id >= 0)
 
@@ -46,30 +46,27 @@ class EntriesServlet(entryService: EntryService)
   // update existing entry
   post("/") {
     haltIfNotAuthenticated()
-    val entry: Entry = parsedBody.extract[Entry]
+    val entry = parsedBody.extract[Entry]
 
     haltWithForbiddenIf(entry.id < 0)
 
-    val existingEntry: Entry = entryService.load(entry.id)
-
+    val existingEntry = entryService.load(entry.id)
     if (existingEntry != null) {
-      haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
+      haltWithForbiddenIf(existingEntry.author != user.login)
 
       existingEntry.text = entry.text
       entryService.update(existingEntry)
     }
   }
 
-
   delete("/:id") {
     haltIfNotAuthenticated()
 
     SafeInt(params("id")) match {
-      case id: Option[Int] =>
-        val existingEntry: Entry = entryService.load(id.getOrElse(-1))
-
+      case Some(id) =>
+        val existingEntry = entryService.load(id)
         if (existingEntry != null) {
-          haltWithForbiddenIf(existingEntry.author.equals(user.login) == false)
+          haltWithForbiddenIf(existingEntry.author != user.login)
           entryService.remove(existingEntry.id)
         }
       case _ => null
