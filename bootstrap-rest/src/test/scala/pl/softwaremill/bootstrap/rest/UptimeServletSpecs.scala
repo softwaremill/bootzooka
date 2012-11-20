@@ -5,7 +5,7 @@ import org.specs2.matcher.ShouldMatchers
 import org.scalatest.FunSuite
 import org.scalatest.concurrent.Eventually
 
-class UptimeServletSpecs extends FunSuite with ShouldMatchers with Eventually with ScalatraTests {
+class UptimeServletSpecs extends FunSuite with ShouldMatchers with ScalatraTests {
 
   addServlet(classOf[UptimeServlet], "/*")
 
