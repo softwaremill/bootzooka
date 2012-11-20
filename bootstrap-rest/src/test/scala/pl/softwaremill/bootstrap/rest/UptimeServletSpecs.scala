@@ -3,7 +3,6 @@ package pl.softwaremill.bootstrap.rest
 import org.scalatra.test.ScalatraTests
 import org.specs2.matcher.ShouldMatchers
 import org.scalatest.FunSuite
-import org.scalatest.concurrent.Eventually
 
 class UptimeServletSpecs extends FunSuite with ShouldMatchers with ScalatraTests {
 
