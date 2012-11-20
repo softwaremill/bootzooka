@@ -16,3 +16,12 @@
 .entryText {
     font-size: 18px;
 }
+
+.user-info-dashboard {
+    padding-top: 10px;
+    color: white;
+}
+
+.padding-for-navbar {
+    padding-top: 50px;
+}

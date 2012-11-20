@@ -27,7 +27,7 @@
     <script src="app/utilService.js"></script>
     <script src="app/authService.js"></script>
 </head>
-<body style="padding-top: 50px;" ng-app="log">
+<body class="padding-for-navbar" ng-app="log">
 
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
@@ -44,7 +44,7 @@
                     </ul>
                     <ul class="nav pull-right" ng-controller="EntriesController">
                         <li ng-show="isNotLogged()"><a href="#/login">Login</a></li>
-                        <li ng-show="isLogged()" style="padding-top: 10px; color: white;">Logged as {{loggedUser.login}}</li>
+                        <li ng-show="isLogged()" class="user-info-dashboard">Logged as {{loggedUser.login}}</li>
                         <li ng-show="isLogged()"><a href ng-click="logout();">Logout</a></li>
                     </ul>
                 </div>
