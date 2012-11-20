@@ -5,7 +5,7 @@ import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.common.{SafeInt, JsonWrapper}
 import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 
-class EntriesServlet(entryService: EntryService) extends BootstrapServlet with AuthenticationSupport {
+class EntriesServlet(entryService: EntryService) extends JsonServlet with AuthenticationSupport {
 
   get("/:id") {
     SafeInt(params("id")) match {
