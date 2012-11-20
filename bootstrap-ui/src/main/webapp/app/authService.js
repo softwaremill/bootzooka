@@ -1,8 +1,6 @@
 angular.module('authService', ['ngResource']).
     factory('AuthService', function($resource, $rootScope) {
 
-        var self = this;
-
         var AuthService = new Object();
 
         AuthService.userService = $resource('rest/users/', { },

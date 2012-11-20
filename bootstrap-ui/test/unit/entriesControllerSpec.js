@@ -23,7 +23,7 @@ describe("Entries Controller", function () {
 
             $rootScope.loggedUser = {
                 login: "Jan Kowalski"
-            }
+            };
 
             $httpBackend.flush();
         }));
@@ -72,7 +72,7 @@ describe("Entries Controller", function () {
 
             $rootScope.loggedUser = {
                 login: "Jan Kowalski"
-            }
+            };
 
             $httpBackend.flush();
         }));

@@ -21,7 +21,7 @@ function EntriesController($scope, $timeout, EntriesService, EntriesCounterServi
         EntriesService.loadAll(function(data) {
             $scope.logs = data;
         });
-    }
+    };
 
     this.reloadEntries();
 
@@ -30,7 +30,7 @@ function EntriesController($scope, $timeout, EntriesService, EntriesCounterServi
         self.reloadEventId = $timeout(reloadEntriesLoop, 3000);
     }, 3000);
 
-    $scope.$on("$routeChangeStart", function(next, current) {
+    $scope.$on("$routeChangeStart", function() {
         $timeout.cancel(self.reloadEventId);
     });
 
@@ -56,20 +56,20 @@ function EntriesController($scope, $timeout, EntriesService, EntriesCounterServi
 
     $scope.isOwnerOf = function(entry) {
         return AuthService.isLogged() && entry.author === $scope.loggedUser.login;
-    }
+    };
 
     $scope.isLogged = function() {
         return AuthService.isLogged()
-    }
+    };
 
     $scope.isNotLogged = function() {
         return AuthService.isNotLogged()
-    }
+    };
 
     $scope.logout = function() {
         AuthService.logout();
         showInfoMessage("Logged out successfully");
-    }
+    };
 }
 
 
@@ -85,20 +85,19 @@ function EntryEditController($scope, EntriesService, $routeParams, $location, Au
     $scope.updateEntry = function() {
         EntriesService.update($scope.log);
         $location.path("");
-    }
+    };
 
     $scope.isOwnerOfEntry = function() {
-        var isOwner = $scope.log.author === $scope.loggedUser.login;
-        return isOwner;
-    }
+        return $scope.log.author === $scope.loggedUser.login;
+    };
 
     $scope.isLogged = function() {
         return AuthService.isLogged()
-    }
+    };
 
     $scope.isNotLogged = function() {
         return AuthService.isNotLogged()
-    }
+    };
 }
 
 
@@ -119,14 +118,14 @@ function LoginController($scope, AuthService, $location) {
         if($scope.loginForm.$invalid === false) {
             AuthService.login($scope.user, self.loginOk, self.loginFailed);
         }
-    }
+    };
 
 
-    this.loginOk = function(data) {
+    this.loginOk = function() {
         $location.path("");
-    }
+    };
 
-    this.loginFailed = function(data) {
+    this.loginFailed = function() {
         showErrorMessage("Invalid login and/or password.")
-    }
+    };
 }

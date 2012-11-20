@@ -20,7 +20,7 @@ angular.module('log', ['entriesService', 'entriesCounterService', 'utilService',
                 // user is not logged in, remove user data from rootScope
                 if (response.status === 401) {
                     if($rootScope.loggedUser != null) {
-                        showInfoMessage("Your session timed out. Please login again.")
+                        showInfoMessage("Your session timed out. Please login again.");
                         $rootScope.loggedUser = null;
                     }
                 }

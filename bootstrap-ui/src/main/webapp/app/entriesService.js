@@ -7,7 +7,7 @@ angular.module('entriesService', ['ngResource']).
 
         EntriesService.loadAll = function(successFunction) {
             EntriesService.query(null, successFunction);
-        }
+        };
 
         EntriesService.addNew = function (entryText, successFunction) {
             var json = new Object();

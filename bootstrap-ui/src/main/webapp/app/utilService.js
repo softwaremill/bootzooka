@@ -4,7 +4,7 @@ angular.module('utilService', ['ngResource']).
 
         UtilService.loadUptime = function(successFunction) {
             return UtilService.get(successFunction);
-        }
+        };
 
         return UtilService;
     });
