@@ -2,11 +2,11 @@ package pl.softwaremill.bootstrap.auth
 
 import org.scalatra.{CookieOptions, Cookie, CookieSupport, ScalatraBase}
 import org.scalatra.auth.ScentryStrategy
+import pl.softwaremill.bootstrap.common.Utils
 
 class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rememberMe: Boolean) extends ScentryStrategy[User] {
 
   private val CookieKey = "rememberMe"
-  private val OneWeek = 7 * 24 * 3600
 
   override def name: String = RememberMe.name
 
@@ -14,7 +14,7 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
     if (winningStrategy == name || (winningStrategy == UserPassword.name && rememberMe)) {
       val token = user.token
       app.response.addHeader("Set-Cookie",
-        Cookie(CookieKey, token)(CookieOptions(path = "/", secure = false, maxAge = OneWeek, httpOnly = true)).toCookieString)
+        Cookie(CookieKey, token)(CookieOptions(path = "/", secure = false, maxAge = Utils.OneWeek, httpOnly = true)).toCookieString)
     }
   }
 
