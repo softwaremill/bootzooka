@@ -18,13 +18,15 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
     }
   }
 
-  override def authenticate() = {
-    val token: String = app.cookies.get(CookieKey) match {
-      case Some(v) => v
-      case None => ""
-    }
+  override def isValid = {
+    app.cookies.get(CookieKey).flatMap(Some(_)).isDefined
+  }
 
-    Users.validateToken(token)
+  override def authenticate() = {
+    app.cookies.get(CookieKey) match {
+      case Some(v) => Users.validateToken(v)
+      case None => Option.empty
+    }
   }
 
   override def beforeLogout(user: User) {
