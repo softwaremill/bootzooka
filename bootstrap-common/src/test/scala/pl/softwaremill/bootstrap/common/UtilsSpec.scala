@@ -17,4 +17,13 @@ class UtilsSpec extends Specification {
     }
   }
 
+  "sha1" should {
+    "generate proper hash" in {
+      sha1("admin") !== null
+    }
+    "generate string of length 40" in {
+      sha1("admin").length === 40
+    }
+  }
+
 }

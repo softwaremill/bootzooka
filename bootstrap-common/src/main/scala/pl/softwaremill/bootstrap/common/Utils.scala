@@ -11,6 +11,13 @@ object Utils {
     new java.math.BigInteger(1, m.digest()).toString(16)
   }
 
+  def sha1(s: String): String = {
+    val m = java.security.MessageDigest.getInstance("SHA-1")
+    val b = s.getBytes("UTF-8")
+    m.update(b, 0, b.length)
+    new java.math.BigInteger(1, m.digest()).toString(16)
+  }
+
   def checkbox(s: String): Boolean = {
     s match {
       case null => false
