@@ -3,7 +3,7 @@ package pl.softwaremill.bootstrap.common
 import Utils._
 import org.specs2.mutable._
 
-class UtilsTest extends Specification {
+class UtilsSpec extends Specification {
 
   "checkbox()" should {
     "convert 'true' to boolean true" in {
