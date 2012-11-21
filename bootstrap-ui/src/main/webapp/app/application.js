@@ -11,7 +11,7 @@ angular.module('log', ['entriesService', 'entriesCounterService', 'utilService',
 
     .config(['$httpProvider', function($httpProvider) {
 
-        var interceptor = ['$rootScope', '$q', function($rootScope, $q) {
+        var interceptor = ['$rootScope', '$q', '$location', function($rootScope, $q, $location) {
             function success(response) {
                 return response;
             }
@@ -20,6 +20,7 @@ angular.module('log', ['entriesService', 'entriesCounterService', 'utilService',
                 // user is not logged in, remove user data from rootScope
                 if (response.status === 401) {
                     if($rootScope.loggedUser != null) {
+                        $location.path("/login");
                         showInfoMessage("Your session timed out. Please login again.");
                         $rootScope.loggedUser = null;
                     }
