@@ -1,29 +1,29 @@
-angular.module('authService', ['ngResource']).
-    factory('AuthService', function($resource, $rootScope) {
+angular.module('userSessionService', ['ngResource']).
+    factory('UserSessionService', function($resource, $rootScope) {
 
-        var AuthService = new Object();
+        var userSessionService = new Object();
 
-        AuthService.userService = $resource('rest/users/', { },
+        userSessionService.userService = $resource('rest/users/', { },
             {
                 login: {method: 'POST'},
                 valid: {method: 'GET'}
             }
         );
 
-        AuthService.logoutService = $resource('rest/users/logout', { }, { } );
+        userSessionService.logoutService = $resource('rest/users/logout', { }, { } );
 
         $rootScope.loggedUser = null;
 
-        AuthService.isLogged = function() {
+        userSessionService.isLogged = function() {
             return $rootScope.loggedUser != null;
         };
 
-        AuthService.isNotLogged = function() {
+        userSessionService.isNotLogged = function() {
             return $rootScope.loggedUser == null;
         };
 
-        AuthService.login = function(user, successFunction, errorFunction) {
-            AuthService.userService.login(angular.toJson(user), function(data) {
+        userSessionService.login = function(user, successFunction, errorFunction) {
+            userSessionService.userService.login(angular.toJson(user), function(data) {
 
                     $rootScope.loggedUser = data;
                     if(successFunction != null) {
@@ -33,8 +33,8 @@ angular.module('authService', ['ngResource']).
                 errorFunction);
         };
 
-        AuthService.logout = function(user, successFunction) {
-            AuthService.logoutService.query(null, function(data) {
+        userSessionService.logout = function(user, successFunction) {
+            userSessionService.logoutService.query(null, function(data) {
                 $rootScope.loggedUser = null;
                 if(successFunction != null) {
                     successFunction(data);
@@ -42,8 +42,8 @@ angular.module('authService', ['ngResource']).
             });
         };
 
-        AuthService.validate = function(successFunction) {
-            AuthService.userService.valid(
+        userSessionService.validate = function(successFunction) {
+            userSessionService.userService.valid(
                 function(data) {
                     $rootScope.loggedUser = data;
                     if(successFunction != null) {
@@ -53,5 +53,5 @@ angular.module('authService', ['ngResource']).
             );
         };
 
-        return AuthService;
+        return userSessionService;
     });

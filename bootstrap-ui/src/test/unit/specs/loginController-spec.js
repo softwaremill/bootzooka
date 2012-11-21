@@ -2,7 +2,7 @@
 
 describe("Login Controller", function () {
 
-    beforeEach(module('authService'));
+    beforeEach(module('userSessionService'));
 
     afterEach(inject(function(_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();

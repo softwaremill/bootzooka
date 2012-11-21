@@ -5,7 +5,7 @@ function UptimeController($scope, UtilService) {
     });
 }
 
-function EntriesController($scope, $timeout, EntriesService, EntriesCounterService, AuthService) {
+function EntriesController($scope, $timeout, EntriesService, EntriesCounterService, UserSessionService) {
 
     var self = this;
 
@@ -55,25 +55,25 @@ function EntriesController($scope, $timeout, EntriesService, EntriesCounterServi
     };
 
     $scope.isOwnerOf = function(entry) {
-        return AuthService.isLogged() && entry.author === $scope.loggedUser.login;
+        return UserSessionService.isLogged() && entry.author === $scope.loggedUser.login;
     };
 
     $scope.isLogged = function() {
-        return AuthService.isLogged()
+        return UserSessionService.isLogged()
     };
 
     $scope.isNotLogged = function() {
-        return AuthService.isNotLogged()
+        return UserSessionService.isNotLogged()
     };
 
     $scope.logout = function() {
-        AuthService.logout();
+        UserSessionService.logout();
         showInfoMessage("Logged out successfully");
     };
 }
 
 
-function EntryEditController($scope, EntriesService, $routeParams, $location, AuthService) {
+function EntryEditController($scope, EntriesService, $routeParams, $location, UserSessionService) {
 
     $scope.logId = $routeParams.entryId;
     $scope.log = new Object();
@@ -92,16 +92,16 @@ function EntryEditController($scope, EntriesService, $routeParams, $location, Au
     };
 
     $scope.isLogged = function() {
-        return AuthService.isLogged()
+        return UserSessionService.isLogged()
     };
 
     $scope.isNotLogged = function() {
-        return AuthService.isNotLogged()
+        return UserSessionService.isNotLogged()
     };
 }
 
 
-function LoginController($scope, AuthService, $location) {
+function LoginController($scope, UserSessionService, $location) {
 
     var self = this;
 
@@ -116,7 +116,7 @@ function LoginController($scope, AuthService, $location) {
         $scope.loginForm.password.$dirty = true;
 
         if($scope.loginForm.$invalid === false) {
-            AuthService.login($scope.user, self.loginOk, self.loginFailed);
+            UserSessionService.login($scope.user, self.loginOk, self.loginFailed);
         }
     };
 

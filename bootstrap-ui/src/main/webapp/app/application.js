@@ -1,4 +1,4 @@
-angular.module('log', ['entriesService', 'entriesCounterService', 'utilService', 'authService', 'bootstrapFilters', 'ngSanitize'])
+angular.module('log', ['entriesService', 'entriesCounterService', 'utilService', 'userSessionService', 'bootstrapFilters', 'ngSanitize'])
 
     .config(function($routeProvider) {
 
@@ -43,8 +43,8 @@ angular.module('log', ['entriesService', 'entriesCounterService', 'utilService',
         $httpProvider.responseInterceptors.push(interceptor);
     }])
 
-    .run(function($rootScope, AuthService) {
-        AuthService.validate();
+    .run(function($rootScope, UserSessionService) {
+        UserSessionService.validate();
     });
 
 
