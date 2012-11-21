@@ -1,11 +1,9 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra._
-import org.scalatra.json.{JValueResult, JacksonJsonSupport}
-import org.json4s.{DefaultFormats, Formats}
-import pl.softwaremill.bootstrap.auth.AuthenticationSupport
+import pl.softwaremill.bootstrap.auth.PasswordAuthSupport
 
-class UsersServlet extends JsonServlet with CookieSupport with AuthenticationSupport {
+class UsersServlet extends JsonServlet with CookieSupport with PasswordAuthSupport {
 
   override def login: String = {
     (parsedBody \ "login").extractOpt[String].getOrElse("")

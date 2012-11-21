@@ -2,6 +2,8 @@ package pl.softwaremill.bootstrap.common
 
 object Utils {
 
+  val OneWeek = 7 * 24 * 3600
+
   def md5(s: String): String = {
     val m = java.security.MessageDigest.getInstance("MD5")
     val b = s.getBytes("UTF-8")

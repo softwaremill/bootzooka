@@ -1,8 +1,53 @@
 package pl.softwaremill.bootstrap.auth
 
 import org.scalatra._
-import auth.{ScentryConfig, ScentrySupport}
-import pl.softwaremill.bootstrap.common.JsonWrapper
+import org.scalatra.auth.ScentryAuthStore.CookieAuthStore
+import org.scalatra.auth.{Scentry, ScentryConfig, ScentrySupport}
+import scala.Some
+import pl.softwaremill.bootstrap.common.{Utils, JsonWrapper}
+
+/**
+ * It should be used with each servlet to support RememberMe functionality for whole application
+ */
+trait RememberMeSupport extends AuthenticationSupport {
+
+  self: ScalatraBase =>
+
+  before() {
+    if (!isAuthenticated) {
+      scentry.authenticate(RememberMe.name)
+    }
+  }
+
+}
+
+/**
+ * It must be used only on Login servlet to support user log in
+ */
+trait PasswordAuthSupport extends AuthenticationSupport {
+
+  self: ScalatraBase =>
+
+  post() {
+    val userOpt: Option[User] = authenticate()
+    userOpt match {
+      case Some(user) =>
+        user
+      case _ =>
+        halt(401, "Invalid login and/or password")
+    }
+  }
+
+  get() {
+    haltIfNotAuthenticated()
+    user
+  }
+
+  get("/logout") {
+    logOut()
+  }
+
+}
 
 trait AuthenticationSupport extends ScentrySupport[User] {
 
@@ -27,44 +72,33 @@ trait AuthenticationSupport extends ScentrySupport[User] {
     case usr: User => usr.login
   }
 
+  override protected def configureScentry {
+    val authCookieOptions = cookieOptions.copy(path = "/", secure = false, maxAge = Utils.OneWeek, httpOnly = true)
+    scentry.store = new CookieAuthStore(self) {
+      override def invalidate() {
+        cookies.update(Scentry.scentryAuthKey, user.token)(authCookieOptions.copy(maxAge = 0))
+      }
+    }
+    scentry.unauthenticated {
+      Unauthorized(JsonWrapper("Unauthenticated"))
+    }
+  }
+
   // Define type to avoid casting as (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]
   type ScentryConfiguration = ScentryConfig
 
-  protected def scentryConfig = new ScentryConfig {}
+  protected def scentryConfig = {
+    new ScentryConfig {}
+  }
 
   /**
-   * Override to configure login process, must be only done on Login form
+   * Implement to configure login process, must be only done on Login form
    */
   protected def login: String = ""
 
   protected def password: String = ""
 
   protected def rememberMe: Boolean = false
-
-  before() {
-    if (!isAuthenticated) {
-      scentry.authenticate(RememberMe.name)
-    }
-  }
-
-  post() {
-    val userOpt: Option[User] = authenticate()
-    userOpt match {
-      case Some(user) =>
-        user
-      case _ =>
-        halt(401, "Invalid login and/or password")
-    }
-  }
-
-  get() {
-    haltIfNotAuthenticated()
-    user
-  }
-
-  get("/logout") {
-    logOut()
-  }
 
   def haltIfNotAuthenticated() {
     if (isAuthenticated == false) {
