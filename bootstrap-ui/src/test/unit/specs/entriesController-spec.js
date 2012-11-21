@@ -9,7 +9,7 @@ describe("Entries Controller", function () {
         _$httpBackend_.verifyNoOutstandingRequest();
     }));
 
-    describe('with not-empty data response', function () {
+    describe('with not-empty data response and logged user', function () {
         var scope, $httpBackend, ctrl;
 
         beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller) {
@@ -55,6 +55,20 @@ describe("Entries Controller", function () {
 
         it("Should not mark user as an owner of second entry", function () {
             expect(scope.isOwnerOf(scope.logs[1])).toBe(false);
+        });
+
+        it("Should logout user", function() {
+           // Given
+           $httpBackend.expectGET('rest/users/logout').respond('anything');
+           expect(scope.loggedUser).not.toBe(null);
+
+           // When
+           scope.logout();
+           $httpBackend.flush();
+
+           // Then
+           expect(scope.loggedUser).toBe(null);
+           expect(scope.isLogged()).toBe(false);
         });
     });
 
