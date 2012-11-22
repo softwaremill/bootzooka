@@ -2,7 +2,7 @@
 
 describe("Login Controller", function () {
 
-    beforeEach(module('userSessionService'));
+    beforeEach(module('userSessionService', 'smlBootstrap.controllers'));
 
     afterEach(inject(function(_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();
@@ -15,7 +15,7 @@ describe("Login Controller", function () {
         $httpBackend = _$httpBackend_;
 
         scope = $rootScope.$new();
-        ctrl = $controller(LoginController, {$scope: scope});
+        ctrl = $controller('LoginController', {$scope: scope});
 
         scope.loginForm = {
             login: {

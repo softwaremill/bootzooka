@@ -2,7 +2,7 @@
 
 describe("Entries Controller", function () {
 
-    beforeEach(module('entriesService', 'userSessionService'));
+    beforeEach(module('entriesService', 'userSessionService', 'smlBootstrap.controllers'));
 
     afterEach(inject(function(_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();
@@ -19,7 +19,7 @@ describe("Entries Controller", function () {
                 '{"id":2,"author":"Piotr Nowak","text":"Very long message"}]');
 
             scope = $rootScope.$new();
-            ctrl = $controller(EntriesController, {$scope:scope});
+            ctrl = $controller('EntriesController', {$scope:scope});
 
             userSessionService = UserSessionService;
             userSessionService.loggedUser = {
@@ -83,7 +83,7 @@ describe("Entries Controller", function () {
             $httpBackend.whenGET('rest/entries').respond('[{}]');
 
             scope = $rootScope.$new();
-            ctrl = $controller(EntriesController, {$scope:scope});
+            ctrl = $controller('EntriesController', {$scope:scope});
 
             UserSessionService.loggedUser = {
                 login: "Jan Kowalski"
@@ -111,7 +111,7 @@ describe("Entries Controller", function () {
                 '{"id":2,"author":"Piotr Nowak","text":"Very long message"}]');
 
             scope = $rootScope.$new();
-            ctrl = $controller(EntriesController, {$scope: scope});
+            ctrl = $controller('EntriesController', {$scope: scope});
 
             $httpBackend.flush();
         }));

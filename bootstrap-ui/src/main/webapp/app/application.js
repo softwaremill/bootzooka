@@ -1,11 +1,11 @@
-angular.module('smlBootstrap', ['entriesService', 'utilService', 'userSessionService', 'bootstrapFilters', 'ngSanitize'])
+angular.module('smlBootstrap', ['entriesService', 'utilService', 'userSessionService', 'smlBootstrap.filters', 'smlBootstrap.controllers', 'ngSanitize'])
 
     .config(function($routeProvider) {
 
         $routeProvider.
-            when('/', {controller:EntriesController, templateUrl:'partials/main.html'}).
-            when("/entry/:entryId", {controller: EntryEditController, templateUrl: "partials/entry.html"}).
-            when("/login", {controller: LoginController, templateUrl: "partials/login.html"}).
+            when('/', {controller: 'EntriesController', templateUrl:'partials/main.html'}).
+            when("/entry/:entryId", {controller: 'EntryEditController', templateUrl: "partials/entry.html"}).
+            when("/login", {controller: 'LoginController', templateUrl: "partials/login.html"}).
             otherwise({redirectTo:'/'})
     })
 
@@ -48,7 +48,7 @@ angular.module('smlBootstrap', ['entriesService', 'utilService', 'userSessionSer
     });
 
 
-angular.module('bootstrapFilters', []).
+angular.module('smlBootstrap.filters', []).
     filter('newlines', function () {
         return function (text) {
             return text.replace(/\n/g, '<br/>');
