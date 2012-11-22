@@ -26,4 +26,13 @@ class UtilsSpec extends Specification {
     }
   }
 
+  "sha256" should {
+    "generate proper hash" in {
+      sha256("admin", "secret") !== null
+    }
+    "generate string of length 64" in {
+      sha256("admin", "secret").length === 64
+    }
+  }
+
 }

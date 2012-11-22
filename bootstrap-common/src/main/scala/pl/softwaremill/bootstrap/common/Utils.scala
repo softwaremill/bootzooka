@@ -18,6 +18,13 @@ object Utils {
     new java.math.BigInteger(1, m.digest()).toString(16)
   }
 
+  def sha256(password: String, salt: String): String = {
+    val md = java.security.MessageDigest.getInstance("SHA-256")
+    md.reset()
+    md.update(salt.getBytes("UTF-8"))
+    new java.math.BigInteger(1, md.digest(password.getBytes("UTF-8"))).toString(16)
+  }
+
   def checkbox(s: String): Boolean = {
     s match {
       case null => false

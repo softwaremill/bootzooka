@@ -4,7 +4,7 @@ import pl.softwaremill.bootstrap.common.Utils
 
 case class User(login: String, password: String) {
 
-  def token: String = Utils.sha1(login)
+  def token: String = Utils.sha256(login, password)
 
 }
 
