@@ -23,6 +23,11 @@ class UsersServlet extends JsonServlet with CookieSupport with AuthenticationSup
   get("/logout") {
     logOut()
   }
+
+  post("/regiter") {
+    println("Registering new user stub")
+  }
+
   override def login: String = {
     (parsedBody \ "login").extractOpt[String].getOrElse("")
   }
