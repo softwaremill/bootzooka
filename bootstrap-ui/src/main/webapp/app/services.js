@@ -48,7 +48,7 @@ angular.module('userSessionService', ['ngResource']).
 
         var userSessionService = {
             loggedUser: null
-        }
+        };
 
         userSessionService.userService = $resource('rest/users/', { },
             {
@@ -105,7 +105,7 @@ angular.module('userSessionService', ['ngResource']).
             else {
                 return "";
             }
-        }
+        };
 
         return userSessionService;
     });
