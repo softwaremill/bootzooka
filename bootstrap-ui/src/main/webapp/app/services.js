@@ -46,7 +46,9 @@ angular.module('entriesService', ['ngResource']).
 angular.module('userSessionService', ['ngResource']).
     factory('UserSessionService', function($resource, $rootScope) {
 
-        var userSessionService = new Object();
+        var userSessionService = {
+            loggedUser: null
+        }
 
         userSessionService.userService = $resource('rest/users/', { },
             {
@@ -57,20 +59,18 @@ angular.module('userSessionService', ['ngResource']).
 
         userSessionService.logoutService = $resource('rest/users/logout', { }, { } );
 
-        $rootScope.loggedUser = null;
-
         userSessionService.isLogged = function() {
-            return $rootScope.loggedUser != null;
+            return userSessionService.loggedUser != null;
         };
 
         userSessionService.isNotLogged = function() {
-            return $rootScope.loggedUser == null;
+            return userSessionService.loggedUser == null;
         };
 
         userSessionService.login = function(user, successFunction, errorFunction) {
             userSessionService.userService.login(angular.toJson(user), function(data) {
 
-                    $rootScope.loggedUser = data;
+                    userSessionService.loggedUser = data;
                     if(successFunction != null) {
                         successFunction(data);
                     }
@@ -80,7 +80,7 @@ angular.module('userSessionService', ['ngResource']).
 
         userSessionService.logout = function(user, successFunction) {
             userSessionService.logoutService.query(null, function(data) {
-                $rootScope.loggedUser = null;
+                userSessionService.loggedUser = null;
                 if(successFunction != null) {
                     successFunction(data);
                 }
@@ -90,7 +90,7 @@ angular.module('userSessionService', ['ngResource']).
         userSessionService.validate = function(successFunction) {
             userSessionService.userService.valid(
                 function(data) {
-                    $rootScope.loggedUser = data;
+                    userSessionService.loggedUser = data;
                     if(successFunction != null) {
                         successFunction(data);
                     }

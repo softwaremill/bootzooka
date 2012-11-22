@@ -10,9 +10,9 @@ describe("Entries Controller", function () {
     }));
 
     describe('with not-empty data response and logged user', function () {
-        var scope, $httpBackend, ctrl;
+        var scope, $httpBackend, ctrl, userSessionService;
 
-        beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller) {
+        beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller, UserSessionService) {
             $httpBackend = _$httpBackend_;
             $httpBackend.whenGET('/rest/entries/count').respond('{"value":2}');
             $httpBackend.whenGET('rest/entries').respond('[{"id":1,"author":"Jan Kowalski","text":"Short message"},' +
@@ -21,7 +21,8 @@ describe("Entries Controller", function () {
             scope = $rootScope.$new();
             ctrl = $controller(EntriesController, {$scope:scope});
 
-            $rootScope.loggedUser = {
+            userSessionService = UserSessionService;
+            userSessionService.loggedUser = {
                 login: "Jan Kowalski"
             };
 
@@ -60,14 +61,14 @@ describe("Entries Controller", function () {
         it("Should logout user", function() {
            // Given
            $httpBackend.expectGET('rest/users/logout').respond('anything');
-           expect(scope.loggedUser).not.toBe(null);
+           expect(userSessionService.loggedUser).not.toBe(null);
 
            // When
            scope.logout();
            $httpBackend.flush();
 
            // Then
-           expect(scope.loggedUser).toBe(null);
+           expect(userSessionService.loggedUser).toBe(null);
            expect(scope.isLogged()).toBe(false);
         });
     });
@@ -76,7 +77,7 @@ describe("Entries Controller", function () {
     describe('with empty data response', function () {
         var scope, $httpBackend, ctrl;
 
-        beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller) {
+        beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller, UserSessionService) {
             $httpBackend = _$httpBackend_;
             $httpBackend.whenGET('/rest/entries/count').respond('{"value":0}');
             $httpBackend.whenGET('rest/entries').respond('[{}]');
@@ -84,7 +85,7 @@ describe("Entries Controller", function () {
             scope = $rootScope.$new();
             ctrl = $controller(EntriesController, {$scope:scope});
 
-            $rootScope.loggedUser = {
+            UserSessionService.loggedUser = {
                 login: "Jan Kowalski"
             };
 

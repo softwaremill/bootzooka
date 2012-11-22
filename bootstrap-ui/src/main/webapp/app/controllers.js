@@ -55,7 +55,7 @@ function EntriesController($scope, $timeout, EntriesService, UserSessionService)
     };
 
     $scope.isOwnerOf = function(entry) {
-        return UserSessionService.isLogged() && entry.author === $scope.loggedUser.login;
+        return UserSessionService.isLogged() && entry.author === UserSessionService.loggedUser.login;
     };
 
     $scope.isLogged = function() {
