@@ -21,34 +21,6 @@ trait RememberMeSupport extends AuthenticationSupport {
 
 }
 
-/**
- * It must be used only on Login servlet to support user log in
- */
-trait PasswordAuthSupport extends AuthenticationSupport {
-
-  self: ScalatraBase =>
-
-  post() {
-    val userOpt: Option[User] = authenticate()
-    userOpt match {
-      case Some(user) =>
-        user
-      case _ =>
-        halt(401, "Invalid login and/or password")
-    }
-  }
-
-  get() {
-    haltIfNotAuthenticated()
-    user
-  }
-
-  get("/logout") {
-    logOut()
-  }
-
-}
-
 trait AuthenticationSupport extends ScentrySupport[User] {
 
   self: ScalatraBase =>
