@@ -5,7 +5,7 @@ function UptimeController($scope, UtilService) {
     });
 }
 
-function EntriesController($scope, $timeout, EntriesService, EntriesCounterService, UserSessionService) {
+function EntriesController($scope, $timeout, EntriesService, UserSessionService) {
 
     var self = this;
 
@@ -14,7 +14,7 @@ function EntriesController($scope, $timeout, EntriesService, EntriesCounterServi
     $scope.size = 0;
 
     this.reloadEntries = function() {
-        EntriesCounterService.countLogs(function(data) {
+        EntriesService.count(function(data) {
             $scope.size = data.value;
         });
 

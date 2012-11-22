@@ -1,4 +1,4 @@
-angular.module('log', ['entriesService', 'entriesCounterService', 'utilService', 'userSessionService', 'bootstrapFilters', 'ngSanitize'])
+angular.module('log', ['entriesService', 'utilService', 'userSessionService', 'bootstrapFilters', 'ngSanitize'])
 
     .config(function($routeProvider) {
 

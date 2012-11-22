@@ -2,7 +2,7 @@
 
 describe("Entries Controller", function () {
 
-    beforeEach(module('entriesService', 'entriesCounterService', 'userSessionService'));
+    beforeEach(module('entriesService', 'userSessionService'));
 
     afterEach(inject(function(_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();
