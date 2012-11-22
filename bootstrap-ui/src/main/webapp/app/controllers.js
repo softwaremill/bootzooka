@@ -58,6 +58,10 @@ function EntriesController($scope, $timeout, EntriesService, UserSessionService)
         return UserSessionService.isLogged() && entry.author === UserSessionService.loggedUser.login;
     };
 
+    $scope.getLoggedUserName = function() {
+        return UserSessionService.loggedUser.login;
+    };
+
     $scope.isLogged = function() {
         return UserSessionService.isLogged()
     };

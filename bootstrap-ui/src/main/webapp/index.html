@@ -42,7 +42,7 @@
                     </ul>
                     <ul class="nav pull-right" ng-controller="EntriesController">
                         <li ng-show="isNotLogged()"><a href="#/login">Login</a></li>
-                        <li ng-show="isLogged()" class="user-info-dashboard">Logged as {{loggedUser.login}}</li>
+                        <li ng-show="isLogged()" class="user-info-dashboard">Logged as {{getLoggedUserName()}}</li>
                         <li ng-show="isLogged()"><a href ng-click="logout();">Logout</a></li>
                     </ul>
                 </div>
