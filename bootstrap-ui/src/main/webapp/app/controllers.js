@@ -59,7 +59,7 @@ function EntriesController($scope, $timeout, EntriesService, UserSessionService)
     };
 
     $scope.getLoggedUserName = function() {
-        return UserSessionService.loggedUser.login;
+        return UserSessionService.getLoggedUserName();
     };
 
     $scope.isLogged = function() {

@@ -98,6 +98,15 @@ angular.module('userSessionService', ['ngResource']).
             );
         };
 
+        userSessionService.getLoggedUserName = function() {
+            if(userSessionService.loggedUser) {
+                return userSessionService.loggedUser.login;
+            }
+            else {
+                return "";
+            }
+        }
+
         return userSessionService;
     });
 
