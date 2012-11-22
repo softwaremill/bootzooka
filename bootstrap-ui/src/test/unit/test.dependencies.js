@@ -14,8 +14,6 @@ EnvJasmine.loadGlobal(EnvJasmine.testDir + "../lib/angular/angular-mocks.js");
 
 // Application
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "application.js");
-EnvJasmine.loadGlobal(EnvJasmine.rootDir + "userSessionService.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "controllers.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "effects.js");
-EnvJasmine.loadGlobal(EnvJasmine.rootDir + "entriesService.js");
-EnvJasmine.loadGlobal(EnvJasmine.rootDir + "utilService.js");
+EnvJasmine.loadGlobal(EnvJasmine.rootDir + "services.js");
