@@ -1,9 +1,11 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra._
-import pl.softwaremill.bootstrap.auth.{AuthenticationSupport, User}
+import pl.softwaremill.bootstrap.auth.AuthenticationSupport
+import pl.softwaremill.bootstrap.service.UserService
+import pl.softwaremill.bootstrap.domain.User
 
-class UsersServlet extends JsonServlet with CookieSupport with AuthenticationSupport {
+class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
 
   post() {
     val userOpt: Option[User] = authenticate()

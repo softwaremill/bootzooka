@@ -1,11 +1,11 @@
 package pl.softwaremill.bootstrap.rest
 
-import pl.softwaremill.bootstrap.service.EntryService
+import pl.softwaremill.bootstrap.service.{UserService, EntryService}
 import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.common.{SafeInt, JsonWrapper}
 import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 
-class EntriesServlet(entryService: EntryService) extends JsonServlet with AuthenticationSupport {
+class EntriesServlet(entryService: EntryService, val userService: UserService) extends JsonServletWithAuthentication {
 
   get("/:id") {
     SafeInt(params("id")) match {

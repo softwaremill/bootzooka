@@ -1,7 +1,7 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra.test.specs2._
-import pl.softwaremill.bootstrap.service.EntryService
+import pl.softwaremill.bootstrap.service.{UserService, EntryService}
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.domain.Entry
 
@@ -25,7 +25,9 @@ class EntriesServletSpec extends ScalatraSpec with Mockito {
     m
   }
 
-  addServlet(new EntriesServlet(mockedService), "/*")
+  def userService = mock[UserService]
+
+  addServlet(new EntriesServlet(mockedService, userService), "/*")
 
   def root200 = get("/") {
     status must_== 200

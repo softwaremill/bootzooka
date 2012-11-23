@@ -47,9 +47,8 @@ class UserDAO {
     list.find(_.id == userId)
   }
 
-
-  def findByLoginOrEmail(loginOrEmail: String): Option[User] = {
-    list.find((u: User) => u.email.equalsIgnoreCase(loginOrEmail) || u.login.equalsIgnoreCase(loginOrEmail))
+  def findBy(p: User => Boolean) = {
+    list.find(p)
   }
 
 }

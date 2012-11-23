@@ -5,6 +5,8 @@ import org.scalatra.auth.ScentryAuthStore.CookieAuthStore
 import org.scalatra.auth.{Scentry, ScentryConfig, ScentrySupport}
 import scala.Some
 import pl.softwaremill.bootstrap.common.{Utils, JsonWrapper}
+import pl.softwaremill.bootstrap.domain.User
+import pl.softwaremill.bootstrap.service.UserService
 
 /**
  * It should be used with each servlet to support RememberMe functionality for whole application
@@ -25,14 +27,16 @@ trait AuthenticationSupport extends ScentrySupport[User] {
 
   self: ScalatraBase =>
 
+  def userService: UserService
+
   override protected def registerAuthStrategies {
-    scentry.register(RememberMe.name, app => new RememberMeStrategy(app.asInstanceOf[ScalatraBase with CookieSupport], rememberMe))
-    scentry.register(UserPassword.name, app => new UserPasswordStrategy(app, login, password))
+    scentry.register(RememberMe.name, app => new RememberMeStrategy(app.asInstanceOf[ScalatraBase with CookieSupport], rememberMe, userService))
+    scentry.register(UserPassword.name, app => new UserPasswordStrategy(app, login, password, userService))
   }
 
   protected def fromSession = {
     case id: String => {
-      val userOpt: Option[User] = Users.list.find(_.login == id)
+      val userOpt: Option[User] = userService.findByLogin(id)
       userOpt match {
         case Some(u) => u
         case _ => null

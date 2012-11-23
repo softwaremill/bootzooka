@@ -3,8 +3,10 @@ package pl.softwaremill.bootstrap.auth
 
 import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
+import pl.softwaremill.bootstrap.domain.User
+import pl.softwaremill.bootstrap.service.UserService
 
-class UserPasswordStrategy(protected val app: ScalatraBase, login: String, password: String) extends ScentryStrategy[User] {
+class UserPasswordStrategy(protected val app: ScalatraBase, login: String, password: String, val userService: UserService) extends ScentryStrategy[User] {
 
   override def name: String = UserPassword.name
 
@@ -13,11 +15,7 @@ class UserPasswordStrategy(protected val app: ScalatraBase, login: String, passw
   }
 
   override def authenticate() = {
-    val userOpt: Option[User] = Users.list.find {
-      user =>
-        user.login == login && user.password == password
-    }
-    userOpt
+   userService.authenticate(login, password)
   }
 
 }

@@ -6,6 +6,10 @@ import pl.softwaremill.bootstrap.common.Utils
 
 class UserService(userDAO: UserDAO) {
 
+  def load(userId: Int) = {
+    userDAO.load(userId)
+  }
+
   def loadAll = {
     userDAO.loadAll
   }
@@ -18,18 +22,16 @@ class UserService(userDAO: UserDAO) {
     userDAO.add(user)
   }
 
-  def authenticate(loginOrEmail: String, nonEncryptedPassword: String): User = {
-    val userOpt: Option[User] = userDAO.findByLoginOrEmail(loginOrEmail)
+  def authenticate(login: String, nonEncryptedPassword: String): Option[User] = {
+    userDAO.findBy((u: User) => (u.login.equalsIgnoreCase(login) && u.password.eq(Utils.sha256(nonEncryptedPassword, login))))
+  }
 
-    userOpt match {
-      case Some(user) => {
-        if(user.password.equals(Utils.sha256(nonEncryptedPassword, user.login))) {
-          user
-        }
-      }
-    }
+  def authenticateWithToken(token: String): Option[User] = {
+    userDAO.findBy((u: User) => u.token.equals(token))
+  }
 
-    throw new Exception("Invalid login and/or password");
+  def findByLogin(login: String): Option[User] = {
+    userDAO.findBy((u: User) => u.login.equals(login))
   }
 
 }

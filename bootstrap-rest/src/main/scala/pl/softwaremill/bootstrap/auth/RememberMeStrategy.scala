@@ -3,8 +3,10 @@ package pl.softwaremill.bootstrap.auth
 import org.scalatra.{CookieOptions, Cookie, CookieSupport, ScalatraBase}
 import org.scalatra.auth.ScentryStrategy
 import pl.softwaremill.bootstrap.common.Utils
+import pl.softwaremill.bootstrap.domain.User
+import pl.softwaremill.bootstrap.service.UserService
 
-class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rememberMe: Boolean) extends ScentryStrategy[User] {
+class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rememberMe: Boolean, val userService: UserService) extends ScentryStrategy[User] {
 
   private val CookieKey = "rememberMe"
 
@@ -23,7 +25,7 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
   }
 
   override def authenticate() = {
-    app.cookies.get(CookieKey).flatMap(Users.validateToken(_))
+    app.cookies.get(CookieKey).flatMap(userService.authenticateWithToken(_))
   }
 
   override def beforeLogout(user: User) {

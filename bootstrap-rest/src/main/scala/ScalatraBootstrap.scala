@@ -15,10 +15,13 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext) {
 
+    val userService = new UserService(new UserDAO())
+    val entryService = new EntryService(new EntryDAO())
+
     // Mount one or more servlets
-    context.mount(new EntriesServlet(new EntryService(new EntryDAO())), PREFIX + "/entries")
+    context.mount(new EntriesServlet(entryService, userService), PREFIX + "/entries")
     context.mount(new UptimeServlet, PREFIX + "/uptime")
-    context.mount(new UsersServlet, PREFIX + "/users")
+    context.mount(new UsersServlet(userService), PREFIX + "/users")
   }
 
 }
