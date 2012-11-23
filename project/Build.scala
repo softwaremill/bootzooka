@@ -45,8 +45,7 @@ object Dependencies {
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
   val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, jodaTime, specs2)
 
-  val jettyOrbit = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
-
+  val servletApiProvidedTest = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
 }
 
 object SmlBootstrapBuild extends Build {
@@ -87,14 +86,14 @@ object SmlBootstrapBuild extends Build {
   lazy val rest: Project = Project(
     "bootstrap-rest",
     file("bootstrap-rest"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ Seq(jettyOrbit))
+    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ Seq(servletApiProvidedTest))
   ) dependsOn(service, domain, common)
 
   lazy val ui: Project = Project(
     "bootstrap-ui",
     file("bootstrap-ui"),
     settings = buildSettings ++ jasmineSettings ++ graphSettings ++ Seq(
-      libraryDependencies ++= Seq(jettyOrbit),
+      libraryDependencies ++= Seq(servletApiProvidedTest),
       appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "app" },
       appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },
       jasmineTestDir <+= sourceDirectory { src => src / "test" / "unit" },
