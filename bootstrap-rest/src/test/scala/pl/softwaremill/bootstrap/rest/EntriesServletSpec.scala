@@ -9,12 +9,16 @@ import pl.softwaremill.bootstrap.domain.Entry
 class EntriesServletSpec extends ScalatraSpec with Mockito {
 
   def is =
-    "GET / on EntriesServlet" ^
-      "should return status 200" ! root200 ^
-      "should return content-type application/json" ! contentJson ^
-      "should return JSON entries" ! jsonEntries add
+    "EntriesServlet" ^
+      "GET should return status 200" ! root200 ^
+      "GET should return content-type application/json" ! contentJson ^
+      "GET should return JSON entries" ! jsonEntries add
       "GET /count on EntriesServlet" ^
-        "should return number of entries" ! countEntries
+        "should return number of entries" ! countEntries add
+      "POST / on EntriesServiet" ^
+        "should return 401 for non logged user" ! tryUpdateExistingEntry add
+      "PUT / on EntriesServiet" ^
+        "should return 401 for non logged user" ! tryCreateNewEntry
 
   end
 
@@ -44,5 +48,14 @@ class EntriesServletSpec extends ScalatraSpec with Mockito {
   def countEntries = get("/count") {
     body must contain("{\"value\":4}")
   }
+
+  def tryUpdateExistingEntry = post("/", "anything") {
+    status must_== 401
+  }
+
+  def tryCreateNewEntry = put("/", "anything") {
+    status must_== 401
+  }
+
 
 }
