@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
 import com.gu.SbtJasminePlugin._
+import net.virtualvoid.sbt.graph.Plugin._
 
 object Resolvers {
 
@@ -92,7 +93,7 @@ object SmlBootstrapBuild extends Build {
   lazy val ui: Project = Project(
     "bootstrap-ui",
     file("bootstrap-ui"),
-    settings = buildSettings ++ jasmineSettings ++ Seq(
+    settings = buildSettings ++ jasmineSettings ++ graphSettings ++ Seq(
       libraryDependencies ++= Seq(jettyOrbit),
       appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "app" },
       appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },
