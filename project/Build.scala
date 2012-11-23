@@ -45,7 +45,9 @@ object Dependencies {
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
   val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, jodaTime, specs2)
 
-  val servletApiProvidedTest = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
+  // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
+  // As provided implies test, so is enough here.
+  val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
 }
 
 object SmlBootstrapBuild extends Build {
@@ -86,14 +88,14 @@ object SmlBootstrapBuild extends Build {
   lazy val rest: Project = Project(
     "bootstrap-rest",
     file("bootstrap-rest"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ Seq(servletApiProvidedTest))
+    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ Seq(servletApiProvided))
   ) dependsOn(service, domain, common)
 
   lazy val ui: Project = Project(
     "bootstrap-ui",
     file("bootstrap-ui"),
     settings = buildSettings ++ jasmineSettings ++ graphSettings ++ Seq(
-      libraryDependencies ++= Seq(servletApiProvidedTest),
+      libraryDependencies ++= Seq(servletApiProvided),
       appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "app" },
       appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },
       jasmineTestDir <+= sourceDirectory { src => src / "test" / "unit" },
