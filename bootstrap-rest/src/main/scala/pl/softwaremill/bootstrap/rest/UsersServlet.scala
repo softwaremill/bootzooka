@@ -26,7 +26,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     logOut()
   }
 
-  post("/regiter") {
+  put("/register") {
     println("Registering new user stub")
   }
 
