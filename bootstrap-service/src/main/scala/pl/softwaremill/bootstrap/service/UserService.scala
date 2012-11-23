@@ -23,7 +23,7 @@ class UserService(userDAO: UserDAO) {
   }
 
   def authenticate(login: String, nonEncryptedPassword: String): Option[User] = {
-    userDAO.findBy((u: User) => (u.login.equalsIgnoreCase(login) && u.password.eq(Utils.sha256(nonEncryptedPassword, login))))
+    userDAO.findBy((u: User) => (u.login.equalsIgnoreCase(login) && u.password.equals(Utils.sha256(nonEncryptedPassword, u.login))))
   }
 
   def authenticateWithToken(token: String): Option[User] = {
