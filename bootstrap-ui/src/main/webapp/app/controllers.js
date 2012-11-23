@@ -105,6 +105,10 @@ angular.module('smlBootstrap.controllers', []).
         };
     }).
 
+    controller('RegisterController', function RegisterController($scope) {
+
+    }).
+
     controller('LoginController', function LoginController($scope, UserSessionService, $location) {
 
         var self = this;

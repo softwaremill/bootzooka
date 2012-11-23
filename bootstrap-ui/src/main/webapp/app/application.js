@@ -6,6 +6,7 @@ angular.module('smlBootstrap', ['entriesService', 'utilService', 'userSessionSer
             when('/', {controller: 'EntriesController', templateUrl:'partials/main.html'}).
             when("/entry/:entryId", {controller: 'EntryEditController', templateUrl: "partials/entry.html"}).
             when("/login", {controller: 'LoginController', templateUrl: "partials/login.html"}).
+            when("/register", {controller: 'RegisterController', templateUrl: "partials/register.html"}).
             otherwise({redirectTo:'/'})
     })
 

@@ -1,0 +1,43 @@
+
+<div class="row">
+    <div class="span6 offset3">
+        <div class="row">
+            <form class="form-horizontal" name="registerForm" novalidate>
+                <div class="control-group">
+                    <label class="control-label" for="login">Login</label>
+                    <div class="controls">
+                        <input type="text" name="login" id="login" placeholder="login" ng-model="user.login" required>
+                        <span class="text-error" ng-show="registerForm.login.$dirty && loginForm.login.$error.required">Login is required</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="email">e-mail</label>
+                    <div class="controls">
+                        <input type="text" name="email" id="email" placeholder="e-mail address" ng-model="user.email" required>
+                        <span class="text-error" ng-show="registerForm.email.$dirty && registerForm.email.$error.required">E-mail is required</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="password">Password</label>
+                    <div class="controls">
+                        <input type="password" name="password" id="password" placeholder="password" ng-model="user.password" required>
+                        <span class="text-error" ng-show="registerForm.password.$dirty && registerForm.password.$error.required">Password is required</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="repeatPass">Repeat password</label>
+                    <div class="controls">
+                        <input type="password" name="repeatPass" id="repeatPass" placeholder="repeat password" required>
+                        <span class="text-error" ng-show="registerForm.repeatPass.$dirty && registerForm.repeatPass.$error.required">Repeat password is required</span>
+                    </div>
+                </div>
+                <div class="control-group hidden feedback" id="feedback"></div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn" ng-click="register()">Register</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
