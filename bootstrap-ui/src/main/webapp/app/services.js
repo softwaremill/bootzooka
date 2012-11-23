@@ -121,3 +121,27 @@ angular.module('utilService', ['ngResource']).
 
         return utilService;
     });
+
+angular.module('registerService', ['ngResource'])
+    .factory('RegisterService', function ($resource) {
+
+        var registerService = {};
+
+        registerService.backend = $resource('rest/users/register', { },
+            {
+                insert: {method: 'PUT'}
+            }
+        );
+
+        registerService.register = function (user, successFunction, errorFunction) {
+            registerService.backend.insert(angular.toJson(user), function (data) {
+                    if (successFunction != null) {
+                        successFunction(data);
+                    }
+                },
+                errorFunction
+            )
+        };
+
+        return registerService;
+    });

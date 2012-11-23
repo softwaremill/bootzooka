@@ -1,140 +1,164 @@
+angular.module('smlBootstrap.controllers', [])
 
-angular.module('smlBootstrap.controllers', []).
-
-    controller('UptimeController', function UptimeController($scope, UtilService) {
-        UtilService.loadUptime(function(data) {
-            $scope.uptime = data.value;
-        });
-    }).
-
-    controller('EntriesController', function EntriesController($scope, $timeout, EntriesService, UserSessionService) {
-
-        var self = this;
-
-        $scope.entryText = '';
-        $scope.message = '';
-        $scope.size = 0;
-
-        this.reloadEntries = function() {
-            EntriesService.count(function(data) {
-                $scope.size = data.value;
+        .controller('UptimeController', function UptimeController($scope, UtilService) {
+            UtilService.loadUptime(function (data) {
+                $scope.uptime = data.value;
             });
+        })
 
-            EntriesService.loadAll(function(data) {
-                $scope.logs = data;
-            });
-        };
+        .controller('EntriesController', function EntriesController($scope, $timeout, EntriesService, UserSessionService) {
 
-        this.reloadEntries();
+            var self = this;
 
-        this.reloadEventId = $timeout(function reloadEntriesLoop() {
-            self.reloadEntries();
-            self.reloadEventId = $timeout(reloadEntriesLoop, 3000);
-        }, 3000);
+            $scope.entryText = '';
+            $scope.message = '';
+            $scope.size = 0;
 
-        $scope.$on("$routeChangeStart", function() {
-            $timeout.cancel(self.reloadEventId);
-        });
+            this.reloadEntries = function () {
+                EntriesService.count(function (data) {
+                    $scope.size = data.value;
+                });
 
-        $scope.addEntry = function() {
-            EntriesService.addNew($scope.entryText, function () {
+                EntriesService.loadAll(function (data) {
+                    $scope.logs = data;
+                });
+            };
+
+            this.reloadEntries();
+
+            this.reloadEventId = $timeout(function reloadEntriesLoop() {
                 self.reloadEntries();
-                $scope.entryText = '';
-                $scope.myForm.$pristine = true;
-                showInfoMessage("Message posted");
+                self.reloadEventId = $timeout(reloadEntriesLoop, 3000);
+            }, 3000);
+
+            $scope.$on("$routeChangeStart", function () {
+                $timeout.cancel(self.reloadEventId);
             });
-        };
 
-        $scope.deleteEntry = function(logEntryId) {
-            EntriesService.deleteEntry(logEntryId, function() {
-                self.reloadEntries();
-                showInfoMessage("Message removed");
-            })
-        };
+            $scope.addEntry = function () {
+                EntriesService.addNew($scope.entryText, function () {
+                    self.reloadEntries();
+                    $scope.entryText = '';
+                    $scope.myForm.$pristine = true;
+                    showInfoMessage("Message posted");
+                });
+            };
 
-        $scope.noEntries = function() {
-            return 0 === $scope.size;
-        };
+            $scope.deleteEntry = function (logEntryId) {
+                EntriesService.deleteEntry(logEntryId, function () {
+                    self.reloadEntries();
+                    showInfoMessage("Message removed");
+                })
+            };
 
-        $scope.isOwnerOf = function(entry) {
-            return UserSessionService.isLogged() && entry.author === UserSessionService.loggedUser.login;
-        };
+            $scope.noEntries = function () {
+                return 0 === $scope.size;
+            };
 
-        $scope.getLoggedUserName = function() {
-            return UserSessionService.getLoggedUserName();
-        };
+            $scope.isOwnerOf = function (entry) {
+                return UserSessionService.isLogged() && entry.author === UserSessionService.loggedUser.login;
+            };
 
-        $scope.isLogged = function() {
-            return UserSessionService.isLogged()
-        };
+            $scope.getLoggedUserName = function () {
+                return UserSessionService.getLoggedUserName();
+            };
 
-        $scope.isNotLogged = function() {
-            return UserSessionService.isNotLogged()
-        };
+            $scope.isLogged = function () {
+                return UserSessionService.isLogged()
+            };
 
-        $scope.logout = function() {
-            UserSessionService.logout();
-            showInfoMessage("Logged out successfully");
-        };
-    }).
+            $scope.isNotLogged = function () {
+                return UserSessionService.isNotLogged()
+            };
 
-    controller('EntryEditController', function EntryEditController($scope, EntriesService, $routeParams, $location, UserSessionService) {
+            $scope.logout = function () {
+                UserSessionService.logout();
+                showInfoMessage("Logged out successfully");
+            };
+        })
 
-        $scope.logId = $routeParams.entryId;
-        $scope.log = new Object();
+        .controller('EntryEditController', function EntryEditController($scope, EntriesService, $routeParams, $location, UserSessionService) {
 
-        EntriesService.load($scope.logId, function(data) {
-            $scope.log = data;
-        });
+            $scope.logId = $routeParams.entryId;
+            $scope.log = new Object();
 
-        $scope.updateEntry = function() {
-            EntriesService.update($scope.log);
-            $location.path("");
-        };
+            EntriesService.load($scope.logId, function (data) {
+                $scope.log = data;
+            });
 
-        $scope.isOwnerOfEntry = function() {
-            return $scope.log.author === UserSessionService.loggedUser.login;
-        };
+            $scope.updateEntry = function () {
+                EntriesService.update($scope.log);
+                $location.path("");
+            };
 
-        $scope.isLogged = function() {
-            return UserSessionService.isLogged()
-        };
+            $scope.isOwnerOfEntry = function () {
+                return $scope.log.author === UserSessionService.loggedUser.login;
+            };
 
-        $scope.isNotLogged = function() {
-            return UserSessionService.isNotLogged()
-        };
-    }).
+            $scope.isLogged = function () {
+                return UserSessionService.isLogged()
+            };
 
-    controller('RegisterController', function RegisterController($scope) {
+            $scope.isNotLogged = function () {
+                return UserSessionService.isNotLogged()
+            };
+        })
 
-    }).
+        .controller('RegisterController', function RegisterController($scope, RegisterService, $location) {
 
-    controller('LoginController', function LoginController($scope, UserSessionService, $location) {
+            var self = this;
 
-        var self = this;
+            $scope.user = {};
+            $scope.user.login = '';
+            $scope.user.password = '';
+            $scope.user.email = '';
 
-        $scope.user = new Object();
-        $scope.user.login = '';
-        $scope.user.password = '';
-        $scope.user.rememberme = false;
+            $scope.register = function () {
+                $scope.registerForm.login.$dirty = true;
+                $scope.registerForm.password.$dirty = true;
+                $scope.registerForm.email.$dirty = true;
+                $scope.registerForm.repeatPassword.$dirty = true;
 
-        $scope.login = function() {
-            // set dirty to show error messages on empty fields when submit is clicked
-            $scope.loginForm.login.$dirty = true;
-            $scope.loginForm.password.$dirty = true;
+                if ($scope.registerForm.$invalid === false) {
+                    RegisterService.register($scope.user, self.registerOk, self.registerFailed)
+                }
+            };
 
-            if($scope.loginForm.$invalid === false) {
-                UserSessionService.login($scope.user, self.loginOk, self.loginFailed);
+            this.loginOk = function () {
+                $location.path("")
+            };
+
+            this.loginFailed = function () {
+                showErrorMessage("Something went wrong :/")
             }
-        };
+
+        })
+
+        .controller('LoginController', function LoginController($scope, UserSessionService, $location) {
+
+            var self = this;
+
+            $scope.user = new Object();
+            $scope.user.login = '';
+            $scope.user.password = '';
+            $scope.user.rememberme = false;
+
+            $scope.login = function () {
+                // set dirty to show error messages on empty fields when submit is clicked
+                $scope.loginForm.login.$dirty = true;
+                $scope.loginForm.password.$dirty = true;
+
+                if ($scope.loginForm.$invalid === false) {
+                    UserSessionService.login($scope.user, self.loginOk, self.loginFailed);
+                }
+            };
 
 
-        this.loginOk = function() {
-            $location.path("");
-        };
+            this.loginOk = function () {
+                $location.path("");
+            };
 
-        this.loginFailed = function() {
-            showErrorMessage("Invalid login and/or password.")
-        }
-    }
-);
+            this.loginFailed = function () {
+                showErrorMessage("Invalid login and/or password.")
+            }
+        });
