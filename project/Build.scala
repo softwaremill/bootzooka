@@ -82,7 +82,7 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(specs2))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
