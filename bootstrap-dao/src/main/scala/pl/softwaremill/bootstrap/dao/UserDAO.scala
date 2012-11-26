@@ -31,7 +31,7 @@ class UserDAO {
       throw new Exception("User with given e-mail or login already exists")
     }
 
-    list = new User(nextId(), user.login, user.email, user.password) +: list
+    list = new User(nextId(), user.login, user.email, Utils.sha256(user.password, user.login)) +: list
   }
 
   def remove(userId: Int) {
