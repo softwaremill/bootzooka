@@ -120,13 +120,13 @@ angular.module('smlBootstrap.controllers', [])
                 $scope.registerForm.email.$dirty = true;
                 $scope.registerForm.repeatPassword.$dirty = true;
 
-                if ($scope.registerForm.$invalid === false) {
-                    $scope.jsonUser = {}; // create dedicated object to pass only specific fields
-                    $scope.jsonUser.login = $scope.user.login;
-                    $scope.jsonUser.password = $scope.user.password;
-                    $scope.jsonUser.email = $scope.user.email;
+                if ($scope.registerForm.$valid) {
+                    var jsonUser = {}; // create dedicated object to pass only specific fields
+                    jsonUser.login = $scope.user.login;
+                    jsonUser.password = $scope.user.password;
+                    jsonUser.email = $scope.user.email;
 
-                    RegisterService.register($scope.jsonUser, self.registerOk, self.registerFailed)
+                    RegisterService.register(jsonUser, self.registerOk, self.registerFailed)
                 }
             };
 
