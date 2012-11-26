@@ -130,6 +130,10 @@ angular.module('smlBootstrap.controllers', [])
                 }
             };
 
+            $scope.checkPassword = function() {
+                $scope.registerForm.repeatPassword.$error.dontMatch = $scope.user.password != $scope.user.repeatPassword;
+            };
+
             this.loginOk = function () {
                 $location.path("")
             };
