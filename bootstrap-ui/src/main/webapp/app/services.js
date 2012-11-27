@@ -135,11 +135,12 @@ angular.module('registerService', ['ngResource'])
 
         registerService.register = function (user, successFunction, errorFunction) {
             registerService.backend.insert(angular.toJson(user), function (data) {
-                    if (successFunction != null) {
-                        successFunction(data);
+                    if (angular.equals(data.value, 'success')) {
+                        successFunction();
+                    } else {
+                        errorFunction(data.value)
                     }
-                },
-                errorFunction
+                }
             )
         };
 

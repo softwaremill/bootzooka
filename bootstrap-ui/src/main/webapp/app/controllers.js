@@ -123,8 +123,8 @@ angular.module('smlBootstrap.controllers', [])
                 if ($scope.registerForm.$valid) {
                     var jsonUser = {}; // create dedicated object to pass only specific fields
                     jsonUser.login = $scope.user.login;
-                    jsonUser.password = $scope.user.password;
                     jsonUser.email = $scope.user.email;
+                    jsonUser.password = $scope.user.password;
 
                     RegisterService.register(jsonUser, self.registerOk, self.registerFailed)
                 }
@@ -134,12 +134,12 @@ angular.module('smlBootstrap.controllers', [])
                 $scope.registerForm.repeatPassword.$error.dontMatch = $scope.user.password != $scope.user.repeatPassword;
             };
 
-            this.loginOk = function () {
-                $location.path("")
+            this.registerOk = function () {
+                showInfoMessage("User registered successfully!")
             };
 
-            this.loginFailed = function () {
-                showErrorMessage("Something went wrong :/")
+            this.registerFailed = function (message) {
+                showErrorMessage(message)
             }
 
         })
