@@ -8,8 +8,4 @@ case class User(id: Int, login: String, email: String, password: String) {
 
   def token: String = Utils.sha256(login, password)
 
-
-  override def toString = {
-    "[User: id = " + id + " login = " + login+ ", email = " + email + ", password = " + password + "]"
-  }
 }
