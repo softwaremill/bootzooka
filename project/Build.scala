@@ -25,7 +25,8 @@ object BuildSettings {
 
     resolvers := bootstrapResolvers,
     scalacOptions += "-unchecked",
-    classpathTypes ~= (_ + "orbit")
+    classpathTypes ~= (_ + "orbit"),
+    libraryDependencies ++= Dependencies.testingDependencies
   )
 
 }
@@ -48,8 +49,9 @@ object Dependencies {
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
-  val testingDependencies = Seq(mockito, specs2)
   val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth)
+
+  val testingDependencies = Seq(mockito, specs2)
 
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
@@ -70,7 +72,7 @@ object SmlBootstrapBuild extends Build {
   lazy val common: Project = Project(
     "bootstrap-common",
     file("bootstrap-common"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= jodaDependencies ++ testingDependencies)
+    settings = buildSettings ++ Seq(libraryDependencies ++= jodaDependencies)
   )
 
   lazy val domain: Project = Project(
@@ -88,13 +90,13 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= testingDependencies)
+    settings = buildSettings
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
     "bootstrap-rest",
     file("bootstrap-rest"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided) ++ testingDependencies)
+    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided))
   ) dependsOn(service, domain, common)
 
   lazy val ui: Project = Project(
