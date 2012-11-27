@@ -4,7 +4,8 @@ import org.scalatra.test.specs2.ScalatraSpec
 
 class UptimeServletSpecs extends ScalatraSpec {
 
-  def is = "GET / on UptimServlet"    ^
+  def is = sequential                 ^
+    "GET / on UptimServlet"           ^
     `should return status 200`        ^
     `should return JSON content type` ^
     `bust must contain value 10`
