@@ -8,15 +8,8 @@ class UserExistenceChecker(userService: UserService) {
   def check(user: User): Option[String] = {
     var messageOpt: Option[String] = None
 
-    userService.findByLogin(user.login) match {
-      case Some(u) => messageOpt = Some("Login already in use!")
-      case _ =>
-    }
-
-    userService.findByEmail(user.email) match {
-      case Some(u) => messageOpt = Some("E-mail already in use!")
-      case _ =>
-    }
+    userService.findByLogin(user.login) foreach( _ => messageOpt = Some("Login already in use!"))
+    userService.findByEmail(user.email) foreach( _ => messageOpt = Some("E-mail already in use!"))
 
     messageOpt
   }
