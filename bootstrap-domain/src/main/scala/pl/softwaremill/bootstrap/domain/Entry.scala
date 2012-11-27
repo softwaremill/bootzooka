@@ -12,6 +12,6 @@ case class Entry(var id: Int, var author: String, var text: String) {
   }
 
   override def toString = {
-    "[Entry: id = " + id + ", text = " + text + ", author = " + author + "]";
+    "[Entry: id = " + id + ", text = " + text + ", author = " + author + "]"
   }
 }
