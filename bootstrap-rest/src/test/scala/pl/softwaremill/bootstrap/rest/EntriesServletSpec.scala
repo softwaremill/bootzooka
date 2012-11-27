@@ -10,7 +10,8 @@ import org.specs2.matcher.MatchResult
 class EntriesServletSpec extends ScalatraSpec with Mockito {
 
   def is =
-    "EntriesServlet" ^
+    sequential ^
+      "EntriesServlet" ^
       "GET should return status 200" ! root200 ^
       "GET should return content-type application/json" ! contentJson ^
       "GET should return JSON entries" ! jsonEntries add
