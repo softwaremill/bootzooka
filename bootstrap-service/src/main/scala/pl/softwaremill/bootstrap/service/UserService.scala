@@ -34,4 +34,8 @@ class UserService(userDAO: UserDAO) {
     userDAO.findBy((u: User) => u.login.equals(login))
   }
 
+  def findByEmail(email: String): Option[User] = {
+    userDAO.findBy((u: User) => u.email.equals(email))
+  }
+
 }
