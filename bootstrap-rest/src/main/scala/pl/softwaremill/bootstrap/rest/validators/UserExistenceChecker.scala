@@ -7,6 +7,7 @@ class UserExistenceChecker(userService: UserService) {
 
   def check(user: User): Option[String] = {
     var messageOpt: Option[String] = None
+
     userService.findByLogin(user.login) match {
       case Some(u) => messageOpt = Some("Login already in use!")
       case _ =>

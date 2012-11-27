@@ -32,23 +32,26 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   }
 
   put("/register") {
-    var message = ""
+    var messageOpt: Option[String] = None
 
     if(registrationDataValidator.isDataValid((parsedBody \ "login").extractOpt[String], (parsedBody \ "email").extractOpt[String],
       (parsedBody \ "password").extractOpt[String]) == false) {
-        message = "Wrong user data!"
+        messageOpt = Some("Wrong user data!")
     }
     else {
       val newUser = parsedBody.extract[User]
-      message = userExistenceChecker.check(newUser).getOrElse("")
+      messageOpt = userExistenceChecker.check(newUser)
     }
 
-    if (message.isEmpty) {
+    messageOpt match {
+      case Some(message) => {
+        JsonWrapper(message)
+      }
+      case _ => {
         userService.registerNewUser(parsedBody.extract[User])
-        message = "success"
+        JsonWrapper("success")
+      }
     }
-
-    JsonWrapper(message)
   }
 
   override def login: String = {
