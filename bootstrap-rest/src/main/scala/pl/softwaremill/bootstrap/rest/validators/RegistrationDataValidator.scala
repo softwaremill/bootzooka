@@ -8,7 +8,7 @@ class RegistrationDataValidator() {
   def isDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {
 
     loginOpt match {
-      case Some(login) => if (login.trim.length < RegistrationDataValidator.minLoginLength) return false
+      case Some(login) => if (login.trim.length < RegistrationDataValidator.MinLoginLength) return false
       case _ => return false
     }
 
@@ -29,5 +29,5 @@ class RegistrationDataValidator() {
 }
 
 object RegistrationDataValidator {
-  val minLoginLength = 3
+  val MinLoginLength = 3
 }
