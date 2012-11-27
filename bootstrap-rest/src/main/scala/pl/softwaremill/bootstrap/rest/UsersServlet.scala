@@ -40,7 +40,11 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     }
     else {
       val newUser = parsedBody.extract[User]
-      messageOpt = userExistenceChecker.check(newUser)
+
+      userExistenceChecker.check(newUser) match {
+        case Left(error) => messageOpt = Some(error)
+        case _ =>
+      }
     }
 
     messageOpt match {

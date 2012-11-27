@@ -5,13 +5,14 @@ import pl.softwaremill.bootstrap.domain.User
 
 class UserExistenceChecker(userService: UserService) {
 
-  def check(user: User): Option[String] = {
-    var messageOpt: Option[String] = None
+  def check(user: User): Either[String, Unit] = {
+    var messageEither: Either[String, Unit] = Right(None)
 
-    userService.findByLogin(user.login) foreach( _ => messageOpt = Some("Login already in use!"))
-    userService.findByEmail(user.email) foreach( _ => messageOpt = Some("E-mail already in use!"))
+    userService.findByLogin(user.login) foreach( _ => messageEither = Left("Login already in use!"))
+    userService.findByEmail(user.email) foreach( _ => messageEither = Left("E-mail already in use!"))
 
-    messageOpt
+    messageEither
   }
+
 
 }
