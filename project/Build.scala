@@ -42,6 +42,7 @@ object Dependencies {
   val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion
   val jodaTime = "joda-time" % "joda-time" % "2.0"
   val jodaConvert = "org.joda" % "joda-convert" % "1.2"
+  val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
   val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, jodaTime, specs2)
 
@@ -82,7 +83,7 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(specs2))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(specs2, mockito))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
