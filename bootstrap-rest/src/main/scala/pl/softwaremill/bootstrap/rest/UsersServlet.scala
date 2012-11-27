@@ -1,11 +1,16 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra._
+import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 import pl.softwaremill.bootstrap.service.UserService
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.JsonWrapper
+import validators.{UserExistenceChecker, RegistrationDataValidator}
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
+
+  val registrationDataValidator: RegistrationDataValidator = new RegistrationDataValidator()
+  val userExistenceChecker: UserExistenceChecker = new UserExistenceChecker(userService)
 
   post() {
     val userOpt: Option[User] = authenticate()
@@ -27,26 +32,22 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   }
 
   put("/register") {
-    val user = parsedBody.extract[User]
     var message = ""
-    userService.findByLogin(user.login) match {
-      case Some(u) => message = "Login already in use!"
-      case _ =>
-    }
 
-    userService.findByEmail(user.email) match {
-      case Some(u) => message = "E-mail already in use!"
-      case _ =>
+    if(registrationDataValidator.isDataValid((parsedBody \ "login").extractOpt[String], (parsedBody \ "email").extractOpt[String],
+      (parsedBody \ "password").extractOpt[String]) == false) {
+        message = "Wrong user data!"
+    }
+    else {
+      val newUser = parsedBody.extract[User]
+      message = userExistenceChecker.check(newUser).getOrElse("")
     }
 
     if (message.isEmpty) {
-      if (user.valid()) {
-        userService.registerNewUser(user)
+        userService.registerNewUser(parsedBody.extract[User])
         message = "success"
-      } else {
-        message = "Wrong user data!"
-      }
     }
+
     JsonWrapper(message)
   }
 
