@@ -40,11 +40,16 @@ object Dependencies {
   val scalatraJson = "org.scalatra" % "scalatra-json" % scalatraVersion
   val json4s = "org.json4s" %% "json4s-jackson" % "3.0.0"
   val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion
+
   val jodaTime = "joda-time" % "joda-time" % "2.0"
   val jodaConvert = "org.joda" % "joda-convert" % "1.2"
+
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
-  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, jodaTime, specs2)
+
+  val jodaDependencies = Seq(jodaTime, jodaConvert)
+  val testingDependencies = Seq(mockito, specs2)
+  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth)
 
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
@@ -65,7 +70,7 @@ object SmlBootstrapBuild extends Build {
   lazy val common: Project = Project(
     "bootstrap-common",
     file("bootstrap-common"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(specs2, jodaTime, jodaConvert))
+    settings = buildSettings ++ Seq(libraryDependencies ++= jodaDependencies ++ testingDependencies)
   )
 
   lazy val domain: Project = Project(
@@ -83,13 +88,13 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(specs2, mockito))
+    settings = buildSettings ++ Seq(libraryDependencies ++= testingDependencies)
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
     "bootstrap-rest",
     file("bootstrap-rest"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ Seq(servletApiProvided))
+    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided) ++ testingDependencies)
   ) dependsOn(service, domain, common)
 
   lazy val ui: Project = Project(
