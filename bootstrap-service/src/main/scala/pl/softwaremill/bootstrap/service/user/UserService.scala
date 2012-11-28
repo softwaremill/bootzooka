@@ -4,7 +4,7 @@ import pl.softwaremill.bootstrap.dao.UserDAO
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.Utils
 
-class UserService(userDAO: UserDAO) {
+class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator) {
 
   def load(userId: Int) = {
     userDAO.load(userId)
@@ -36,6 +36,10 @@ class UserService(userDAO: UserDAO) {
 
   def findByEmail(email: String): Option[User] = {
     userDAO.findBy((u: User) => u.email.equals(email))
+  }
+
+  def isUserDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {
+    registrationDataValidator.isDataValid(loginOpt, emailOpt, passwordOpt)
   }
 
 }

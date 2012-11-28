@@ -8,7 +8,6 @@ import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserSe
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
 
-  val registrationDataValidator: RegistrationDataValidator = new RegistrationDataValidator()
   val userExistenceChecker: UserExistenceChecker = new UserExistenceChecker(userService)
 
   post() {
@@ -33,7 +32,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   put("/register") {
     var messageOpt: Option[String] = None
 
-    if(registrationDataValidator.isDataValid((parsedBody \ "login").extractOpt[String], (parsedBody \ "email").extractOpt[String],
+    if(userService.isUserDataValid((parsedBody \ "login").extractOpt[String], (parsedBody \ "email").extractOpt[String],
       (parsedBody \ "password").extractOpt[String]) == false) {
         messageOpt = Some("Wrong user data!")
     }

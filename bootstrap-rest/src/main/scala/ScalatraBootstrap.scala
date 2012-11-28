@@ -2,7 +2,7 @@ import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
 import pl.softwaremill.bootstrap.rest.{UsersServlet, EntriesServlet, UptimeServlet}
 import org.scalatra._
 import javax.servlet.ServletContext
-import pl.softwaremill.bootstrap.service.user.UserService
+import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
 import pl.softwaremill.bootstrap.service.EntryService
 
 /**
@@ -16,7 +16,7 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext) {
 
-    val userService = new UserService(new UserDAO())
+    val userService = new UserService(new UserDAO(), new RegistrationDataValidator())
     val entryService = new EntryService(new EntryDAO())
 
     // Mount one or more servlets

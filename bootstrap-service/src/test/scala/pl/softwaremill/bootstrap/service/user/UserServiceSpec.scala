@@ -7,15 +7,17 @@ import pl.softwaremill.bootstrap.domain.User
 
 class UserServiceSpec extends Specification with Mockito {
 
-  def prepareMock: UserDAO = {
+  def prepareUserDAOMock: UserDAO = {
     val dao = mock[UserDAO]
     dao.findBy(any) returns Some(new User("admin", "admin@sml.pl", "pass"))
     dao
   }
 
+  val registrationDataValidator: RegistrationDataValidator = mock[RegistrationDataValidator]
+
   "findByEmail" should { // this test is silly :\
     "return user for admin@sml.pl" in {
-      val userService = new UserService(prepareMock)
+      val userService = new UserService(prepareUserDAOMock, registrationDataValidator)
 
       val user: User = userService.findByEmail("admin@sml.pl").getOrElse(null)
 
