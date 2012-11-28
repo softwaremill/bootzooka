@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.rest.another
+package pl.softwaremill.bootstrap.rest
 
 import org.scalatra.test.specs2._
 import pl.softwaremill.bootstrap.service.user.UserService
