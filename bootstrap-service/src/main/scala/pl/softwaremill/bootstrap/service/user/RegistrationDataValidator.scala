@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.rest.validators
+package pl.softwaremill.bootstrap.service.user
 
 import org.apache.commons.validator.routines.EmailValidator
 

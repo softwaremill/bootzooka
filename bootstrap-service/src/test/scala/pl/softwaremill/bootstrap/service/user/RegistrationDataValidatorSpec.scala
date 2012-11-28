@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.rest.validators
+package pl.softwaremill.bootstrap.service.user
 
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification

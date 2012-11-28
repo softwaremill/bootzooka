@@ -45,6 +45,8 @@ object Dependencies {
   val jodaTime = "joda-time" % "joda-time" % "2.0"
   val jodaConvert = "org.joda" % "joda-convert" % "1.2"
 
+  val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0"
+
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
 
@@ -90,7 +92,7 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
