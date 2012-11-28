@@ -2,7 +2,7 @@
 
 describe("Register Controller", function () {
 
-    beforeEach(module('registerService', 'smlBootstrap.controllers'));
+    beforeEach(module('registerService', 'smlBootstrap.services', 'smlBootstrap.controllers'));
 
     afterEach(inject(function (_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();

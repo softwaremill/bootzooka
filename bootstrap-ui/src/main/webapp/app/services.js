@@ -123,7 +123,7 @@ angular.module('utilService', ['ngResource']).
     });
 
 angular.module('registerService', ['ngResource'])
-    .factory('RegisterService', function ($resource) {
+    .factory('RegisterService', function ($resource, FlashService) {
 
         var registerService = {};
 
@@ -136,6 +136,7 @@ angular.module('registerService', ['ngResource'])
         registerService.register = function (user, successFunction, errorFunction) {
             registerService.backend.insert(angular.toJson(user), function (data) {
                     if (angular.equals(data.value, 'success')) {
+                        FlashService.set("User registered successfully!");
                         successFunction();
                     } else {
                         errorFunction(data.value)
@@ -145,4 +146,19 @@ angular.module('registerService', ['ngResource'])
         };
 
         return registerService;
+    });
+
+angular.module('smlBootstrap.services', ['ngResource'])
+    .factory("FlashService", function () {
+
+        var queue = [];
+
+        return {
+            set: function (message) {
+                queue.push(message);
+            },
+            get: function() {
+                return queue.shift();
+            }
+        };
     });

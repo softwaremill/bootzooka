@@ -6,7 +6,7 @@ angular.module('smlBootstrap.controllers', [])
             });
         })
 
-        .controller('EntriesController', function EntriesController($scope, $timeout, EntriesService, UserSessionService) {
+        .controller('EntriesController', function EntriesController($scope, $timeout, EntriesService, UserSessionService, FlashService) {
 
             var self = this;
 
@@ -33,6 +33,13 @@ angular.module('smlBootstrap.controllers', [])
 
             $scope.$on("$routeChangeStart", function () {
                 $timeout.cancel(self.reloadEventId);
+            });
+
+            $scope.$on("$routeChangeSuccess", function () {
+                var message = FlashService.get();
+                if (angular.isDefined(message)) {
+                    showInfoMessage(message);
+                }
             });
 
             $scope.addEntry = function () {
@@ -135,7 +142,7 @@ angular.module('smlBootstrap.controllers', [])
             };
 
             this.registerOk = function () {
-                showInfoMessage("User registered successfully!")
+                $location.path("");
             };
 
             this.registerFailed = function (message) {
