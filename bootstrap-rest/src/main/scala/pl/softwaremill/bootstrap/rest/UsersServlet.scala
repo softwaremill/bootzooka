@@ -1,10 +1,8 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra._
-import pl.softwaremill.bootstrap.auth.AuthenticationSupport
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.JsonWrapper
-import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
 import validators.UserExistenceChecker
 import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
 
