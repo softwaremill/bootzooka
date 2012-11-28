@@ -23,19 +23,19 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def authenticate(login: String, nonEncryptedPassword: String): Option[User] = {
-    userDAO.findBy((u: User) => (u.login.equalsIgnoreCase(login) && u.password.equals(Utils.sha256(nonEncryptedPassword, u.login))))
+    userDAO.findByLoginAndEncryptedPassword(login, Utils.sha256(nonEncryptedPassword, login))
   }
 
   def authenticateWithToken(token: String): Option[User] = {
-    userDAO.findBy((u: User) => u.token.equals(token))
+    userDAO.findByToken(token)
   }
 
   def findByLogin(login: String): Option[User] = {
-    userDAO.findBy((u: User) => u.login.equals(login))
+    userDAO.findByLogin(login)
   }
 
   def findByEmail(email: String): Option[User] = {
-    userDAO.findBy((u: User) => u.email.equals(email))
+    userDAO.findByEmail(email)
   }
 
   def isUserDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {

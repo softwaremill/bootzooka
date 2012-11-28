@@ -47,7 +47,23 @@ class UserDAO {
     list.find(_.id == userId)
   }
 
-  def findBy(p: User => Boolean) = {
+  def findByEmail(email: String) = {
+    findBy(_.email.equalsIgnoreCase(email))
+  }
+
+  def findByLogin(login: String) = {
+    findBy(_.login.equalsIgnoreCase(login))
+  }
+
+  def findByToken(token: String) = {
+    findBy(_.token.equals(token))
+  }
+
+  def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String) = {
+    findBy((u: User) => (u.login.equalsIgnoreCase(login) && u.password.equals(encryptedPassword)))
+  }
+
+  private def findBy(p: User => Boolean) = {
     list.find(p)
   }
 
