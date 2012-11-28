@@ -47,6 +47,8 @@ object Dependencies {
 
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0"
 
+  val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container"
+
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
 
@@ -64,6 +66,7 @@ object SmlBootstrapBuild extends Build {
 
   import Dependencies._
   import BuildSettings._
+  import com.github.siasia.WebPlugin.webSettings
 
   lazy val parent: Project = Project(
     "bootstrap-root",
@@ -104,8 +107,8 @@ object SmlBootstrapBuild extends Build {
   lazy val ui: Project = Project(
     "bootstrap-ui",
     file("bootstrap-ui"),
-    settings = buildSettings ++ jasmineSettings ++ graphSettings ++ Seq(
-      libraryDependencies ++= Seq(servletApiProvided),
+    settings = buildSettings ++ jasmineSettings ++ graphSettings ++ webSettings ++ Seq(
+      libraryDependencies ++= Seq(jetty, servletApiProvided),
       appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "app" },
       appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },
       jasmineTestDir <+= sourceDirectory { src => src / "test" / "unit" },
