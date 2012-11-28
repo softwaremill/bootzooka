@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse
 import org.scalatra.test.specs2.MutableScalatraSpec
 import pl.softwaremill.bootstrap.rest.EntriesServlet
 import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.service.UserService
+import pl.softwaremill.bootstrap.service.user.UserService
 
 // http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html
 

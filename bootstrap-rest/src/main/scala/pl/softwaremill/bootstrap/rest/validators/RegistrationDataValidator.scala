@@ -1,7 +1,6 @@
 package pl.softwaremill.bootstrap.rest.validators
 
 import org.apache.commons.validator.routines.EmailValidator
-import pl.softwaremill.bootstrap.service.UserService
 
 class RegistrationDataValidator() {
 
@@ -22,7 +21,7 @@ class RegistrationDataValidator() {
       case _ =>  return false
     }
 
-    return true
+    true
   }
 
 

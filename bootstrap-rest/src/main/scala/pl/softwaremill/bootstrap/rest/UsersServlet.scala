@@ -2,10 +2,10 @@ package pl.softwaremill.bootstrap.rest
 
 import org.scalatra._
 import pl.softwaremill.bootstrap.auth.AuthenticationSupport
-import pl.softwaremill.bootstrap.service.UserService
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.JsonWrapper
 import validators.{UserExistenceChecker, RegistrationDataValidator}
+import pl.softwaremill.bootstrap.service.user.UserService
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
 

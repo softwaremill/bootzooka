@@ -6,7 +6,7 @@ import org.scalatra.auth.{Scentry, ScentryConfig, ScentrySupport}
 import scala.Some
 import pl.softwaremill.bootstrap.common.{Utils, JsonWrapper}
 import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.service.UserService
+import pl.softwaremill.bootstrap.service.user.UserService
 
 /**
  * It should be used with each servlet to support RememberMe functionality for whole application

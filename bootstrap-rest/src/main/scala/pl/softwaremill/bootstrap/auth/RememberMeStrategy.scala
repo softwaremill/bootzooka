@@ -4,7 +4,7 @@ import org.scalatra.{CookieOptions, Cookie, CookieSupport, ScalatraBase}
 import org.scalatra.auth.ScentryStrategy
 import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.service.UserService
+import pl.softwaremill.bootstrap.service.user.UserService
 
 class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rememberMe: Boolean, val userService: UserService) extends ScentryStrategy[User] {
 

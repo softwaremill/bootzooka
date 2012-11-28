@@ -2,7 +2,8 @@ import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
 import pl.softwaremill.bootstrap.rest.{UsersServlet, EntriesServlet, UptimeServlet}
 import org.scalatra._
 import javax.servlet.ServletContext
-import pl.softwaremill.bootstrap.service.{UserService, EntryService}
+import pl.softwaremill.bootstrap.service.user.UserService
+import pl.softwaremill.bootstrap.service.EntryService
 
 /**
  * This is the ScalatraBootstrap bootstrap file. You can use it to mount servlets or

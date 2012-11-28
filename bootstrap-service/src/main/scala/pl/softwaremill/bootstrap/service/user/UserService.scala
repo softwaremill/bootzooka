@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.service
+package pl.softwaremill.bootstrap.service.user
 
 import pl.softwaremill.bootstrap.dao.UserDAO
 import pl.softwaremill.bootstrap.domain.User

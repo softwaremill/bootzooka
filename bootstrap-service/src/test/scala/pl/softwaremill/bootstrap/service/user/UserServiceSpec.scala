@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.service
+package pl.softwaremill.bootstrap.service.user
 
 import org.specs2.mutable.Specification
 import pl.softwaremill.bootstrap.dao.UserDAO

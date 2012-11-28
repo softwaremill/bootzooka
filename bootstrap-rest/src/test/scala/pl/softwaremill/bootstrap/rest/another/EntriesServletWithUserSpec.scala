@@ -1,12 +1,12 @@
 package pl.softwaremill.bootstrap.rest.another
 
 import org.scalatra.test.specs2._
-import pl.softwaremill.bootstrap.service.{UserService, EntryService}
+import pl.softwaremill.bootstrap.service.user.UserService
+import pl.softwaremill.bootstrap.service.EntryService
 import org.specs2.mock.Mockito
-import org.mockito.{Matchers}
+import org.mockito.Matchers
 import pl.softwaremill.bootstrap.domain.{User, Entry}
 import org.specs2.matcher.{MatchResult, ThrownExpectations}
-import org.specs2.specification.{BeforeExample, BeforeEach, Before}
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.rest.EntriesServlet
 
