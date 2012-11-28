@@ -42,11 +42,11 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     registrationDataValidator.isDataValid(loginOpt, emailOpt, passwordOpt)
   }
 
-  def checkUserExistence(user: User): Either[String, Unit] = {
+  def checkUserExistenceFor(userLogin: String, userEmail: String): Either[String, Unit] = {
     var messageEither: Either[String, Unit] = Right(None)
 
-    findByLogin(user.login) foreach( _ => messageEither = Left("Login already in use!"))
-    findByEmail(user.email) foreach( _ => messageEither = Left("E-mail already in use!"))
+    findByLogin(userLogin) foreach( _ => messageEither = Left("Login already in use!"))
+    findByEmail(userEmail) foreach( _ => messageEither = Left("E-mail already in use!"))
 
     messageEither
   }

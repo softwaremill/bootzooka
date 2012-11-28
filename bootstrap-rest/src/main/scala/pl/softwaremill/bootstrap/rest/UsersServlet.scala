@@ -34,9 +34,10 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
         messageOpt = Some("Wrong user data!")
     }
     else {
-      val newUser = parsedBody.extract[User]
+      val userLogin = parsedBody \ "login" getAsOrElse("")
+      val userEmail = parsedBody \ "email" getAsOrElse("")
 
-      userService.checkUserExistence(newUser) match {
+      userService.checkUserExistenceFor(userLogin, userEmail) match {
         case Left(error) => messageOpt = Some(error)
         case _ =>
       }
