@@ -40,8 +40,8 @@ class EntriesServletSpec extends BootstrapServletSpec {
   def root200 = onServletWithMocks { (entryService, userService) =>
     get("/") {
       status === 200
-      there was one(userService).loadAll
-      there was no(userService).load(0)
+      there was one(entryService).loadAll
+      there was no(entryService).load(0)
     }
   }
 
