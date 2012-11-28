@@ -3,12 +3,9 @@ package pl.softwaremill.bootstrap.rest
 import org.scalatra._
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.JsonWrapper
-import validators.UserExistenceChecker
 import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
-
-  val userExistenceChecker: UserExistenceChecker = new UserExistenceChecker(userService)
 
   post() {
     val userOpt: Option[User] = authenticate()
@@ -39,7 +36,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     else {
       val newUser = parsedBody.extract[User]
 
-      userExistenceChecker.check(newUser) match {
+      userService.checkUserExistence(newUser) match {
         case Left(error) => messageOpt = Some(error)
         case _ =>
       }
