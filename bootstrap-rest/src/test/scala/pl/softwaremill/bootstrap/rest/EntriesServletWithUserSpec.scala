@@ -3,17 +3,14 @@ package pl.softwaremill.bootstrap.rest
 import org.scalatra.test.specs2._
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.EntryService
-import org.specs2.mock.Mockito
 import org.mockito.Matchers
 import pl.softwaremill.bootstrap.domain.{User, Entry}
-import org.specs2.matcher.{MatchResult, ThrownExpectations}
-import org.specs2.mock.Mockito
-import pl.softwaremill.bootstrap.rest.EntriesServlet
+import org.specs2.matcher.MatchResult
+import pl.softwaremill.bootstrap.BootstrapServletSpec
 
 
-class EntriesServletWithUserSpec extends ScalatraSpec with Mockito with ThrownExpectations {
+class EntriesServletWithUserSpec extends BootstrapServletSpec {
 
-  val defaultJsonHeaders = Map("Content-Type" -> "application/json;charset=UTF-8")
   val entryOne = Entry(1, "Jas Kowalski", "Message from Jas")
   val entryTwo = Entry(2, "Piotr Nowak", "Message from Piotr")
 

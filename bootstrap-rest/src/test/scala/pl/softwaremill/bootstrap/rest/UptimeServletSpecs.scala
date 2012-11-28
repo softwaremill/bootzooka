@@ -1,8 +1,8 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.scalatra.test.specs2.ScalatraSpec
+import pl.softwaremill.bootstrap.BootstrapServletSpec
 
-class UptimeServletSpecs extends ScalatraSpec {
+class UptimeServletSpecs extends BootstrapServletSpec {
 
   def is = sequential                 ^
     "GET / on UptimServlet"           ^

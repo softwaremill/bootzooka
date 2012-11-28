@@ -1,14 +1,13 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.scalatra.test.specs2._
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.EntryService
-import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.domain.Entry
 import org.specs2.matcher.MatchResult
+import pl.softwaremill.bootstrap.BootstrapServletSpec
 
 // For more on Specs2, see http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html
-class EntriesServletSpec extends ScalatraSpec with Mockito {
+class EntriesServletSpec extends BootstrapServletSpec {
 
   def is =
     sequential ^
