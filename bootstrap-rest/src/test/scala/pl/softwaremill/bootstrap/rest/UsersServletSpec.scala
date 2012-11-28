@@ -6,7 +6,7 @@ import pl.softwaremill.bootstrap.dao.UserDAO
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.BootstrapServletSpec
 import org.mockito.Matchers
-import org.json4s.JsonAST.JString
+import org.json4s.JsonDSL._
 
 class UsersServletSpec extends BootstrapServletSpec {
 
@@ -30,7 +30,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   }
 
   def shouldRegisterNewUser = onServletWithMocks{ (userService) =>
-    put("/register", mapToJson(Map("login" -> JString("newUser"), "email" -> JString("newUser@sml.com"), "password" -> JString("secret"))),
+    put("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),
       defaultJsonHeaders)  {
         there was one(userService).registerNewUser(Matchers.eq(new User(-1, "newUser", "newUser@sml.com", "secret")))
         status must_== 200

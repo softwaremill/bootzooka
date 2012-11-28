@@ -14,7 +14,7 @@ trait BootstrapServletSpec extends ScalatraSpec with Mockito with ThrownExpectat
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 
-  def mapToJson(map: Map[String, JValue]): Array[Byte] = {
+  def mapToJson[T <% JValue](map: Map[String, T]): Array[Byte] = {
     compact(map2jvalue(map)).getBytes("UTF-8")
   }
 
