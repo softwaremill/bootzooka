@@ -6,6 +6,7 @@ import org.mockito.Matchers
 import pl.softwaremill.bootstrap.domain.{User, Entry}
 import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.BootstrapServletSpec
+import org.json4s.JsonAST.{JInt, JString}
 
 
 class EntriesServletWithUserSpec extends BootstrapServletSpec {
@@ -41,7 +42,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   def modifyExistingEntryThatLoggedUserOwns = onServletWithMocks { (entryService, userService) =>
 
 
-    post("/", mapToJson(Map("id" -> "1", "text"->"Important message")), defaultJsonHeaders) {
+    post("/", mapToJson(Map("id" -> JInt(1), "text" -> JString("Important message"))), defaultJsonHeaders) {
       there was one(entryService).load(1)
       there was one(entryService).update(Matchers.eq(Entry(1, "Jas Kowalski", "Important message")))
       status must_== 200
@@ -50,7 +51,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
 
 
   def notUpdateNonExistingEntry = onServletWithMocks { (entryService, userService) =>
-    post("/", mapToJson(Map("id" -> "3", "text"->"Important message")), defaultJsonHeaders) {
+    post("/", mapToJson(Map("id" -> JInt(3), "text"-> JString("Important message"))), defaultJsonHeaders) {
       there was one(entryService).load(3)
       there was no(entryService).update(any[Entry])
       status must_== 200
@@ -58,7 +59,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   }
 
   def notAllowToUpdateNotOwnedEntry = onServletWithMocks { (entryService, usersService) =>
-    post("/", mapToJson(Map("id" -> "2", "text"->"Important message")), defaultJsonHeaders) {
+    post("/", mapToJson(Map("id" -> JInt(2), "text"-> JString("Important message"))), defaultJsonHeaders) {
       there was one(entryService).load(2)
       there was no(entryService).update(any[Entry])
       status must_== 403
@@ -66,7 +67,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   }
 
   def shouldCreateNewEntry = onServletWithMocks { (entryService, userService) =>
-    put("/", mapToJson(Map("text"->"New message")), defaultJsonHeaders) {
+    put("/", mapToJson(Map("text"-> JString("New message"))), defaultJsonHeaders) {
       there was one(entryService).add(Matchers.eq(Entry(-1, "Jas Kowalski", "New message")))
       there was no(entryService).update(any[Entry])
       status must_== 200

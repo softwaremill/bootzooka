@@ -1,14 +1,12 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.scalatra.test.specs2.ScalatraSpec
-import org.specs2.mock.Mockito
-import org.specs2.matcher.{MatchResult, ThrownExpectations}
+import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
 import pl.softwaremill.bootstrap.dao.UserDAO
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.BootstrapServletSpec
-import org.json4s.JsonAST.JValue
 import org.mockito.Matchers
+import org.json4s.JsonAST.JString
 
 class UsersServletSpec extends BootstrapServletSpec {
 
@@ -32,9 +30,10 @@ class UsersServletSpec extends BootstrapServletSpec {
   }
 
   def shouldRegisterNewUser = onServletWithMocks{ (userService) =>
-    put("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")), defaultJsonHeaders)  {
-      there was one(userService).registerNewUser(Matchers.eq(new User(-1, "newUser", "newUser@sml.com", "secret")))
-      status must_== 200
+    put("/register", mapToJson(Map("login" -> JString("newUser"), "email" -> JString("newUser@sml.com"), "password" -> JString("secret"))),
+      defaultJsonHeaders)  {
+        there was one(userService).registerNewUser(Matchers.eq(new User(-1, "newUser", "newUser@sml.com", "secret")))
+        status must_== 200
     }
   }
 

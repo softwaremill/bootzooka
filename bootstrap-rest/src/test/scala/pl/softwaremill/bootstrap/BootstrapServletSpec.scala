@@ -11,9 +11,10 @@ import org.json4s.{DefaultFormats, Formats}
 trait BootstrapServletSpec extends ScalatraSpec with Mockito with ThrownExpectations {
 
   val defaultJsonHeaders = Map("Content-Type" -> "application/json;charset=UTF-8")
+
   protected implicit val jsonFormats: Formats = DefaultFormats
 
-  def mapToJson(map: Map[String, String]): Array[Byte] = {
+  def mapToJson(map: Map[String, JValue]): Array[Byte] = {
     compact(map2jvalue(map)).getBytes("UTF-8")
   }
 
