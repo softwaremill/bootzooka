@@ -6,7 +6,7 @@ controllers.controller('UptimeController', function UptimeController($scope, Uti
     });
 });
 
-controllers.controller('EntriesController', function EntriesController($scope, $timeout, EntriesService, UserSessionService, FlashService) {
+controllers.controller('EntriesController', function EntriesController($scope, $timeout, EntriesService, UserSessionService) {
 
     var self = this;
 

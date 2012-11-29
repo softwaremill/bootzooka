@@ -46,6 +46,16 @@ angular.module('smlBootstrap', ['smlBootstrap.services','smlBootstrap.filters', 
 
     .run(function($rootScope, UserSessionService) {
         UserSessionService.validate();
+    })
+
+    .run(function($rootScope, $timeout, FlashService) {
+        $rootScope.$on("$routeChangeSuccess", function () {
+            var message = FlashService.get();
+            if (angular.isDefined(message)) {
+                // small trick to show message on a page - without $timeout message is simple gone
+                $timeout(function(){ showInfoMessage(message) }, 100);
+            }
+        });
     });
 
 
