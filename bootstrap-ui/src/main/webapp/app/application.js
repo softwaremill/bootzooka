@@ -52,8 +52,7 @@ angular.module('smlBootstrap', ['smlBootstrap.services','smlBootstrap.filters', 
         $rootScope.$on("$routeChangeSuccess", function () {
             var message = FlashService.get();
             if (angular.isDefined(message)) {
-                // small trick to show message on a page - without $timeout message is simple gone
-                $timeout(function(){ showInfoMessage(message) }, 100);
+                showInfoMessage(message);
             }
         });
     });

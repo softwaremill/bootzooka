@@ -1,19 +1,15 @@
 function showInfoMessage( text) {
-    $("#feedback").html(text);
-    $("#feedback").addClass("info");
-    $("#feedback").removeClass("hidden");
-    $("#feedback").removeClass("error");
-    $("#feedback").fadeIn();
-
+    $('#info-message').html(text);
+    $('.alert-info').fadeIn(600);
     setTimeout(function() {
-        $("#feedback").fadeOut()
-    }, 3000)
+        $('.alert-info').fadeOut(1200);
+    }, 2000)
 }
 
 function showErrorMessage(text) {
-    $("#feedback").html(text);
-    $("#feedback").addClass("error");
-    $("#feedback").removeClass("hidden");
-    $("#feedback").removeClass("info");
-    $("#feedback").fadeIn();
+    $('#error-message').html(text);
+    $('.alert-error').fadeIn(600);
+    setTimeout(function() {
+        $('.alert-error').fadeOut(1200);
+    }, 4000)
 }
