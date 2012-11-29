@@ -35,13 +35,6 @@ controllers.controller('EntriesController', function EntriesController($scope, $
         $timeout.cancel(self.reloadEventId);
     });
 
-    $scope.$on("$routeChangeSuccess", function () {
-        var message = FlashService.get();
-        if (angular.isDefined(message)) {
-            showInfoMessage(message);
-        }
-    });
-
     $scope.addEntry = function () {
         EntriesService.addNew($scope.entryText, function () {
             self.reloadEntries();
