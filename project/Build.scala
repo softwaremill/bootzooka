@@ -33,6 +33,8 @@ object BuildSettings {
 
 object Dependencies {
 
+  val casbah = "com.mongodb.casbah" % "casbah_2.9.0-1" % "2.1.5.0"
+
   val scalatraVersion = "2.2.0-RC1"
 
   val logback = "ch.qos.logback" % "logback-classic" % "1.0.6"
@@ -89,7 +91,7 @@ object SmlBootstrapBuild extends Build {
   lazy val dao: Project = Project(
     "bootstrap-dao",
     file("bootstrap-dao"),
-    settings = buildSettings
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(casbah))
   ) dependsOn(domain, common)
 
   lazy val service: Project = Project(
