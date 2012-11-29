@@ -10,7 +10,9 @@ object Resolvers {
     "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
     "SotwareMill Public Releases" at "http://tools.softwaremill.pl/nexus/content/repositories/releases/",
     "JBoss Releases" at "https://repository.jboss.org/nexus/content/groups/public",
-    "Twitter Maven" at "http://maven.twttr.com")
+    "Twitter Maven" at "http://maven.twttr.com",
+    "Novus Releases" at "http://repo.novus.com/releases/"
+  )
 
 }
 
@@ -33,7 +35,11 @@ object BuildSettings {
 
 object Dependencies {
 
-  val casbah = "com.mongodb.casbah" % "casbah_2.9.0-1" % "2.1.5.0"
+  val casbah = "org.mongodb" %% "casbah" % "2.4.1"
+  val salat = "com.novus" %% "salat" % "1.9.1"
+  val databaseLibs = Seq(casbah, salat)
+
+
 
   val scalatraVersion = "2.2.0-RC1"
 
@@ -91,7 +97,7 @@ object SmlBootstrapBuild extends Build {
   lazy val dao: Project = Project(
     "bootstrap-dao",
     file("bootstrap-dao"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(casbah))
+    settings = buildSettings ++ Seq(libraryDependencies ++= databaseLibs)
   ) dependsOn(domain, common)
 
   lazy val service: Project = Project(
