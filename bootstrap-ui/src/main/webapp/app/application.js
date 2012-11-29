@@ -1,4 +1,4 @@
-angular.module('smlBootstrap', ['entriesService', 'utilService', 'userSessionService', 'registerService', 'smlBootstrap.services','smlBootstrap.filters', 'smlBootstrap.controllers', 'ngSanitize'])
+angular.module('smlBootstrap', ['smlBootstrap.services','smlBootstrap.filters', 'smlBootstrap.controllers', 'ngSanitize'])
 
     .config(function($routeProvider) {
 

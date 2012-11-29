@@ -2,7 +2,7 @@
 
 describe("Login Controller", function () {
 
-    beforeEach(module('userSessionService', 'smlBootstrap.controllers'));
+    beforeEach(module('smlBootstrap.services', 'smlBootstrap.controllers'));
 
     afterEach(inject(function(_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();
