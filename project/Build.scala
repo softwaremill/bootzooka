@@ -108,6 +108,9 @@ object SmlBootstrapBuild extends Build {
     "bootstrap-ui",
     file("bootstrap-ui"),
     settings = buildSettings ++ jasmineSettings ++ graphSettings ++ webSettings ++ Seq(
+      artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+        "bootstrap." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
+      },
       libraryDependencies ++= Seq(jetty, servletApiProvided),
       appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "app" },
       appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },
