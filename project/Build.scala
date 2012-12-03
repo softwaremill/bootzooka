@@ -92,7 +92,7 @@ object SmlBootstrapBuild extends Build {
   lazy val domain: Project = Project(
     "bootstrap-domain",
     file("bootstrap-domain"),
-    settings = buildSettings
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(salat))
   ) dependsOn (common)
 
   lazy val dao: Project = Project(
@@ -104,7 +104,7 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, casbah))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
