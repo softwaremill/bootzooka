@@ -1,5 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -9,20 +8,22 @@
     <link href="assets/css/application.css" rel="stylesheet">
     <link rel="shortcut icon" href="assets/img/favicon.gif" type="image/x-icon">
 
-    <script src="assets/js/jquery-1.8.2-min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-1.8.2-min.js"></script>
+
+    <script type="text/javascript" src="assets/js/bootstrap-2.2.0.js"></script>
 
     <!-- angular stuff -->
-    <script src="assets/js/angular-1.1.0.js"></script>
-    <script src="assets/js/angular-resource-1.1.0.js"></script>
-    <script src="assets/js/angular-sanitize-1.1.0.js"></script>
+    <script type="text/javascript" src="assets/js/angular-1.1.0.js"></script>
+    <script type="text/javascript" src="assets/js/angular-resource-1.1.0.js"></script>
+    <script type="text/javascript" src="assets/js/angular-sanitize-1.1.0.js"></script>
 
     <!-- effects -->
-    <script src="app/effects.js"></script>
+    <script type="text/javascript" src="app/effects.js"></script>
 
     <!-- logic -->
-    <script src="app/application.js"></script>
-    <script src="app/controllers.js"></script>
-    <script src="app/services.js"></script>
+    <script type="text/javascript" src="app/application.js"></script>
+    <script type="text/javascript" src="app/controllers.js"></script>
+    <script type="text/javascript" src="app/services.js"></script>
 
 </head>
 <body class="padding-for-navbar" ng-app="smlBootstrap">
@@ -49,6 +50,24 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="row-fluid feedback-container">
+        <div id="feedback" class="span6">
+            <div class="alert alert-error hide">
+                <a class="close" onclick="$('.alert-error').fadeOut()">&times;</a>
+                <strong>Error!</strong>
+                <span id="error-message"></span>
+            </div>
+            <div class="alert alert-info hide">
+                <a class="close" onclick="$('.alert-message').fadeOut()">&times;</a>
+                <strong>Info!</strong>
+                <span id="info-message"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid"><!-- spacer for feedback block above -->
+        <div class="span12"></div>
     </div>
 
     <div class="container" ng-view>

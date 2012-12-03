@@ -1,4 +1,4 @@
-angular.module('smlBootstrap', ['entriesService', 'utilService', 'userSessionService', 'registerService', 'smlBootstrap.services','smlBootstrap.filters', 'smlBootstrap.controllers', 'ngSanitize'])
+angular.module('smlBootstrap', ['smlBootstrap.services','smlBootstrap.filters', 'smlBootstrap.controllers', 'ngSanitize'])
 
     .config(function($routeProvider) {
 
@@ -12,22 +12,22 @@ angular.module('smlBootstrap', ['entriesService', 'utilService', 'userSessionSer
 
     .config(['$httpProvider', function($httpProvider) {
 
-        var interceptor = ['$rootScope', '$q', '$location', function($rootScope, $q, $location) {
+        var interceptor = ['$q', '$location', 'FlashService', '$injector', function($q, $location, FlashService, $injector) {
             function success(response) {
                 return response;
             }
 
             function error(response) {
-                // user is not logged in, remove user data from rootScope
-                if (response.status === 401) {
-                    if($rootScope.loggedUser != null) {
+                if (response.status === 401) { // user is not logged in
+                    var UserSessionService = $injector.get('UserSessionService'); // uses $injector to avoid circular dependency
+                    if(UserSessionService.isLogged()) {
+                        UserSessionService.logout(); // Http session expired / logged out - logout on Angular layer
+                        FlashService.set('Your session timed out. Please login again.');
                         $location.path("/login");
-                        showInfoMessage("Your session timed out. Please login again.");
-                        $rootScope.loggedUser = null;
                     }
                 }
                 else if(response.status === 403) {
-                    console.log("403");
+                    console.log(response.data);
                     // do nothing, user is trying to modify data without privileges
                 }
                 else {
@@ -46,6 +46,15 @@ angular.module('smlBootstrap', ['entriesService', 'utilService', 'userSessionSer
 
     .run(function($rootScope, UserSessionService) {
         UserSessionService.validate();
+    })
+
+    .run(function($rootScope, $timeout, FlashService) {
+        $rootScope.$on("$routeChangeSuccess", function () {
+            var message = FlashService.get();
+            if (angular.isDefined(message)) {
+                showInfoMessage(message);
+            }
+        });
     });
 
 

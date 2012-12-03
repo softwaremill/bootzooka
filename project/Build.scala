@@ -68,6 +68,7 @@ object Dependencies {
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
   val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
+
 }
 
 object SmlBootstrapBuild extends Build {
@@ -116,6 +117,9 @@ object SmlBootstrapBuild extends Build {
     "bootstrap-ui",
     file("bootstrap-ui"),
     settings = buildSettings ++ jasmineSettings ++ graphSettings ++ webSettings ++ Seq(
+      artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+        "bootstrap." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
+      },
       libraryDependencies ++= Seq(jetty, servletApiProvided),
       appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "app" },
       appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },

@@ -23,7 +23,9 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   }
 
   get("/logout") {
-    logOut()
+    if(isAuthenticated) { // call logout only when logged in to avoid NPE
+      logOut()
+    }
   }
 
   put("/register") {
