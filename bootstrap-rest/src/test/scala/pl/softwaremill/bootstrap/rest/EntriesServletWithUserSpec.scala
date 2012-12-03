@@ -33,6 +33,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
     entryService.loadAll returns List(entryOne, entryTwo)
     entryService.load("1") returns Some(entryOne)
     entryService.load("2") returns Some(entryTwo)
+    entryService.load("3") returns None
 
     val servlet: EntriesServlet = new EntriesServletWithUser(entryService, userService)
     addServlet(servlet, "/*")
