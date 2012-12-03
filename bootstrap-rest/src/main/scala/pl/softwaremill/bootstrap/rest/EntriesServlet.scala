@@ -10,7 +10,10 @@ import pl.softwaremill.bootstrap.service.data.EntryJson
 class EntriesServlet(entryService: EntryService, val userService: UserService) extends JsonServletWithAuthentication {
 
   get("/:id") {
-    entryService.load(params("id")).foreach((e: EntryJson) => e)
+    entryService.load(params("id")) match {
+      case Some(e) => e
+      case _ =>
+    }
   }
 
   get("/") {

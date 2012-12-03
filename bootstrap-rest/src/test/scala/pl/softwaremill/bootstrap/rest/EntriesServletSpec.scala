@@ -2,10 +2,10 @@ package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.EntryService
-import pl.softwaremill.bootstrap.domain.Entry
 import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.BootstrapServletSpec
 import pl.softwaremill.bootstrap.service.data.EntryJson
+import org.json4s.JsonDSL._
 
 // For more on Specs2, see http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html
 class EntriesServletSpec extends BootstrapServletSpec {
@@ -15,6 +15,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
       "EntriesServlet" ^
       "GET should return status 200" ! root200 ^
       "GET should return content-type application/json" ! contentJson ^
+      "GET with id should return entry details" ! returnSingleEntryDetails ^
       "GET should return JSON entries" ! jsonEntries add
       "GET /count on EntriesServlet" ^
         "should return number of entries" ! countEntries add
@@ -30,7 +31,10 @@ class EntriesServletSpec extends BootstrapServletSpec {
 
     val entryService = mock[EntryService]
     entryService.count() returns 4
-    entryService.loadAll returns List(EntryJson("1", "Important message", "Jas Kowalski"))
+    val entryOne: EntryJson = EntryJson("1", "Important message", "Jas Kowalski")
+    entryService.loadAll returns List(entryOne)
+    entryService.load("1") returns Some(entryOne)
+
 
     val servlet: EntriesServlet = new EntriesServlet(entryService, userService)
     addServlet(servlet, "/*")
@@ -51,6 +55,12 @@ class EntriesServletSpec extends BootstrapServletSpec {
       header("Content-Type") contains "application/json"
       there was one(entryService).loadAll
       there was no(entryService).load("0")
+    }
+  }
+
+  def returnSingleEntryDetails = onServletWithMocks{ (entryService, userService) =>
+    get("/1", defaultJsonHeaders) {
+      body mustEqual(mapToStringifiedJson(Map("id" -> "1", "text"-> "Important message", "author" -> "Jas Kowalski")))
     }
   }
 
