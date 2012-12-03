@@ -10,6 +10,8 @@
 
 .entryText {
     font-size: 18px;
+    overflow-x: auto;
+    overflow-y:hidden;
 }
 
 .user-info-dashboard {
