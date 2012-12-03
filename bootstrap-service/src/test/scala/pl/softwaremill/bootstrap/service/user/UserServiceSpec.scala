@@ -4,14 +4,15 @@ import org.specs2.mutable.Specification
 import pl.softwaremill.bootstrap.dao.UserDAO
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.domain.User
+import pl.softwaremill.bootstrap.service.data.UserJson
 
 class UserServiceSpec extends Specification with Mockito {
 
   def prepareUserDAOMock: UserDAO = {
     val dao = mock[UserDAO]
-    dao.findByEmail("admin@sml.com") returns Some(new User("admin", "admin@sml.com", "pass"))
+    dao.findByEmail("admin@sml.com") returns Some(User("admin", "admin@sml.com", "pass"))
     dao.findByEmail("newUser@sml.com") returns None
-    dao.findByLogin("admin") returns Some(new User("admin", "admin@sml.com", "pass"))
+    dao.findByLogin("admin") returns Some(User("admin", "admin@sml.com", "pass"))
     dao.findByLogin("newUser") returns None
     dao
   }
@@ -23,11 +24,10 @@ class UserServiceSpec extends Specification with Mockito {
     "return user for admin@sml.pl" in {
 
 
-      val user: User = userService.findByEmail("admin@sml.com").getOrElse(null)
+      val user: UserJson = userService.findByEmail("admin@sml.com").getOrElse(null)
 
       there was user !== null
       there was user.login === "admin"
-      there was user.email === "admin@sml.com"
     }
   }
 

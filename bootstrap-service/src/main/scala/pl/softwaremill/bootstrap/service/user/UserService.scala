@@ -3,39 +3,43 @@ package pl.softwaremill.bootstrap.service.user
 import pl.softwaremill.bootstrap.dao.UserDAO
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.Utils
+import com.mongodb.casbah.Imports._
+import pl.softwaremill.bootstrap.service.data.UserJson
 
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator) {
 
-  def load(userId: Int) = {
-    userDAO.load(userId)
+  def load(userId: String) = {
+    UserJson(userDAO.load(userId))
   }
 
   def loadAll = {
-    userDAO.loadAll
+    UserJson(userDAO.loadAll)
   }
 
   def count(): Long = {
     userDAO.count()
   }
 
-  def registerNewUser(user: User) {
-    userDAO.add(user)
+  def registerNewUser(login: String, email: String, password: String) {
+    userDAO.add(User(login.toLowerCase, email.toLowerCase, Utils.sha256(password, login.toLowerCase),
+      Utils.sha256(password, login.toLowerCase)))
   }
 
-  def authenticate(login: String, nonEncryptedPassword: String): Option[User] = {
-    userDAO.findByLoginAndEncryptedPassword(login, Utils.sha256(nonEncryptedPassword, login))
+  def authenticate(login: String, nonEncryptedPassword: String): Option[UserJson] = {
+    val userOpt: Option[User] = userDAO.findByLoginAndEncryptedPassword(login, Utils.sha256(nonEncryptedPassword, login))
+    UserJson(userOpt)
   }
 
-  def authenticateWithToken(token: String): Option[User] = {
-    userDAO.findByToken(token)
+  def authenticateWithToken(token: String): Option[UserJson] = {
+    UserJson(userDAO.findByToken(token))
   }
 
-  def findByLogin(login: String): Option[User] = {
-    userDAO.findByLogin(login)
+  def findByLogin(login: String): Option[UserJson] = {
+    UserJson(userDAO.findByLogin(login))
   }
 
-  def findByEmail(email: String): Option[User] = {
-    userDAO.findByEmail(email)
+  def findByEmail(email: String): Option[UserJson] = {
+    UserJson(userDAO.findByEmail(email))
   }
 
   def isUserDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {
