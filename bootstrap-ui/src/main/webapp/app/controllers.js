@@ -1,9 +1,26 @@
 var controllers = angular.module('smlBootstrap.controllers', ['smlBootstrap.services']);
 
-controllers.controller('UptimeController', function UptimeController($scope, UtilService) {
-    UtilService.loadUptime(function (data) {
-        $scope.uptime = data.value;
+controllers.controller('UptimeController', function UptimeController($scope, $timeout, UtilService) {
+
+    var self = this;
+
+    $scope.update = function() {
+        UtilService.loadUptime(function (data) {
+            $scope.uptime = data.value;
+        });
+    };
+
+    this.uptimeEventId = $timeout(function updateUptimeLoop() {
+        $scope.update();
+        self.uptimeEventId = $timeout(updateUptimeLoop, 10000);
+    }, 10000);
+
+    $scope.$on("$routeChangeStart", function () {
+        $timeout.cancel(self.uptimeEventId);
     });
+
+    $scope.update();
+
 });
 
 controllers.controller('EntriesController', function EntriesController($scope, $timeout, EntriesService, UserSessionService) {
