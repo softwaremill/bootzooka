@@ -97,7 +97,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
 controllers.controller('EntryEditController', function EntryEditController($scope, EntriesService, $routeParams, $location, UserSessionService) {
 
     $scope.logId = $routeParams.entryId;
-    $scope.log = new Object();
+    $scope.log = {};
 
     EntriesService.load($scope.logId, function (data) {
         $scope.log = data;
@@ -165,7 +165,7 @@ controllers.controller('LoginController', function LoginController($scope, UserS
 
     var self = this;
 
-    $scope.user = new Object();
+    $scope.user = {};
     $scope.user.login = '';
     $scope.user.password = '';
     $scope.user.rememberme = false;
