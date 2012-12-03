@@ -22,4 +22,8 @@ trait BootstrapServletSpec extends ScalatraSpec with Mockito with ThrownExpectat
     parse(string)
   }
 
+  def mapToStringifiedJson[T <% JValue](map: Map[String, T]): String = {
+    compact(map2jvalue(map))
+  }
+
 }
