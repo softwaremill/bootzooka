@@ -5,6 +5,7 @@ import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.domain.Entry
 import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.BootstrapServletSpec
+import pl.softwaremill.bootstrap.service.data.EntryJson
 
 // For more on Specs2, see http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html
 class EntriesServletSpec extends BootstrapServletSpec {
@@ -29,7 +30,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
 
     val entryService = mock[EntryService]
     entryService.count() returns 4
-    entryService.loadAll returns List(Entry(1, "Jas Kowalski", "Important message"))
+    entryService.loadAll returns List(EntryJson("1", "Important message", "Jas Kowalski"))
 
     val servlet: EntriesServlet = new EntriesServlet(entryService, userService)
     addServlet(servlet, "/*")
@@ -41,7 +42,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
     get("/") {
       status === 200
       there was one(entryService).loadAll
-      there was no(entryService).load(0)
+      there was no(entryService).load("0")
     }
   }
 
@@ -49,12 +50,12 @@ class EntriesServletSpec extends BootstrapServletSpec {
     get("/") {
       header("Content-Type") contains "application/json"
       there was one(entryService).loadAll
-      there was no(entryService).load(0)
+      there was no(entryService).load("0")
     }
   }
 
   def jsonEntries = get("/") {
-    body must contain("[{\"id\":1,\"author\":\"Jas Kowalski\",\"text\":\"Important message\"}]")
+    body must contain("[{\"id\":\"1\",\"text\":\"Important message\",\"author\":\"Jas Kowalski\"}]")
   }
 
   def countEntries = onServletWithMocks { (entryService, userService) =>

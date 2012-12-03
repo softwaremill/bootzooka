@@ -5,8 +5,9 @@ import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserSe
 import pl.softwaremill.bootstrap.dao.UserDAO
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.BootstrapServletSpec
-import org.mockito.Matchers
 import org.json4s.JsonDSL._
+import com.mongodb.casbah.Imports._
+import pl.softwaremill.bootstrap.common.Utils
 
 class UsersServletSpec extends BootstrapServletSpec {
 
@@ -16,9 +17,9 @@ class UsersServletSpec extends BootstrapServletSpec {
 
   def onServletWithMocks(testToExecute: (UserService) => MatchResult[Any]): MatchResult[Any] = {
     val dao = mock[UserDAO]
-    dao.findByEmail("admin@sml.com") returns Some(new User("admin", "admin@sml.com", "pass"))
+    dao.findByEmail("admin@sml.com") returns Some(new User(new ObjectId("a" * 24), "admin", "admin@sml.com", "pass", Utils.sha256("pass", "admin")))
     dao.findByEmail("newUser@sml.com") returns None
-    dao.findByLogin("admin") returns Some(new User("admin", "admin@sml.com", "pass"))
+    dao.findByLogin("admin") returns Some(User("admin", "admin@sml.com", "pass"))
     dao.findByLogin("newUser") returns None
 
     val userService = spy(new UserService(dao, new RegistrationDataValidator()))
@@ -32,7 +33,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   def shouldRegisterNewUser = onServletWithMocks{ (userService) =>
     put("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),
       defaultJsonHeaders)  {
-        there was one(userService).registerNewUser(Matchers.eq(new User(-1, "newUser", "newUser@sml.com", "secret")))
+        there was one(userService).registerNewUser("newUser", "newUser@sml.com", "secret")
         status must_== 200
     }
   }

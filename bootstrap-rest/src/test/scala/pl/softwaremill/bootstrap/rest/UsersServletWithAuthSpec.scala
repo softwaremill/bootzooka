@@ -7,6 +7,7 @@ import org.specs2.mock.Mockito
 import org.scalatra.auth.Scentry
 import pl.softwaremill.bootstrap.domain.User
 import org.specs2.matcher.MatchResult
+import pl.softwaremill.bootstrap.service.data.UserJson
 
 class UserServletWithAuthSpec extends BootstrapServletSpec {
 
@@ -16,10 +17,10 @@ class UserServletWithAuthSpec extends BootstrapServletSpec {
 
   end
 
-  def onServletWithMocks(authenticated: Boolean, testToExecute: (UserService, Scentry[User])=> MatchResult[Any]): MatchResult[Any] = {
+  def onServletWithMocks(authenticated: Boolean, testToExecute: (UserService, Scentry[UserJson])=> MatchResult[Any]): MatchResult[Any] = {
     val userService = mock[UserService]
 
-    val mockedScentry = mock[Scentry[User]]
+    val mockedScentry = mock[Scentry[UserJson]]
     mockedScentry.isAuthenticated returns authenticated
 
     val servlet: MockUsersServlet = new MockUsersServlet(userService, mockedScentry)
@@ -46,7 +47,7 @@ class UserServletWithAuthSpec extends BootstrapServletSpec {
 
 }
 
-class MockUsersServlet(userService: UserService, mockedScentry: Scentry[User]) extends UsersServlet(userService) with Mockito {
+class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService) with Mockito {
 
   override def scentry = {
     mockedScentry
