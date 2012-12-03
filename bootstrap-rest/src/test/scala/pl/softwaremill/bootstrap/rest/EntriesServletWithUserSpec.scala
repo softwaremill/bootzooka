@@ -16,7 +16,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
     def is =
       sequential ^
         "EntriesServlet with logged user" ^
-        "POST / request should modify entry that user owns" ! modifyExistingEntryThatLoggedUserOwns
+        "POST / request should modify entry that user owns" ! modifyExistingEntryThatLoggedUserOwns ^
         "POST / request should not update non existing entry" ! notUpdateNonExistingEntry ^
         "POST / request should not update non owner entry" ! notAllowToUpdateNotOwnedEntry ^
         "PUT / request should create new entry" ! shouldCreateNewEntry
@@ -66,7 +66,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
 
   def shouldCreateNewEntry = onServletWithMocks { (entryService, userService) =>
     put("/", mapToJson(Map("text"-> "New message")), defaultJsonHeaders) {
-      there was one(entryService).add(Matchers.eq(EntryJson("", "Jas Kowalski", "New message")))
+      there was one(entryService).add(Matchers.eq(EntryJson("", "New message", "Jas Kowalski" )))
       there was no(entryService).update(any[EntryJson])
       status must_== 200
     }
