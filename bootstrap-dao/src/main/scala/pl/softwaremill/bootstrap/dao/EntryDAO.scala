@@ -10,7 +10,7 @@ import com.novus.salat.global._
 class EntryDAO(implicit mongoConn: MongoDB) extends SalatDAO[Entry, ObjectId](mongoConn("entries")) {
 
   def loadAll = {
-    find(MongoDBObject()).toList
+    find(MongoDBObject()).sort(MongoDBObject("_id" -> -1)).toList
   }
 
   def count(): Long = {
