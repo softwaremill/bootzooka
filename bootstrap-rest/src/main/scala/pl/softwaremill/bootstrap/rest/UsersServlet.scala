@@ -1,17 +1,17 @@
 package pl.softwaremill.bootstrap.rest
 
 import org.scalatra._
-import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.JsonWrapper
-import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
+import pl.softwaremill.bootstrap.service.user.UserService
+import pl.softwaremill.bootstrap.service.data.UserJson
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
 
   post() {
-    val userOpt: Option[User] = authenticate()
+    val userOpt: Option[UserJson] = authenticate()
     userOpt match {
-      case Some(user) =>
-        user
+      case Some(loggedUser) =>
+        loggedUser
       case _ =>
         halt(401, "Invalid login and/or password")
     }
@@ -19,7 +19,6 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
 
   get() {
     haltIfNotAuthenticated()
-    user
   }
 
   get("/logout") {
@@ -50,7 +49,8 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
         JsonWrapper(message)
       }
       case _ => {
-        userService.registerNewUser(parsedBody.extract[User])
+        userService.registerNewUser((parsedBody \ "login").extract[String],
+          (parsedBody \ "email").extract[String], (parsedBody \ "password").extract[String])
         JsonWrapper("success")
       }
     }

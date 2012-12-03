@@ -3,10 +3,10 @@ package pl.softwaremill.bootstrap.auth
 
 import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
-import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.service.user.UserService
+import pl.softwaremill.bootstrap.service.data.UserJson
 
-class UserPasswordStrategy(protected val app: ScalatraBase, login: String, password: String, val userService: UserService) extends ScentryStrategy[User] {
+class UserPasswordStrategy(protected val app: ScalatraBase, login: String, password: String, val userService: UserService) extends ScentryStrategy[UserJson] {
 
   override def name: String = UserPassword.name
 

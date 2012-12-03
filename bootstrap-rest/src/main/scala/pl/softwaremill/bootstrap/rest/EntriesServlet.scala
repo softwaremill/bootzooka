@@ -4,15 +4,13 @@ import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.common.{SafeInt, JsonWrapper}
-import pl.softwaremill.bootstrap.auth.AuthenticationSupport
+import com.novus.salat.global._
+import pl.softwaremill.bootstrap.service.data.EntryJson
 
 class EntriesServlet(entryService: EntryService, val userService: UserService) extends JsonServletWithAuthentication {
 
   get("/:id") {
-    SafeInt(params("id")) match {
-      case Some(id) => entryService.load(id)
-      case _ => null
-    }
+    entryService.load(params("id")).foreach((e: EntryJson) => e)
   }
 
   get("/") {
@@ -26,42 +24,37 @@ class EntriesServlet(entryService: EntryService, val userService: UserService) e
   // create new entry
   put("/") {
     haltIfNotAuthenticated()
-    val entry = parsedBody.extract[Entry]
+    val entryText = (parsedBody \ "text").extract[String]
 
-    haltWithForbiddenIf(entry.id >= 0)
-
-    entry.author = user.login
+    val entry: EntryJson = new EntryJson("", entryText, user.login)
     entryService.add(entry)
   }
 
   // update existing entry
   post("/") {
     haltIfNotAuthenticated()
-    val entry = parsedBody.extract[Entry]
+    val text: String = (parsedBody \ "text").extract[String]
+    val id: String = (parsedBody \ "id").extract[String]
+    val entryJson:EntryJson = EntryJson(id, text, "")
 
-    haltWithForbiddenIf(entry.id < 0)
+    val existingEntryOpt: Option[EntryJson] = entryService.load(entryJson.id)
 
-    val existingEntry = entryService.load(entry.id)
-    if (existingEntry != null) {
+    existingEntryOpt.foreach(existingEntry => {
       haltWithForbiddenIf(existingEntry.author != user.login)
-
-      existingEntry.text = entry.text
+      existingEntry.text = entryJson.text
       entryService.update(existingEntry)
-    }
+    })
+
   }
 
   delete("/:id") {
     haltIfNotAuthenticated()
 
-    SafeInt(params("id")) match {
-      case Some(id) =>
-        val existingEntry = entryService.load(id)
-        if (existingEntry != null) {
-          haltWithForbiddenIf(existingEntry.author != user.login)
-          entryService.remove(existingEntry.id)
-        }
-      case _ => null
-    }
+    val existingEntryOpt: Option[EntryJson] = entryService.load(params("id"))
+    existingEntryOpt.foreach(entryToRemove => {
+      haltWithForbiddenIf(entryToRemove.author != user.login)
+      entryService.remove(entryToRemove.id)
+    })
   }
 
 }
