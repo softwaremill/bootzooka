@@ -13,7 +13,9 @@ class UserServletWithAuthSpec extends BootstrapServletSpec {
 
   def is = sequential ^ "UserServlet" ^
     "GET /logout should call logout() when user is already authenticated" ! logoutIfAuthenticated ^
-    "GET /logut should not call logout() when user is not authenticated" ! noCallToLogout
+    "GET /logut should not call logout() when user is not authenticated" ! noCallToLogout ^
+    "GET should return user information" ! returnInformationAboutLoggedUser
+
 
   end
 
@@ -45,6 +47,13 @@ class UserServletWithAuthSpec extends BootstrapServletSpec {
       }
   )
 
+  def returnInformationAboutLoggedUser = onServletWithMocks(authenticated = true, testToExecute = (userService, mock) =>
+    get("/") {
+      status must_== 200
+      body mustEqual("{\"login\":\"Jas Kowalski\",\"token\":\"token\"}")
+    }
+  )
+
 }
 
 class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService) with Mockito {
@@ -52,5 +61,7 @@ class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson
   override def scentry = {
     mockedScentry
   }
+
+  override def user = new UserJson("Jas Kowalski", "token")
 
 }

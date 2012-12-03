@@ -19,6 +19,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
 
   get() {
     haltIfNotAuthenticated()
+    user
   }
 
   get("/logout") {
