@@ -1,70 +1,51 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.common.Utils
+import com.mongodb.casbah.Imports._
+import com.mongodb.casbah.MongoDB
+import com.mongodb.casbah.commons.MongoDBObject
+import com.novus.salat.dao.SalatDAO
+import com.novus.salat.global._
 
-class UserDAO {
-
-  // simulates single table in database
-  private var list = List(
-    User(1, "Admin", "admin@admin.pl", Utils.sha256("admin", "Admin"))
-  )
-
-  var id: Int = 10
-
-  private def nextId(): Int = {
-    id = id + 1
-    id
-  }
+class UserDAO(implicit mongoConn: MongoDB) extends SalatDAO[User, ObjectId](mongoConn("users")) {
 
   def loadAll = {
-    list
+    find(MongoDBObject()).toList
   }
 
   def count(): Long = {
-    list.size
+    super.count()
   }
 
   def add(user: User) {
-    val exists: Boolean = list.exists((u: User) => u.email.equalsIgnoreCase(user.email) || u.login.equalsIgnoreCase(user.login))
-    if (exists) {
+    if (findByLogin(user.login).isDefined || findByEmail(user.email).isDefined) {
       throw new Exception("User with given e-mail or login already exists")
     }
 
-    list = new User(nextId(), user.login, user.email, Utils.sha256(user.password, user.login)) +: list
+    insert(user, WriteConcern.Safe)
   }
 
-  def remove(userId: Int) {
-    val userOpt: Option[User] = list.find(_.id == userId)
-
-    userOpt match {
-      case Some(user) => list = list diff List(user)
-      case _ => {}
-    }
+  def remove(userId: String) {
+    remove(MongoDBObject("_id" -> new ObjectId(userId)), WriteConcern.Safe)
   }
 
-  def load(userId: Int): Option[User] = {
-    list.find(_.id == userId)
+  def load(userId: String): Option[User] = {
+    findOne(MongoDBObject("_id" -> new ObjectId(userId)))
   }
 
   def findByEmail(email: String) = {
-    findBy(_.email.equalsIgnoreCase(email))
+    findOne(MongoDBObject("email" -> email.toLowerCase))
   }
 
   def findByLogin(login: String) = {
-    findBy(_.login.equalsIgnoreCase(login))
+    findOne(MongoDBObject("login" -> login.toLowerCase))
   }
 
   def findByToken(token: String) = {
-    findBy(_.token.equals(token))
+    findOne(MongoDBObject("token" -> token))
   }
 
   def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String) = {
-    findBy((u: User) => (u.login.equalsIgnoreCase(login) && u.password.equals(encryptedPassword)))
+    findOne(MongoDBObject("login" -> login, "password" -> encryptedPassword))
   }
-
-  private def findBy(p: User => Boolean) = {
-    list.find(p)
-  }
-
 }

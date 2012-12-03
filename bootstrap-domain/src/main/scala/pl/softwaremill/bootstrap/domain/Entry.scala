@@ -1,10 +1,8 @@
 package pl.softwaremill.bootstrap.domain
 
-case class Entry(var id: Int, var author: String, var text: String) {
+import com.mongodb.casbah.Imports._
 
-  def this(text: String) = this(-1, null, text)
-
-  def this(id: Int, text: String) = this(id, null, text)
+case class Entry(var _id: ObjectId = new ObjectId, var author: String, var text: String) {
 
   def updateWith(entry: Entry) {
     author = entry.author

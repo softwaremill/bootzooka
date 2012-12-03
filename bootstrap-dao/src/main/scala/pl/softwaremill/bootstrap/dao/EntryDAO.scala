@@ -1,62 +1,35 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.Entry
+import com.mongodb.casbah.Imports._
+import com.mongodb.casbah.MongoDB
+import com.novus.salat.dao.SalatDAO
+import com.mongodb.casbah.commons.MongoDBObject
+import com.novus.salat.global._
 
-class EntryDAO {
-
-  // simulates single table in database
-  private var list = List(
-    Entry(1, "Jan Kowalski", "Short message"),
-    Entry(2, "Piotr Nowak", "Very long message"),
-    Entry(3, "Krzysztof Jeżyna", "I am from Szczecin")
-  )
-
-  var id: Int = 10
-
-  private def nextId(): Int = {
-    id = id + 1
-    id
-  }
+class EntryDAO(implicit mongoConn: MongoDB) extends SalatDAO[Entry, ObjectId](mongoConn("entries")) {
 
   def loadAll = {
-    list
+    find(MongoDBObject()).toList
   }
 
   def count(): Long = {
-    list.size
+    super.count()
   }
 
   def add(entry: Entry) {
-    entry.id = nextId()
-    list = entry +: list
+    insert(entry, WriteConcern.Safe)
   }
 
-  def remove(entryId: Int) {
-    val entryOpt: Option[Entry] = list.find(_.id == entryId)
-
-    entryOpt match {
-      case Some(entry) => list = list diff List(entry)
-      case _ => {}
-    }
+  def remove(entryId: String) {
+    remove(MongoDBObject("_id" -> new ObjectId(entryId)))
   }
 
-  def load(entryId: Int): Entry = {
-    val entryOpt: Option[Entry] = list.find(_.id == entryId)
-
-    entryOpt match {
-      case Some(entry) => entry
-      case _ => null
-    }
+  def load(entryId: String): Option[Entry] = {
+    findOne(MongoDBObject("_id" -> new ObjectId(entryId)))
   }
 
   def update(entry: Entry) {
-    val entryOpt: Option[Entry] = list.find(_.id == entry.id)
-
-    entryOpt match {
-      case Some(existingEntry) => existingEntry updateWith entry
-      case _ => {}
-    }
+    update(MongoDBObject("_id" -> entry._id), entry, false, false, WriteConcern.Safe)
   }
-
-
 }

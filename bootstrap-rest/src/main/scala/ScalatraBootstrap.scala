@@ -1,3 +1,5 @@
+import com.mongodb.casbah.{MongoDB, MongoConnection}
+import org.json4s.{DefaultFormats, Formats}
 import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
 import pl.softwaremill.bootstrap.rest.{UsersServlet, EntriesServlet, UptimeServlet}
 import org.scalatra._
@@ -13,16 +15,23 @@ import pl.softwaremill.bootstrap.service.EntryService
 class ScalatraBootstrap extends LifeCycle {
 
   val PREFIX = "/rest"
+  val MONGO_DB_KEY: String = "MONGO_DB"
 
   override def init(context: ServletContext) {
+    implicit val mongoConn = MongoConnection()("bootstrap")
+    context.put(MONGO_DB_KEY, mongoConn)
 
-    val userService = new UserService(new UserDAO(), new RegistrationDataValidator())
-    val entryService = new EntryService(new EntryDAO())
+    val userService = new UserService(new UserDAO, new RegistrationDataValidator())
+    val entryService = new EntryService(new EntryDAO)
 
     // Mount one or more servlets
     context.mount(new EntriesServlet(entryService, userService), PREFIX + "/entries")
     context.mount(new UptimeServlet, PREFIX + "/uptime")
     context.mount(new UsersServlet(userService), PREFIX + "/users")
+  }
+
+  override def destroy(context: ServletContext) {
+    context.get(MONGO_DB_KEY).foreach(_.asInstanceOf[MongoDB].underlying.getMongo.close())
   }
 
 }
