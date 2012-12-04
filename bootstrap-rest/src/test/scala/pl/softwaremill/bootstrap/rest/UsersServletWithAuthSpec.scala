@@ -12,9 +12,9 @@ import pl.softwaremill.bootstrap.service.data.UserJson
 class UserServletWithAuthSpec extends BootstrapServletSpec {
 
   def is = sequential ^ "UserServlet" ^
-    "GET /logout should call logout() when user is already authenticated" ! logoutIfAuthenticated ^
-    "GET /logut should not call logout() when user is not authenticated" ! noCallToLogout ^
-    "GET should return user information" ! returnInformationAboutLoggedUser
+    "GET /logout should call logout() when user is already authenticated"   ! logoutIfAuthenticated ^
+    "GET /logut should not call logout() when user is not authenticated"    ! noCallToLogout ^
+    "GET should return user information"                                    ! returnInformationAboutLoggedUser
 
 
   end

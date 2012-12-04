@@ -16,12 +16,12 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
     def is =
       sequential ^
         "EntriesServlet with logged user" ^
-        "POST / request should modify entry that user owns" ! modifyExistingEntryThatLoggedUserOwns ^
-        "POST / request should not update non existing entry" ! notUpdateNonExistingEntry ^
-        "POST / request should not update non owner entry" ! notAllowToUpdateNotOwnedEntry ^
-        "PUT / request should create new entry" ! shouldCreateNewEntry ^
-        "POST / should escape text message" ! postShouldCallServiceUsingEscapedStrings
-        "PUT / should escape text message" ! putShouldCallServiceUsingEscapedStrings
+        "POST / request should modify entry that user owns"       ! modifyExistingEntryThatLoggedUserOwns ^
+        "POST / request should not update non existing entry"     ! notUpdateNonExistingEntry ^
+        "POST / request should not update non owner entry"        ! notAllowToUpdateNotOwnedEntry ^
+        "PUT / request should create new entry"                   ! shouldCreateNewEntry ^
+        "POST / should escape text message"                       ! postShouldCallServiceUsingEscapedStrings
+        "PUT / should escape text message"                        ! putShouldCallServiceUsingEscapedStrings
     end
 
   val entryOne = EntryJson("1", "Message from Jas", "Jas Kowalski")

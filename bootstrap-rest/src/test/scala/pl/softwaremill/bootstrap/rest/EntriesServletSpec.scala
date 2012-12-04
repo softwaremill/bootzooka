@@ -13,16 +13,16 @@ class EntriesServletSpec extends BootstrapServletSpec {
   def is =
     sequential ^
       "EntriesServlet" ^
-      "GET should return status 200" ! root200 ^
-      "GET should return content-type application/json" ! contentJson ^
-      "GET with id should return entry details" ! returnSingleEntryDetails ^
-      "GET should return JSON entries" ! jsonEntries add
+      "GET should return status 200"                        ! root200 ^
+      "GET should return content-type application/json"     ! contentJson ^
+      "GET with id should return entry details"             ! returnSingleEntryDetails ^
+      "GET should return JSON entries"                      ! jsonEntries add
       "GET /count on EntriesServlet" ^
-        "should return number of entries" ! countEntries add
+        "should return number of entries"                   ! countEntries add
       "POST / on EntriesServiet" ^
-        "should return 401 for non logged user" ! tryUpdateExistingEntry add
+        "should return 401 for non logged user"             ! tryUpdateExistingEntry add
       "PUT / on EntriesServiet" ^
-        "should return 401 for non logged user" ! tryCreateNewEntry
+        "should return 401 for non logged user"             ! tryCreateNewEntry
 
   end
 

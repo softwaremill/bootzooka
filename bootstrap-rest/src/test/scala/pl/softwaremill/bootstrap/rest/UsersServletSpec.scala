@@ -12,9 +12,9 @@ import pl.softwaremill.bootstrap.common.Utils
 class UsersServletSpec extends BootstrapServletSpec {
 
   def is = sequential ^ "UserServlet" ^
-    "PUT should register new user" ! shouldRegisterNewUser ^
-    "PUT with invalid data return error message" ! shouldReturnErrorMessageOnInvalidData ^
-    "PUT should use escaped Strings" ! registerShouldUseEscapedStrings
+    "PUT should register new user"                  ! shouldRegisterNewUser ^
+    "PUT with invalid data return error message"    ! shouldReturnErrorMessageOnInvalidData ^
+    "PUT should use escaped Strings"                ! registerShouldUseEscapedStrings
   end
 
   def onServletWithMocks(testToExecute: (UserService) => MatchResult[Any]): MatchResult[Any] = {

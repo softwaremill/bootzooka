@@ -12,6 +12,6 @@ object EntryJson {
   }
 
   def apply(entryOpt: Option[Entry]): Option[EntryJson] = {
-    entryOpt.map((e:Entry) => EntryJson(e))
+    entryOpt.map(e => EntryJson(e))
   }
 }
