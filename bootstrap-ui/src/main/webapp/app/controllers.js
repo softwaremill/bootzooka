@@ -10,13 +10,13 @@ controllers.controller('UptimeController', function UptimeController($scope, $ti
         });
     };
 
-    this.uptimeEventId = $timeout(function updateUptimeLoop() {
+    var uptimeEventId = $timeout(function updateUptimeLoop() {
         $scope.update();
-        self.uptimeEventId = $timeout(updateUptimeLoop, 10000);
+        uptimeEventId = $timeout(updateUptimeLoop, 10000);
     }, 10000);
 
     $scope.$on("$routeChangeStart", function () {
-        $timeout.cancel(self.uptimeEventId);
+        $timeout.cancel(uptimeEventId);
     });
 
     $scope.update();
@@ -43,13 +43,13 @@ controllers.controller('EntriesController', function EntriesController($scope, $
 
     this.reloadEntries();
 
-    this.reloadEventId = $timeout(function reloadEntriesLoop() {
+    var reloadEventId = $timeout(function reloadEntriesLoop() {
         self.reloadEntries();
-        self.reloadEventId = $timeout(reloadEntriesLoop, 3000);
+        reloadEventId = $timeout(reloadEntriesLoop, 3000);
     }, 3000);
 
     $scope.$on("$routeChangeStart", function () {
-        $timeout.cancel(self.reloadEventId);
+        $timeout.cancel(reloadEventId);
     });
 
     $scope.addEntry = function () {
