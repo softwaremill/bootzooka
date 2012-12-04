@@ -13,7 +13,7 @@ class EntryService(entryDAO: EntryDAO) {
   }
 
   def count(): Long = {
-    entryDAO.count()
+    entryDAO.countItems()
   }
 
   def add(entry: EntryJson) {
@@ -22,7 +22,7 @@ class EntryService(entryDAO: EntryDAO) {
 
   def remove(entryId: String) {
     if (ObjectId.isValid(entryId)) {
-      entryDAO.removeEntry(new ObjectId(entryId))
+      entryDAO.remove(new ObjectId(entryId))
     }
   }
 
@@ -40,4 +40,5 @@ class EntryService(entryDAO: EntryDAO) {
       entryDAO.update(new Entry(new ObjectId(entry.id), entry.text, entry.author))
     }
   }
+
 }

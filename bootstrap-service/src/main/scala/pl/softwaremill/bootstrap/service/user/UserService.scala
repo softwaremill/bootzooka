@@ -3,7 +3,6 @@ package pl.softwaremill.bootstrap.service.user
 import pl.softwaremill.bootstrap.dao.UserDAO
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.Utils
-import com.mongodb.casbah.Imports._
 import pl.softwaremill.bootstrap.service.data.UserJson
 
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator) {
@@ -17,7 +16,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def count(): Long = {
-    userDAO.count()
+    userDAO.countItems()
   }
 
   def registerNewUser(login: String, email: String, password: String) {

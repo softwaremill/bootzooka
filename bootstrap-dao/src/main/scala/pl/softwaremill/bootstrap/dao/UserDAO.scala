@@ -1,56 +1,27 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
-import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.MongoDB
-import com.mongodb.casbah.commons.MongoDBObject
-import com.novus.salat.dao.SalatDAO
-import com.novus.salat.global._
-import com.mongodb.casbah.query.Imports.ConcreteDBObjectOk
 
-class UserDAO(implicit mongoConn: MongoDB) extends SalatDAO[User, ObjectId](mongoConn("users")) {
+trait UserDAO {
 
-  def loadAll = {
-    find(MongoDBObject()).toList
-  }
+  def loadAll: List[User]
 
-  def count(): Long = {
-    super.count()
-  }
+  def countItems(): Long
 
-  def add(user: User) {
-    if (findByLogin(user.login).isDefined || findByEmail(user.email).isDefined) {
-      throw new Exception("User with given e-mail or login already exists")
-    }
+  def add(user: User)
 
-    insert(user, WriteConcern.Safe)
-  }
+  def remove(userId: String)
 
-  def remove(userId: String) {
-    remove(MongoDBObject("_id" -> new ObjectId(userId)), WriteConcern.Safe)
-  }
+  def load(userId: String): Option[User]
 
-  def load(userId: String): Option[User] = {
-    findOne(MongoDBObject("_id" -> new ObjectId(userId)))
-  }
+  def findByEmail(email: String): Option[User]
 
-  def findByEmail(email: String) = {
-    findOne(MongoDBObject("email" -> email.toLowerCase))
-  }
+  def findByLogin(login: String): Option[User]
 
-  def findByLogin(login: String) = {
-    findOne(MongoDBObject("login" -> login.toLowerCase))
-  }
+  def findByLoginOrEmail(loginOrEmail: String): Option[User]
 
-  def findByLoginOrEmail(loginOrEmail: String) = {
-    findOne($or(MongoDBObject("login" -> loginOrEmail.toLowerCase), MongoDBObject("email" -> loginOrEmail.toLowerCase)))
-  }
+  def findByToken(token: String): Option[User]
 
-  def findByToken(token: String) = {
-    findOne(MongoDBObject("token" -> token))
-  }
+  def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String): Option[User]
 
-  def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String) = {
-    findOne(MongoDBObject("login" -> login, "password" -> encryptedPassword))
-  }
 }

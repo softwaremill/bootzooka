@@ -29,7 +29,7 @@ class EntryServiceSpec  extends Specification with Mockito {
       "ignore invalid objectId" in {
         entryService.load("invalid")
 
-        there was no(entryDAO).load(any)
+        there was no(entryDAO).load(anyString)
       }
     })
 
@@ -47,7 +47,7 @@ class EntryServiceSpec  extends Specification with Mockito {
       "ignore invalid objectId" in {
         entryService.remove("invalid")
 
-        there was no(entryDAO).removeEntry(any)
+        there was no(entryDAO).remove(anyString)
       }
     })
 
@@ -55,7 +55,7 @@ class EntryServiceSpec  extends Specification with Mockito {
       "call dao.removeEntry on correct objectId" in {
         entryService.remove(validId)
 
-        there was one(entryDAO).removeEntry(Matchers.eq[ObjectId](new ObjectId(validId)))
+        there was one(entryDAO).remove(Matchers.eq[ObjectId](new ObjectId(validId)))
       }
     })
   }

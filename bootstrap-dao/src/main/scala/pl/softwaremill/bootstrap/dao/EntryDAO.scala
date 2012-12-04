@@ -1,35 +1,24 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.Entry
-import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.MongoDB
-import com.novus.salat.dao.SalatDAO
-import com.mongodb.casbah.commons.MongoDBObject
-import com.novus.salat.global._
+import org.bson.types.ObjectId
 
-class EntryDAO(implicit mongoConn: MongoDB) extends SalatDAO[Entry, ObjectId](mongoConn("entries")) {
+trait EntryDAO {
 
-  def loadAll = {
-    find(MongoDBObject()).sort(MongoDBObject("_id" -> -1)).toList
-  }
+  def loadAll: List[Entry]
 
-  def count(): Long = {
-    super.count()
-  }
+  def countItems(): Long
 
-  def add(entry: Entry) {
-    insert(entry, WriteConcern.Safe)
-  }
+  def add(entry: Entry)
 
-  def removeEntry(entryId: ObjectId) {
-    remove(MongoDBObject("_id" -> entryId))
-  }
+  def remove(entryId: ObjectId)
 
-  def load(entryId: ObjectId): Option[Entry] = {
-    findOne(MongoDBObject("_id" -> entryId))
-  }
+  def remove(entryId: String)
 
-  def update(entry: Entry) {
-    update(MongoDBObject("_id" -> entry._id), entry, false, false, WriteConcern.Safe)
-  }
+  def load(entryId: String): Option[Entry]
+
+  def load(entryId: ObjectId): Option[Entry]
+
+  def update(entry: Entry)
+
 }
