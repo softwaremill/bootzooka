@@ -12,9 +12,6 @@ object EntryJson {
   }
 
   def apply(entryOpt: Option[Entry]): Option[EntryJson] = {
-    entryOpt match {
-      case Some(entry) => new Some(EntryJson(entry))
-      case _ => None
-    }
+    entryOpt.map((e:Entry) => EntryJson(e))
   }
 }
