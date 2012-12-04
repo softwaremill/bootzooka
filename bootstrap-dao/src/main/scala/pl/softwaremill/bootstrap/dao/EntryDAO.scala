@@ -21,12 +21,12 @@ class EntryDAO(implicit mongoConn: MongoDB) extends SalatDAO[Entry, ObjectId](mo
     insert(entry, WriteConcern.Safe)
   }
 
-  def remove(entryId: String) {
-    remove(MongoDBObject("_id" -> new ObjectId(entryId)))
+  def removeEntry(entryId: ObjectId) {
+    remove(MongoDBObject("_id" -> entryId))
   }
 
-  def load(entryId: String): Option[Entry] = {
-    findOne(MongoDBObject("_id" -> new ObjectId(entryId)))
+  def load(entryId: ObjectId): Option[Entry] = {
+    findOne(MongoDBObject("_id" -> entryId))
   }
 
   def update(entry: Entry) {
