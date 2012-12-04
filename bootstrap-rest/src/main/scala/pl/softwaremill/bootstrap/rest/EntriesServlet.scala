@@ -2,10 +2,10 @@ package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.EntryService
-import pl.softwaremill.bootstrap.domain.Entry
-import pl.softwaremill.bootstrap.common.{SafeInt, JsonWrapper}
+import pl.softwaremill.bootstrap.common.JsonWrapper
 import com.novus.salat.global._
 import pl.softwaremill.bootstrap.service.data.EntryJson
+import org.apache.commons.lang3.StringEscapeUtils._
 
 class EntriesServlet(entryService: EntryService, val userService: UserService) extends JsonServletWithAuthentication {
 
@@ -27,7 +27,7 @@ class EntriesServlet(entryService: EntryService, val userService: UserService) e
   // create new entry
   put("/") {
     haltIfNotAuthenticated()
-    val entryText = (parsedBody \ "text").extract[String]
+    val entryText =  escapeHtml4((parsedBody \ "text").extract[String])
 
     val entry: EntryJson = new EntryJson("", entryText, user.login)
     entryService.add(entry)
@@ -36,7 +36,7 @@ class EntriesServlet(entryService: EntryService, val userService: UserService) e
   // update existing entry
   post("/") {
     haltIfNotAuthenticated()
-    val text: String = (parsedBody \ "text").extract[String]
+    val text: String = escapeHtml4((parsedBody \ "text").extract[String])
     val id: String = (parsedBody \ "id").extract[String]
     val entryJson:EntryJson = EntryJson(id, text, "")
 

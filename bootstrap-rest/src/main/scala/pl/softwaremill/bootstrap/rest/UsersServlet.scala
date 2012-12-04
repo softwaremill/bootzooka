@@ -4,6 +4,7 @@ import org.scalatra._
 import pl.softwaremill.bootstrap.common.JsonWrapper
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.data.UserJson
+import org.apache.commons.lang3.StringEscapeUtils._
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
 
@@ -50,7 +51,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
         JsonWrapper(message)
       }
       case _ => {
-        userService.registerNewUser((parsedBody \ "login").extract[String],
+        userService.registerNewUser(escapeHtml4((parsedBody \ "login").extract[String]),
           (parsedBody \ "email").extract[String], (parsedBody \ "password").extract[String])
         JsonWrapper("success")
       }

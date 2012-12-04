@@ -13,7 +13,9 @@ class UsersServletSpec extends BootstrapServletSpec {
 
   def is = sequential ^ "UserServlet" ^
     "PUT should register new user" ! shouldRegisterNewUser ^
-    "PUT with invalid data return error message" ! shouldReturnErrorMessageOnInvalidData
+    "PUT with invalid data return error message" ! shouldReturnErrorMessageOnInvalidData ^
+    "PUT should use escaped Strings" ! registerShouldUseEscapedStrings
+  end
 
   def onServletWithMocks(testToExecute: (UserService) => MatchResult[Any]): MatchResult[Any] = {
     val dao = mock[UserDAO]
@@ -43,6 +45,12 @@ class UsersServletSpec extends BootstrapServletSpec {
       val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
       option must beEqualTo(Some("Wrong user data!"))
       status must_== 200
+    }
+  }
+
+  def registerShouldUseEscapedStrings = onServletWithMocks{(userService) =>
+    put("/register", mapToJson(Map("login" -> "<script>alert('haxor');</script>", "email" -> "newUser@sml.com", "password" -> "secret")), defaultJsonHeaders) {
+      there was one(userService).registerNewUser("&lt;script&gt;alert('haxor');&lt;/script&gt;", "newUser@sml.com", "secret")
     }
   }
 

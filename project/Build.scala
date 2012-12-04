@@ -54,6 +54,7 @@ object Dependencies {
   val jodaConvert = "org.joda" % "joda-convert" % "1.2"
 
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0"
+  val commonsLang = "org.apache.commons" % "commons-lang3" % "3.1"
 
   val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container"
 
@@ -61,7 +62,7 @@ object Dependencies {
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
-  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth)
+  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, commonsLang)
 
   val testingDependencies = Seq(mockito, specs2)
 
