@@ -26,8 +26,18 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def authenticate(login: String, nonEncryptedPassword: String): Option[UserJson] = {
-    val userOpt: Option[User] = userDAO.findByLoginAndEncryptedPassword(login, Utils.sha256(nonEncryptedPassword, login))
-    UserJson(userOpt)
+    val userOpt: Option[User] = userDAO.findByLoginOrEmail(login)
+    userOpt match {
+      case Some(u) =>  {
+        if (u.password.equals(Utils.sha256(nonEncryptedPassword, u.login))) {
+          UserJson(userOpt)
+        }
+        else {
+          None
+        }
+      }
+      case _ =>  None
+    }
   }
 
   def authenticateWithToken(token: String): Option[UserJson] = {

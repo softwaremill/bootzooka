@@ -6,6 +6,7 @@ import com.mongodb.casbah.MongoDB
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat.dao.SalatDAO
 import com.novus.salat.global._
+import com.mongodb.casbah.query.Imports.ConcreteDBObjectOk
 
 class UserDAO(implicit mongoConn: MongoDB) extends SalatDAO[User, ObjectId](mongoConn("users")) {
 
@@ -39,6 +40,10 @@ class UserDAO(implicit mongoConn: MongoDB) extends SalatDAO[User, ObjectId](mong
 
   def findByLogin(login: String) = {
     findOne(MongoDBObject("login" -> login.toLowerCase))
+  }
+
+  def findByLoginOrEmail(loginOrEmail: String) = {
+    findOne($or(MongoDBObject("login" -> loginOrEmail.toLowerCase), MongoDBObject("email" -> loginOrEmail.toLowerCase)))
   }
 
   def findByToken(token: String) = {
