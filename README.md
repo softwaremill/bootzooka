@@ -2,6 +2,15 @@
 
 Simple showcase project to allow quicklly start with development process of modern web based applciation.
 
+* [Technology stack](#technology-stack)
+    * [Why Scala?](#why-scala)
+    * [Why AngularJS?](#why-angularjs)
+    * [Why Scalatra?](#why-scalatra)
+    * [Why sbt?](#why-sbt)
+* [How to run](#how-to-run)
+    * [Useful sbt commands](#useful-sbt-commands)
+* [License](#license)
+
 Project is divided in few separated modules but basically we have UI which is base on [AngularJS](http://angularjs.org/)
 and REST backend based on [Scalatra](http://www.scalatra.org/).
 Backend can be interchanged as there is no dependency between frontend and backend - [spray.io](http://spray.io/) was also an option.
@@ -47,7 +56,7 @@ to start the sbt console. Few plugins are already integrated with the project:
 ### Useful sbt commands
 * _compile_ - compile the whole project
 * _test_ - run all the tests
-* _project &lt;sub-project-name&gt;_ - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achived with: &lt;sub-project-name&gt;/test
+* _project &lt;sub-project-name&gt;_ - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achived with: _&lt;sub-project-name&gt;/test_
 * _container:start_ - starts the embedded Jetty container
 * _container:reload /_ - reloads application at context /
 * _~;container:start; container:reload /_ - runs container and waits for source code changes to autmatically compile changed file and to reload it
