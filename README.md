@@ -1,9 +1,10 @@
 # Bootstrap
 
-Simple showcase project to allow quicklly start with development process.
+Simple showcase project to allow quicklly start with development process of modern web based applciation.
 
-Project is divided in separated modules by basically we have UI which base on AngularJS and REST backend based on Scalatra.
-Backend can be interchanged as there is no dependency between frontend and backend.
+Project is divided in few separated modules but basically we have UI which is base on [AngularJS](http://angularjs.org/)
+and REST backend based on [Scalatra](http://www.scalatra.org/).
+Backend can be interchanged as there is no dependency between frontend and backend - [spray.io](http://spray.io/) was also an option.
 
 ## Technology stack
 
@@ -17,18 +18,18 @@ Basically it's the hotest JavaScirpt framework right now, developed and supporte
 It's offer complete solution to build dynamic and modern HTML5 based web applications.
 And at last from version 1.x is quite stable :-)
 
-It also worth to notice that there are plans to nativlly support DOM templating in the generation of web browsers
+It also worth to notice that there are plans to nativlly support DOM templating with the next generation of web browsers
 - thus can be huge advantage of AngularJS over other frameworks.
 
 ### Why Scalatra?
 
 It's quite simple and easy to jump into Scalatra for an ordinary Java developer whom used Servlets previouslly.
-The syntax of flow directives is straithforwad and it was easy to integrate support for JSON into it.
+The syntax of the flow directives is straithforwad and it was easy to integrate support for JSON into it.
 And it's written in Scala from scratch which seamlessly integrated with other Scala based libraries.
 
 ### Why sbt?
 
-The answer can be hard. It is easy to start using sbt, but when things get hard, it's very diffcult to find a good examples
+The answer can be hard. It is easy to start using [sbt](http://www.scala-sbt.org/), but when things get hard, it's very diffcult to find good examples
 or supporting documents. But at the end it's a dedeciated tool for Scala platform, so why not to try it :-)
 
 ## How to run
@@ -37,7 +38,7 @@ To run application, simply clone the source code, enter the directory and type _
 navigate your web browser to http://localhost:8080/ and start using the application.
 
 If you want to start develop new features, you must have sbt version 0.12.1 installed. Enter the same directory and type _sbt_
-to start sbt console. Few plugins are already integrated with the project:
+to start the sbt console. Few plugins are already integrated with the project:
 
 * IDE configuration: we are using the best IDE right now - IntelliJ IDEA - to be able open project with it you must generate project files, you can do that with: _gen-idea_
 * web server: right now Jetty is integrated with the project, you can start it from sbt console with: _container:start_
