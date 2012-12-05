@@ -45,12 +45,12 @@ to start the sbt console. Few plugins are already integrated with the project:
 * storage: there are two implementations - in-memory and mongo - you must install MongoDB and start it before starting the application (when started with run.sh/run.bat the in-memory storage is used)
 
 ### Useful sbt commands
-* compile - compile the whole project
-* test - run all the tests
-* project <sub-project-name> - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achived with: <sub-project-name>/test
-* container:start - starts the embedded Jetty container
-* container:reload / - reloads application at context /
-* ~;container:start; container:reload / - runs container and waits for source code changes to autmatically compile changed file and to reload it
+* _compile_ - compile the whole project
+* _test_ - run all the tests
+* _project &lt;sub-project-name&gt;_ - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achived with: &lt;sub-project-name&gt;/test
+* _container:start_ - starts the embedded Jetty container
+* _container:reload /_ - reloads application at context /
+* _~;container:start; container:reload /_ - runs container and waits for source code changes to autmatically compile changed file and to reload it
 
 ## License
 
