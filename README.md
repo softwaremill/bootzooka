@@ -53,4 +53,4 @@ to start sbt console. Few plugins are already integrated with the project:
 
 ## License
 
-Project is licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) which means you can freely used any part of the project, even for commercial purpose :-)
+Project is licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) which means you can freely used any part of the project.
