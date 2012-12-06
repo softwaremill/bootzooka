@@ -15,8 +15,8 @@ class EntriesServletSpec extends BootstrapServletSpec {
       "EntriesServlet" ^
       "GET should return status 200"                        ! root200 ^
       "GET should return content-type application/json"     ! contentJson ^
-      "GET with id should return entry details"             ! returnSingleEntryDetails ^
-      "GET should return JSON entries"                      ! jsonEntries add
+      "GET with id should return not escaped entry details" ! returnNotEscapedSingleEntryDetails ^
+      "GET should return escaped JSON entries"              ! escapedJsonEntries add
       "GET /count on EntriesServlet" ^
         "should return number of entries"                   ! countEntries add
       "POST / on EntriesServiet" ^
@@ -31,7 +31,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
 
     val entryService = mock[EntryService]
     entryService.count() returns 4
-    val entryOne: EntryJson = EntryJson("1", "Important message", "Jas Kowalski")
+    val entryOne: EntryJson = EntryJson("1", "<script>alert('hacker')</script>", "Jas Kowalski")
     entryService.loadAll returns List(entryOne)
     entryService.load("1") returns Some(entryOne)
 
@@ -58,14 +58,14 @@ class EntriesServletSpec extends BootstrapServletSpec {
     }
   }
 
-  def returnSingleEntryDetails = onServletWithMocks{ (entryService, userService) =>
+  def returnNotEscapedSingleEntryDetails = onServletWithMocks{ (entryService, userService) =>
     get("/1", defaultJsonHeaders) {
-      body mustEqual(mapToStringifiedJson(Map("id" -> "1", "text"-> "Important message", "author" -> "Jas Kowalski")))
+      body mustEqual(mapToStringifiedJson(Map("id" -> "1", "text"-> "<script>alert('hacker')</script>", "author" -> "Jas Kowalski")))
     }
   }
 
-  def jsonEntries = get("/") {
-    body must contain("[{\"id\":\"1\",\"text\":\"Important message\",\"author\":\"Jas Kowalski\"}]")
+  def escapedJsonEntries = get("/") {
+    body must contain("[{\"id\":\"1\",\"text\":\"&lt;script&gt;alert('hacker')&lt;/script&gt;\",\"author\":\"Jas Kowalski\"}]")
   }
 
   def countEntries = onServletWithMocks { (entryService, userService) =>

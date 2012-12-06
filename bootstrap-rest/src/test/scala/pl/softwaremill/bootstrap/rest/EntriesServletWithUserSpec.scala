@@ -20,8 +20,6 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
         "POST / request should not update non existing entry"     ! notUpdateNonExistingEntry ^
         "POST / request should not update non owner entry"        ! notAllowToUpdateNotOwnedEntry ^
         "PUT / request should create new entry"                   ! shouldCreateNewEntry ^
-        "POST / should escape text message"                       ! postShouldCallServiceUsingEscapedStrings
-        "PUT / should escape text message"                        ! putShouldCallServiceUsingEscapedStrings
     end
 
   val entryOne = EntryJson("1", "Message from Jas", "Jas Kowalski")
@@ -74,19 +72,6 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
       status must_== 200
     }
   }
-
-  def postShouldCallServiceUsingEscapedStrings = onServletWithMocks{(entryService, userService) =>
-    post("/", mapToJson(Map[String, JValue]("id" -> "1", "text"-> "<script>alert('haxor');</script>")), defaultJsonHeaders) {
-      there was one(entryService).update(Matchers.eq(EntryJson("1", "&lt;script&gt;alert('haxor');&lt;/script&gt;", "Jas Kowalski")))
-    }
-  }
-
-  def putShouldCallServiceUsingEscapedStrings = onServletWithMocks{(entryService, userService) =>
-    put("/", mapToJson(Map[String, JValue]("text"-> "<script>alert('haxor');</script>")), defaultJsonHeaders) {
-      there was one(entryService).add(Matchers.eq(EntryJson("", "&lt;script&gt;alert('haxor');&lt;/script&gt;", "Jas Kowalski")))
-    }
-  }
-
 
 }
 
