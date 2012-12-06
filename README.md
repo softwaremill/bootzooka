@@ -8,6 +8,7 @@ Simple showcase project to allow quicklly start with development process of mode
     * [Why Scalatra?](#why-scalatra)
     * [Why sbt?](#why-sbt)
 * [How to run](#how-to-run)
+* [How to develop](#how-to-develop)
     * [Useful sbt commands](#useful-sbt-commands)
 * [License](#license)
 
@@ -28,7 +29,7 @@ It's offer complete solution to build dynamic and modern HTML5 based web applica
 And at last from version 1.x is quite stable :-)
 
 It also worth to notice that there are plans to nativlly support DOM templating with the next generation of web browsers
-- thus can be huge advantage of AngularJS over other frameworks.
+- thus can be huge advantage of the AngularJS over other frameworks.
 
 ### Why Scalatra?
 
@@ -46,14 +47,18 @@ or supporting documents. But at the end it's a dedeciated tool for Scala platfor
 To run application, simply clone the source code, enter the directory and type _./run.sh_ or _run.bat_ depends on your OS,
 navigate your web browser to http://localhost:8080/ and start using the application.
 
-If you want to start develop new features, you must have sbt version 0.12.1 installed. Enter the same directory and type _sbt_
+## How to develop
+
+If you want to start develop new features, you must have sbt version 0.12.1 installed. Enter the same directory as above and type _sbt_
 to start the sbt console. Few plugins are already integrated with the project:
 
 * IDE configuration: we are using the best IDE right now - IntelliJ IDEA - to be able open project with it you must generate project files, you can do that with: _gen-idea_
-* web server: right now Jetty is integrated with the project, you can start it from sbt console with: _container:start_
-* storage: there are two implementations - in-memory and mongo - you must install MongoDB and start it before starting the application (when started with run.sh/run.bat the in-memory storage is used)
+* web server: right now Jetty is integrated with the project, you can start it from the sbt console with: _container:start_
+
+There are two implementations of storage - in-memory and mongo - you must install MongoDB and start it before starting the application (when started with run.sh/run.bat the in-memory storage is used)
 
 ### Useful sbt commands
+
 * _compile_ - compile the whole project
 * _test_ - run all the tests
 * _project &lt;sub-project-name&gt;_ - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achived with: _&lt;sub-project-name&gt;/test_
