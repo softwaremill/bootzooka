@@ -1,6 +1,6 @@
 # Bootstrap
 
-Simple showcase project to allow quicklly start with development process of modern web based application.
+Simple showcase project to allow quickly start with development process of modern web based application.
 
 * [Technology stack](#technology-stack)
     * [Why Scala?](#why-scala)
@@ -33,8 +33,8 @@ It's also worth to notice that there are plans to natively support DOM templatin
 
 ### Why Scalatra?
 
-It's quite simple and easy to jump into Scalatra for an ordinary Java developer whom used Servlets previouslly.
-The syntax of the flow directives is straithforwad and it was easy to integrate support for JSON into it.
+It's quite simple and easy to jump into Scalatra for an ordinary Java developer whom used Servlets previously.
+The syntax of the flow directives is straightforward and it was easy to integrate support for JSON into it.
 And it's written in Scala from scratch which seamlessly integrates with other Scala based libraries.
 
 ### Why sbt?
@@ -61,10 +61,10 @@ There are two implementations of storage - in-memory and mongo - you must instal
 
 * _compile_ - compile the whole project
 * _test_ - run all the tests
-* _project &lt;sub-project-name&gt;_ - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achived with: _&lt;sub-project-name&gt;/test_
+* _project &lt;sub-project-name&gt;_ - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achieved with: _&lt;sub-project-name&gt;/test_
 * _container:start_ - starts the embedded Jetty container
 * _container:reload /_ - reloads application at context /
-* _~;container:start; container:reload /_ - runs container and waits for source code changes to autmatically compile changed file and to reload it
+* _~;container:start; container:reload /_ - runs container and waits for source code changes to automatically compile changed file and to reload it
 
 ## License
 
