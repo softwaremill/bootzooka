@@ -1,7 +1,7 @@
 package pl.softwaremill.bootstrap.service.user
 
 import org.specs2.mutable.Specification
-import pl.softwaremill.bootstrap.dao.UserDAO
+import pl.softwaremill.bootstrap.dao.{InMemoryUserDAO, UserDAO}
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.service.data.UserJson
@@ -9,11 +9,9 @@ import pl.softwaremill.bootstrap.service.data.UserJson
 class UserServiceSpec extends Specification with Mockito {
 
   def prepareUserDAOMock: UserDAO = {
-    val dao = mock[UserDAO]
-    dao.findByEmail("admin@sml.com") returns Some(User("admin", "admin@sml.com", "pass"))
-    dao.findByEmail("newUser@sml.com") returns None
-    dao.findByLogin("admin") returns Some(User("admin", "admin@sml.com", "pass"))
-    dao.findByLogin("newUser") returns None
+    val dao = new InMemoryUserDAO
+    dao.add(User("admin", "admin@sml.com", "pass"))
+    dao.add(User("admin", "admin@sml.com", "pass"))
     dao
   }
 
@@ -22,8 +20,6 @@ class UserServiceSpec extends Specification with Mockito {
 
   "findByEmail" should { // this test is silly :\
     "return user for admin@sml.pl" in {
-
-
       val user: UserJson = userService.findByEmail("admin@sml.com").getOrElse(null)
 
       there was user !== null
