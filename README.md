@@ -1,6 +1,6 @@
 # Bootstrap
 
-Simple showcase project to allow quicklly start with development process of modern web based applciation.
+Simple showcase project to allow quicklly start with development process of modern web based application.
 
 * [Technology stack](#technology-stack)
     * [Why Scala?](#why-scala)
@@ -24,23 +24,23 @@ Why not :-)
 
 ### Why AngularJS?
 
-Basically it's the hotest JavaScirpt framework right now, developed and supported by Google.
-It's offer complete solution to build dynamic and modern HTML5 based web applications.
+Basically it's the hottest JavaScirpt framework right now, developed and supported by Google.
+It offers complete solution to build dynamic and modern HTML5 based web applications.
 And at last from version 1.x is quite stable :-)
 
-It also worth to notice that there are plans to nativlly support DOM templating with the next generation of web browsers
-- thus can be huge advantage of the AngularJS over other frameworks.
+It's also worth to notice that there are plans to natively support DOM templating with the next generation of web browsers
+- thus it can be huge advantage of the AngularJS over other frameworks.
 
 ### Why Scalatra?
 
 It's quite simple and easy to jump into Scalatra for an ordinary Java developer whom used Servlets previouslly.
 The syntax of the flow directives is straithforwad and it was easy to integrate support for JSON into it.
-And it's written in Scala from scratch which seamlessly integrated with other Scala based libraries.
+And it's written in Scala from scratch which seamlessly integrates with other Scala based libraries.
 
 ### Why sbt?
 
-The answer can be hard. It is easy to start using [sbt](http://www.scala-sbt.org/), but when things get hard, it's very diffcult to find good examples
-or supporting documents. But at the end it's a dedeciated tool for Scala platform, so why not to try it :-)
+The answer can be hard. It is easy to start using [sbt](http://www.scala-sbt.org/), but when things get hard, it's very difficult to find good examples
+or supporting documents. But at the end it's a dedicated tool for Scala platform, so why not to try it :-)
 
 ## How to run
 
