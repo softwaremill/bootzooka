@@ -23,7 +23,7 @@ controllers.controller('UptimeController', function UptimeController($scope, $ti
 
 });
 
-controllers.controller('EntriesController', function EntriesController($scope, $timeout, EntriesService, UserSessionService) {
+controllers.controller('EntriesController', function EntriesController($scope, $timeout, $window, EntriesService, UserSessionService) {
 
     var self = this;
 
@@ -44,7 +44,12 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     this.reloadEntries();
 
     var reloadEventId = $timeout(function reloadEntriesLoop() {
+        // Hack: set scroll position to value before data was reloaded
+        var scrollTopBefore = $window.document.body.scrollTop;
         self.reloadEntries();
+        $timeout(function() {
+            $window.document.body.scrollTop = scrollTopBefore;
+        }, 10);
         reloadEventId = $timeout(reloadEntriesLoop, 3000);
     }, 3000);
 
