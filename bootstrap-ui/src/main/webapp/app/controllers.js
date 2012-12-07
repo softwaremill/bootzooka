@@ -58,9 +58,10 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     });
 
     $scope.addEntry = function () {
-        EntriesService.addNew($scope.entryText, function () {
+        var newEntryText = $scope.entryText;
+        $scope.entryText = '';
+        EntriesService.addNew(newEntryText, function () {
             self.reloadEntries();
-            $scope.entryText = '';
             $scope.myForm.$pristine = true;
             showInfoMessage("Message posted");
         });
