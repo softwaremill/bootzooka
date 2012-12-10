@@ -1,11 +1,12 @@
 package pl.softwaremill.bootstrap.common
 
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
 
 object Utils {
 
   val OneWeek = 7 * 24 * 3600
+  val DateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 
   def md5(s: String): String = {
     val m = java.security.MessageDigest.getInstance("MD5")
@@ -36,11 +37,7 @@ object Utils {
   }
 
   def format(dateTime: DateTime): String = {
-    if (dateTime == null) {
-      ""
-    } else {
-      DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").print(dateTime)
-    }
+      DateFormat.print(dateTime)
   }
 
 }
