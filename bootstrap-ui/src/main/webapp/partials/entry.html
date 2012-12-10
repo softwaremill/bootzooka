@@ -12,6 +12,7 @@
                 <span class="text-error" ng-show="myForm.message.$dirty && myForm.message.$error.required">Message is required</span>
                 <div>
                     <input type="submit" ng-click="updateEntry()" ng-disabled="myForm.$invalid" class="btn btn-primary" value="Update message"/>
+                    <input type="reset" ng-click="cancelEdit()" class="btn" value="Cancel"/>
                 </div><br/>
             </div>
         </form>

@@ -9,9 +9,9 @@ describe("EntryEdit Controller", function () {
         _$httpBackend_.verifyNoOutstandingRequest();
     }));
 
-    var scope, $httpBackend, ctrl, userSessionService;
+    var scope, $httpBackend, ctrl, userSessionService, location;
 
-    beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller, UserSessionService) {
+    beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller, UserSessionService, $location) {
         $httpBackend = _$httpBackend_;
         $httpBackend.whenGET('rest/entries/1').respond('{"id":"1","text":"Message!","author":"admin"}');
 
@@ -27,6 +27,8 @@ describe("EntryEdit Controller", function () {
         };
 
         $routeParams.entryId = 1;
+
+        location = $location;
 
         $httpBackend.flush();
     }));
@@ -57,6 +59,14 @@ describe("EntryEdit Controller", function () {
         $httpBackend.flush();
 
         // then
+    });
+
+    it('should navigate to root after cancel', function() {
+        // when
+        scope.cancelEdit();
+
+        // then
+        expect(location.path()).toBe("/")
     });
 
 });

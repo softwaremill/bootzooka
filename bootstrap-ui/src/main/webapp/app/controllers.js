@@ -114,6 +114,10 @@ controllers.controller('EntryEditController', function EntryEditController($scop
         $location.path("");
     };
 
+    $scope.cancelEdit = function() {
+        $location.path("");
+    };
+
     $scope.isOwnerOfEntry = function () {
         return $scope.log.author === UserSessionService.loggedUser.login;
     };
