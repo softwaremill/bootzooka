@@ -22,8 +22,8 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
         "PUT / request should create new entry"                   ! shouldCreateNewEntry ^
     end
 
-  val entryOne = EntryJson("1", "Message from Jas", "Jas Kowalski")
-  val entryTwo = EntryJson("2", "Message from Piotr", "Piotr Nowak")
+  val entryOne = EntryJson("1", "Message from Jas", "Jas Kowalski", "")
+  val entryTwo = EntryJson("2", "Message from Piotr", "Piotr Nowak", "")
 
   def onServletWithMocks(testToExecute: (EntryService, UserService) => MatchResult[Any]): MatchResult[Any] = {
     val userService = mock[UserService]
@@ -44,7 +44,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   def modifyExistingEntryThatLoggedUserOwns = onServletWithMocks { (entryService, userService) =>
     post("/", mapToJson(Map[String, JValue]("id" -> "1", "text" -> "Important message")), defaultJsonHeaders) {
       there was one(entryService).load("1")
-      there was one(entryService).update(Matchers.eq(EntryJson("1", "Important message", "Jas Kowalski")))
+      there was one(entryService).update(Matchers.eq(EntryJson("1", "Important message", "Jas Kowalski", "")))
       status must_== 200
     }
   }
@@ -67,7 +67,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
 
   def shouldCreateNewEntry = onServletWithMocks { (entryService, userService) =>
     put("/", mapToJson(Map("text"-> "New message")), defaultJsonHeaders) {
-      there was one(entryService).add(Matchers.eq(EntryJson("", "New message", "Jas Kowalski" )))
+      there was one(entryService).add(Matchers.eq(EntryJson("", "New message", "Jas Kowalski", "")))
       there was no(entryService).update(any[EntryJson])
       status must_== 200
     }

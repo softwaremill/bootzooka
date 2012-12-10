@@ -1,5 +1,8 @@
 package pl.softwaremill.bootstrap.common
 
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+
 object Utils {
 
   val OneWeek = 7 * 24 * 3600
@@ -29,6 +32,14 @@ object Utils {
     s match {
       case null => false
       case _ => s.toLowerCase == "true"
+    }
+  }
+
+  def format(dateTime: DateTime): String = {
+    if (dateTime == null) {
+      ""
+    } else {
+      DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").print(dateTime)
     }
   }
 

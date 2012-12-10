@@ -63,7 +63,7 @@ class EntryServiceSpec  extends Specification with Mockito {
   "update" should {
     withCleanMocks((entryDAO, entryService) => {
       "ignore invalid objectId" in {
-        entryService.update(EntryJson("invalid", "text", "author"))
+        entryService.update(EntryJson("invalid", "text", "author", ""))
 
         there was no(entryDAO).update(any)
       }
@@ -71,9 +71,9 @@ class EntryServiceSpec  extends Specification with Mockito {
 
     withCleanMocks((entryDAO, entryService) => {
       "call dao.update on correct objectId" in {
-        entryService.update(EntryJson(validId, "text", "author"))
+        entryService.update(EntryJson(validId, "text", "author", ""))
 
-        there was one(entryDAO).update((Matchers.eq[Entry](new Entry(new ObjectId(validId), "text", "author"))))
+        there was one(entryDAO).update((Matchers.refEq(new Entry(new ObjectId(validId), "text", "author"), "entered")))
       }
     })
   }

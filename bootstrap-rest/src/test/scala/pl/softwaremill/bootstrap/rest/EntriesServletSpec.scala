@@ -31,7 +31,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
 
     val entryService = mock[EntryService]
     entryService.count() returns 4
-    val entryOne: EntryJson = EntryJson("1", "<script>alert('hacker')</script>", "Jas Kowalski")
+    val entryOne: EntryJson = EntryJson("1", "<script>alert('hacker')</script>", "Jas Kowalski", "")
     entryService.loadAll returns List(entryOne)
     entryService.load("1") returns Some(entryOne)
 
@@ -60,12 +60,12 @@ class EntriesServletSpec extends BootstrapServletSpec {
 
   def returnNotEscapedSingleEntryDetails = onServletWithMocks{ (entryService, userService) =>
     get("/1", defaultJsonHeaders) {
-      body mustEqual(mapToStringifiedJson(Map("id" -> "1", "text"-> "<script>alert('hacker')</script>", "author" -> "Jas Kowalski")))
+      body mustEqual(mapToStringifiedJson(Map("id" -> "1", "text"-> "<script>alert('hacker')</script>", "author" -> "Jas Kowalski", "entered" -> "")))
     }
   }
 
   def escapedJsonEntries = get("/") {
-    body must contain("[{\"id\":\"1\",\"text\":\"&lt;script&gt;alert('hacker')&lt;/script&gt;\",\"author\":\"Jas Kowalski\"}]")
+    body must contain("[{\"id\":\"1\",\"text\":\"&lt;script&gt;alert('hacker')&lt;/script&gt;\",\"author\":\"Jas Kowalski\",\"entered\":\"\"}]")
   }
 
   def countEntries = onServletWithMocks { (entryService, userService) =>

@@ -28,8 +28,7 @@ class EntriesServlet(entryService: EntryService, val userService: UserService) e
     haltIfNotAuthenticated()
     val entryText =  (parsedBody \ "text").extract[String]
 
-    val entry: EntryJson = new EntryJson("", entryText, user.login)
-    entryService.add(entry)
+    entryService.add(EntryJson("", entryText, user.login, ""))
   }
 
   // update existing entry
@@ -37,7 +36,7 @@ class EntriesServlet(entryService: EntryService, val userService: UserService) e
     haltIfNotAuthenticated()
     val text: String = (parsedBody \ "text").extract[String]
     val id: String = (parsedBody \ "id").extract[String]
-    val entryJson:EntryJson = EntryJson(id, text, "")
+    val entryJson = EntryJson(id, text, "", "")
 
     val existingEntryOpt: Option[EntryJson] = entryService.load(entryJson.id)
 

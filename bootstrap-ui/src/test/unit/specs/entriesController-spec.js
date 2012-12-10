@@ -71,6 +71,18 @@ describe("Entries Controller", function () {
            expect(userSessionService.loggedUser).toBe(null);
            expect(scope.isLogged()).toBe(false);
         });
+
+        it("should fill entry with date on page", function() {
+            // given
+            $httpBackend.expectGET('rest/entries').respond('[{"id":1,"author":"Jan Kowalski","text":"Short message","entered":"2012-01-01 12:12:12"}]');
+
+            // when
+            ctrl.reloadEntries();
+            $httpBackend.flush();
+
+            // then
+            expect(scope.logs[0].entered).toBe("2012-01-01 12:12:12");
+        });
     });
 
 
