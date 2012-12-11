@@ -68,4 +68,4 @@ There are two implementations of storage - in-memory and mongo - you must instal
 
 ## License
 
-Project is licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) which means you can freely used any part of the project.
+Project is licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) which means you can freely use any part of the project.
