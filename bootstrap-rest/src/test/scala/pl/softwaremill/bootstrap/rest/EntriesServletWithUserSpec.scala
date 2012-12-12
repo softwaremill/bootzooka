@@ -46,7 +46,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   }
 
   def modifyExistingEntryThatLoggedUserOwns = onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
-    post("/", mapToJson(Map[String, JValue]("id" -> "1", "text" -> "Important message")), defaultJsonHeaders) {
+    put("/", mapToJson(Map[String, JValue]("id" -> "1", "text" -> "Important message")), defaultJsonHeaders) {
       there was one(entryService).isAuthor(loginJasKowalski, "1")
       there was one(entryService).update("1", "Important message")
       status must_== 200
@@ -54,7 +54,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   )
 
   def notUpdateNonExistingEntry = onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
-    post("/", mapToJson(Map[String, JValue]("id" -> "3", "text"-> "Important message")), defaultJsonHeaders) {
+    put("/", mapToJson(Map[String, JValue]("id" -> "3", "text"-> "Important message")), defaultJsonHeaders) {
       there was one(entryService).isAuthor(loginJasKowalski, "3")
       there was no(entryService).update(anyString, anyString)
       status must_== 403
@@ -62,7 +62,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   )
 
   def notAllowToUpdateNotOwnedEntry = onServletWithMocks(login = "PiotrNowak", testToExecute = (entryService, usersService) =>
-    post("/", mapToJson(Map[String, JValue]("id" -> "2", "text"-> "Important message")), defaultJsonHeaders) {
+    put("/", mapToJson(Map[String, JValue]("id" -> "2", "text"-> "Important message")), defaultJsonHeaders) {
       there was one(entryService).isAuthor("PiotrNowak", "2")
       there was no(entryService).update(anyString, anyString)
       status must_== 403
@@ -70,7 +70,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   )
 
   def shouldCreateNewEntry = onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
-    put("/", mapToJson(Map("text"-> "New message")), defaultJsonHeaders) {
+    post("/", mapToJson(Map("text"-> "New message")), defaultJsonHeaders) {
       there was one(entryService).add(loginJasKowalski, "New message")
       there was no(entryService).update(anyString, anyString)
       status must_== 200

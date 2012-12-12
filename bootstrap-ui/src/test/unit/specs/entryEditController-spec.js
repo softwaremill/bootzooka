@@ -48,7 +48,7 @@ describe("EntryEdit Controller", function () {
 
     it('should update entry', function () {
         // given
-        $httpBackend.expectPOST('rest/entries', '{"text":"New message","id":"1"}').respond('nothing');
+        $httpBackend.expectPUT('rest/entries', '{"text":"New message","id":"1"}').respond('nothing');
         scope.log = {
             text: 'New message',
             id: "1"

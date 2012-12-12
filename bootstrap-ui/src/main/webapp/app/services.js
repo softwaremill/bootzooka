@@ -18,7 +18,7 @@ services.factory('EntriesService', function ($resource) {
     entriesService.addNew = function (entryText, successFunction) {
         var json = {};
         json.text = entryText;
-        entriesService.crudService.insert(angular.toJson(json), successFunction);
+        entriesService.crudService.save(angular.toJson(json), successFunction);
     };
 
     entriesService.load = function (logObjectId, successFunction) {
@@ -29,7 +29,7 @@ services.factory('EntriesService', function ($resource) {
         var json = {};
         json.text = logObject.text;
         json.id = logObject.id;
-        entriesService.crudService.save(angular.toJson(json));
+        entriesService.crudService.insert(angular.toJson(json));
     };
 
     entriesService.deleteEntry = function (logObjectId, successFunction) {
@@ -122,22 +122,17 @@ services.factory('UtilService', function ($resource) {
 
 services.factory('RegisterService', function ($resource, FlashService) {
 
-    var registerService = {};
-
-    registerService.backend = $resource('rest/users/register', { }, {
-        insert: {method: 'PUT'}
-    });
+    var registerService = $resource('rest/users/register');
 
     registerService.register = function (user, successFunction, errorFunction) {
-        registerService.backend.insert(angular.toJson(user), function (data) {
-                    if (angular.equals(data.value, 'success')) {
-                        FlashService.set("User registered successfully!");
-                        successFunction();
-                    } else {
-                        errorFunction(data.value)
-                    }
-                }
-        )
+        registerService.save(angular.toJson(user), function (data) {
+            if (angular.equals(data.value, 'success')) {
+                FlashService.set("User registered successfully!");
+                successFunction();
+            } else {
+                errorFunction(data.value)
+            }
+        })
     };
 
     return registerService;

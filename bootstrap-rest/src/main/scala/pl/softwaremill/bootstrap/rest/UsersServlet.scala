@@ -29,7 +29,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     }
   }
 
-  put("/register") {
+  post("/register") {
     var messageOpt: Option[String] = None
 
     if(userService.isUserDataValid((parsedBody \ "login").extractOpt[String], (parsedBody \ "email").extractOpt[String],

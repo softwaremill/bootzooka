@@ -33,7 +33,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   }
 
   def shouldRegisterNewUser = onServletWithMocks{ (userService) =>
-    put("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),
+    post("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),
       defaultJsonHeaders)  {
         there was one(userService).registerNewUser("newUser", "newUser@sml.com", "secret")
         status must_== 200
@@ -41,7 +41,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   }
 
   def shouldReturnErrorMessageOnInvalidData = onServletWithMocks{ (userService) =>
-    put("/register", defaultJsonHeaders)  {
+    post("/register", defaultJsonHeaders)  {
       val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
       option must beEqualTo(Some("Wrong user data!"))
       status must_== 200
@@ -49,7 +49,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   }
 
   def registerShouldUseEscapedStrings = onServletWithMocks{(userService) =>
-    put("/register", mapToJson(Map("login" -> "<script>alert('haxor');</script>", "email" -> "newUser@sml.com", "password" -> "secret")), defaultJsonHeaders) {
+    post("/register", mapToJson(Map("login" -> "<script>alert('haxor');</script>", "email" -> "newUser@sml.com", "password" -> "secret")), defaultJsonHeaders) {
       there was one(userService).registerNewUser("&lt;script&gt;alert('haxor');&lt;/script&gt;", "newUser@sml.com", "secret")
     }
   }

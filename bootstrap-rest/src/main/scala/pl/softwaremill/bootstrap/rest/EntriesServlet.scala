@@ -22,14 +22,14 @@ class EntriesServlet(entryService: EntryService, val userService: UserService) e
   }
 
   // create new entry
-  put("/") {
+  post("/") {
     haltIfNotAuthenticated()
     val entryText =  (parsedBody \ "text").extract[String]
     entryService.add(user.login, entryText)
   }
 
   // update existing entry
-  post("/") {
+  put("/") {
     haltIfNotAuthenticated()
     val text: String = (parsedBody \ "text").extract[String]
     val id: String = (parsedBody \ "id").extract[String]
