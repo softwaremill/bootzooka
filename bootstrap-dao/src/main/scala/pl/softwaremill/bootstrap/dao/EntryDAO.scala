@@ -1,7 +1,6 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.Entry
-import org.bson.types.ObjectId
 
 trait EntryDAO {
 
@@ -11,13 +10,9 @@ trait EntryDAO {
 
   def add(entry: Entry)
 
-  def remove(entryId: ObjectId)
-
   def remove(entryId: String)
 
   def load(entryId: String): Option[Entry]
-
-  def load(entryId: ObjectId): Option[Entry]
 
   def update(entryId: String, message: String)
 

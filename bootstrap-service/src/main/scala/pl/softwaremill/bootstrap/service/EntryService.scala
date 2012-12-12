@@ -3,7 +3,6 @@ package pl.softwaremill.bootstrap.service
 import data.EntryJson
 import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
-import org.bson.types.ObjectId
 import pl.softwaremill.bootstrap.common.Utils
 
 class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
@@ -31,20 +30,13 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
   }
 
   def remove(entryId: String) {
-    if (ObjectId.isValid(entryId)) {
-      entryDAO.remove(new ObjectId(entryId))
-    }
+    entryDAO.remove(entryId)
   }
 
   def load(entryId: String): Option[EntryJson] = {
-    ObjectId.isValid(entryId) match {
-      case true =>
-        entryDAO.load(entryId) match {
-          case Some(e) => Option(mapToEntryJson(e))
-          case _ => None
-        }
-      case false =>
-        None
+    entryDAO.load(entryId) match {
+      case Some(e) => Option(mapToEntryJson(e))
+      case _ => None
     }
   }
 
@@ -53,23 +45,17 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
   }
 
   def update(entryId: String, message: String) {
-    if (ObjectId.isValid(entryId)) {
-      entryDAO.update(entryId, message)
-    }
+    entryDAO.update(entryId, message)
   }
 
   def isAuthor(login: String, entryId: String): Boolean = {
-    if (ObjectId.isValid(entryId)) {
-      entryDAO.load(entryId) match {
-        case Some(entry) =>
-          userDAO.findByLogin(login) match {
-            case Some(user) => entry.authorId == user._id
-            case _ => false
-          }
-        case _ => false
-      }
-    } else {
-      false
+    entryDAO.load(entryId) match {
+      case Some(entry) =>
+        userDAO.findByLogin(login) match {
+          case Some(user) => entry.authorId == user._id
+          case _ => false
+        }
+      case _ => false
     }
   }
 
