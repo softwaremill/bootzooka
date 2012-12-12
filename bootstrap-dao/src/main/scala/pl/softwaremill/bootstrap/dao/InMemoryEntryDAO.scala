@@ -41,8 +41,13 @@ class InMemoryEntryDAO extends EntryDAO {
     entries.find(entry => entry._id == entryId)
   }
 
-  def update(entry: Entry) {
-    entries = entries.updated(entries.indexOf(entry), entry)
+  def update(entryId: String, message: String) {
+    if (ObjectId.isValid(entryId)) {
+      load(entryId) match {
+        case Some(e) => entries = entries.updated(entries.indexOf(e), Entry(e._id, message, e.authorId, e.entered))
+        case _ =>
+      }
+    }
   }
 
 }

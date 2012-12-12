@@ -2,22 +2,32 @@ package pl.softwaremill.bootstrap.service
 
 import data.EntryJson
 import pl.softwaremill.bootstrap.domain.Entry
-import pl.softwaremill.bootstrap.dao.EntryDAO
-import com.mongodb.casbah.Imports._
+import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
 import org.bson.types.ObjectId
+import pl.softwaremill.bootstrap.common.Utils
 
-class EntryService(entryDAO: EntryDAO) {
+class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
 
   def loadAll = {
-    EntryJson(entryDAO.loadAll)
+    entryDAO.loadAll.map(e => mapToEntryJson(e))
+  }
+
+  def readAuthorLogin(userId: String): String = {
+    userDAO.load(userId) match {
+      case Some(u) => u.login
+      case _ => ""
+    }
   }
 
   def count(): Long = {
     entryDAO.countItems()
   }
 
-  def add(entry: EntryJson) {
-    entryDAO.add(new Entry(author = entry.author, text = entry.text))
+  def add(login: String, message: String) {
+    userDAO.findByLogin(login) match {
+      case Some(user) => entryDAO.add(Entry(authorId = user._id, text = message))
+      case _ =>
+    }
   }
 
   def remove(entryId: String) {
@@ -26,18 +36,40 @@ class EntryService(entryDAO: EntryDAO) {
     }
   }
 
-  def load(entryId: String) = {
-    if (ObjectId.isValid(entryId)) {
-      EntryJson(entryDAO.load(new ObjectId(entryId)))
-    }
-    else {
-      None
+  def load(entryId: String): Option[EntryJson] = {
+    ObjectId.isValid(entryId) match {
+      case true =>
+        entryDAO.load(entryId) match {
+          case Some(e) => Option(mapToEntryJson(e))
+          case _ => None
+        }
+      case false =>
+        None
     }
   }
 
-  def update(entry: EntryJson) {
-    if (ObjectId.isValid(entry.id)) {
-      entryDAO.update(new Entry(new ObjectId(entry.id), entry.text, entry.author))
+  def mapToEntryJson(entry: Entry): EntryJson = {
+    EntryJson(entry._id.toString, entry.text, readAuthorLogin(entry.authorId.toString), Utils.format(entry.entered))
+  }
+
+  def update(entryId: String, message: String) {
+    if (ObjectId.isValid(entryId)) {
+      entryDAO.update(entryId, message)
+    }
+  }
+
+  def isAuthor(login: String, entryId: String): Boolean = {
+    if (ObjectId.isValid(entryId)) {
+      entryDAO.load(entryId) match {
+        case Some(entry) =>
+          userDAO.findByLogin(login) match {
+            case Some(user) => entry.authorId == user._id
+            case _ => false
+          }
+        case _ => false
+      }
+    } else {
+      false
     }
   }
 

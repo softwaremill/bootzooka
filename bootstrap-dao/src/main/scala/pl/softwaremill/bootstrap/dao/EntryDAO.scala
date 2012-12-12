@@ -19,6 +19,6 @@ trait EntryDAO {
 
   def load(entryId: ObjectId): Option[Entry]
 
-  def update(entry: Entry)
+  def update(entryId: String, message: String)
 
 }

@@ -31,7 +31,7 @@ class ScalatraBootstrap extends LifeCycle {
     }
 
     val userService = new UserService(factory.userDAO, new RegistrationDataValidator())
-    val entryService = new EntryService(factory.entryDAO)
+    val entryService = new EntryService(factory.entryDAO, factory.userDAO)
 
     // Mount one or more servlets
     context.mount(new EntriesServlet(entryService, userService), PREFIX + "/entries")
