@@ -19,7 +19,8 @@ class UsersServletSpec extends BootstrapServletSpec {
 
   def onServletWithMocks(testToExecute: (UserService) => MatchResult[Any]): MatchResult[Any] = {
     val dao = mock[UserDAO]
-    dao.findByEmail("admin@sml.com") returns Some(new User(new ObjectId("a" * 24), "admin", "admin@sml.com", "pass", Utils.sha256("pass", "admin")))
+    dao.findByEmail("admin@sml.com") returns Some(new User(new ObjectId("a" * 24), "Admin", "admin", "admin@sml.com", "pass",
+      Utils.sha256("pass", "admin")))
     dao.findByEmail("newUser@sml.com") returns None
     dao.findByLogin("admin") returns Some(User("admin", "admin@sml.com", "pass"))
     dao.findByLogin("newUser") returns None
