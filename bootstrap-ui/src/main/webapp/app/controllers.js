@@ -49,7 +49,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
         self.reloadEntries();
         $timeout(function() {
             $window.document.body.scrollTop = scrollTopBefore;
-        }, 10);
+        }, 25);
         reloadEventId = $timeout(reloadEntriesLoop, 3000);
     }, 3000);
 
