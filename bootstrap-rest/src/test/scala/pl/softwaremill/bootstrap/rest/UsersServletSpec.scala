@@ -22,8 +22,8 @@ class UsersServletSpec extends BootstrapServletSpec {
     dao.findByEmail("admin@sml.com") returns Some(new User(new ObjectId("a" * 24), "Admin", "admin", "admin@sml.com", "pass",
       Utils.sha256("pass", "admin")))
     dao.findByEmail("newUser@sml.com") returns None
-    dao.findByLogin("admin") returns Some(User("admin", "admin@sml.com", "pass"))
-    dao.findByLogin("newUser") returns None
+    dao.findByLowerCasedLogin("admin") returns Some(User("admin", "admin@sml.com", "pass"))
+    dao.findByLowerCasedLogin("newUser") returns None
 
     val userService = spy(new UserService(dao, new RegistrationDataValidator()))
 

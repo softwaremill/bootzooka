@@ -23,7 +23,7 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
   }
 
   def add(login: String, message: String) {
-    userDAO.findByLogin(login) match {
+    userDAO.findByLowerCasedLogin(login) match {
       case Some(user) => entryDAO.add(Entry(authorId = user._id, text = message))
       case _ =>
     }
@@ -51,7 +51,7 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
   def isAuthor(login: String, entryId: String): Boolean = {
     entryDAO.load(entryId) match {
       case Some(entry) =>
-        userDAO.findByLogin(login) match {
+        userDAO.findByLowerCasedLogin(login) match {
           case Some(user) => entry.authorId == user._id
           case _ => false
         }

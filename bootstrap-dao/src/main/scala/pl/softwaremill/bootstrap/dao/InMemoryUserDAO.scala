@@ -32,17 +32,17 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def findByEmail(email: String): Option[User] = {
-    users.find(user => user.email == email)
+    users.find(user => user.email == email.toLowerCase)
   }
 
-  def findByLogin(login: String): Option[User] = {
-    users.find(user => user.login == login)
+  def findByLowerCasedLogin(login: String): Option[User] = {
+    users.find(user => user.loginLowerCased == login.toLowerCase)
   }
 
   def findByLoginOrEmail(loginOrEmail: String): Option[User] = {
-    users.find(user => user.email == loginOrEmail) match {
+    users.find(user => user.email == loginOrEmail.toLowerCase) match {
       case Some(user) => Option(user)
-      case _ => users.find(user => user.login == loginOrEmail)
+      case _ => users.find(user => user.loginLowerCased == loginOrEmail.toLowerCase)
     }
   }
 
@@ -51,7 +51,7 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String): Option[User] = {
-    users.find(user => user.login == login) match {
+    users.find(user => user.loginLowerCased == login.toLowerCase) match {
       case Some(user) => user.password == encryptedPassword match {
         case true => Some(user)
       }

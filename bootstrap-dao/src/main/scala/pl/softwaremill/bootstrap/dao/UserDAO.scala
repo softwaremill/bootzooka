@@ -16,7 +16,7 @@ trait UserDAO {
 
   def findByEmail(email: String): Option[User]
 
-  def findByLogin(login: String): Option[User]
+  def findByLowerCasedLogin(login: String): Option[User]
 
   def findByLoginOrEmail(loginOrEmail: String): Option[User]
 

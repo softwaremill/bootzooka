@@ -20,7 +20,7 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
   }
 
   def add(user: User) {
-    if (findByLogin(user.login).isDefined || findByEmail(user.email).isDefined) {
+    if (findByLowerCasedLogin(user.login).isDefined || findByEmail(user.email).isDefined) {
       throw new Exception("User with given e-mail or login already exists")
     }
 
@@ -39,12 +39,12 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
     findOne(MongoDBObject("email" -> email.toLowerCase))
   }
 
-  def findByLogin(login: String) = {
-    findOne(MongoDBObject("login" -> login.toLowerCase))
+  def findByLowerCasedLogin(login: String) = {
+    findOne(MongoDBObject("loginLowerCased" -> login.toLowerCase))
   }
 
   def findByLoginOrEmail(loginOrEmail: String) = {
-    findOne($or(MongoDBObject("login" -> loginOrEmail.toLowerCase), MongoDBObject("email" -> loginOrEmail.toLowerCase)))
+    findOne($or(MongoDBObject("loginLowerCased" -> loginOrEmail.toLowerCase), MongoDBObject("email" -> loginOrEmail.toLowerCase)))
   }
 
   def findByToken(token: String) = {
@@ -52,7 +52,7 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
   }
 
   def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String) = {
-    findOne(MongoDBObject("login" -> login, "password" -> encryptedPassword))
+    findOne(MongoDBObject("loginLowerCased" -> login.toLowerCase, "password" -> encryptedPassword))
   }
 
 }

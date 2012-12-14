@@ -20,7 +20,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def registerNewUser(login: String, email: String, password: String) {
-    userDAO.add(User(login.toLowerCase, email.toLowerCase, Utils.sha256(password, login.toLowerCase),
+    userDAO.add(User(login, email.toLowerCase, Utils.sha256(password, login.toLowerCase),
       Utils.sha256(password, login.toLowerCase)))
   }
 
@@ -28,7 +28,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     val userOpt: Option[User] = userDAO.findByLoginOrEmail(login)
     userOpt match {
       case Some(u) =>  {
-        if (u.password.equals(Utils.sha256(nonEncryptedPassword, u.login))) {
+        if (u.password.equals(Utils.sha256(nonEncryptedPassword, u.login.toLowerCase))) {
           UserJson(userOpt)
         }
         else {
@@ -44,11 +44,11 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def findByLogin(login: String): Option[UserJson] = {
-    UserJson(userDAO.findByLogin(login))
+    UserJson(userDAO.findByLowerCasedLogin(login))
   }
 
   def findByEmail(email: String): Option[UserJson] = {
-    UserJson(userDAO.findByEmail(email))
+    UserJson(userDAO.findByEmail(email.toLowerCase))
   }
 
   def isUserDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {
