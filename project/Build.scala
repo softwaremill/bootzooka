@@ -28,32 +28,40 @@ object BuildSettings {
     resolvers := bootstrapResolvers,
     scalacOptions += "-unchecked",
     classpathTypes ~= (_ + "orbit"),
-    libraryDependencies ++= Dependencies.testingDependencies
+    libraryDependencies ++= Dependencies.testingDependencies,
+    libraryDependencies ++= Dependencies.logging
   )
 
 }
 
 object Dependencies {
 
+  val slf4jVersion = "1.7.2"
+  val logBackVersion = "1.0.9"
+
+  val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
+  val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
+  val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % slf4jVersion
+  val slf4s = "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7"
+
+  val logging = Seq(slf4jApi, logBackClassic, jclOverSlf4j, slf4s)
+
   val casbah = "org.mongodb" %% "casbah" % "2.4.1"
   val salat = "com.novus" %% "salat" % "1.9.1"
   val databaseLibs = Seq(casbah, salat)
 
-
-
   val scalatraVersion = "2.2.0-RC1"
 
-  val logback = "ch.qos.logback" % "logback-classic" % "1.0.6"
   val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
   val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % scalatraVersion % "test"
   val scalatraJson = "org.scalatra" % "scalatra-json" % scalatraVersion
   val json4s = "org.json4s" %% "json4s-jackson" % "3.0.0"
-  val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion
+  val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion  exclude("commons-logging", "commons-logging")
 
   val jodaTime = "joda-time" % "joda-time" % "2.0"
   val jodaConvert = "org.joda" % "joda-convert" % "1.2"
 
-  val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0"
+  val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
   val commonsLang = "org.apache.commons" % "commons-lang3" % "3.1"
 
   val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container"
@@ -62,7 +70,7 @@ object Dependencies {
   val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
-  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, logback, scalatraAuth, commonsLang)
+  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, scalatraAuth, commonsLang)
 
   val testingDependencies = Seq(mockito, specs2)
 
