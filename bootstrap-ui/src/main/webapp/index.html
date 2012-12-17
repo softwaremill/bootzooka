@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="assets/img/favicon.gif" type="image/x-icon">
 
     <script type="text/javascript" src="assets/js/jquery-1.8.2-min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-blockui.min.js"></script>
 
     <script type="text/javascript" src="assets/js/bootstrap-2.2.0.js"></script>
 
@@ -27,6 +28,14 @@
 
 </head>
 <body class="padding-for-navbar" ng-app="smlBootstrap">
+
+    <span style="display: none">
+        <ajaxthrobber>
+            <br/><br/><br/>
+            <h4><img src="assets/img/busy.gif" border="0"> Please wait ...</h4>
+            <br/><br/><br/>
+        </ajaxthrobber>
+    </span>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
