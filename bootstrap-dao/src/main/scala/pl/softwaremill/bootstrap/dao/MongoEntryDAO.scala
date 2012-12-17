@@ -8,8 +8,9 @@ import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHelpers
+import com.weiglewilczek.slf4s.Logging
 
-class MongoEntryDAO(implicit val mongo: MongoDB) extends SalatDAO[Entry, ObjectId](mongo("entries")) with EntryDAO {
+class MongoEntryDAO(implicit val mongo: MongoDB) extends SalatDAO[Entry, ObjectId](mongo("entries")) with EntryDAO with Logging {
 
   RegisterJodaTimeConversionHelpers()
 
@@ -22,6 +23,7 @@ class MongoEntryDAO(implicit val mongo: MongoDB) extends SalatDAO[Entry, ObjectI
   }
 
   def add(entry: Entry) {
+    logger.debug("Adding new entry: " + entry)
     insert(entry, WriteConcern.Safe)
   }
 
