@@ -1,6 +1,6 @@
 
 /**
- * @license AngularJS v1.1.0
+ * @license AngularJS v1.1.1
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  *
@@ -12,7 +12,7 @@
  * @name angular.mock
  * @description
  *
- * Namespace from 'angular-mocks.js' which contains testing related code.
+ * Namespace from 'angular-mocks-1.1.1.js' which contains testing related code.
  */
 angular.mock = {};
 
@@ -637,7 +637,7 @@ angular.mock.dump = function(object) {
  * development please see {@link ngMockE2E.$httpBackend e2e $httpBackend mock}.
  *
  * During unit testing, we want our unit tests to run quickly and have no external dependencies so
- * we donâ€™t want to send {@link https://developer.mozilla.org/en/xmlhttprequest XHR} or
+ * we don’t want to send {@link https://developer.mozilla.org/en/xmlhttprequest XHR} or
  * {@link http://en.wikipedia.org/wiki/JSONP JSONP} requests to a real server. All we really need is
  * to verify whether a certain request has been sent or not, or alternatively just let the
  * application make requests, respond with pre-trained responses and assert that the end result is
@@ -730,71 +730,71 @@ angular.mock.dump = function(object) {
  * <pre>
  // controller
  function MyController($scope, $http) {
- $http.get('/auth.py').success(function(data) {
- $scope.user = data;
- });
+     $http.get('/auth.py').success(function(data) {
+       $scope.user = data;
+     });
 
- this.saveMessage = function(message) {
- $scope.status = 'Saving...';
- $http.post('/add-msg.py', message).success(function(response) {
- $scope.status = '';
- }).error(function() {
- $scope.status = 'ERROR!';
- });
- };
- }
+     this.saveMessage = function(message) {
+       $scope.status = 'Saving...';
+       $http.post('/add-msg.py', message).success(function(response) {
+         $scope.status = '';
+       }).error(function() {
+         $scope.status = 'ERROR!';
+       });
+     };
+   }
 
  // testing controller
  var $http;
 
  beforeEach(inject(function($injector) {
- $httpBackend = $injector.get('$httpBackend');
+     $httpBackend = $injector.get('$httpBackend');
 
- // backend definition common for all tests
- $httpBackend.when('GET', '/auth.py').respond({userId: 'userX'}, {'A-Token': 'xxx'});
- }));
+     // backend definition common for all tests
+     $httpBackend.when('GET', '/auth.py').respond({userId: 'userX'}, {'A-Token': 'xxx'});
+   }));
 
 
  afterEach(function() {
- $httpBackend.verifyNoOutstandingExpectation();
- $httpBackend.verifyNoOutstandingRequest();
- });
+     $httpBackend.verifyNoOutstandingExpectation();
+     $httpBackend.verifyNoOutstandingRequest();
+   });
 
 
  it('should fetch authentication token', function() {
- $httpBackend.expectGET('/auth.py');
- var controller = scope.$new(MyController);
- $httpBackend.flush();
- });
+     $httpBackend.expectGET('/auth.py');
+     var controller = scope.$new(MyController);
+     $httpBackend.flush();
+   });
 
 
  it('should send msg to server', function() {
- // now you donâ€™t care about the authentication, but
- // the controller will still send the request and
- // $httpBackend will respond without you having to
- // specify the expectation and response for this request
- $httpBackend.expectPOST('/add-msg.py', 'message content').respond(201, '');
+     // now you don’t care about the authentication, but
+     // the controller will still send the request and
+     // $httpBackend will respond without you having to
+     // specify the expectation and response for this request
+     $httpBackend.expectPOST('/add-msg.py', 'message content').respond(201, '');
 
- var controller = scope.$new(MyController);
- $httpBackend.flush();
- controller.saveMessage('message content');
- expect(controller.status).toBe('Saving...');
- $httpBackend.flush();
- expect(controller.status).toBe('');
- });
+     var controller = scope.$new(MyController);
+     $httpBackend.flush();
+     controller.saveMessage('message content');
+     expect(controller.status).toBe('Saving...');
+     $httpBackend.flush();
+     expect(controller.status).toBe('');
+   });
 
 
  it('should send auth header', function() {
- $httpBackend.expectPOST('/add-msg.py', undefined, function(headers) {
- // check if the header was send, if it wasn't the expectation won't
- // match the request and the test will fail
- return headers['Authorization'] == 'xxx';
- }).respond(201, '');
+     $httpBackend.expectPOST('/add-msg.py', undefined, function(headers) {
+       // check if the header was send, if it wasn't the expectation won't
+       // match the request and the test will fail
+       return headers['Authorization'] == 'xxx';
+     }).respond(201, '');
 
- var controller = scope.$new(MyController);
- controller.saveMessage('whatever');
- $httpBackend.flush();
- });
+     var controller = scope.$new(MyController);
+     controller.saveMessage('whatever');
+     $httpBackend.flush();
+   });
  </pre>
  */
 angular.mock.$HttpBackendProvider = function() {
@@ -903,8 +903,8 @@ function createHttpBackendMock($delegate, $browser) {
      * @returns {requestHandler} Returns an object with `respond` method that control how a matched
      *   request is handled.
      *
-     *  - respond â€“ `{function([status,] data[, headers])|function(function(method, url, data, headers)}`
-     *    â€“ The respond method takes a set of static data to be returned or a function that can return
+     *  - respond – `{function([status,] data[, headers])|function(function(method, url, data, headers)}`
+     *    – The respond method takes a set of static data to be returned or a function that can return
      *    an array containing response status (number), response data (string) and response headers
      *    (Object).
      */
@@ -1022,8 +1022,8 @@ function createHttpBackendMock($delegate, $browser) {
      * @returns {requestHandler} Returns an object with `respond` method that control how a matched
      *  request is handled.
      *
-     *  - respond â€“ `{function([status,] data[, headers])|function(function(method, url, data, headers)}`
-     *    â€“ The respond method takes a set of static data to be returned or a function that can return
+     *  - respond – `{function([status,] data[, headers])|function(function(method, url, data, headers)}`
+     *    – The respond method takes a set of static data to be returned or a function that can return
      *    an array containing response status (number), response data (string) and response headers
      *    (Object).
      */
@@ -1450,11 +1450,11 @@ angular.module('ngMockE2E', ['ng']).config(function($provide) {
  * @returns {requestHandler} Returns an object with `respond` and `passThrough` methods that
  *   control how a matched request is handled.
  *
- *  - respond â€“ `{function([status,] data[, headers])|function(function(method, url, data, headers)}`
- *    â€“ The respond method takes a set of static data to be returned or a function that can return
+ *  - respond – `{function([status,] data[, headers])|function(function(method, url, data, headers)}`
+ *    – The respond method takes a set of static data to be returned or a function that can return
  *    an array containing response status (number), response data (string) and response headers
  *    (Object).
- *  - passThrough â€“ `{function()}` â€“ Any request matching a backend definition with `passThrough`
+ *  - passThrough – `{function()}` – Any request matching a backend definition with `passThrough`
  *    handler, will be pass through to the real backend (an XHR request will be made to the
  *    server.
  */
@@ -1587,14 +1587,20 @@ window.jstestdriver && (function(window) {
 })(window);
 
 
-window.jasmine && (function(window) {
+(window.jasmine || window.mocha) && (function(window) {
+
+    var currentSpec = null;
+
+    beforeEach(function() {
+        currentSpec = this;
+    });
 
     afterEach(function() {
-        var spec = getCurrentSpec();
-        var injector = spec.$injector;
+        var injector = currentSpec.$injector;
 
-        spec.$injector = null;
-        spec.$modules = null;
+        currentSpec.$injector = null;
+        currentSpec.$modules = null;
+        currentSpec = null;
 
         if (injector) {
             injector.get('$rootElement').unbind();
@@ -1616,13 +1622,8 @@ window.jasmine && (function(window) {
         angular.callbacks.counter = 0;
     });
 
-    function getCurrentSpec() {
-        return jasmine.getEnv().currentSpec;
-    }
-
     function isSpecRunning() {
-        var spec = getCurrentSpec();
-        return spec && spec.queue.running;
+        return currentSpec && currentSpec.queue.running;
     }
 
     /**
@@ -1647,11 +1648,10 @@ window.jasmine && (function(window) {
         return isSpecRunning() ? workFn() : workFn;
         /////////////////////
         function workFn() {
-            var spec = getCurrentSpec();
-            if (spec.$injector) {
+            if (currentSpec.$injector) {
                 throw Error('Injector already created, can not register a module!');
             } else {
-                var modules = spec.$modules || (spec.$modules = []);
+                var modules = currentSpec.$modules || (currentSpec.$modules = []);
                 angular.forEach(moduleFns, function(module) {
                     modules.push(module);
                 });
@@ -1682,35 +1682,35 @@ window.jasmine && (function(window) {
      *
      *
      *   describe('MyApp', function() {
-     *
-     *     // You need to load modules that you want to test,
-     *     // it loads only the "ng" module by default.
-     *     beforeEach(module('myApplicationModule'));
-     *
-     *
-     *     // inject() is used to inject arguments of all given functions
-     *     it('should provide a version', inject(function(mode, version) {
-     *       expect(version).toEqual('v1.0.1');
-     *       expect(mode).toEqual('app');
-     *     }));
-     *
-     *
-     *     // The inject and module method can also be used inside of the it or beforeEach
-     *     it('should override a version and test the new version is injected', function() {
-     *       // module() takes functions or strings (module aliases)
-     *       module(function($provide) {
-     *         $provide.value('version', 'overridden'); // override version here
-     *       });
-     *
-     *       inject(function(version) {
-     *         expect(version).toEqual('overridden');
-     *       });
-     *     ));
-     *   });
-     *
-     * </pre>
-     *
-     * @param {...Function} fns any number of functions which will be injected using the injector.
+   *
+   *     // You need to load modules that you want to test,
+   *     // it loads only the "ng" module by default.
+   *     beforeEach(module('myApplicationModule'));
+   *
+   *
+   *     // inject() is used to inject arguments of all given functions
+   *     it('should provide a version', inject(function(mode, version) {
+   *       expect(version).toEqual('v1.0.1');
+   *       expect(mode).toEqual('app');
+   *     }));
+   *
+   *
+   *     // The inject and module method can also be used inside of the it or beforeEach
+   *     it('should override a version and test the new version is injected', function() {
+   *       // module() takes functions or strings (module aliases)
+   *       module(function($provide) {
+   *         $provide.value('version', 'overridden'); // override version here
+   *       });
+   *
+   *       inject(function(version) {
+   *         expect(version).toEqual('overridden');
+   *       });
+   *     ));
+   *   });
+   *
+   * </pre>
+   *
+   * @param {...Function} fns any number of functions which will be injected using the injector.
      */
     window.inject = angular.mock.inject = function() {
         var blockFns = Array.prototype.slice.call(arguments, 0);
@@ -1718,13 +1718,13 @@ window.jasmine && (function(window) {
         return isSpecRunning() ? workFn() : workFn;
         /////////////////////
         function workFn() {
-            var spec = getCurrentSpec();
-            var modules = spec.$modules || [];
+            var modules = currentSpec.$modules || [];
+
             modules.unshift('ngMock');
             modules.unshift('ng');
-            var injector = spec.$injector;
+            var injector = currentSpec.$injector;
             if (!injector) {
-                injector = spec.$injector = angular.injector(modules);
+                injector = currentSpec.$injector = angular.injector(modules);
             }
             for(var i = 0, ii = blockFns.length; i < ii; i++) {
                 try {

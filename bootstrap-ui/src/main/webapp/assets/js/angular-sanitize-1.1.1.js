@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.1.0
+ * @license AngularJS v1.1.1
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -49,11 +49,11 @@
      <doc:source>
      <script>
      function Ctrl($scope) {
-     $scope.snippet =
-     '<p style="color:blue">an html\n' +
-     '<em onmouseover="this.textContent=\'PWN3D!\'">click here</em>\n' +
-     'snippet</p>';
-     }
+           $scope.snippet =
+             '<p style="color:blue">an html\n' +
+             '<em onmouseover="this.textContent=\'PWN3D!\'">click here</em>\n' +
+             'snippet</p>';
+         }
      </script>
      <div ng-controller="Ctrl">
      Snippet: <textarea ng-model="snippet" cols="60" rows="3"></textarea>
@@ -87,30 +87,30 @@
      </doc:source>
      <doc:scenario>
      it('should sanitize the html snippet ', function() {
-     expect(using('#html-filter').element('div').html()).
-     toBe('<p>an html\n<em>click here</em>\nsnippet</p>');
-     });
+         expect(using('#html-filter').element('div').html()).
+           toBe('<p>an html\n<em>click here</em>\nsnippet</p>');
+       });
 
      it('should escape snippet without any filter', function() {
-     expect(using('#escaped-html').element('div').html()).
-     toBe("&lt;p style=\"color:blue\"&gt;an html\n" +
-     "&lt;em onmouseover=\"this.textContent='PWN3D!'\"&gt;click here&lt;/em&gt;\n" +
-     "snippet&lt;/p&gt;");
-     });
+         expect(using('#escaped-html').element('div').html()).
+           toBe("&lt;p style=\"color:blue\"&gt;an html\n" +
+                "&lt;em onmouseover=\"this.textContent='PWN3D!'\"&gt;click here&lt;/em&gt;\n" +
+                "snippet&lt;/p&gt;");
+       });
 
      it('should inline raw snippet if filtered as unsafe', function() {
-     expect(using('#html-unsafe-filter').element("div").html()).
-     toBe("<p style=\"color:blue\">an html\n" +
-     "<em onmouseover=\"this.textContent='PWN3D!'\">click here</em>\n" +
-     "snippet</p>");
-     });
+         expect(using('#html-unsafe-filter').element("div").html()).
+           toBe("<p style=\"color:blue\">an html\n" +
+                "<em onmouseover=\"this.textContent='PWN3D!'\">click here</em>\n" +
+                "snippet</p>");
+       });
 
      it('should update', function() {
-     input('snippet').enter('new <b>text</b>');
-     expect(using('#html-filter').binding('snippet')).toBe('new <b>text</b>');
-     expect(using('#escaped-html').element('div').html()).toBe("new &lt;b&gt;text&lt;/b&gt;");
-     expect(using('#html-unsafe-filter').binding("snippet")).toBe('new <b>text</b>');
-     });
+         input('snippet').enter('new <b>text</b>');
+         expect(using('#html-filter').binding('snippet')).toBe('new <b>text</b>');
+         expect(using('#escaped-html').element('div').html()).toBe("new &lt;b&gt;text&lt;/b&gt;");
+         expect(using('#html-unsafe-filter').binding("snippet")).toBe('new <b>text</b>');
+       });
      </doc:scenario>
      </doc:example>
      */
@@ -129,7 +129,7 @@
         BEGING_END_TAGE_REGEXP = /^<\s*\//,
         COMMENT_REGEXP = /<!--(.*?)-->/g,
         CDATA_REGEXP = /<!\[CDATA\[(.*?)]]>/g,
-        URI_REGEXP = /^((ftp|https?):\/\/|mailto:|#)/,
+        URI_REGEXP = /^((ftp|https?):\/\/|mailto:|tel:|#)/,
         NON_ALPHANUMERIC_REGEXP = /([^\#-~| |!])/g; // Match everything outside of normal chars and " (quote character)
 
 
@@ -182,11 +182,11 @@
     /**
      * @example
      * htmlParser(htmlString, {
-     *     start: function(tag, attrs, unary) {},
-     *     end: function(tag) {},
-     *     chars: function(text) {},
-     *     comment: function(text) {}
-     * });
+ *     start: function(tag, attrs, unary) {},
+ *     end: function(tag) {},
+ *     chars: function(text) {},
+ *     comment: function(text) {}
+ * });
      *
      * @param {string} html string
      * @param {object} handler
@@ -346,11 +346,11 @@
      * create an HTML/XML writer which writes to buffer
      * @param {Array} buf use buf.jain('') to get out sanitized html string
      * @returns {object} in the form of {
-     *     start: function(tag, attrs, unary) {},
-     *     end: function(tag) {},
-     *     chars: function(text) {},
-     *     comment: function(text) {}
-     * }
+ *     start: function(tag, attrs, unary) {},
+ *     end: function(tag) {},
+ *     chars: function(text) {},
+ *     comment: function(text) {}
+ * }
      */
     function htmlSanitizeWriter(buf){
         var ignore = false;
@@ -416,7 +416,7 @@
     angular.module('ngSanitize').directive('ngBindHtml', ['$sanitize', function($sanitize) {
         return function(scope, element, attr) {
             element.addClass('ng-binding').data('$binding', attr.ngBindHtml);
-            scope.$watch(attr.ngBindHtml, function(value) {
+            scope.$watch(attr.ngBindHtml, function ngBindHtmlWatchAction(value) {
                 value = $sanitize(value);
                 element.html(value || '');
             });
@@ -432,6 +432,7 @@
      *   plain email address links.
      *
      * @param {string} text Input text.
+     * @param {string} target Window (_blank|_self|_parent|_top) or named frame to open links in.
      * @returns {string} Html-linkified text.
      *
      * @usage
@@ -442,12 +443,13 @@
      <doc:source>
      <script>
      function Ctrl($scope) {
-     $scope.snippet =
-     'Pretty text with some links:\n'+
-     'http://angularjs.org/,\n'+
-     'mailto:us@somewhere.org,\n'+
+           $scope.snippet =
+             'Pretty text with some links:\n'+
+             'http://angularjs.org/,\n'+
+             'mailto:us@somewhere.org,\n'+
      'another@somewhere.org,\n'+
      'and one more: ftp://127.0.0.1/.';
+     $scope.snippetWithTarget = 'http://angularjs.org/';
      }
      </script>
      <div ng-controller="Ctrl">
@@ -467,6 +469,15 @@
      <div ng-bind-html="snippet | linky"></div>
      </td>
      </tr>
+     <tr id="linky-target">
+     <td>linky target</td>
+     <td>
+     <pre>&lt;div ng-bind-html="snippetWithTarget | linky:'_blank'"&gt;<br>&lt;/div&gt;</pre>
+     </td>
+     <td>
+     <div ng-bind-html="snippetWithTarget | linky:'_blank'"></div>
+     </td>
+     </tr>
      <tr id="escaped-html">
      <td>no filter</td>
      <td><pre>&lt;div ng-bind="snippet"&gt;<br>&lt;/div&gt;</pre></td>
@@ -476,29 +487,34 @@
      </doc:source>
      <doc:scenario>
      it('should linkify the snippet with urls', function() {
-     expect(using('#linky-filter').binding('snippet | linky')).
-     toBe('Pretty text with some links:&#10;' +
-     '<a href="http://angularjs.org/">http://angularjs.org/</a>,&#10;' +
-     '<a href="mailto:us@somewhere.org">us@somewhere.org</a>,&#10;' +
+         expect(using('#linky-filter').binding('snippet | linky')).
+           toBe('Pretty text with some links:&#10;' +
+                '<a href="http://angularjs.org/">http://angularjs.org/</a>,&#10;' +
+                '<a href="mailto:us@somewhere.org">us@somewhere.org</a>,&#10;' +
      '<a href="mailto:another@somewhere.org">another@somewhere.org</a>,&#10;' +
      'and one more: <a href="ftp://127.0.0.1/">ftp://127.0.0.1/</a>.');
      });
 
      it ('should not linkify snippet without the linky filter', function() {
-     expect(using('#escaped-html').binding('snippet')).
-     toBe("Pretty text with some links:\n" +
-     "http://angularjs.org/,\n" +
-     "mailto:us@somewhere.org,\n" +
+         expect(using('#escaped-html').binding('snippet')).
+           toBe("Pretty text with some links:\n" +
+                "http://angularjs.org/,\n" +
+                "mailto:us@somewhere.org,\n" +
      "another@somewhere.org,\n" +
      "and one more: ftp://127.0.0.1/.");
      });
 
      it('should update', function() {
-     input('snippet').enter('new http://link.');
-     expect(using('#linky-filter').binding('snippet | linky')).
-     toBe('new <a href="http://link">http://link</a>.');
-     expect(using('#escaped-html').binding('snippet')).toBe('new http://link.');
-     });
+         input('snippet').enter('new http://link.');
+         expect(using('#linky-filter').binding('snippet | linky')).
+           toBe('new <a href="http://link">http://link</a>.');
+         expect(using('#escaped-html').binding('snippet')).toBe('new http://link.');
+       });
+
+     it('should work with the target property', function() {
+        expect(using('#linky-target').binding("snippetWithTarget | linky:'_blank'")).
+          toBe('<a target="_blank" href="http://angularjs.org/">http://angularjs.org/</a>');
+       });
      </doc:scenario>
      </doc:example>
      */
@@ -506,7 +522,7 @@
         var LINKY_URL_REGEXP = /((ftp|https?):\/\/|(mailto:)?[A-Za-z0-9._%+-]+@)\S*[^\s\.\;\,\(\)\{\}\<\>]/,
             MAILTO_REGEXP = /^mailto:/;
 
-        return function(text) {
+        return function(text, target) {
             if (!text) return text;
             var match;
             var raw = text;
@@ -515,6 +531,10 @@
             var writer = htmlSanitizeWriter(html);
             var url;
             var i;
+            var properties = {};
+            if (angular.isDefined(target)) {
+                properties.target = target;
+            }
             while ((match = raw.match(LINKY_URL_REGEXP))) {
                 // We can not end in these as they are sometimes found at the end of the sentence
                 url = match[0];
@@ -522,7 +542,8 @@
                 if (match[2] == match[3]) url = 'mailto:' + url;
                 i = match.index;
                 writer.chars(raw.substr(0, i));
-                writer.start('a', {href:url});
+                properties.href = url;
+                writer.start('a', properties);
                 writer.chars(match[0].replace(MAILTO_REGEXP, ''));
                 writer.end('a');
                 raw = raw.substring(i + match[0].length);
