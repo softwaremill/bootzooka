@@ -1,6 +1,10 @@
 var services = angular.module('smlBootstrap.services', ['ngResource']);
 
-var DONT_BLOCK_ON_AJAX_HEADER = { "dontBlockPageOnAjax": "true" };
+var dontBlockOnAjaxHeader = { "dontBlockPageOnAjax": "true" };
+var arrayGetWithoutBlockOnAjax = { method: "GET", isArray: true, headers: dontBlockOnAjaxHeader };
+var nonArrayGetWithoutBlockOnAjax = { method: "GET", isArray: false, headers: dontBlockOnAjaxHeader };
+
+
 
 services.factory('EntriesService', function ($resource) {
 
@@ -8,11 +12,11 @@ services.factory('EntriesService', function ($resource) {
 
     entriesService.crudService = $resource('rest/entries/:id', { }, {
         insert: { method: "PUT"},
-        query: { method: "GET", isArray: true, headers: DONT_BLOCK_ON_AJAX_HEADER }
+        query: arrayGetWithoutBlockOnAjax
     });
 
     entriesService.counter = $resource("/rest/entries/count", { }, {
-        get: { method: "GET", isArray: false, headers: DONT_BLOCK_ON_AJAX_HEADER }
+        get: nonArrayGetWithoutBlockOnAjax
     });
 
 
@@ -117,7 +121,7 @@ services.factory('UserSessionService', function ($resource) {
 services.factory('UtilService', function ($resource) {
 
     var utilService = $resource('/rest/uptime', { }, {
-        get: { method: "GET", isArray: false, headers: DONT_BLOCK_ON_AJAX_HEADER }
+        get: nonArrayGetWithoutBlockOnAjax
     });
 
     utilService.loadUptime = function (successFunction) {
