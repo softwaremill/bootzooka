@@ -45,5 +45,16 @@ class MongoEntryDAOSpec extends SpecificationWithMongo {
       assert(entryDAO.countItems() - numberOfEntries === -1)
     }
 
+    "load entries sorted from newest" in {
+
+      // When
+      val entries: List[Entry] = entryDAO.loadAll
+
+      // Then
+      assert(entries.size === 3)
+      assert(entries(0).entered.isAfter(entries(1).entered) === true)
+      assert(entries(1).entered.isAfter(entries(2).entered) === true)
+    }
+
   }
 }

@@ -15,7 +15,7 @@ class MongoEntryDAO(implicit val mongo: MongoDB) extends SalatDAO[Entry, ObjectI
   RegisterJodaTimeConversionHelpers()
 
   def loadAll = {
-    find(MongoDBObject()).sort(MongoDBObject("_id" -> -1)).toList
+    find(MongoDBObject()).sort(MongoDBObject("entered" -> -1)).toList
   }
 
   def countItems(): Long = {
