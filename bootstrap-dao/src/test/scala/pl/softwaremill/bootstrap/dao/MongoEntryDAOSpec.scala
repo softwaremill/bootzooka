@@ -10,7 +10,6 @@ class MongoEntryDAOSpec extends SpecificationWithMongo {
   "MongoEntryDAO" should {
 
     step({
-      println("Creating EntryDAO")
       entryDAO = new MongoEntryDAO()
       for (i <- 1 to 3)  {
         entryDAO.add(Entry(_id = new ObjectId(i.toString * 24), text = "Message " + i, authorId = new ObjectId((10-i).toString * 24),
