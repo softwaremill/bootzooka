@@ -20,6 +20,8 @@ object BuildSettings {
 
   import Resolvers._
 
+  val mongoDirectory = SettingKey[File]("mongo-directory")
+
   val buildSettings = Defaults.defaultSettings ++ Seq(
     organization := "pl.softwaremill",
     version := "0.0.1-SNAPSHOT",
@@ -29,7 +31,20 @@ object BuildSettings {
     scalacOptions += "-unchecked",
     classpathTypes ~= (_ + "orbit"),
     libraryDependencies ++= Dependencies.testingDependencies,
-    libraryDependencies ++= Dependencies.logging
+    libraryDependencies ++= Dependencies.logging,
+
+    parallelExecution := false, // We are starting mongo in tests.
+    testOptions in Test <+= mongoDirectory map {
+      md => Tests.Setup{ () =>
+      val mongoFile = new File(md.getAbsolutePath + "/bin/mongod")
+      if(mongoFile.exists) {
+        System.setProperty("mongo.directory", md.getAbsolutePath)
+      } else {
+        throw new RuntimeException(
+          "Unable to find [mongodb] in 'mongo.directory' (%s). Please check your ~/.sbt/local.sbt file.".format(mongoFile.getAbsolutePath))
+      }
+    }
+  }
   )
 
 }
@@ -74,6 +89,8 @@ object Dependencies {
 
   val testingDependencies = Seq(mockito, specs2)
 
+  val smlCommonUtil = "pl.softwaremill.common" % "softwaremill-util" % "71"
+
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
   val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
@@ -107,7 +124,7 @@ object SmlBootstrapBuild extends Build {
   lazy val dao: Project = Project(
     "bootstrap-dao",
     file("bootstrap-dao"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= databaseLibs)
+    settings = buildSettings ++ Seq(libraryDependencies ++= databaseLibs ++ Seq(smlCommonUtil))
   ) dependsOn(domain, common)
 
   lazy val service: Project = Project(
