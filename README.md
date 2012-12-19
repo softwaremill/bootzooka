@@ -8,6 +8,7 @@ Simple showcase project to allow quickly start with development process of moder
     * [Why Scalatra?](#why-scalatra)
     * [Why sbt?](#why-sbt)
 * [How to run](#how-to-run)
+* [How to execute tests](#how-to-execute-tests)
 * [How to develop](#how-to-develop)
     * [Useful sbt commands](#useful-sbt-commands)
 * [License](#license)
@@ -47,10 +48,21 @@ or supporting documents. But at the end it's a dedicated tool for Scala platform
 To run application, simply clone the source code, enter the directory and type _./run.sh_ or _run.bat_ depends on your OS,
 navigate your web browser to http://localhost:8080/ and start using the application.
 
+## How to execute tests
+
+Because some tests are using MongoDB you should have it installed on your machine. Additionally you should
+let SBT know where mMngoDB files are located. To do that please add one line to ~/.sbt/local.sbt:
+
+SettingKey[File]("mongo-directory") := file("/Users/your_user/apps/mongodb")
+
+with proper path to your MongoDB installation directory.
+
+After that SBT will start MongoDB instance before executing each test class that exetends SpeficationWithMongo trait.
+
 ## How to develop
 
 If you want to start develop new features, you must have sbt version 0.12.1 installed. Enter the same directory as above and type _sbt_
-to start the sbt console. Few plugins are already integrated with the project:
+to start the sbt console. Few plugins are already integrated with t
 
 * IDE configuration: we are using the best IDE right now - IntelliJ IDEA - to be able open project with it you must generate project files, you can do that with: _gen-idea_
 * web server: right now Jetty is integrated with the project, you can start it from the sbt console with: _container:start_
