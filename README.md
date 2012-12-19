@@ -2,6 +2,8 @@
 
 Simple showcase project to allow quickly start with development process of modern web based application.
 
+Live demo is available on http://bootstrap.softwaremill.com.
+
 * [Technology stack](#technology-stack)
     * [Why Scala?](#why-scala)
     * [Why AngularJS?](#why-angularjs)
