@@ -1,0 +1,12 @@
+# Fill values below and rename this file to sqs.conf
+AWSAccessKeyId=
+SecretAccessKey=
+queue=
+
+smtpHost=
+smtpPort=
+smtpUsername=
+smtpPassword=
+from=
+email.password=
+encoding=UTF-8
