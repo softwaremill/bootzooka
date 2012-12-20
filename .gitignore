@@ -5,4 +5,4 @@
 target/
 *.log
 .DS_Store
-sqs.conf
+application.conf

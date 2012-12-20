@@ -1,4 +1,4 @@
-# Fill values below and rename this file to sqs.conf
+# Fill values below and rename this file to application.conf
 AWSAccessKeyId=
 SecretAccessKey=
 queue=
