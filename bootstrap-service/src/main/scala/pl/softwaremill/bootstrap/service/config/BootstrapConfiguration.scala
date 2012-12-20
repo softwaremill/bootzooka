@@ -18,7 +18,7 @@ object BootstrapConfiguration {
   val smtpPassword        = config.get("smtpPassword", "")
   val from                = config.get("from", "")
   val taskSQSQueue        = config.get("queue", "")
-  val awsSecretKeyId      = config.get("AWSAccessKeyId", "")
+  val awsAccessKeyId      = config.get("AWSAccessKeyId", "")
   val awsSecretAccessKey  = config.get("SecretAccessKey", "")
   val encoding            = config.get("encoding", "")
 
