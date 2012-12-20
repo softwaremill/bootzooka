@@ -53,6 +53,8 @@ object Dependencies {
 
   val slf4jVersion = "1.7.2"
   val logBackVersion = "1.0.9"
+  val smlCommonVersion = "71"
+  val scalatraVersion = "2.2.0-RC1"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
   val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -64,8 +66,6 @@ object Dependencies {
   val casbah = "org.mongodb" %% "casbah" % "2.4.1"
   val salat = "com.novus" %% "salat" % "1.9.1"
   val databaseLibs = Seq(casbah, salat)
-
-  val scalatraVersion = "2.2.0-RC1"
 
   val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
   val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % scalatraVersion % "test"
@@ -89,7 +89,8 @@ object Dependencies {
 
   val testingDependencies = Seq(mockito, specs2)
 
-  val smlCommonUtil = "pl.softwaremill.common" % "softwaremill-util" % "71"
+  val smlCommonUtil = "pl.softwaremill.common" % "softwaremill-util" % smlCommonVersion
+  val smlCommonSqs = "pl.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
 
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
@@ -130,7 +131,7 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, casbah))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, casbah, smlCommonSqs))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
