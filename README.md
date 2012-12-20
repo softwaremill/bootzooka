@@ -55,7 +55,7 @@ navigate your web browser to http://localhost:8080/ and start using the applicat
 Because some tests are using MongoDB you should have it installed on your machine. Additionally you should
 let SBT know where MongoDB files are located. To do that please add one line to your ~/.sbt/local.sbt:
 
-SettingKey[File]("mongo-directory") := file("/Users/your_user/apps/mongodb")
+SettingKey\[File\]\("mongo-directory"\) := file("/Users/your_user/apps/mongodb")
 
 with proper path to your MongoDB installation directory.
 
