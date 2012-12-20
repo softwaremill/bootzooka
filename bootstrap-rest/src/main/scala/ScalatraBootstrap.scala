@@ -23,25 +23,8 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext) {
 
-    val factory = {
-      if(System.getProperty("withInMemory") != null) {
-        new InMemoryFactory
-      }
-      else {
-        implicit val mongoConn = MongoConnection()("bootstrap")
-        context.put(MONGO_DB_KEY, mongoConn)
-        new MongoFactory
-      }
-    }
-
-    val emailSendingService: EmailSendingService = {
-      if (BootstrapConfiguration.smtpHost.isEmpty == false) {
-        new ProductionEmailSendingService
-      }
-      else {
-        new DummyEmailSendingService
-      }
-    }
+    val factory = createDAOsFactory(context)
+    val emailSendingService = createEmailSendingService
 
     val scheduler = Executors.newScheduledThreadPool(4)
     context.put(SCHEDULER_KEY, scheduler)
@@ -54,6 +37,26 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new EntriesServlet(entryService, userService), PREFIX + "/entries")
     context.mount(new UptimeServlet, PREFIX + "/uptime")
     context.mount(new UsersServlet(userService), PREFIX + "/users")
+  }
+
+  def createDAOsFactory(context: ServletContext): StorageFactory = {
+    if (System.getProperty("withInMemory") != null) {
+      new InMemoryFactory
+    }
+    else {
+      implicit val mongoConn = MongoConnection()("bootstrap")
+      context.put(MONGO_DB_KEY, mongoConn)
+      new MongoFactory
+    }
+  }
+
+  def createEmailSendingService: EmailSendingService = {
+    if (BootstrapConfiguration.smtpHost.isEmpty == false) {
+      new ProductionEmailSendingService
+    }
+    else {
+      new DummyEmailSendingService
+    }
   }
 
   override def destroy(context: ServletContext) {
