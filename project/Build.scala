@@ -89,8 +89,11 @@ object Dependencies {
 
   val testingDependencies = Seq(mockito, specs2)
 
+  val javaxMail = "javax.mail" % "mail" % "1.4.5"
+
   val smlCommonUtil = "pl.softwaremill.common" % "softwaremill-util" % smlCommonVersion
   val smlCommonSqs = "pl.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
+  val smlCommonConfig = "pl.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
 
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
@@ -131,13 +134,13 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, casbah, smlCommonSqs))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, casbah, smlCommonSqs, smlCommonConfig, javaxMail))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
     "bootstrap-rest",
     file("bootstrap-rest"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided))
+    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided, smlCommonConfig))
   ) dependsOn(service, domain, common)
 
   lazy val ui: Project = Project(
