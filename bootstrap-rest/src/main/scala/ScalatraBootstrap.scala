@@ -19,6 +19,7 @@ class ScalatraBootstrap extends LifeCycle {
 
   val PREFIX = "/rest"
   val MONGO_DB_KEY: String = "MONGO_DB"
+  val SCHEDULER_KEY: String = "SCHEDULER"
 
   override def init(context: ServletContext) {
 
@@ -42,6 +43,10 @@ class ScalatraBootstrap extends LifeCycle {
       }
     }
 
+    val scheduler = Executors.newScheduledThreadPool(4)
+    context.put(SCHEDULER_KEY, scheduler)
+    scheduler.scheduleAtFixedRate(emailSendingService, 30, 30, TimeUnit.SECONDS)
+
     val userService = new UserService(factory.userDAO, new RegistrationDataValidator())
     val entryService = new EntryService(factory.entryDAO, factory.userDAO)
 
@@ -53,6 +58,7 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def destroy(context: ServletContext) {
     context.get(MONGO_DB_KEY).foreach(_.asInstanceOf[MongoDB].underlying.getMongo.close())
+    context.get(SCHEDULER_KEY).foreach(_.asInstanceOf[ScheduledExecutorService].shutdownNow())
   }
 
 }
