@@ -138,7 +138,7 @@ services.factory('RegisterService', function ($resource, FlashService) {
     registerService.register = function (user, successFunction, errorFunction) {
         registerService.save(angular.toJson(user), function (data) {
             if (angular.equals(data.value, 'success')) {
-                FlashService.set("User registered successfully!");
+                FlashService.set("User registered successfully! Please check your e-mail for confirmation.");
                 successFunction();
             } else {
                 errorFunction(data.value)
