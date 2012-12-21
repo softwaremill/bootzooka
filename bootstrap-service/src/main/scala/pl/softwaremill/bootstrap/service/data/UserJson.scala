@@ -7,7 +7,7 @@ case class UserJson(login: String, token: String)
 object UserJson {
   def apply(user: User) = new UserJson(user.login, user.token)
 
-  def apply(list: List[User]):List[UserJson] = {
+  def apply(list: List[User]): List[UserJson] = {
     for (user <- list) yield UserJson(user)
   }
 

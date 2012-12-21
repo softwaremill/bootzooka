@@ -24,7 +24,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   }
 
   get("/logout") {
-    if(isAuthenticated) { // call logout only when logged in to avoid NPE
+    if (isAuthenticated) { // call logout only when logged in to avoid NPE
       logOut()
     }
   }
@@ -32,13 +32,12 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   post("/register") {
     var messageOpt: Option[String] = None
 
-    if(userService.isUserDataValid((parsedBody \ "login").extractOpt[String], (parsedBody \ "email").extractOpt[String],
+    if (userService.isUserDataValid((parsedBody \ "login").extractOpt[String], (parsedBody \ "email").extractOpt[String],
       (parsedBody \ "password").extractOpt[String]) == false) {
-        messageOpt = Some("Wrong user data!")
-    }
-    else {
-      val userLogin = parsedBody \ "login" extractOrElse("")
-      val userEmail = parsedBody \ "email" extractOrElse("")
+      messageOpt = Some("Wrong user data!")
+    } else {
+      val userLogin = parsedBody \ "login" extractOrElse ("")
+      val userEmail = parsedBody \ "email" extractOrElse ("")
 
       userService.checkUserExistenceFor(userLogin, userEmail) match {
         case Left(error) => messageOpt = Some(error)

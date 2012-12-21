@@ -4,7 +4,7 @@ import pl.softwaremill.bootstrap.common.Utils
 import com.mongodb.casbah.Imports._
 
 case class User(_id: ObjectId = new ObjectId, login: String, loginLowerCased: String, email: String, password: String,
-                token: String)
+  token: String)
 
 object User {
 

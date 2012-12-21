@@ -18,12 +18,11 @@ class RegistrationDataValidator() {
 
     passwordOpt match {
       case Some(password) => if (password.trim.length == 0) return false
-      case _ =>  return false
+      case _ => return false
     }
 
     true
   }
-
 
 }
 

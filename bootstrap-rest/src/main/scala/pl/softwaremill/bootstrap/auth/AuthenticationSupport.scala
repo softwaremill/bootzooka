@@ -2,9 +2,9 @@ package pl.softwaremill.bootstrap.auth
 
 import org.scalatra._
 import org.scalatra.auth.ScentryAuthStore.CookieAuthStore
-import org.scalatra.auth.{Scentry, ScentryConfig, ScentrySupport}
+import org.scalatra.auth.{ Scentry, ScentryConfig, ScentrySupport }
 import scala.Some
-import pl.softwaremill.bootstrap.common.{Utils, JsonWrapper}
+import pl.softwaremill.bootstrap.common.{ Utils, JsonWrapper }
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.data.UserJson
 

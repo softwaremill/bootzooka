@@ -2,7 +2,7 @@ package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.EntryService
-import pl.softwaremill.bootstrap.common.{NotEscapedJsonWrapper, JsonWrapper}
+import pl.softwaremill.bootstrap.common.{ NotEscapedJsonWrapper, JsonWrapper }
 
 class EntriesServlet(entryService: EntryService, val userService: UserService) extends JsonServletWithAuthentication {
 
@@ -24,7 +24,7 @@ class EntriesServlet(entryService: EntryService, val userService: UserService) e
   // create new entry
   post("/") {
     haltIfNotAuthenticated()
-    val entryText =  (parsedBody \ "text").extract[String]
+    val entryText = (parsedBody \ "text").extract[String]
     entryService.add(user.login, entryText)
   }
 

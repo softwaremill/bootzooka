@@ -15,7 +15,7 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
     find(MongoDBObject()).toList
   }
 
-   def countItems(): Long = {
+  def countItems(): Long = {
     super.count()
   }
 

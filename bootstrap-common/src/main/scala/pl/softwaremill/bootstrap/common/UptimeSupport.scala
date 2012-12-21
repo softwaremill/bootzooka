@@ -1,6 +1,6 @@
 package pl.softwaremill.bootstrap.common
 
-import org.joda.time.{DateTime, Duration}
+import org.joda.time.{ DateTime, Duration }
 
 trait UptimeSupport {
 

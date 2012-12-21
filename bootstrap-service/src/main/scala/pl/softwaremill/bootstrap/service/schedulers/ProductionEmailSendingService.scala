@@ -4,7 +4,7 @@ import pl.softwaremill.common.sqs.email.EmailSender
 import pl.softwaremill.bootstrap.service.config.BootstrapConfiguration._
 import pl.softwaremill.common.sqs.util.EmailDescription
 import javax.mail.MessagingException
-import pl.softwaremill.common.sqs.{ReceivedMessage, Queue, SQS}
+import pl.softwaremill.common.sqs.{ ReceivedMessage, Queue, SQS }
 import com.google.common.base.Optional
 import scala.util.control.Breaks._
 
@@ -18,7 +18,7 @@ class ProductionEmailSendingService extends EmailSendingService {
     breakable {
       logger.debug("Checking emails waiting in the Amazon SQS")
 
-      while(messageOpt.isPresent) {
+      while (messageOpt.isPresent) {
         val message: ReceivedMessage = messageOpt.get()
         val emailToSend: EmailDescription = message.getMessage.asInstanceOf[EmailDescription]
 
@@ -26,10 +26,10 @@ class ProductionEmailSendingService extends EmailSendingService {
           EmailSender.send(smtpHost, smtpPort, smtpUserName, smtpPassword, from, encoding, emailToSend)
           logger.info("Email sent!")
           sqsClient.getQueueByName(taskSQSQueue).deleteMessage(message)
-        }
-        catch {
-          case e: MessagingException => logger.error("Sending email failed: " + e.getMessage)
-          break()
+        } catch {
+          case e: MessagingException =>
+            logger.error("Sending email failed: " + e.getMessage)
+            break()
         }
 
         messageOpt = sqsClient.getQueueByName(taskSQSQueue).receiveSingleMessage

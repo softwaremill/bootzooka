@@ -1,7 +1,7 @@
 package pl.softwaremill.bootstrap.common
 
 import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
+import org.joda.time.format.{ DateTimeFormatter, DateTimeFormat }
 
 object Utils {
 
@@ -37,7 +37,7 @@ object Utils {
   }
 
   def format(dateTime: DateTime): String = {
-      DateFormat.print(dateTime)
+    DateFormat.print(dateTime)
   }
 
 }

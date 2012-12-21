@@ -1,8 +1,7 @@
 package pl.softwaremill.bootstrap.dao
 
-import pl.softwaremill.bootstrap.domain.{Entry, User}
+import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.Utils
-import org.bson.types.ObjectId
 
 class InMemoryUserDAO extends UserDAO {
 

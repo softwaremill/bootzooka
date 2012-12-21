@@ -34,8 +34,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
       case Some(u) => {
         if (u.password.equals(Utils.sha256(nonEncryptedPassword, u.login.toLowerCase))) {
           UserJson(userOpt)
-        }
-        else {
+        } else {
           None
         }
       }

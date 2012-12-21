@@ -15,7 +15,7 @@ class UserPasswordStrategy(protected val app: ScalatraBase, login: String, passw
   }
 
   override def authenticate() = {
-   userService.authenticate(login, password)
+    userService.authenticate(login, password)
   }
 
 }

@@ -1,6 +1,5 @@
 package pl.softwaremill.bootstrap.common
 
-
 object SafeInt {
   val IntPattern = "-?([0-9]+)"
 

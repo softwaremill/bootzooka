@@ -1,13 +1,13 @@
-import com.mongodb.casbah.{MongoDB, MongoConnection}
-import java.util.concurrent.{ScheduledExecutorService, TimeUnit, Executors}
-import org.json4s.{DefaultFormats, Formats}
+import com.mongodb.casbah.{ MongoDB, MongoConnection }
+import java.util.concurrent.{ ScheduledExecutorService, TimeUnit, Executors }
+import org.json4s.{ DefaultFormats, Formats }
 import pl.softwaremill.bootstrap.dao._
-import pl.softwaremill.bootstrap.rest.{UsersServlet, EntriesServlet, UptimeServlet}
+import pl.softwaremill.bootstrap.rest.{ UsersServlet, EntriesServlet, UptimeServlet }
 import org.scalatra._
 import javax.servlet.ServletContext
 import pl.softwaremill.bootstrap.service.config.BootstrapConfiguration
-import pl.softwaremill.bootstrap.service.schedulers.{DummyEmailSendingService, EmailSendingService, ProductionEmailSendingService}
-import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
+import pl.softwaremill.bootstrap.service.schedulers.{ DummyEmailSendingService, EmailSendingService, ProductionEmailSendingService }
+import pl.softwaremill.bootstrap.service.user.{ RegistrationDataValidator, UserService }
 import pl.softwaremill.bootstrap.service.EntryService
 
 /**
@@ -42,8 +42,7 @@ class ScalatraBootstrap extends LifeCycle {
   def createDAOsFactory(context: ServletContext): StorageFactory = {
     if (System.getProperty("withInMemory") != null) {
       new InMemoryFactory
-    }
-    else {
+    } else {
       implicit val mongoConn = MongoConnection()("bootstrap")
       context.put(MONGO_DB_KEY, mongoConn)
       new MongoFactory
@@ -53,8 +52,7 @@ class ScalatraBootstrap extends LifeCycle {
   def createEmailSendingService: EmailSendingService = {
     if (BootstrapConfiguration.smtpHost != null) {
       new ProductionEmailSendingService
-    }
-    else {
+    } else {
       new DummyEmailSendingService
     }
   }
