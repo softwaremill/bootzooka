@@ -17,9 +17,9 @@ import pl.softwaremill.bootstrap.service.EntryService
  */
 class ScalatraBootstrap extends LifeCycle {
 
-  val PREFIX = "/rest"
-  val MONGO_DB_KEY: String = "MONGO_DB"
-  val SCHEDULER_KEY: String = "SCHEDULER"
+  val Prefix = "/rest"
+  val MongoKey = "MONGO_DB"
+  val SchedulerKey = "SCHEDULER"
 
   override def init(context: ServletContext) {
 
@@ -27,16 +27,16 @@ class ScalatraBootstrap extends LifeCycle {
     val emailSendingService = createEmailSendingService
 
     val scheduler = Executors.newScheduledThreadPool(4)
-    context.put(SCHEDULER_KEY, scheduler)
+    context.put(SchedulerKey, scheduler)
     scheduler.scheduleAtFixedRate(emailSendingService, 30, 30, TimeUnit.SECONDS)
 
     val userService = new UserService(factory.userDAO, new RegistrationDataValidator(), emailSendingService)
     val entryService = new EntryService(factory.entryDAO, factory.userDAO)
 
     // Mount one or more servlets
-    context.mount(new EntriesServlet(entryService, userService), PREFIX + "/entries")
-    context.mount(new UptimeServlet, PREFIX + "/uptime")
-    context.mount(new UsersServlet(userService), PREFIX + "/users")
+    context.mount(new EntriesServlet(entryService, userService), Prefix + "/entries")
+    context.mount(new UptimeServlet, Prefix + "/uptime")
+    context.mount(new UsersServlet(userService), Prefix + "/users")
   }
 
   def createDAOsFactory(context: ServletContext): StorageFactory = {
@@ -44,7 +44,7 @@ class ScalatraBootstrap extends LifeCycle {
       new InMemoryFactory
     } else {
       implicit val mongoConn = MongoConnection()("bootstrap")
-      context.put(MONGO_DB_KEY, mongoConn)
+      context.put(MongoKey, mongoConn)
       new MongoFactory
     }
   }
@@ -58,8 +58,8 @@ class ScalatraBootstrap extends LifeCycle {
   }
 
   override def destroy(context: ServletContext) {
-    context.get(MONGO_DB_KEY).foreach(_.asInstanceOf[MongoDB].underlying.getMongo.close())
-    context.get(SCHEDULER_KEY).foreach(_.asInstanceOf[ScheduledExecutorService].shutdownNow())
+    context.get(MongoKey).foreach(_.asInstanceOf[MongoDB].underlying.getMongo.close())
+    context.get(SchedulerKey).foreach(_.asInstanceOf[ScheduledExecutorService].shutdownNow())
   }
 
 }

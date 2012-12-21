@@ -11,9 +11,10 @@ import scala.util.control.Breaks._
 class ProductionEmailSendingService extends EmailSendingService {
 
   val sqsClient = new SQS("queue.amazonaws.com", awsAccessKeyId, awsSecretAccessKey)
+  val emailQueue: Queue = sqsClient.getQueueByName(taskSQSQueue)
 
   def run() {
-    var messageOpt: Optional[ReceivedMessage] = sqsClient.getQueueByName(taskSQSQueue).receiveSingleMessage
+    var messageOpt: Optional[ReceivedMessage] = emailQueue.receiveSingleMessage
 
     breakable {
       logger.debug("Checking emails waiting in the Amazon SQS")
@@ -25,20 +26,19 @@ class ProductionEmailSendingService extends EmailSendingService {
         try {
           EmailSender.send(smtpHost, smtpPort, smtpUserName, smtpPassword, from, encoding, emailToSend)
           logger.info("Email sent!")
-          sqsClient.getQueueByName(taskSQSQueue).deleteMessage(message)
+          emailQueue.deleteMessage(message)
         } catch {
           case e: MessagingException =>
             logger.error("Sending email failed: " + e.getMessage)
             break()
         }
 
-        messageOpt = sqsClient.getQueueByName(taskSQSQueue).receiveSingleMessage
+        messageOpt = emailQueue.receiveSingleMessage
       }
     }
   }
 
   def scheduleEmail(address: String, subject: String, content: String) {
-    val emailQueue: Queue = sqsClient.getQueueByName(taskSQSQueue)
     emailQueue.sendSerializable(new EmailDescription(address, content, subject))
   }
 }
