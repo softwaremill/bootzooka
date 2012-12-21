@@ -32,6 +32,7 @@ object BuildSettings {
     classpathTypes ~= (_ + "orbit"),
     libraryDependencies ++= Dependencies.testingDependencies,
     libraryDependencies ++= Dependencies.logging,
+    libraryDependencies ++= Seq(Dependencies.guava, Dependencies.googleFindbugs),
 
     parallelExecution := false, // We are starting mongo in tests.
     testOptions in Test <+= mongoDirectory map {
@@ -62,6 +63,9 @@ object Dependencies {
   val slf4s = "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7"
 
   val logging = Seq(slf4jApi, logBackClassic, jclOverSlf4j, slf4s)
+
+  val guava = "com.google.guava" % "guava" % "13.0.1"
+  val googleFindbugs = "com.google.code.findbugs" % "jsr305" % "1.3.+"
 
   val casbah = "org.mongodb" %% "casbah" % "2.4.1"
   val salat = "com.novus" %% "salat" % "1.9.1"
