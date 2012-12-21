@@ -8,11 +8,13 @@ Live demo is available on http://bootstrap.softwaremill.com.
     * [Why Scala?](#why-scala)
     * [Why AngularJS?](#why-angularjs)
     * [Why Scalatra?](#why-scalatra)
+    * [Why Amazon SQS?](#why-amazon-sqs)
     * [Why sbt?](#why-sbt)
 * [How to run](#how-to-run)
 * [How to execute tests](#how-to-execute-tests)
 * [How to develop](#how-to-develop)
     * [Useful sbt commands](#useful-sbt-commands)
+* [How to configure](#how-to-configure)   
 * [License](#license)
 
 Project is divided in few separated modules but basically we have UI which is base on [AngularJS](http://angularjs.org/)
@@ -40,6 +42,12 @@ It's quite simple and easy to jump into Scalatra for an ordinary Java developer 
 The syntax of the flow directives is straightforward and it was easy to integrate support for JSON into it.
 And it's written in Scala from scratch which seamlessly integrates with other Scala based libraries.
 
+### Why Amazon SQS?
+
+It is a convenient queueing solution that allows to decuple message storing and reading. And it resides in the cloud, 
+what could be more cool than that? Of course we could use simple queue stored in the MongoDB, but this project is
+not supposed to be boring :)
+
 ### Why sbt?
 
 The answer can be hard. It is easy to start using [sbt](http://www.scala-sbt.org/), but when things get hard, it's very difficult to find good examples
@@ -48,7 +56,8 @@ or supporting documents. But at the end it's a dedicated tool for Scala platform
 ## How to run
 
 To run application, simply clone the source code, enter the directory and type _./run.sh_ or _run.bat_ depends on your OS,
-navigate your web browser to http://localhost:8080/ and start using the application.
+navigate your web browser to http://localhost:8080/ and start using the application. By default application is using in-memory
+queue and dummy e-mail sender.
 
 ## How to execute tests
 
@@ -70,6 +79,16 @@ to start the sbt console. Few plugins are already integrated with t
 * web server: right now Jetty is integrated with the project, you can start it from the sbt console with: _container:start_
 
 There are two implementations of storage - in-memory and mongo - you must install MongoDB and start it before starting the application (when started with run.sh/run.bat the in-memory storage is used)
+
+## How to configure
+
+All configuration should be stored in _application.conf_ file. Please check _application.conf.template_ to see what values are needed.
+
+* To have Amazon SQS running you have to provide AWSAccessKeyId, SecretAccessKey and name of existing queue defined on your AWS account.
+* To have e-mail sender working please provide smtp details (host, port, password, username). For smtp service working on localhost please comment smtpUsername key so EmailSender will know that he should use not secured smtp service.
+
+_application.conf_ file should be placed next to _application.conf.template_
+    
 
 ### Useful sbt commands
 
