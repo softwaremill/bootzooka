@@ -51,7 +51,7 @@ class ScalatraBootstrap extends LifeCycle {
   }
 
   def createEmailSendingService: EmailSendingService = {
-    if (BootstrapConfiguration.smtpHost.isEmpty == false) {
+    if (BootstrapConfiguration.smtpHost != null) {
       new ProductionEmailSendingService
     }
     else {
