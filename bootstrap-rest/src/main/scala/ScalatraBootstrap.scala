@@ -30,7 +30,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.put(SCHEDULER_KEY, scheduler)
     scheduler.scheduleAtFixedRate(emailSendingService, 30, 30, TimeUnit.SECONDS)
 
-    val userService = new UserService(factory.userDAO, new RegistrationDataValidator())
+    val userService = new UserService(factory.userDAO, new RegistrationDataValidator(), emailSendingService)
     val entryService = new EntryService(factory.entryDAO, factory.userDAO)
 
     // Mount one or more servlets
