@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 import com.gu.SbtJasminePlugin._
 import net.virtualvoid.sbt.graph.Plugin._
+import com.typesafe.sbt.SbtScalariform._
 
 object Resolvers {
 
@@ -22,7 +23,7 @@ object BuildSettings {
 
   val mongoDirectory = SettingKey[File]("mongo-directory")
 
-  val buildSettings = Defaults.defaultSettings ++ Seq(
+  val buildSettings = Defaults.defaultSettings ++ scalariformSettings ++ Seq(
     organization := "pl.softwaremill",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.9.2",
