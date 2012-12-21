@@ -25,7 +25,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
       Utils.sha256(password, login.toLowerCase)))
 
     emailScheduler.scheduleEmail(email, "SML Bootstrap - registration confirmation", "Dear " + login +
-      "\n\nThank you for registering in our application.\n\n-- \nRegards,\nSoftwareMill Bootstrap Dev Team")
+      "\n\nThank you for registering in our application.\n\n-- \nRegards,\nSoftwareMill Bootstrap Dev Team\nhttp://SoftwareMill.com")
   }
 
   def authenticate(login: String, nonEncryptedPassword: String): Option[UserJson] = {
