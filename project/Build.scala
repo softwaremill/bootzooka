@@ -23,7 +23,7 @@ object BuildSettings {
 
   val mongoDirectory = SettingKey[File]("mongo-directory")
 
-  val buildSettings = Defaults.defaultSettings ++ scalariformSettings ++ Seq(
+  val buildSettings = Defaults.defaultSettings ++ defaultScalariformSettings ++ Seq(
     organization := "pl.softwaremill",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.9.2",
