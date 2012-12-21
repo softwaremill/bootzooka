@@ -14,6 +14,7 @@ Live demo is available on http://bootstrap.softwaremill.com.
 * [How to execute tests](#how-to-execute-tests)
 * [How to develop](#how-to-develop)
     * [Useful sbt commands](#useful-sbt-commands)
+    * [Keep code in shape](#keep-code-in-shape)
 * [How to configure](#how-to-configure)   
 * [License](#license)
 
@@ -88,6 +89,11 @@ There are two implementations of storage - in-memory and mongo - you must instal
 * _container:start_ - starts the embedded Jetty container
 * _container:reload /_ - reloads application at context /
 * _~;container:start; container:reload /_ - runs container and waits for source code changes to automatically compile changed file and to reload it
+* _scalariform-format_ - execute Scalariform code formatter. More about it below in 'Keep code in shape' section
+
+### Keep code in shape
+
+To keep code in shape we are using [Scalariform](https://github.com/mdr/scalariform) code formatter for Scala along with sbt plugin [Sbt-Scalariform](https://github.com/sbt/sbt-scalariform). We have intentionally disabled auto code-formatting during compile or test execution so to run formatter please use _sbt scalariform-format_ command. It checks code against various styling rules and applies all neccessary fixes. 
 
 ## How to configure
 
