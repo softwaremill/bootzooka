@@ -32,13 +32,35 @@ class MongoUserDAOSpec extends SpecificationWithMongo {
       // Given
       val numberOfUsersBefore = userDAO.countItems()
       val login = "newuser"
+      val email = "newemail@sml.com"
 
       // When
-      userDAO.add(User(login, "newemail@sml.com", Utils.sha256("pass", login.toLowerCase),
+      userDAO.add(User(login, email, Utils.sha256("pass", login.toLowerCase),
         Utils.sha256("pass", login.toLowerCase)))
 
       // Then
       assert(userDAO.countItems() - numberOfUsersBefore === 1)
+    }
+
+
+    "throw exception when trying to add user with existing login" in {
+      // Given
+      val login = "newuser"
+      val email = "anotherEmaill@sml.com"
+
+      // When
+      userDAO.add(User(login, email, Utils.sha256("pass", login.toLowerCase),
+        Utils.sha256("pass", login.toLowerCase))) should(throwA[Exception])(message = "User with given e-mail or login already exists")
+    }
+
+    "throw exception when trying to add user with existing email" in {
+      // Given
+      val login = "anotherUser"
+      val email = "newemail@sml.com"
+
+      // When
+      userDAO.add(User(login, email, Utils.sha256("pass", login.toLowerCase),
+        Utils.sha256("pass", login.toLowerCase))) should(throwA[Exception])(message = "User with given e-mail or login already exists")
     }
 
     "remove user" in {
