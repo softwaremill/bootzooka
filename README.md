@@ -80,16 +80,6 @@ to start the sbt console. Few plugins are already integrated with t
 
 There are two implementations of storage - in-memory and mongo - you must install MongoDB and start it before starting the application (when started with run.sh/run.bat the in-memory storage is used)
 
-## How to configure
-
-All configuration should be stored in _application.conf_ file. Please check _application.conf.template_ to see what values are needed.
-
-* To have Amazon SQS running you have to provide AWSAccessKeyId, SecretAccessKey and name of existing queue defined on your AWS account.
-* To have e-mail sender working please provide smtp details (host, port, password, username). For smtp service working on localhost please comment smtpUsername key so EmailSender will know that he should use not secured smtp service.
-
-_application.conf_ file should be placed next to _application.conf.template_
-    
-
 ### Useful sbt commands
 
 * _compile_ - compile the whole project
@@ -98,6 +88,15 @@ _application.conf_ file should be placed next to _application.conf.template_
 * _container:start_ - starts the embedded Jetty container
 * _container:reload /_ - reloads application at context /
 * _~;container:start; container:reload /_ - runs container and waits for source code changes to automatically compile changed file and to reload it
+
+## How to configure
+
+All configuration should be stored in _application.conf_ file. Please check _application.conf.template_ to see what values are needed.
+
+* To have Amazon SQS running you have to provide AWSAccessKeyId, SecretAccessKey and name of existing queue defined on your AWS account.
+* To have e-mail sender working please provide smtp details (host, port, password, username). For smtp service working on localhost please comment smtpUsername key so EmailSender will know that he should use not secured smtp service.
+
+_application.conf_ file should be placed next to _application.conf.template_
 
 ## License
 
