@@ -8,5 +8,4 @@ smtpPort=
 smtpUsername=
 smtpPassword=
 from=
-email.password=
 encoding=UTF-8
