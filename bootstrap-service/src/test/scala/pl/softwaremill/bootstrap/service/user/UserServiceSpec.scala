@@ -5,6 +5,8 @@ import pl.softwaremill.bootstrap.dao.{InMemoryUserDAO, UserDAO}
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.service.data.UserJson
+import pl.softwaremill.bootstrap.service.schedulers.EmailSendingService
+import org.mockito.Matchers
 
 class UserServiceSpec extends Specification with Mockito {
 
@@ -16,7 +18,8 @@ class UserServiceSpec extends Specification with Mockito {
   }
 
   val registrationDataValidator: RegistrationDataValidator = mock[RegistrationDataValidator]
-  val userService = new UserService(prepareUserDAOMock, registrationDataValidator)
+  val emailSendingService: EmailSendingService = mock[EmailSendingService]
+  val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService)
 
   "findByEmail" should { // this test is silly :\
     "return user for admin@sml.pl" in {
@@ -35,7 +38,7 @@ class UserServiceSpec extends Specification with Mockito {
   }
 
   "checkExistence" should {
-    val userService = new UserService(prepareUserDAOMock, registrationDataValidator)
+    val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService)
 
     "don't find given user login and e-mail" in {
       val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("newUser", "newUser@sml.com")
@@ -73,7 +76,7 @@ class UserServiceSpec extends Specification with Mockito {
 
   "registerNewUser" should {
     val userDAOMock: UserDAO = prepareUserDAOMock
-    val userService = new UserService(userDAOMock, registrationDataValidator)
+    val userService = new UserService(userDAOMock, registrationDataValidator, emailSendingService)
 
     "add user with duplicated lowercased login info" in {
       // When
@@ -86,7 +89,23 @@ class UserServiceSpec extends Specification with Mockito {
 
       there was user.login === "John"
       there was user.loginLowerCased === "john"
+      there was one(emailSendingService)
+        .scheduleEmail(Matchers.eq("newUser@sml.com"), Matchers.eq("SML Bootstrap - registration confirmation"), anyString)
     }
+
+    "not schedule an email on existing login" in {
+      // When
+      try {
+        userService.registerNewUser("John", "secondEmail@sml.com", "password")
+      }
+      catch {
+        case e: Exception =>
+      }
+      // Then
+      there was no(emailSendingService)
+        .scheduleEmail(Matchers.eq("secondEmail@sml.com"), Matchers.eq("SML Bootstrap - registration confirmation"), anyString)
+    }
+
   }
 
 }
