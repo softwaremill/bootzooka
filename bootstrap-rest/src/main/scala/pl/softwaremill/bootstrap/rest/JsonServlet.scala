@@ -1,6 +1,6 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.scalatra.ScalatraServlet
+import org.scalatra._
 import org.scalatra.json.{ JValueResult, JacksonJsonSupport }
 import org.json4s._
 import java.io.Writer
@@ -8,8 +8,9 @@ import org.apache.commons.lang3.StringEscapeUtils._
 import org.json4s.{ DefaultFormats, Formats }
 import javax.servlet.http.HttpServletResponse
 import java.util.Date
+import com.weiglewilczek.slf4s.Logging
 
-class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult {
+class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with Logging {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 
@@ -42,6 +43,13 @@ class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueRes
     response.addHeader("Last-Modified", Expire)
     response.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
     response.addHeader("Pragma", "no-cache")
+  }
+
+  errorHandler = {
+    case t => {
+      logger.error("Exception:", t)
+      halt(500, "Internal server exception")
+    }
   }
 
 }
