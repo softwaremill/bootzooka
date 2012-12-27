@@ -12,19 +12,20 @@ class EmailTemplatingEngine {
 
   def registrationConfirmation(userName: String):EmailContentWithSubject = {
 
-    prepareEmailTemplate("registrationConfirmation", Map("userName" -> userName))
+    val template = prepareEmailTemplate("registrationConfirmation", Map("userName" -> userName))
+    splitToContentAndSubject(template)
   }
 
-  private def prepareEmailTemplate(templateNameWithoutExtension: String, params: Map[String, Object]):EmailContentWithSubject = {
-    val contentWithSubject = scalateEngine.layout(TemplatesDirectory + templateNameWithoutExtension + ".mustache", params)
+  private def prepareEmailTemplate(templateNameWithoutExtension: String, params: Map[String, Object]):String = {
+    scalateEngine.layout(TemplatesDirectory + templateNameWithoutExtension + ".mustache", params)
+  }
 
+  private[templates] def splitToContentAndSubject(template: String):EmailContentWithSubject = {
     // First line of template is used as an email subject, rest of the template goes to content
-    val emailLines = contentWithSubject.split('\n')
+    val emailLines = template.split('\n')
     require(emailLines.length > 1, "Invalid email template. It should consist of at least two lines: one for subject and one for content")
 
     EmailContentWithSubject(emailLines.slice(1, emailLines.length).mkString("\n"), emailLines(0))
   }
-
-
 
 }
