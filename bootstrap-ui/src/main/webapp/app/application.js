@@ -30,6 +30,9 @@ angular.module('smlBootstrap', ['smlBootstrap.services','smlBootstrap.filters', 
                     console.log(response.data);
                     // do nothing, user is trying to modify data without privileges
                 }
+                else if(response.status === 500) {
+                    showErrorMessage("Internal server error. Please try again later.");
+                }
                 else {
                     showErrorMessage("Service not responding. Please try again later.");
                 }
