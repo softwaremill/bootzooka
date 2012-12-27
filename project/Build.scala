@@ -100,6 +100,8 @@ object Dependencies {
   val smlCommonSqs = "pl.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
   val smlCommonConfig = "pl.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
 
+  val scalate = "org.fusesource.scalate" % "scalate-core_2.9" % "1.6.0"
+
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
   val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
@@ -139,7 +141,8 @@ object SmlBootstrapBuild extends Build {
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, casbah, smlCommonSqs, smlCommonConfig, javaxMail))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, casbah, smlCommonSqs, smlCommonConfig,
+      javaxMail, scalate))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
