@@ -57,14 +57,20 @@ controllers.controller('EntriesController', function EntriesController($scope, $
         $timeout.cancel(reloadEventId);
     });
 
+    var addEntryInProgress = false;
+
     $scope.addEntry = function () {
-        var newEntryText = $scope.entryText;
-        $scope.entryText = '';
-        EntriesService.addNew(newEntryText, function () {
-            self.reloadEntries();
-            $scope.myForm.$pristine = true;
-            showInfoMessage("Message posted");
-        });
+        if(addEntryInProgress == false) {
+            addEntryInProgress = true;
+            var newEntryText = $scope.entryText;
+            $scope.entryText = '';
+            EntriesService.addNew(newEntryText, function () {
+                self.reloadEntries();
+                $scope.myForm.$pristine = true;
+                showInfoMessage("Message posted");
+                addEntryInProgress = false;
+            });
+        }
     };
 
     $scope.deleteEntry = function (logEntryId) {
