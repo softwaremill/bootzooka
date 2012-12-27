@@ -15,10 +15,7 @@ class InMemoryUserDAO extends UserDAO {
     users.size
   }
 
-  def add(user: User) {
-    if (findByLowerCasedLogin(user.login).isDefined || findByEmail(user.email).isDefined) {
-      throw new Exception("User with given e-mail or login already exists")
-    }
+  protected def internalAddUser(user: User) {
     users ::= user
   }
 

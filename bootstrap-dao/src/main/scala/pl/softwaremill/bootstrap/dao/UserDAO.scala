@@ -8,7 +8,14 @@ trait UserDAO {
 
   def countItems(): Long
 
-  def add(user: User)
+  def add(user: User) {
+    if (findByLowerCasedLogin(user.login).isDefined || findByEmail(user.email).isDefined) {
+      throw new Exception("User with given e-mail or login already exists")
+    }
+    internalAddUser(user)
+  }
+
+  protected def internalAddUser(user: User)
 
   def remove(userId: String)
 
