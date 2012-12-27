@@ -7,6 +7,7 @@ import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.service.data.UserJson
 import pl.softwaremill.bootstrap.service.schedulers.EmailSendingService
 import org.mockito.Matchers
+import pl.softwaremill.bootstrap.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 
 class UserServiceSpec extends Specification with Mockito {
 
@@ -19,7 +20,8 @@ class UserServiceSpec extends Specification with Mockito {
 
   val registrationDataValidator: RegistrationDataValidator = mock[RegistrationDataValidator]
   val emailSendingService: EmailSendingService = mock[EmailSendingService]
-  val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService)
+  val emailTemplatingEngine = mock[EmailTemplatingEngine]
+  val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService, emailTemplatingEngine)
 
   "findByEmail" should { // this test is silly :\
     "return user for admin@sml.pl" in {
@@ -38,7 +40,7 @@ class UserServiceSpec extends Specification with Mockito {
   }
 
   "checkExistence" should {
-    val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService)
+    val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService, emailTemplatingEngine)
 
     "don't find given user login and e-mail" in {
       val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("newUser", "newUser@sml.com")
@@ -76,7 +78,7 @@ class UserServiceSpec extends Specification with Mockito {
 
   "registerNewUser" should {
     val userDAOMock: UserDAO = prepareUserDAOMock
-    val userService = new UserService(userDAOMock, registrationDataValidator, emailSendingService)
+    val userService = new UserService(userDAOMock, registrationDataValidator, emailSendingService, emailTemplatingEngine)
 
     "add user with duplicated lowercased login info" in {
       // When
@@ -89,8 +91,9 @@ class UserServiceSpec extends Specification with Mockito {
 
       there was user.login === "John"
       there was user.loginLowerCased === "john"
+      there was one(emailTemplatingEngine).registrationConfirmation(Matchers.eq("John"))
       there was one(emailSendingService)
-        .scheduleEmail(Matchers.eq("newUser@sml.com"), Matchers.eq("SML Bootstrap - registration confirmation"), anyString)
+        .scheduleEmail(Matchers.eq("newUser@sml.com"), any[EmailContentWithSubject])
     }
 
     "not schedule an email on existing login" in {
@@ -103,7 +106,7 @@ class UserServiceSpec extends Specification with Mockito {
       }
       // Then
       there was no(emailSendingService)
-        .scheduleEmail(Matchers.eq("secondEmail@sml.com"), Matchers.eq("SML Bootstrap - registration confirmation"), anyString)
+        .scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
     }
 
   }

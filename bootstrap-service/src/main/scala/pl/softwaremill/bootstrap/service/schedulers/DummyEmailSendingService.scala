@@ -1,11 +1,13 @@
 package pl.softwaremill.bootstrap.service.schedulers
 
+import pl.softwaremill.bootstrap.service.templates.EmailContentWithSubject
+
 class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 
-  private var emailsToSend: List[EmailContent] = List()
+  private var emailsToSend: List[EmailToSend] = List()
 
   def run() {
-    var tempList: List[EmailContent] = null
+    var tempList: List[EmailToSend] = null
     this.synchronized {
       tempList = emailsToSend
       emailsToSend = List()
@@ -17,12 +19,12 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 
   }
 
-  def scheduleEmail(address: String, subject: String, content: String) {
+  def scheduleEmail(address: String, emailData: EmailContentWithSubject) {
     this.synchronized {
-      emailsToSend = emailsToSend :+ EmailContent(address, subject, content)
+      emailsToSend = emailsToSend :+ EmailToSend(address, emailData.subject, emailData.content)
     }
     logger.debug("Email to " + address + " scheduled")
   }
 
-  case class EmailContent(address: String, subject: String, content: String)
+  case class EmailToSend(address: String, subject: String, content: String)
 }

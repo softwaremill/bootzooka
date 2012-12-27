@@ -7,6 +7,7 @@ import javax.mail.MessagingException
 import pl.softwaremill.common.sqs.{ ReceivedMessage, Queue, SQS }
 import com.google.common.base.Optional
 import scala.util.control.Breaks._
+import pl.softwaremill.bootstrap.service.templates.EmailContentWithSubject
 
 class ProductionEmailSendingService extends EmailSendingService {
 
@@ -38,7 +39,7 @@ class ProductionEmailSendingService extends EmailSendingService {
     }
   }
 
-  def scheduleEmail(address: String, subject: String, content: String) {
-    emailQueue.sendSerializable(new EmailDescription(address, content, subject))
+  def scheduleEmail(address: String, emailData: EmailContentWithSubject) {
+    emailQueue.sendSerializable(new EmailDescription(address, emailData.content, emailData.subject))
   }
 }

@@ -7,6 +7,7 @@ import org.scalatra._
 import javax.servlet.ServletContext
 import pl.softwaremill.bootstrap.service.config.BootstrapConfiguration
 import pl.softwaremill.bootstrap.service.schedulers.{ DummyEmailSendingService, EmailSendingService, ProductionEmailSendingService }
+import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 import pl.softwaremill.bootstrap.service.user.{ RegistrationDataValidator, UserService }
 import pl.softwaremill.bootstrap.service.EntryService
 
@@ -30,7 +31,9 @@ class ScalatraBootstrap extends LifeCycle {
     context.put(SchedulerKey, scheduler)
     scheduler.scheduleAtFixedRate(emailSendingService, 30, 30, TimeUnit.SECONDS)
 
-    val userService = new UserService(factory.userDAO, new RegistrationDataValidator(), emailSendingService)
+    val emailTemplatingEngine = new EmailTemplatingEngine
+
+    val userService = new UserService(factory.userDAO, new RegistrationDataValidator(), emailSendingService, emailTemplatingEngine)
     val entryService = new EntryService(factory.entryDAO, factory.userDAO)
 
     // Mount one or more servlets

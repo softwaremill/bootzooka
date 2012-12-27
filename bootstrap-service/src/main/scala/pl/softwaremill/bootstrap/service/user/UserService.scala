@@ -5,8 +5,10 @@ import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.service.data.UserJson
 import pl.softwaremill.bootstrap.service.schedulers.EmailScheduler
+import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 
-class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler) {
+class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
+                   emailTemplatingEngine: EmailTemplatingEngine) {
 
   def load(userId: String) = {
     UserJson(userDAO.load(userId))
@@ -24,8 +26,8 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     userDAO.add(User(login, email.toLowerCase, Utils.sha256(password, login.toLowerCase),
       Utils.sha256(password, login.toLowerCase)))
 
-    emailScheduler.scheduleEmail(email, "SML Bootstrap - registration confirmation", "Dear " + login +
-      "\n\nThank you for registering in our application.\n\n-- \nRegards,\nSoftwareMill Bootstrap Dev Team\nhttp://SoftwareMill.com")
+    val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
+    emailScheduler.scheduleEmail(email, confirmationEmail)
   }
 
   def authenticate(login: String, nonEncryptedPassword: String): Option[UserJson] = {

@@ -9,6 +9,7 @@ import org.json4s.JsonDSL._
 import com.mongodb.casbah.Imports._
 import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
+import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 
 class UsersServletSpec extends BootstrapServletSpec {
 
@@ -26,7 +27,7 @@ class UsersServletSpec extends BootstrapServletSpec {
     dao.findByLowerCasedLogin("admin") returns Some(User("admin", "admin@sml.com", "pass"))
     dao.findByLowerCasedLogin("newUser") returns None
 
-    val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService()))
+    val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService(), new EmailTemplatingEngine))
 
     val servlet: UsersServlet = new UsersServlet(userService)
     addServlet(servlet, "/*")
