@@ -22,6 +22,10 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
     entryDAO.countItems()
   }
 
+  def countNewerThan(timeInMillis: Long): Long = {
+    entryDAO.countNewerThan(timeInMillis)
+  }
+
   def add(login: String, message: String) {
     userDAO.findByLowerCasedLogin(login) match {
       case Some(user) => entryDAO.add(Entry(authorId = user._id, text = message))
