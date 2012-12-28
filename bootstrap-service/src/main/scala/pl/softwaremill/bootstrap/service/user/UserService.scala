@@ -8,7 +8,7 @@ import pl.softwaremill.bootstrap.service.schedulers.EmailScheduler
 import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
-                   emailTemplatingEngine: EmailTemplatingEngine) {
+    emailTemplatingEngine: EmailTemplatingEngine) {
 
   def load(userId: String) = {
     UserJson(userDAO.load(userId))

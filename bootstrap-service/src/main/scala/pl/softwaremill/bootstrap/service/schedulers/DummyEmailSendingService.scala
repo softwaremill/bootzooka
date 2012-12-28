@@ -10,7 +10,7 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
   def run() {
     var tempList: ListBuffer[EmailToSend] = null
     this.synchronized {
-      tempList = ListBuffer(emailsToSend:_*)
+      tempList = ListBuffer(emailsToSend: _*)
       emailsToSend.clear()
     }
     logger.info("I should be sending emails now but I am dummy :)")
