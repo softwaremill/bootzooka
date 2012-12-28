@@ -36,4 +36,8 @@ class InMemoryEntryDAO extends EntryDAO {
     }
   }
 
+  def countNewerThan(timeInMillis: Long): Long = {
+    entries.filter(e => e.entered.isAfter(timeInMillis)).size
+  }
+
 }

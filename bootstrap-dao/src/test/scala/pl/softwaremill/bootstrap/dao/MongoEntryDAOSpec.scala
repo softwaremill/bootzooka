@@ -6,6 +6,7 @@ import org.joda.time.DateTime
 
 class MongoEntryDAOSpec extends SpecificationWithMongo {
   var entryDAO: EntryDAO = null
+  val referenceDate = new DateTime().withDate(2012, 12, 10)
 
   "MongoEntryDAO" should {
 
@@ -13,7 +14,7 @@ class MongoEntryDAOSpec extends SpecificationWithMongo {
       entryDAO = new MongoEntryDAO()
       for (i <- 1 to 3)  {
         entryDAO.add(Entry(_id = new ObjectId(i.toString * 24), text = "Message " + i, authorId = new ObjectId((10-i).toString * 24),
-          entered = new DateTime().minusDays(i)))
+          entered = referenceDate.minusDays(i-1)))
       }
     })
 
@@ -77,7 +78,6 @@ class MongoEntryDAOSpec extends SpecificationWithMongo {
     }
 
     "load entries sorted from newest" in {
-
       // When
       val entries: List[Entry] = entryDAO.loadAll
 
@@ -85,6 +85,39 @@ class MongoEntryDAOSpec extends SpecificationWithMongo {
       assert(entries.size === 3)
       assert(entries(0).entered.isAfter(entries(1).entered) === true)
       assert(entries(1).entered.isAfter(entries(2).entered) === true)
+    }
+
+    "find 1 entry newer than given time" in {
+      // Given
+      val time = referenceDate.minusDays(1).getMillis
+
+      // When
+      val counter = entryDAO.countNewerThan(time)
+
+      // Then
+      counter mustEqual 1
+    }
+
+    "find 3 entries with time 1 ms before the oldest entry time" in {
+      // Given
+      val time = referenceDate.minusDays(3).minusMillis(1).getMillis
+
+      // When
+      val counter = entryDAO.countNewerThan(time)
+
+      // Then
+      counter mustEqual 3
+    }
+
+    "find no entries with time 1 mssec after the youngest entry time" in {
+      // Given
+      val time = referenceDate.plusMillis(1).getMillis
+
+      // When
+      val counter = entryDAO.countNewerThan(time)
+
+      // Then
+      counter mustEqual 0
     }
 
   }

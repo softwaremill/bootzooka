@@ -9,6 +9,7 @@ import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHelpers
 import com.weiglewilczek.slf4s.Logging
+import org.joda.time.DateTime
 
 class MongoEntryDAO(implicit val mongo: MongoDB) extends SalatDAO[Entry, ObjectId](mongo("entries")) with EntryDAO with Logging {
 
@@ -44,6 +45,10 @@ class MongoEntryDAO(implicit val mongo: MongoDB) extends SalatDAO[Entry, ObjectI
         case _ =>
       }
     }
+  }
+
+  def countNewerThan(timeInMillis: Long): Long = {
+    count(MongoDBObject("entered" -> MongoDBObject("$gt" -> new DateTime(timeInMillis))))
   }
 
 }

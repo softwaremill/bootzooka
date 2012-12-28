@@ -16,4 +16,6 @@ trait EntryDAO {
 
   def update(entryId: String, message: String)
 
+  def countNewerThan(timeInMillis: Long): Long
+
 }
