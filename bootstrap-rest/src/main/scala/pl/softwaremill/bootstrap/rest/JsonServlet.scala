@@ -47,7 +47,7 @@ class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueRes
 
   errorHandler = {
     case t => {
-      logger.error("Exception:", t)
+      logger.error("Exception during client request processing", t)
       halt(500, "Internal server exception")
     }
   }

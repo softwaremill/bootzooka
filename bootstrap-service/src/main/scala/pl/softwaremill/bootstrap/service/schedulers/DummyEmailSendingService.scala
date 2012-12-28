@@ -1,16 +1,17 @@
 package pl.softwaremill.bootstrap.service.schedulers
 
 import pl.softwaremill.bootstrap.service.templates.EmailContentWithSubject
+import collection.mutable.ListBuffer
 
 class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 
-  private var emailsToSend: List[EmailToSend] = List()
+  private val emailsToSend: ListBuffer[EmailToSend] = ListBuffer()
 
   def run() {
-    var tempList: List[EmailToSend] = null
+    var tempList: ListBuffer[EmailToSend] = null
     this.synchronized {
-      tempList = emailsToSend
-      emailsToSend = List()
+      tempList = ListBuffer(emailsToSend:_*)
+      emailsToSend.clear()
     }
     logger.info("I should be sending emails now but I am dummy :)")
     for (email <- tempList) {
@@ -21,7 +22,7 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 
   def scheduleEmail(address: String, emailData: EmailContentWithSubject) {
     this.synchronized {
-      emailsToSend = emailsToSend :+ EmailToSend(address, emailData.subject, emailData.content)
+      emailsToSend += EmailToSend(address, emailData.subject, emailData.content)
     }
     logger.debug("Email to " + address + " scheduled")
   }

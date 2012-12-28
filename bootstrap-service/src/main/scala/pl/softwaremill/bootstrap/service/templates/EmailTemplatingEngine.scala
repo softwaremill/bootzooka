@@ -8,7 +8,7 @@ class EmailTemplatingEngine {
 
   val TemplatesDirectory = "pl/softwaremill/bootstrap/service/templates/"
 
-  val scalateEngine = new TemplateEngine(List(new File("pl/softwaremill/bootstrap/service/templates/")), "production")
+  val scalateEngine = new TemplateEngine(List(new File(TemplatesDirectory)), "production")
 
   def registrationConfirmation(userName: String):EmailContentWithSubject = {
 
@@ -25,7 +25,7 @@ class EmailTemplatingEngine {
     val emailLines = template.split('\n')
     require(emailLines.length > 1, "Invalid email template. It should consist of at least two lines: one for subject and one for content")
 
-    EmailContentWithSubject(emailLines.slice(1, emailLines.length).mkString("\n"), emailLines(0))
+    EmailContentWithSubject(emailLines.tail.mkString("\n"), emailLines.head)
   }
 
 }

@@ -15,11 +15,10 @@ class ProductionEmailSendingService extends EmailSendingService {
   val emailQueue: Queue = sqsClient.getQueueByName(taskSQSQueue)
 
   def run() {
+    logger.debug("Checking emails waiting in the Amazon SQS")
     var messageOpt: Optional[ReceivedMessage] = emailQueue.receiveSingleMessage
 
     breakable {
-      logger.debug("Checking emails waiting in the Amazon SQS")
-
       while (messageOpt.isPresent) {
         val message: ReceivedMessage = messageOpt.get()
         val emailToSend: EmailDescription = message.getMessage.asInstanceOf[EmailDescription]
