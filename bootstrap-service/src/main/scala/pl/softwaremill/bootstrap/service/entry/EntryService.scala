@@ -3,12 +3,14 @@ package pl.softwaremill.bootstrap.service.entry
 import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.dao.{ UserDAO, EntryDAO }
 import pl.softwaremill.bootstrap.common.Utils
-import pl.softwaremill.bootstrap.service.data.EntryJson
+import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, EntryJson}
 
 class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
 
   def loadAll = {
-    entryDAO.loadAll.map(e => mapToEntryJson(e))
+    val entriesJson = entryDAO.loadAll.map(e => mapToEntryJson(e))
+
+    EntriesWithTimeStamp(entriesJson)
   }
 
   def readAuthorLogin(userId: String): String = {

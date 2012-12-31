@@ -7,7 +7,7 @@ import pl.softwaremill.bootstrap.BootstrapServletSpec
 import pl.softwaremill.bootstrap.common.Utils
 import org.json4s.JsonDSL._
 import org.json4s.JsonAST.JValue
-import pl.softwaremill.bootstrap.service.data.{UserJson, EntryJson}
+import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, UserJson, EntryJson}
 import pl.softwaremill.bootstrap.service.entry.EntryService
 
 
@@ -32,7 +32,7 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
 
     val entryService = mock[EntryService]
     entryService.count() returns 2
-    entryService.loadAll returns List(entryOne, entryTwo)
+    entryService.loadAll returns EntriesWithTimeStamp(List(entryOne, entryTwo))
     entryService.load("1") returns Some(entryOne)
     entryService.load("2") returns Some(entryTwo)
     entryService.load("3") returns None

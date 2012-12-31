@@ -3,7 +3,7 @@ package pl.softwaremill.bootstrap.rest
 import pl.softwaremill.bootstrap.service.user.UserService
 import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.BootstrapServletSpec
-import pl.softwaremill.bootstrap.service.data.EntryJson
+import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, EntryJson}
 import org.json4s.JsonDSL._
 import pl.softwaremill.bootstrap.service.entry.EntryService
 
@@ -34,7 +34,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
     val entryService = mock[EntryService]
     entryService.count() returns 4
     val entryOne: EntryJson = EntryJson("1", "<script>alert('hacker')</script>", "Jas Kowalski", "")
-    entryService.loadAll returns List(entryOne)
+    entryService.loadAll returns EntriesWithTimeStamp(List(entryOne))
     entryService.load("1") returns Some(entryOne)
     entryService.countNewerThan(10000) returns 10
 
