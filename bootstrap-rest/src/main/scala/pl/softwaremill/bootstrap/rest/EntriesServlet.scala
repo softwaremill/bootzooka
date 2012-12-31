@@ -2,7 +2,7 @@ package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.EntryService
-import pl.softwaremill.bootstrap.common.{ NotEscapedJsonWrapper, JsonWrapper }
+import pl.softwaremill.bootstrap.common.{ SafeLong, NotEscapedJsonWrapper, JsonWrapper }
 
 class EntriesServlet(entryService: EntryService, val userService: UserService) extends JsonServletWithAuthentication {
 
@@ -19,6 +19,15 @@ class EntriesServlet(entryService: EntryService, val userService: UserService) e
 
   get("/count") {
     JsonWrapper(entryService.count())
+  }
+
+  get("/count-newer/:time") {
+    val longOpt = SafeLong(params("time"))
+
+    longOpt match {
+      case Some(t) => JsonWrapper(entryService.countNewerThan(t))
+      case _ => JsonWrapper(0)
+    }
   }
 
   // create new entry

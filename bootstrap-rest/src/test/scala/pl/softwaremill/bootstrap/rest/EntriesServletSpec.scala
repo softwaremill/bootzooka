@@ -19,6 +19,8 @@ class EntriesServletSpec extends BootstrapServletSpec {
       "GET should return escaped JSON entries"              ! escapedJsonEntries add
       "GET /count on EntriesServlet" ^
         "should return number of entries"                   ! countEntries add
+      "GET /count-newer on EntriesServlet" ^
+        "should return number of new entries"               ! countNewEntries add
       "POST / on EntriesServiet" ^
         "should return 401 for non logged user"             ! tryUpdateExistingEntry add
       "PUT / on EntriesServiet" ^
@@ -34,6 +36,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
     val entryOne: EntryJson = EntryJson("1", "<script>alert('hacker')</script>", "Jas Kowalski", "")
     entryService.loadAll returns List(entryOne)
     entryService.load("1") returns Some(entryOne)
+    entryService.countNewerThan(10000) returns 10
 
 
     val servlet: EntriesServlet = new EntriesServlet(entryService, userService)
@@ -72,6 +75,13 @@ class EntriesServletSpec extends BootstrapServletSpec {
     get("/count") {
       body must contain("{\"value\":4}")
       there was one(entryService).count()
+    }
+  }
+
+  def countNewEntries = onServletWithMocks { (entryService, userService) =>
+    get("count-newer/10000") {
+      body must contain("{\"value\":10}")
+      there was one(entryService).countNewerThan(10000)
     }
   }
 
