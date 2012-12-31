@@ -29,7 +29,7 @@ class ScalatraBootstrap extends LifeCycle {
 
     val scheduler = Executors.newScheduledThreadPool(4)
     context.put(SchedulerKey, scheduler)
-    scheduler.scheduleAtFixedRate(emailSendingService, 30, 30, TimeUnit.SECONDS)
+    scheduler.scheduleAtFixedRate(emailSendingService, 60, 60, TimeUnit.SECONDS)
 
     val emailTemplatingEngine = new EmailTemplatingEngine
 

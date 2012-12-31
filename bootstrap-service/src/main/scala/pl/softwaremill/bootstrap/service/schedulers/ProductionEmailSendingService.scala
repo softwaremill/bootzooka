@@ -13,6 +13,7 @@ class ProductionEmailSendingService extends EmailSendingService {
 
   val sqsClient = new SQS("queue.amazonaws.com", awsAccessKeyId, awsSecretAccessKey)
   val emailQueue: Queue = sqsClient.getQueueByName(taskSQSQueue)
+  emailQueue.setReceiveMessageWaitTime(20)
 
   def run() {
     logger.debug("Checking emails waiting in the Amazon SQS")
