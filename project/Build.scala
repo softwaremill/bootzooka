@@ -10,6 +10,7 @@ object Resolvers {
     "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases/",
     "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
     "SotwareMill Public Releases" at "http://nexus.softwaremill.com/content/repositories/releases/",
+    "SotwareMill Public Snapshots" at "http://nexus.softwaremill.com/content/repositories/snapshots/",
     "JBoss Releases" at "https://repository.jboss.org/nexus/content/groups/public",
     "Twitter Maven" at "http://maven.twttr.com",
     "Novus Releases" at "http://repo.novus.com/releases/"
@@ -55,7 +56,7 @@ object Dependencies {
 
   val slf4jVersion = "1.7.2"
   val logBackVersion = "1.0.9"
-  val smlCommonVersion = "71"
+  val smlCommonVersion = "72-SNAPSHOT"
   val scalatraVersion = "2.2.0-RC1"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
