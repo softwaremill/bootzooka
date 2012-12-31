@@ -2,11 +2,11 @@ package pl.softwaremill.bootstrap.service.user
 
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
-import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
 import org.specs2.specification.Fragment
 import org.bson.types.ObjectId
 import pl.softwaremill.bootstrap.domain.Entry
+import pl.softwaremill.bootstrap.service.entry.EntryService
 
 class EntryServiceSpec extends Specification with Mockito {
 

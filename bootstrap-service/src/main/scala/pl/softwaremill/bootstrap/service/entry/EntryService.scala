@@ -1,9 +1,9 @@
-package pl.softwaremill.bootstrap.service
+package pl.softwaremill.bootstrap.service.entry
 
-import data.EntryJson
 import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.dao.{ UserDAO, EntryDAO }
 import pl.softwaremill.bootstrap.common.Utils
+import pl.softwaremill.bootstrap.service.data.EntryJson
 
 class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
 

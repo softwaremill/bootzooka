@@ -6,10 +6,10 @@ import pl.softwaremill.bootstrap.rest.{ UsersServlet, EntriesServlet, UptimeServ
 import org.scalatra._
 import javax.servlet.ServletContext
 import pl.softwaremill.bootstrap.service.config.BootstrapConfiguration
+import pl.softwaremill.bootstrap.service.entry.EntryService
 import pl.softwaremill.bootstrap.service.schedulers.{ DummyEmailSendingService, EmailSendingService, ProductionEmailSendingService }
 import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 import pl.softwaremill.bootstrap.service.user.{ RegistrationDataValidator, UserService }
-import pl.softwaremill.bootstrap.service.EntryService
 
 /**
  * This is the ScalatraBootstrap bootstrap file. You can use it to mount servlets or

@@ -1,11 +1,11 @@
 package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.service.EntryService
 import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.BootstrapServletSpec
 import pl.softwaremill.bootstrap.service.data.EntryJson
 import org.json4s.JsonDSL._
+import pl.softwaremill.bootstrap.service.entry.EntryService
 
 // For more on Specs2, see http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html
 class EntriesServletSpec extends BootstrapServletSpec {

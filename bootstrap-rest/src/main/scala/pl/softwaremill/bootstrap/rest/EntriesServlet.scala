@@ -1,8 +1,8 @@
 package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.service.EntryService
 import pl.softwaremill.bootstrap.common.{ SafeLong, NotEscapedJsonWrapper, JsonWrapper }
+import pl.softwaremill.bootstrap.service.entry.EntryService
 
 class EntriesServlet(entryService: EntryService, val userService: UserService) extends JsonServletWithAuthentication {
 

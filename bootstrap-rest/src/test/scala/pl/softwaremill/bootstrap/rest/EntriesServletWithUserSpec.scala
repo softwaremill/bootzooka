@@ -1,7 +1,6 @@
 package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.service.EntryService
 import org.mockito.Matchers
 import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.BootstrapServletSpec
@@ -9,6 +8,7 @@ import pl.softwaremill.bootstrap.common.Utils
 import org.json4s.JsonDSL._
 import org.json4s.JsonAST.JValue
 import pl.softwaremill.bootstrap.service.data.{UserJson, EntryJson}
+import pl.softwaremill.bootstrap.service.entry.EntryService
 
 
 class EntriesServletWithUserSpec extends BootstrapServletSpec {
