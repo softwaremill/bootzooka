@@ -26,6 +26,11 @@
             <div>Please login to add new entries</div><br/>
         </div>
         <div class="row">
+            <div ng-show="numberOfNewEntries > 0" class="new-entries-box" ng-click="reloadEntries()">
+                <div class="thumbnail center" ng-show="numberOfNewEntries == 1">There is one new entry. Click to refresh.</div>
+                <div class="thumbnail center" ng-show="numberOfNewEntries > 1">There are {{numberOfNewEntries}} new entries. Click to refresh.</div>
+                <br/>
+            </div>
             <div ng-repeat="entry in logs">
                  <div class="thumbnail">
                     <p class="entryText" ng-bind-html="entry.text|newlines"></p>

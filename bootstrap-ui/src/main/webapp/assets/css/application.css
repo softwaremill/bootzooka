@@ -34,3 +34,9 @@
     float: none;
     z-index: 1090;
 }
+
+.new-entries-box {
+    text-align: center;
+    font-style: italic;
+    cursor: pointer;
+}

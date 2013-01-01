@@ -1,7 +1,6 @@
 var services = angular.module('smlBootstrap.services', ['ngResource']);
 
 var dontBlockOnAjaxHeader = { "dontBlockPageOnAjax": "true" };
-var arrayGetWithoutBlockOnAjax = { method: "GET", isArray: true, headers: dontBlockOnAjaxHeader };
 var nonArrayGetWithoutBlockOnAjax = { method: "GET", isArray: false, headers: dontBlockOnAjaxHeader };
 
 
@@ -12,13 +11,16 @@ services.factory('EntriesService', function ($resource) {
 
     entriesService.crudService = $resource('rest/entries/:id', { }, {
         insert: { method: "PUT"},
-        query: arrayGetWithoutBlockOnAjax
+        query: nonArrayGetWithoutBlockOnAjax
     });
 
     entriesService.counter = $resource("/rest/entries/count", { }, {
         get: nonArrayGetWithoutBlockOnAjax
     });
 
+    entriesService.newEntriesCounter = $resource("/rest/entries/count-newer/:time", { }, {
+        get: nonArrayGetWithoutBlockOnAjax
+    });
 
     entriesService.loadAll = function (successFunction) {
         entriesService.crudService.query(null, successFunction);
@@ -48,6 +50,10 @@ services.factory('EntriesService', function ($resource) {
     entriesService.count = function (successFunction) {
         entriesService.counter.get(successFunction);
     };
+
+    entriesService.countNewEntries = function(timestamp, successFunction) {
+        entriesService.newEntriesCounter.get({time: timestamp}, successFunction)
+    }
 
     return entriesService;
 });

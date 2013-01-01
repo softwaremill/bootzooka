@@ -15,8 +15,10 @@ describe("Entries Controller", function () {
         beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller, UserSessionService) {
             $httpBackend = _$httpBackend_;
             $httpBackend.whenGET('/rest/entries/count').respond('{"value":2}');
-            $httpBackend.whenGET('rest/entries').respond('[{"id":1,"author":"Jan Kowalski","text":"Short message"},' +
-                '{"id":2,"author":"Piotr Nowak","text":"Very long message"}]');
+            var timestamp = 1356969850745;
+            $httpBackend.whenGET('/rest/entries/count-newer/' + timestamp ).respond('{"value":5}');
+            $httpBackend.whenGET('rest/entries').respond('{"entries":[{"id":1,"author":"Jan Kowalski","text":"Short message"},' +
+                '{"id":2,"author":"Piotr Nowak","text":"Very long message"}], "timestamp": ' + timestamp + '}');
 
             scope = $rootScope.$new();
             ctrl = $controller('EntriesController', {$scope:scope});
@@ -36,6 +38,8 @@ describe("Entries Controller", function () {
         it('Should have size and logs defined', function () {
             expect(scope.logs).toBeDefined();
             expect(scope.size).toBeDefined();
+            expect(scope.numberOfNewEntries).toBeDefined();
+            expect(scope.lastLoadedTimestamp).toBeDefined();
         });
 
         it('Should have size set to two', function () {
@@ -58,6 +62,15 @@ describe("Entries Controller", function () {
             expect(scope.isOwnerOf(scope.logs[1])).toBe(false);
         });
 
+        it("Should set number of new entries", function() {
+            // When
+            ctrl.checkForNewEntries();
+            $httpBackend.flush();
+
+            //Then
+            expect(scope.numberOfNewEntries).toBe(5);
+        })
+
         it("Should logout user", function() {
            // Given
            $httpBackend.expectGET('rest/users/logout').respond('anything');
@@ -74,14 +87,28 @@ describe("Entries Controller", function () {
 
         it("should fill entry with date on page", function() {
             // given
-            $httpBackend.expectGET('rest/entries').respond('[{"id":1,"author":"Jan Kowalski","text":"Short message","entered":"2012-01-01 12:12:12"}]');
+            $httpBackend.expectGET('rest/entries').respond('{"entries":[{"id":1,"author":"Jan Kowalski","text":"Short message","entered":"2012-01-01 12:12:12"}], "timestamp":11111}');
 
             // when
-            ctrl.reloadEntries();
+            scope.reloadEntries();
             $httpBackend.flush();
 
             // then
             expect(scope.logs[0].entered).toBe("2012-01-01 12:12:12");
+        });
+
+        it("should set timestamp when entries are loaded", function() {
+            // given
+            var timestamp = 11111111;
+            $httpBackend.expectGET('rest/entries').respond('{"entries":[{"id":1,"author":"Jan Kowalski","text":"Short message","entered":"2012-01-01 12:12:12"}],' +
+                ' "timestamp": '+ timestamp +'}');
+
+            // when
+            scope.reloadEntries();
+            $httpBackend.flush();
+
+            // then
+            expect(scope.lastLoadedTimestamp).toBe(timestamp);
         });
     });
 
@@ -92,7 +119,7 @@ describe("Entries Controller", function () {
         beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller, UserSessionService) {
             $httpBackend = _$httpBackend_;
             $httpBackend.whenGET('/rest/entries/count').respond('{"value":0}');
-            $httpBackend.whenGET('rest/entries').respond('[{}]');
+            $httpBackend.whenGET('rest/entries').respond('{"entries":[],"timestamp":1356970017145}');
 
             scope = $rootScope.$new();
             ctrl = $controller('EntriesController', {$scope:scope});
@@ -119,8 +146,8 @@ describe("Entries Controller", function () {
         beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller) {
             $httpBackend = _$httpBackend_;
             $httpBackend.whenGET('/rest/entries/count').respond('{"value":2}');
-            $httpBackend.whenGET('rest/entries').respond('[{"id":1,"author":"Jan Kowalski","text":"Short message"},' +
-                '{"id":2,"author":"Piotr Nowak","text":"Very long message"}]');
+            $httpBackend.whenGET('rest/entries').respond('{"entries":[{"id":1,"author":"Jan Kowalski","text":"Short message"},' +
+                '{"id":2,"author":"Piotr Nowak","text":"Very long message"}], "timestamp": 11111');
 
             scope = $rootScope.$new();
             ctrl = $controller('EntriesController', {$scope: scope});

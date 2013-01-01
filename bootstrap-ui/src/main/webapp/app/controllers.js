@@ -30,31 +30,37 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     $scope.entryText = '';
     $scope.message = '';
     $scope.size = 0;
+    $scope.data = {};
+    $scope.lastLoadedTimestamp = 0;
+    $scope.numberOfNewEntries = 0;
 
-    this.reloadEntries = function () {
+    $scope.reloadEntries = function () {
+        $scope.numberOfNewEntries = 0;
         EntriesService.count(function (data) {
             $scope.size = data.value;
         });
 
         EntriesService.loadAll(function (data) {
-            $scope.logs = data;
+            $scope.logs = data.entries;
+            $scope.lastLoadedTimestamp = data.timestamp;
         });
-    };
+    }
 
-    this.reloadEntries();
+    $scope.reloadEntries();
 
-    var reloadEventId = $timeout(function reloadEntriesLoop() {
-        // Hack: set scroll position to value before data was reloaded
-        var scrollTopBefore = $window.document.body.scrollTop;
-        self.reloadEntries();
-        $timeout(function() {
-            $window.document.body.scrollTop = scrollTopBefore;
-        }, 25);
-        reloadEventId = $timeout(reloadEntriesLoop, 3000);
-    }, 3000);
+    this.checkForNewEntries = function() {
+        EntriesService.countNewEntries($scope.lastLoadedTimestamp, function(data) {
+            $scope.numberOfNewEntries = data.value;
+        })
+    }
+
+    var checkForNewEntriesEvent = $timeout(function checkForNewEntriesLoop() {
+        self.checkForNewEntries();
+        checkForNewEntriesEvent = $timeout(checkForNewEntriesLoop, 5000);
+    }, 5000);
 
     $scope.$on("$routeChangeStart", function () {
-        $timeout.cancel(reloadEventId);
+        $timeout.cancel(checkForNewEntriesEvent);
     });
 
     var addEntryInProgress = false;
@@ -65,7 +71,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
             var newEntryText = $scope.entryText;
             $scope.entryText = '';
             EntriesService.addNew(newEntryText, function () {
-                self.reloadEntries();
+                $scope.reloadEntries();
                 $scope.myForm.$pristine = true;
                 showInfoMessage("Message posted");
                 addEntryInProgress = false;
@@ -75,7 +81,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
 
     $scope.deleteEntry = function (logEntryId) {
         EntriesService.deleteEntry(logEntryId, function () {
-            self.reloadEntries();
+            $scope.reloadEntries();
             showInfoMessage("Message removed");
         })
     };
