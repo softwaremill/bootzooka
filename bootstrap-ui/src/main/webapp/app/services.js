@@ -7,52 +7,54 @@ var nonArrayGetWithoutBlockOnAjax = { method: "GET", isArray: false, headers: do
 
 services.factory('EntriesService', function ($resource) {
 
-    var entriesService = {};
+    var self = this;
 
-    entriesService.crudService = $resource('rest/entries/:id', { }, {
+    self.entriesCrudResource = $resource('rest/entries/:id', { }, {
         insert: { method: "PUT"},
         query: nonArrayGetWithoutBlockOnAjax
     });
 
-    entriesService.counter = $resource("/rest/entries/count", { }, {
+    self.counterResource = $resource("/rest/entries/count", { }, {
         get: nonArrayGetWithoutBlockOnAjax
     });
 
-    entriesService.newEntriesCounter = $resource("/rest/entries/count-newer/:time", { }, {
+    self.newEntriesCounterResource = $resource("/rest/entries/count-newer/:time", { }, {
         get: nonArrayGetWithoutBlockOnAjax
     });
+
+    var entriesService = {};
 
     entriesService.loadAll = function (successFunction) {
-        entriesService.crudService.query(null, successFunction);
+        self.entriesCrudResource.query(null, successFunction);
     };
 
     entriesService.addNew = function (entryText, successFunction) {
         var json = {};
         json.text = entryText;
-        entriesService.crudService.save(angular.toJson(json), successFunction);
+        self.entriesCrudResource.save(angular.toJson(json), successFunction);
     };
 
     entriesService.load = function (logObjectId, successFunction) {
-        entriesService.crudService.get({id: logObjectId}, successFunction);
+        self.entriesCrudResource.get({id: logObjectId}, successFunction);
     };
 
     entriesService.update = function (logObject) {
         var json = {};
         json.text = logObject.text;
         json.id = logObject.id;
-        entriesService.crudService.insert(angular.toJson(json));
+        self.entriesCrudResource.insert(angular.toJson(json));
     };
 
     entriesService.deleteEntry = function (logObjectId, successFunction) {
-        entriesService.crudService.remove({id: logObjectId}, successFunction);
+        self.entriesCrudResource.remove({id: logObjectId}, successFunction);
     };
 
     entriesService.count = function (successFunction) {
-        entriesService.counter.get(successFunction);
+        self.counterResource.get(successFunction);
     };
 
     entriesService.countNewEntries = function(timestamp, successFunction) {
-        entriesService.newEntriesCounter.get({time: timestamp}, successFunction)
+        self.newEntriesCounterResource.get({time: timestamp}, successFunction)
     }
 
     return entriesService;
