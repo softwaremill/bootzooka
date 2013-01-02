@@ -63,16 +63,19 @@ services.factory('EntriesService', function ($resource) {
 
 services.factory('UserSessionService', function ($resource) {
 
-    var userSessionService = {
-        loggedUser: null
-    };
+    var self = this;
 
-    userSessionService.userService = $resource('rest/users/', { }, {
+    self.userResource = $resource('rest/users/', { }, {
         login: {method: 'POST'},
         valid: {method: 'GET'}
     });
 
-    userSessionService.logoutService = $resource('rest/users/logout', { }, { });
+    self.logoutResource = $resource('rest/users/logout', { }, { });
+
+
+    var userSessionService = {
+        loggedUser: null
+    };
 
     userSessionService.isLogged = function () {
         return userSessionService.loggedUser != null;
@@ -83,18 +86,17 @@ services.factory('UserSessionService', function ($resource) {
     };
 
     userSessionService.login = function (user, successFunction, errorFunction) {
-        userSessionService.userService.login(angular.toJson(user), function (data) {
-
-                    userSessionService.loggedUser = data;
-                    if (successFunction != null) {
-                        successFunction(data);
-                    }
-                },
-                errorFunction)
+        self.userResource.login(angular.toJson(user), function (data) {
+            userSessionService.loggedUser = data;
+            if (successFunction != null) {
+                successFunction(data);
+            }
+        },
+        errorFunction)
     };
 
     userSessionService.logout = function (user, successFunction) {
-        userSessionService.logoutService.query(null, function (data) {
+        self.logoutResource.query(null, function (data) {
             userSessionService.loggedUser = null;
             if (successFunction != null) {
                 successFunction(data);
@@ -103,7 +105,7 @@ services.factory('UserSessionService', function ($resource) {
     };
 
     userSessionService.validate = function (successFunction) {
-        userSessionService.userService.valid(
+        self.userResource.valid(
                 function (data) {
                     userSessionService.loggedUser = data;
                     if (successFunction != null) {
@@ -128,12 +130,16 @@ services.factory('UserSessionService', function ($resource) {
 
 services.factory('UtilService', function ($resource) {
 
-    var utilService = $resource('/rest/uptime', { }, {
+    var self = this;
+
+    self.utilResource = $resource('/rest/uptime', { }, {
         get: nonArrayGetWithoutBlockOnAjax
     });
 
+    var utilService = {};
+
     utilService.loadUptime = function (successFunction) {
-        return utilService.get(successFunction);
+        return self.utilResource.get(successFunction);
     };
 
     return utilService;
@@ -141,10 +147,13 @@ services.factory('UtilService', function ($resource) {
 
 services.factory('RegisterService', function ($resource, FlashService) {
 
-    var registerService = $resource('rest/users/register');
+    var self = this;
+    self.registerResource = $resource('rest/users/register');
+
+    var registerService = {};
 
     registerService.register = function (user, successFunction, errorFunction) {
-        registerService.save(angular.toJson(user), function (data) {
+        self.registerResource.save(angular.toJson(user), function (data) {
             if (angular.equals(data.value, 'success')) {
                 FlashService.set("User registered successfully! Please check your e-mail for confirmation.");
                 successFunction();
