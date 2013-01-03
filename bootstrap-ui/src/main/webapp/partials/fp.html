@@ -1,3 +1,20 @@
 <div class="row">
-    <div class="alert alert-info">Placeholder</div>
+    <div class="span6 offset3">
+        <div class="row">
+            <form class="form-horizontal" name="passwordRecovery" novalidate>
+                <div class="control-group">
+                    <label class="control-label" for="login">Login/e-mail</label>
+                    <div class="controls">
+                        <input type="text" name="login" id="login" placeholder="Login/e-mail" ng-model="user.login" required>
+                        <span class="text-error" ng-show="passwordRecovery.login.$dirty && passwordRecovery.login.$error.required">Login/e-mail is required</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit">Reset password</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
