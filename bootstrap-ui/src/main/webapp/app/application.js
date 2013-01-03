@@ -9,6 +9,7 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             when("/entry/:entryId", {controller: 'EntryEditController', templateUrl: "partials/entry.html"}).
             when("/login", {controller: 'LoginController', templateUrl: "partials/login.html"}).
             when("/register", {controller: 'RegisterController', templateUrl: "partials/register.html"}).
+            when("/error404", {controller: 'EntriesController', templateUrl: "partials/error404.html"}).
             otherwise({redirectTo: '/'});
     })
 
