@@ -157,6 +157,7 @@ object SmlBootstrapBuild extends Build {
 
   val lintCustomSettings = lintSettingsFor(Test) ++ inConfig(Test)(Seq(
     sourceDirectory in jslint <<= (baseDirectory)(_ / "src/main/webapp/app"),
+    flags in jslint ++= Seq("undef", "vars", "browser"),
     compile in Test <<= (compile in Test) dependsOn (jslint)
   ))
 
