@@ -82,7 +82,7 @@ angular.module("ajaxthrobber", [])
 
             wasPageBlocked = function (responseConfig) {
                 var nonBlocking;
-                if (responseConfig !== null && responseConfig.headers !== null) {
+                if (typeof responseConfig === "object" && typeof responseConfig.headers === "object") {
                     nonBlocking = responseConfig.headers.dontBlockPageOnAjax;
                 }
                 if (nonBlocking) {
