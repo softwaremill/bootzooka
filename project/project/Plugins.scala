@@ -9,7 +9,8 @@ object Plugins extends Build {
       libraryDependencies += ("com.github.siasia" %% "xsbt-web-plugin" % "0.12.0-0.2.11.1"),
       addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.1.0"),
       addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.0"),
-      addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.0.1")))
+      addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.0.1"),
+      addSbtPlugin("com.github.philcali" % "sbt-jslint" % "0.1.3")))
       .dependsOn(
     // TeamCity reporting, see: https://github.com/guardian/sbt-teamcity-test-reporting-plugin
     uri("git://github.com/guardian/sbt-teamcity-test-reporting-plugin.git#1.2"),

@@ -3,6 +3,8 @@ import Keys._
 import com.gu.SbtJasminePlugin._
 import net.virtualvoid.sbt.graph.Plugin._
 import com.typesafe.sbt.SbtScalariform._
+import sbtjslint.Plugin._
+import sbtjslint.Plugin.LintKeys._
 
 object Resolvers {
 
@@ -152,10 +154,16 @@ object SmlBootstrapBuild extends Build {
     settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided, smlCommonConfig))
   ) dependsOn(service, domain, common)
 
+
+  val lintCustomSettings = lintSettingsFor(Test) ++ inConfig(Test)(Seq(
+    sourceDirectory in jslint <<= (baseDirectory)(_ / "src/main/webapp/app"),
+    compile in Test <<= (compile in Test) dependsOn (jslint)
+  ))
+
   lazy val ui: Project = Project(
     "bootstrap-ui",
     file("bootstrap-ui"),
-    settings = buildSettings ++ jasmineSettings ++ graphSettings ++ webSettings ++ Seq(
+    settings = buildSettings ++ jasmineSettings ++ graphSettings ++ webSettings ++ lintCustomSettings ++ Seq(
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootstrap." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },
