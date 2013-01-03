@@ -10,7 +10,7 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             when("/login", {controller: 'LoginController', templateUrl: "partials/login.html"}).
             when("/register", {controller: 'RegisterController', templateUrl: "partials/register.html"}).
             when("/error404", {controller: 'EntriesController', templateUrl: "partials/error404.html"}).
-            otherwise({redirectTo: '/'});
+            otherwise({redirectTo: '/error404'});
     })
 
     .config(['$httpProvider', function ($httpProvider) {
