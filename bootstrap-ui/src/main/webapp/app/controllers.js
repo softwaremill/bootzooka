@@ -1,10 +1,12 @@
+"use strict";
+
 var controllers = angular.module('smlBootstrap.controllers', ['smlBootstrap.services']);
 
 controllers.controller('UptimeController', function UptimeController($scope, $timeout, UtilService) {
 
     var self = this;
 
-    $scope.update = function() {
+    $scope.update = function () {
         UtilService.loadUptime(function (data) {
             $scope.uptime = data.value;
         });
@@ -44,15 +46,15 @@ controllers.controller('EntriesController', function EntriesController($scope, $
             $scope.logs = data.entries;
             $scope.lastLoadedTimestamp = data.timestamp;
         });
-    }
+    };
 
     $scope.reloadEntries();
 
     this.checkForNewEntries = function() {
         EntriesService.countNewEntries($scope.lastLoadedTimestamp, function(data) {
             $scope.numberOfNewEntries = data.value;
-        })
-    }
+        });
+    };
 
     var checkForNewEntriesEvent = $timeout(function checkForNewEntriesLoop() {
         self.checkForNewEntries();
@@ -66,7 +68,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     var addEntryInProgress = false;
 
     $scope.addEntry = function () {
-        if(addEntryInProgress == false) {
+        if (addEntryInProgress === false) {
             addEntryInProgress = true;
             var newEntryText = $scope.entryText;
             $scope.entryText = '';
@@ -83,7 +85,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
         EntriesService.deleteEntry(logEntryId, function () {
             $scope.reloadEntries();
             showInfoMessage("Message removed");
-        })
+        });
     };
 
     $scope.noEntries = function () {
@@ -126,7 +128,7 @@ controllers.controller('EntryEditController', function EntryEditController($scop
         $location.path("");
     };
 
-    $scope.cancelEdit = function() {
+    $scope.cancelEdit = function () {
         $location.path("");
     };
 
@@ -135,11 +137,11 @@ controllers.controller('EntryEditController', function EntryEditController($scop
     };
 
     $scope.isLogged = function () {
-        return UserSessionService.isLogged()
+        return UserSessionService.isLogged();
     };
 
     $scope.isNotLogged = function () {
-        return UserSessionService.isNotLogged()
+        return UserSessionService.isNotLogged();
     };
 });
 
@@ -165,12 +167,12 @@ controllers.controller('RegisterController', function RegisterController($scope,
             jsonUser.email = $scope.user.email;
             jsonUser.password = $scope.user.password;
 
-            RegisterService.register(jsonUser, self.registerOk, self.registerFailed)
+            RegisterService.register(jsonUser, self.registerOk, self.registerFailed);
         }
     };
 
     $scope.checkPassword = function () {
-        $scope.registerForm.repeatPassword.$error.dontMatch = $scope.user.password != $scope.user.repeatPassword;
+        $scope.registerForm.repeatPassword.$error.dontMatch = $scope.user.password !== $scope.user.repeatPassword;
     };
 
     this.registerOk = function () {
@@ -178,8 +180,8 @@ controllers.controller('RegisterController', function RegisterController($scope,
     };
 
     this.registerFailed = function (message) {
-        showErrorMessage(message)
-    }
+        showErrorMessage(message);
+    };
 
 });
 
@@ -208,6 +210,6 @@ controllers.controller('LoginController', function LoginController($scope, UserS
     };
 
     this.loginFailed = function () {
-        showErrorMessage("Invalid login and/or password.")
-    }
+        showErrorMessage("Invalid login and/or password.");
+    };
 });

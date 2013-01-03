@@ -1,3 +1,5 @@
+"use strict";
+
 var services = angular.module('smlBootstrap.services', ['ngResource']);
 
 var dontBlockOnAjaxHeader = { "dontBlockPageOnAjax": "true" };
@@ -53,9 +55,9 @@ services.factory('EntriesService', function ($resource) {
         self.counterResource.get(successFunction);
     };
 
-    entriesService.countNewEntries = function(timestamp, successFunction) {
-        self.newEntriesCounterResource.get({time: timestamp}, successFunction)
-    }
+    entriesService.countNewEntries = function (timestamp, successFunction) {
+        self.newEntriesCounterResource.get({time: timestamp}, successFunction);
+    };
 
     return entriesService;
 });
@@ -78,48 +80,44 @@ services.factory('UserSessionService', function ($resource) {
     };
 
     userSessionService.isLogged = function () {
-        return userSessionService.loggedUser != null;
+        return userSessionService.loggedUser !== null;
     };
 
     userSessionService.isNotLogged = function () {
-        return userSessionService.loggedUser == null;
+        return userSessionService.loggedUser === null;
     };
 
     userSessionService.login = function (user, successFunction, errorFunction) {
         self.userResource.login(angular.toJson(user), function (data) {
             userSessionService.loggedUser = data;
-            if (successFunction != null) {
+            if (typeof successFunction === "function") {
                 successFunction(data);
             }
-        },
-        errorFunction)
+        }, errorFunction);
     };
 
     userSessionService.logout = function (user, successFunction) {
         self.logoutResource.query(null, function (data) {
             userSessionService.loggedUser = null;
-            if (successFunction != null) {
+            if (typeof successFunction === "function") {
                 successFunction(data);
             }
         });
     };
 
     userSessionService.validate = function (successFunction) {
-        self.userResource.valid(
-                function (data) {
-                    userSessionService.loggedUser = data;
-                    if (successFunction != null) {
-                        successFunction(data);
-                    }
-                }
-        );
+        self.userResource.valid(function (data) {
+            userSessionService.loggedUser = data;
+            if (typeof successFunction === "function") {
+                successFunction(data);
+            }
+        });
     };
 
     userSessionService.getLoggedUserName = function () {
         if (userSessionService.loggedUser) {
             return userSessionService.loggedUser.login;
-        }
-        else {
+        } else {
             return "";
         }
     };
@@ -158,9 +156,9 @@ services.factory('RegisterService', function ($resource, FlashService) {
                 FlashService.set("User registered successfully! Please check your e-mail for confirmation.");
                 successFunction();
             } else {
-                errorFunction(data.value)
+                errorFunction(data.value);
             }
-        })
+        });
     };
 
     return registerService;
