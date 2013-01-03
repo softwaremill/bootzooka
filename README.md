@@ -90,10 +90,13 @@ There are two implementations of storage - in-memory and mongo - you must instal
 * _container:reload /_ - reloads application at context /
 * _~;container:start; container:reload /_ - runs container and waits for source code changes to automatically compile changed file and to reload it
 * _scalariform-format_ - execute Scalariform code formatter. More about it below in 'Keep code in shape' section
+* _jslint_ - execute JSLint JavaScript code quality checker. It prints results to the console and writes them in /target/jslint/results.xml
 
 ### Keep code in shape
 
 To keep code in shape we are using [Scalariform](https://github.com/mdr/scalariform) code formatter for Scala along with sbt plugin [Sbt-Scalariform](https://github.com/sbt/sbt-scalariform). We have intentionally disabled auto code-formatting during compile or test execution so to run formatter please use _sbt scalariform-format_ command. It checks code against various styling rules and applies all neccessary fixes. 
+
+For JavaScript we are using [SBT JSLint Plugin](https://github.com/philcali/sbt-jslint) serving the same purpose. JSLint is executed during test phase.
 
 ## How to configure
 
