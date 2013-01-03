@@ -9,7 +9,9 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             when("/entry/:entryId", {controller: 'EntryEditController', templateUrl: "partials/entry.html"}).
             when("/login", {controller: 'LoginController', templateUrl: "partials/login.html"}).
             when("/register", {controller: 'RegisterController', templateUrl: "partials/register.html"}).
-            when("/error404", {controller: 'EntriesController', templateUrl: "partials/error404.html"}).
+            when("/error404", {controller: 'EntriesController', templateUrl: "partials/errorpages/error404.html"}).
+            when("/error500", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
+            when("/error", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
             otherwise({redirectTo: '/error404'});
     })
 
@@ -31,10 +33,12 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
                 } else if (response.status === 403) {
                     console.log(response.data);
                     // do nothing, user is trying to modify data without privileges
+                } else if (response.status === 404) {
+                    $location.path("/error404");
                 } else if (response.status === 500) {
-                    showErrorMessage("Internal server error. Please try again later.");
+                    $location.path("/error500");
                 } else {
-                    showErrorMessage("Service not responding. Please try again later.");
+                    $location.path("/error");
                 }
                 return $q.reject(response);
             }
