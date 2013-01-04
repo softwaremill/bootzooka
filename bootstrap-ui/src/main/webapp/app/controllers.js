@@ -50,8 +50,8 @@ controllers.controller('EntriesController', function EntriesController($scope, $
 
     $scope.reloadEntries();
 
-    this.checkForNewEntries = function() {
-        EntriesService.countNewEntries($scope.lastLoadedTimestamp, function(data) {
+    this.checkForNewEntries = function () {
+        EntriesService.countNewEntries($scope.lastLoadedTimestamp, function (data) {
             $scope.numberOfNewEntries = data.value;
         });
     };
@@ -212,4 +212,22 @@ controllers.controller('LoginController', function LoginController($scope, UserS
     this.loginFailed = function () {
         showErrorMessage("Invalid login and/or password.");
     };
+});
+
+controllers.controller('PasswordRecoveryController', function PasswordRecoveryController($scope, PasswordRecoveryService, $location) {
+    var self = this;
+
+    $scope.login = '';
+
+    $scope.beginResetProcess = function () {
+        $scope.passwordReset.login.$dirty = true;
+
+        if (!$scope.passwordReset.$invalid) {
+            PasswordRecoveryService.beginResetProcess($scope.login, self.success);
+        }
+    };
+
+    this.success = function () {
+        $location.path = "test"
+    }
 });
