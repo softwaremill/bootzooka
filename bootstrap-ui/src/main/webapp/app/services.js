@@ -6,7 +6,6 @@ var dontBlockOnAjaxHeader = { "dontBlockPageOnAjax": "true" };
 var nonArrayGetWithoutBlockOnAjax = { method: "GET", isArray: false, headers: dontBlockOnAjaxHeader };
 
 
-
 services.factory('EntriesService', function ($resource) {
 
     var self = this;
@@ -122,6 +121,11 @@ services.factory('UserSessionService', function ($resource) {
         }
     };
 
+    userSessionService.beginResetProcess = function (login, onComplete) {
+        console.log("userSessionService.beginResetProcess")
+        onComplete()
+    }
+
     return userSessionService;
 });
 
@@ -176,4 +180,16 @@ services.factory("FlashService", function () {
             return queue.shift();
         }
     };
+});
+
+
+services.factory("PasswordRecoveryService", function() {
+    var passwordRecoveryService = {};
+
+    passwordRecoveryService.beginResetProcess = function (login, onComplete) {
+        console.log("PasswordRecoveryService.beginResetProcess");
+        onComplete();
+    };
+
+    return passwordRecoveryService;
 });
