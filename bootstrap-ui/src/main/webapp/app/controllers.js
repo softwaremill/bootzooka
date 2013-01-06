@@ -50,8 +50,8 @@ controllers.controller('EntriesController', function EntriesController($scope, $
 
     $scope.reloadEntries();
 
-    this.checkForNewEntries = function() {
-        EntriesService.countNewEntries($scope.lastLoadedTimestamp, function(data) {
+    this.checkForNewEntries = function () {
+        EntriesService.countNewEntries($scope.lastLoadedTimestamp, function (data) {
             $scope.numberOfNewEntries = data.value;
         });
     };
@@ -101,11 +101,11 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     };
 
     $scope.isLogged = function () {
-        return UserSessionService.isLogged()
+        return UserSessionService.isLogged();
     };
 
     $scope.isNotLogged = function () {
-        return UserSessionService.isNotLogged()
+        return UserSessionService.isNotLogged();
     };
 
     $scope.logout = function () {

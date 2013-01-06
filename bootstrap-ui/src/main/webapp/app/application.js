@@ -9,8 +9,11 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             when("/entry/:entryId", {controller: 'EntryEditController', templateUrl: "partials/entry.html"}).
             when("/login", {controller: 'LoginController', templateUrl: "partials/login.html"}).
             when("/register", {controller: 'RegisterController', templateUrl: "partials/register.html"}).
+            when("/error404", {controller: 'EntriesController', templateUrl: "partials/errorpages/error404.html"}).
+            when("/error500", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
+            when("/error", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
             when("/fp", {templateUrl:"partials/fp.html"}).
-            otherwise({redirectTo: '/'});
+            otherwise({redirectTo: '/error404'});
     })
 
     .config(['$httpProvider', function ($httpProvider) {
@@ -31,10 +34,12 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
                 } else if (response.status === 403) {
                     console.log(response.data);
                     // do nothing, user is trying to modify data without privileges
+                } else if (response.status === 404) {
+                    $location.path("/error404");
                 } else if (response.status === 500) {
-                    showErrorMessage("Internal server error. Please try again later.");
+                    $location.path("/error500");
                 } else {
-                    showErrorMessage("Service not responding. Please try again later.");
+                    $location.path("/error");
                 }
                 return $q.reject(response);
             }
@@ -69,49 +74,48 @@ angular.module('smlBootstrap.filters', []).
     });
 
 
-angular.module("ajaxthrobber", []).config(["$httpProvider", function ($httpProvider) {
+angular.module("ajaxthrobber", [])
+    .config(["$httpProvider", function ($httpProvider) {
         var stopAjaxInterceptor;
-        stopAjaxInterceptor = [
-            "$rootScope", "$q", function ($rootScope, $q) {
-                var error, stopAjax, success, wasPageBlocked;
+        stopAjaxInterceptor = ["$rootScope", "$q", function ($rootScope, $q) {
+            var error, stopAjax, success, wasPageBlocked;
 
-                stopAjax = function (responseConfig) {
-                    if (wasPageBlocked(responseConfig)) {
-                        return $rootScope.inProgressAjaxCount--;
-                    }
-                };
+            stopAjax = function (responseConfig) {
+                if (wasPageBlocked(responseConfig)) {
+                    return $rootScope.inProgressAjaxCount--;
+                }
+            };
 
-                wasPageBlocked = function (responseConfig) {
-                    var nonBlocking;
-                    if(responseConfig != null && responseConfig.headers != null) {
-                        nonBlocking = responseConfig.headers.dontBlockPageOnAjax;
-                    }
-                    if (nonBlocking) {
-                        return !nonBlocking;
-                    } else {
-                        return true;
-                    }
-                };
-                success = function (response) {
-                    stopAjax(response.config);
-                    return response;
-                };
-                error = function (response) {
-                    stopAjax(response.config);
-                    return $q.reject(response);
-                };
-                return function (promise) {
-                    return promise.then(success, error);
-                };
-            }
-        ];
+            wasPageBlocked = function (responseConfig) {
+                var nonBlocking;
+                if (typeof responseConfig === "object" && typeof responseConfig.headers === "object") {
+                    nonBlocking = responseConfig.headers.dontBlockPageOnAjax;
+                }
+                if (nonBlocking) {
+                    return !nonBlocking;
+                } else {
+                    return true;
+                }
+            };
+            success = function (response) {
+                stopAjax(response.config);
+                return response;
+            };
+            error = function (response) {
+                stopAjax(response.config);
+                return $q.reject(response);
+            };
+            return function (promise) {
+                return promise.then(success, error);
+            };
+        }];
         return $httpProvider.responseInterceptors.push(stopAjaxInterceptor);
     }])
     .run(["$rootScope", "$http", function ($rootScope, $http) {
         var startAjaxTransformer;
         startAjaxTransformer = function (data, headersGetter) {
 
-            if (!headersGetter()["dontBlockPageOnAjax"]) {
+            if (!headersGetter().dontBlockPageOnAjax) {
                 $rootScope.inProgressAjaxCount++;
             }
             return data;
@@ -119,7 +123,7 @@ angular.module("ajaxthrobber", []).config(["$httpProvider", function ($httpProvi
         $rootScope.inProgressAjaxCount = 0;
         return $http.defaults.transformRequest.push(startAjaxTransformer);
     }])
-    .directive("ajaxthrobber", function() {
+    .directive("ajaxthrobber", function () {
         return {
             restrict: "E",
             link: function (scope, element, attrs) {
