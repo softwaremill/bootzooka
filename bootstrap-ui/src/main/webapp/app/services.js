@@ -183,12 +183,20 @@ services.factory("FlashService", function () {
 });
 
 
-services.factory("PasswordRecoveryService", function() {
+services.factory("PasswordRecoveryService", function($resource) {
     var passwordRecoveryService = {};
+
+    this.recoveryResource = $resource("rest/users/recovery", {}, {
+        'resetPassword':{method:"POST"}
+    });
+
+    var self = this;
 
     passwordRecoveryService.beginResetProcess = function (login, onComplete) {
         console.log("PasswordRecoveryService.beginResetProcess");
-        onComplete();
+        self.recoveryResource.resetPassword({login:login}, function() {
+            onComplete();
+        });
     };
 
     return passwordRecoveryService;
