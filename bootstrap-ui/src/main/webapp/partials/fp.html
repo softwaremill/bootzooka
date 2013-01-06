@@ -1,12 +1,12 @@
 <div class="row">
     <div class="span6 offset3">
         <div class="row">
-            <form class="form-horizontal" name="passwordReset" ng-show="whenUserRequest" novalidate>
+            <form class="form-horizontal" name="passwordResetRequestForm" ng-show="whenUserRequest" novalidate>
                 <div class="control-group">
                     <label class="control-label" for="login">Login/e-mail</label>
                     <div class="controls">
                         <input type="text" name="login" id="login" placeholder="Login/e-mail" ng-model="login" required>
-                        <span class="text-error" ng-show="passwordReset.login.$dirty && passwordReset.login.$error.required">Login/e-mail is required</span>
+                        <span class="text-error" ng-show="passwordResetRequestForm.login.$dirty && passwordResetRequestForm.login.$error.required">Login/e-mail is required</span>
                     </div>
                 </div>
                 <div class="control-group">
