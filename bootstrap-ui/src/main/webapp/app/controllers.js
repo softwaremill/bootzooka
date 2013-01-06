@@ -228,6 +228,11 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
     };
 
     this.success = function () {
-        $location.path = "test"
+        $scope.whenUserRequest = false;
+        $scope.whenEmailSent = true;
     }
+
+    $scope.whenUserRequest = true;
+
+    $scope.whenEmailSent = false;
 });
