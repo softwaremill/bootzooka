@@ -186,7 +186,7 @@ services.factory("FlashService", function () {
 services.factory("PasswordRecoveryService", function($resource) {
     var passwordRecoveryService = {};
 
-    this.recoveryResource = $resource("rest/users/recovery", {}, {
+    this.recoveryResource = $resource("rest/passwordrecovery", {}, {
         'resetPassword':{method:"POST"}
     });
 
