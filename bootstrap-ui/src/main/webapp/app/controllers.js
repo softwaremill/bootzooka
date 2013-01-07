@@ -219,7 +219,7 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
 
     $scope.login = '';
 
-    $scope.beginResetProcess = function () {
+    $scope.recoverPassword = function () {
         $scope.passwordResetRequestForm.login.$dirty = true;
 
         if (!$scope.passwordResetRequestForm.$invalid) {
