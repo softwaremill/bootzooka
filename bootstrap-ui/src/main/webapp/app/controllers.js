@@ -213,3 +213,26 @@ controllers.controller('LoginController', function LoginController($scope, UserS
         showErrorMessage("Invalid login and/or password.");
     };
 });
+
+controllers.controller('PasswordRecoveryController', function PasswordRecoveryController($scope, PasswordRecoveryService, $location) {
+    var self = this;
+
+    $scope.login = '';
+
+    $scope.beginResetProcess = function () {
+        $scope.passwordResetRequestForm.login.$dirty = true;
+
+        if (!$scope.passwordResetRequestForm.$invalid) {
+            PasswordRecoveryService.beginResetProcess($scope.login, self.success);
+        }
+    };
+
+    this.success = function () {
+        $scope.whenUserRequest = false;
+        $scope.whenEmailSent = true;
+    }
+
+    $scope.whenUserRequest = true;
+
+    $scope.whenEmailSent = false;
+});

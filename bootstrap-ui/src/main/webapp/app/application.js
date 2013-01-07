@@ -12,6 +12,7 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             when("/error404", {controller: 'EntriesController', templateUrl: "partials/errorpages/error404.html"}).
             when("/error500", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
             when("/error", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
+            when("/fp", {controller:'PasswordRecoveryController', templateUrl:"partials/fp.html"}).
             otherwise({redirectTo: '/error404'});
     })
 

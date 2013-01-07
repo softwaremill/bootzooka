@@ -24,9 +24,10 @@ object BuildSettings {
 
   import Resolvers._
 
-  val mongoDirectory = SettingKey[File]("mongo-directory")
+  val mongoDirectory = SettingKey[File]("mongo-directory", "The home directory of MongoDB datastore")
 
-  val buildSettings = Defaults.defaultSettings ++ defaultScalariformSettings ++ Seq(
+  val buildSettings = Defaults.defaultSettings ++ Seq(mongoDirectory := file("")) ++ defaultScalariformSettings ++ Seq(
+
     organization := "pl.softwaremill",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.9.2",
@@ -39,6 +40,7 @@ object BuildSettings {
     libraryDependencies ++= Seq(Dependencies.guava, Dependencies.googleJsr305),
 
     parallelExecution := false, // We are starting mongo in tests.
+
     testOptions in Test <+= mongoDirectory map {
       md => Tests.Setup{ () =>
       val mongoFile = new File(md.getAbsolutePath + "/bin/mongod")

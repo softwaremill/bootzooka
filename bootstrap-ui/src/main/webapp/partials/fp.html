@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="span6 offset3">
+        <div class="row">
+            <form class="form-horizontal" name="passwordResetRequestForm" ng-show="whenUserRequest" novalidate>
+                <div class="control-group">
+                    <label class="control-label" for="login">Login/e-mail</label>
+                    <div class="controls">
+                        <input type="text" name="login" id="login" placeholder="Login/e-mail" ng-model="login" required>
+                        <span class="text-error" ng-show="passwordResetRequestForm.login.$dirty && passwordResetRequestForm.login.$error.required">Login/e-mail is required</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" ng-click="beginResetProcess()">Reset password</button>
+                    </div>
+                </div>
+            </form>
+            <span class="help-block" ng-show="whenEmailSent">E-mail with link to reset your password has been sent. Please check your mailbox.</span>
+        </div>
+    </div>
+</div>

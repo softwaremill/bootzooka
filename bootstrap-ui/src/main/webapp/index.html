@@ -11,7 +11,7 @@
     <script type="text/javascript" src="assets/js/jquery-1.8.2-min.js"></script>
     <script type="text/javascript" src="assets/js/jquery-blockui.min.js"></script>
 
-    <script type="text/javascript" src="assets/js/bootstrap-2.2.0.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-2.2.2.js"></script>
 
     <!-- angular stuff -->
     <script type="text/javascript" src="assets/js/angular-1.1.1.js"></script>
@@ -27,7 +27,12 @@
     <script type="text/javascript" src="app/services.js"></script>
 
 </head>
-<body class="padding-for-navbar" ng-app="smlBootstrap">
+<body ng-app="smlBootstrap">
+
+    <a href="https://github.com/softwaremill/bootstrap">
+        <img style="position: absolute; top: 40px; right: 0; border: 0;" src="assets/img/forkme_orange.png"
+             alt="Fork me on GitHub">
+    </a>
 
     <span style="display: none">
         <ajaxthrobber>
@@ -61,26 +66,48 @@
         </div>
     </div>
 
-    <div class="row-fluid feedback-container">
-        <div id="feedback" class="span6">
-            <div class="alert alert-error hide">
-                <a class="close" onclick="$('.alert-error').fadeOut()">&times;</a>
-                <strong>Error!</strong>
-                <span id="error-message"></span>
+    <div class="container">
+        <div class="content">
+            <div class="wrapper">
+                <div class="proper-content">
+
+                    <div class="row-fluid feedback-container">
+                        <div id="feedback" class="span6">
+                            <div class="alert alert-error hide">
+                                <a class="close" onclick="$('.alert-error').fadeOut()">&times;</a>
+                                <strong>Error!</strong>
+                                <span id="error-message"></span>
+                            </div>
+                            <div class="alert alert-info hide">
+                                <a class="close" onclick="$('.alert-message').fadeOut()">&times;</a>
+                                <strong>Info!</strong>
+                                <span id="info-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid"><!-- spacer for feedback block above -->
+                        <div class="span12"></div>
+                    </div>
+
+                    <div ng-view>
+                    </div>
+                </div>
+                <div class="push"></div>
             </div>
-            <div class="alert alert-info hide">
-                <a class="close" onclick="$('.alert-message').fadeOut()">&times;</a>
-                <strong>Info!</strong>
-                <span id="info-message"></span>
+            <div class="footer-wrapper">
+                <footer>
+                    <div class="span7 offset2 well">
+                        <div style="text-align: center">
+                            Demo application by <a href="http://SoftwareMill.com">SoftwareMill</a>, sources available on <a href="https://github.com/softwaremill/bootstrap">GitHub</a>
+                        </div>
+                    </div>
+
+                </footer>
             </div>
+
         </div>
     </div>
-    <div class="row-fluid"><!-- spacer for feedback block above -->
-        <div class="span12"></div>
-    </div>
 
-    <div class="container" ng-view>
-    </div>
 
 </body>
 </html>

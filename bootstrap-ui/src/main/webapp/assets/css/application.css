@@ -19,10 +19,6 @@
     color: white;
 }
 
-.padding-for-navbar {
-    padding-top: 50px;
-}
-
 .feedback-container {
     position: absolute;
     top: 40px;
@@ -40,3 +36,33 @@
     font-style: italic;
     cursor: pointer;
 }
+
+/* Sticky Footer Start */
+html, body, .container, .content {
+    height: 100%;
+}
+
+.container, .content {
+    position: relative;
+}
+
+.proper-content {
+    padding-top: 40px; /* >= navbar height */
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -60px; /* same as the footer */
+}
+
+.push {
+    height: 60px; /* same as the footer */
+}
+.footer-wrapper {
+    position: relative;
+    height: 60px;
+}
+
+/* Sticky Footer End */
