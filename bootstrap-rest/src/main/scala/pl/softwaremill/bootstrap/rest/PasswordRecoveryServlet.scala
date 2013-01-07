@@ -1,10 +1,13 @@
 package pl.softwaremill.bootstrap.rest
 
+import pl.softwaremill.bootstrap.service.PasswordRecoveryService
+
 /**
  * Servlet handling requests related to password recovery.
  */
-class PasswordRecoveryServlet extends JsonServlet {
+class PasswordRecoveryServlet(passwordRecoveryService:PasswordRecoveryService) extends JsonServlet {
   post("/") {
-    logger.debug("generate reset code and send it to e-mail related to the user")
+    val login = (parsedBody \ "login").extract[String]
+    passwordRecoveryService.sendResetCodeToUser(login)
   }
 }

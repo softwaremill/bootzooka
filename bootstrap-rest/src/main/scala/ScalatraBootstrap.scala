@@ -7,6 +7,7 @@ import org.scalatra._
 import javax.servlet.ServletContext
 import pl.softwaremill.bootstrap.service.config.BootstrapConfiguration
 import pl.softwaremill.bootstrap.service.entry.EntryService
+import pl.softwaremill.bootstrap.service.PasswordRecoveryService
 import pl.softwaremill.bootstrap.service.schedulers.{ DummyEmailSendingService, EmailSendingService, ProductionEmailSendingService }
 import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 import pl.softwaremill.bootstrap.service.user.{ RegistrationDataValidator, UserService }
@@ -35,12 +36,13 @@ class ScalatraBootstrap extends LifeCycle {
 
     val userService = new UserService(factory.userDAO, new RegistrationDataValidator(), emailSendingService, emailTemplatingEngine)
     val entryService = new EntryService(factory.entryDAO, factory.userDAO)
+    val passwordRecoveryService = new PasswordRecoveryService(emailSendingService)
 
     // Mount one or more servlets
     context.mount(new EntriesServlet(entryService, userService), Prefix + "/entries")
     context.mount(new UptimeServlet, Prefix + "/uptime")
     context.mount(new UsersServlet(userService), Prefix + "/users")
-    context.mount(new PasswordRecoveryServlet, Prefix + "/passwordrecovery")
+    context.mount(new PasswordRecoveryServlet(passwordRecoveryService), Prefix + "/passwordrecovery")
   }
 
   def createDAOsFactory(context: ServletContext): StorageFactory = {
