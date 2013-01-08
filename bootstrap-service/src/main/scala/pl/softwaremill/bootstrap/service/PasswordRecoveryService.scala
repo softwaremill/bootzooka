@@ -2,23 +2,28 @@ package pl.softwaremill.bootstrap.service
 
 import schedulers.EmailSendingService
 import org.slf4j.LoggerFactory
-import pl.softwaremill.bootstrap.dao.UserDAO
+import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO}
 import templates.EmailContentWithSubject
 import util.Random
+import pl.softwaremill.bootstrap.domain.{User, PasswordResetCode}
+import org.joda.time.DateTime
+import com.weiglewilczek.slf4s.Logging
 
 /**
  * .
  */
-class PasswordRecoveryService(userDao: UserDAO, emailSendingService: EmailSendingService) {
-  private final val logger = LoggerFactory.getLogger(getClass.getName)
-
+class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO, emailSendingService: EmailSendingService) extends Logging {
   def sendResetCodeToUser(login: String) {
-    val user = userDao.findByLoginOrEmail(login)
+    logger.debug("Preparing to generate and send reset code to user")
+    logger.debug("Searching for user")
+    val userOption = userDao.findByLoginOrEmail(login)
 
-    if (user.isDefined) {
-      val code = generateCode()
+    if (userOption.isDefined) {
+      logger.debug("User found")
+      val user = userOption.get
+      val code = PasswordResetCode(code = generateCode(), userId = user._id)
       storeCode(code)
-      sendCode(user.get.email, code)
+      sendCode(user.email, code)
     }
   }
 
@@ -30,18 +35,22 @@ class PasswordRecoveryService(userDao: UserDAO, emailSendingService: EmailSendin
       else appendRandomChar(input + chars(Random.nextInt(chars.length)), counter - 1)
     }
 
+    logger.debug("Generating reset code")
     appendRandomChar("", length)
   }
 
-  private def storeCode(code: String) {
-
+  private def storeCode(code: PasswordResetCode) {
+    logger.debug("Storing code")
+    codeDao.store(code)
   }
 
-  private def sendCode(address: String, code: String) {
+  private def sendCode(address: String, code: PasswordResetCode) {
     emailSendingService.scheduleEmail(address, prepareResetEmail(code))
+    logger.debug("E-mail with reset link scheduled")
   }
 
-  private def prepareResetEmail(code: String) = {
-    new EmailContentWithSubject("http://localhost:8080/password-recovery?code=" + code, "SML Bootstrap password recovery")
+  private def prepareResetEmail(code: PasswordResetCode) = {
+    logger.debug("Preparing e-mail with reset link")
+    new EmailContentWithSubject("http://localhost:8080/password-recovery?code=" + code.code, "SML Bootstrap password recovery")
   }
 }
