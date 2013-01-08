@@ -7,6 +7,7 @@ import pl.softwaremill.bootstrap.dao.{UserDAO, InMemoryUserDAO}
 import pl.softwaremill.bootstrap.domain.User
 import org.specs2.specification.Fragment
 import templates.EmailContentWithSubject
+import org.mockito.Matchers
 
 /**
  * .
@@ -36,13 +37,12 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
         passwordRecoveryService.sendResetCodeToUser("user2")
         there was no(emailSendingService).scheduleEmail(anyString, any)
       }
-
     })
 
     withCleanMocks((userDao, emailSendingService, passwordRecoveryService) => {
       "send e-mail to user containing link to reset page with generated reset code" in {
         passwordRecoveryService.sendResetCodeToUser("user")
-        there was one(emailSendingService).scheduleEmail("user@sml.pl", null)
+        there was one(emailSendingService).scheduleEmail(Matchers.eq("user@sml.pl"), any[EmailContentWithSubject])
       }
     })
   }
