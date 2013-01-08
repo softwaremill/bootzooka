@@ -214,7 +214,7 @@ controllers.controller('LoginController', function LoginController($scope, UserS
     };
 });
 
-controllers.controller('PasswordRecoveryController', function PasswordRecoveryController($scope, PasswordRecoveryService, FlashService) {
+controllers.controller('PasswordRecoveryController', function PasswordRecoveryController($scope, PasswordRecoveryService, FlashService, $location) {
     var self = this;
 
     $scope.login = '';
@@ -228,6 +228,7 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
     };
 
     this.success = function () {
-        FlashService.set("E-mail with link to reset your password has been sent. Please check your mailbox.")
+        FlashService.set("E-mail with link to reset your password has been sent. Please check your mailbox.");
+        $location.path("");
     };
 });

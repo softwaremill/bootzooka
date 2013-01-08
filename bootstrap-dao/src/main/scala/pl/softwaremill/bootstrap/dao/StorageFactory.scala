@@ -8,6 +8,8 @@ trait StorageFactory {
 
   def entryDAO: EntryDAO
 
+  def codeDAO: PasswordResetCodeDAO
+
 }
 
 class MongoFactory(implicit val mongo: MongoDB) extends StorageFactory {
@@ -20,6 +22,10 @@ class MongoFactory(implicit val mongo: MongoDB) extends StorageFactory {
     new MongoEntryDAO
   }
 
+  def codeDAO = {
+    new MongoPasswordResetCodeDAO()
+  }
+
 }
 
 class InMemoryFactory() extends StorageFactory {
@@ -30,6 +36,10 @@ class InMemoryFactory() extends StorageFactory {
 
   def entryDAO = {
     new InMemoryEntryDAO()
+  }
+
+  def codeDAO = {
+    new InMemoryPasswordResetCodeDAO()
   }
 
 }
