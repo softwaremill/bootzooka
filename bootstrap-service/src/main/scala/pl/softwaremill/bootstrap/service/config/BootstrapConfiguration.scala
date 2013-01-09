@@ -20,5 +20,6 @@ object BootstrapConfiguration {
   val awsAccessKeyId      = config.get("AWSAccessKeyId")
   val awsSecretAccessKey  = config.get("SecretAccessKey")
   val encoding            = config.get("encoding")
+  val resetLinkPattern    = config.get("resetLinkPattern")
 
 }

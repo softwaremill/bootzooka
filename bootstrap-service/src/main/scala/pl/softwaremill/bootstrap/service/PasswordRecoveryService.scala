@@ -1,5 +1,6 @@
 package pl.softwaremill.bootstrap.service
 
+import config.BootstrapConfiguration
 import schedulers.EmailSendingService
 import org.slf4j.LoggerFactory
 import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO}
@@ -14,7 +15,7 @@ import pl.softwaremill.common.util.RichString
  * .
  */
 class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
-                              emailSendingService: EmailSendingService, emailTemplatingEngine:EmailTemplatingEngine) extends Logging {
+                              emailSendingService: EmailSendingService, emailTemplatingEngine: EmailTemplatingEngine) extends Logging {
   def sendResetCodeToUser(login: String) {
     logger.debug("Preparing to generate and send reset code to user")
     logger.debug("Searching for user")
@@ -38,13 +39,18 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
   }
 
   private def sendCode(user: User, code: PasswordResetCode) {
+    logger.debug("Scheduling e-mail with reset code")
     emailSendingService.scheduleEmail(user.email, prepareResetEmail(user, code))
-    logger.debug("E-mail with reset link scheduled")
   }
 
   private def prepareResetEmail(user: User, code: PasswordResetCode) = {
-    logger.debug("Preparing e-mail with reset link")
-    val resetLink: String = "http://localhost:8080/password-recovery?code=" + code.code
+    logger.debug("Preparing content for password reset e-mail")
+
+    val resetLink: String = if (BootstrapConfiguration.resetLinkPattern != null) {
+      String.format(BootstrapConfiguration.resetLinkPattern, code.code)
+    } else {
+      "http://localhost:8080/password-reset?code=" + code.code
+    }
     emailTemplatingEngine.passwordReset(user.login, resetLink)
   }
 }
