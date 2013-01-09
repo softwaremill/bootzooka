@@ -11,6 +11,8 @@ import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHe
  */
 trait PasswordResetCodeDAO {
   def store(code: PasswordResetCode)
+
+  def load(code: String): Option[PasswordResetCode]
 }
 
 class InMemoryPasswordResetCodeDAO extends PasswordResetCodeDAO {
@@ -24,6 +26,12 @@ class InMemoryPasswordResetCodeDAO extends PasswordResetCodeDAO {
   def count = {
     codes.length
   }
+
+  def load(code: String): Option[PasswordResetCode] = {
+    codes.find(passwordResetCode => {
+      passwordResetCode.code == code
+    })
+  }
 }
 
 class MongoPasswordResetCodeDAO(implicit val mongo: MongoDB) extends SalatDAO[PasswordResetCode, ObjectId](mongo("passwordResetCodes")) with PasswordResetCodeDAO {
@@ -32,5 +40,9 @@ class MongoPasswordResetCodeDAO(implicit val mongo: MongoDB) extends SalatDAO[Pa
 
   def store(code: PasswordResetCode) {
     insert(code)
+  }
+
+  def load(code: String): Option[PasswordResetCode] = {
+    findOne(MongoDBObject("code" -> code))
   }
 }
