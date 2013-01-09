@@ -7,6 +7,7 @@ import templates.EmailTemplatingEngine
 import pl.softwaremill.bootstrap.domain.{User, PasswordResetCode}
 import com.weiglewilczek.slf4s.Logging
 import pl.softwaremill.common.util.RichString
+import pl.softwaremill.bootstrap.common.Utils
 
 /**
  * .
@@ -55,7 +56,12 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
   def performPasswordReset(code: String, newPassword: String) {
     logger.debug("Performing password reset")
     codeDao.load(code) match {
-      case Some(c) => userDao.changePassword(c.userId.toString, newPassword)
+      case Some(c) => {
+        userDao.load(c.userId.toString) match {
+          case Some(u) => userDao.changePassword(u.login, Utils.sha256(newPassword, u.login))
+          case None => logger.debug("User does not exist")
+        }
+      }
       case None => logger.debug("Reset code not found")
     }
   }

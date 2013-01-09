@@ -256,8 +256,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
     "change password" in {
         val login = "user1"
         val password = Utils.sha256("newPassword", login)
-        val preModifyUserOpt = userDAO.findByLoginOrEmail(login)
-        userDAO.changePassword(preModifyUserOpt.get._id.toString, password)
+        userDAO.changePassword(login, password)
         val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
         postModifyUserOpt foreach(user => assert(user.password === password))
     }

@@ -8,6 +8,8 @@ import pl.softwaremill.bootstrap.domain.{PasswordResetCode, User}
 import org.specs2.specification.Fragment
 import templates.{EmailTemplatingEngine, EmailContentWithSubject}
 import org.mockito.Matchers
+import pl.softwaremill.bootstrap.common.Utils
+import org.bson.types.ObjectId
 
 /**
  * .
@@ -72,9 +74,31 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
 
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       "change password for user" in {
-        passwordRecoveryService.performPasswordReset("validCode", "validPassword")
-        there was one(codeDao).load("validCode")
-        there was one(userDao).changePassword(anyString, Matchers.eq("validPassword"))
+        //Given
+        val code = "validCode"
+        val login = "login"
+        val userId = "id"
+        val password = "password"
+        val mockUserId = mock[ObjectId]
+        val mockCode = mock[PasswordResetCode]
+        val mockUser = mock[User]
+
+        mockUserId.toString returns userId
+
+        mockCode.userId returns mockUserId
+
+        mockUser._id returns mockUserId
+        mockUser.login returns login
+
+        codeDao.load(code) returns (Some(mockCode))
+        userDao.load(userId) returns (Some(mockUser))
+
+        //When
+        passwordRecoveryService.performPasswordReset(code, password)
+
+        //Then
+        there was one(codeDao).load(code)
+        there was one(userDao).changePassword(anyString, Matchers.eq(Utils.sha256(password, login)))
       }
     })
   }
