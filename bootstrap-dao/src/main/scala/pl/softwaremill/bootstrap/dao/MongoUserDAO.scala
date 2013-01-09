@@ -56,7 +56,7 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
     new slf4s.Logging {
       val userOpt = load(userId)
       userOpt.foreach(user => {
-        update(MongoDBObject("login" -> user.login), user.copy(password = password), false, false, defaultWriteConcern)
+        update(MongoDBObject("_id" -> user._id), user.copy(password = password), false, false, defaultWriteConcern)
       })
     }
   }
