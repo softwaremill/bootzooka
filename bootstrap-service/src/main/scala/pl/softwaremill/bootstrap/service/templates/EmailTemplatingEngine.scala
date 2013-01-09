@@ -28,4 +28,9 @@ class EmailTemplatingEngine {
     EmailContentWithSubject(emailLines.tail.mkString("\n"), emailLines.head)
   }
 
+  def passwordReset(userName:String, resetLink:String) = {
+    val template = prepareEmailTemplate("resetPassword", Map("userName" -> userName, "resetLink" -> resetLink))
+    splitToContentAndSubject(template)
+  }
+
 }
