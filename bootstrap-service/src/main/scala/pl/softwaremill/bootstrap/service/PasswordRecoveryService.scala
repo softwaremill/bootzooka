@@ -18,12 +18,15 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO, e
     logger.debug("Searching for user")
     val userOption = userDao.findByLoginOrEmail(login)
 
-    if (userOption.isDefined) {
-      logger.debug("User found")
-      val user = userOption.get
-      val code = PasswordResetCode(code = generateCode(), userId = user._id)
-      storeCode(code)
-      sendCode(user.email, code)
+    userOption match {
+      case Some(user) => {
+        logger.debug("User found")
+        val user = userOption.get
+        val code = PasswordResetCode(code = generateCode(), userId = user._id)
+        storeCode(code)
+        sendCode(user.email, code)
+      }
+      case None =>
     }
   }
 
