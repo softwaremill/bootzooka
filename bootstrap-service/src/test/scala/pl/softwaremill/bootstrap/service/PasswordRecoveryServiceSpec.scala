@@ -69,5 +69,13 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
         there was one(emailTemplatingEngine).passwordReset(Matchers.eq(validLogin), anyString)
       }
     })
+
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+      "change password for user" in {
+        passwordRecoveryService.performPasswordReset("validCode", "validPassword")
+        there was one(codeDao).load("validCode")
+        there was one(userDao).changePassword(anyString, Matchers.eq("validPassword"))
+      }
+    })
   }
 }

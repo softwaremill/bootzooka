@@ -54,5 +54,9 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
 
   def performPasswordReset(code: String, newPassword: String) {
     logger.debug("Performing password reset")
+    codeDao.load(code) match {
+      case Some(c) => userDao.changePassword(c.userId.toString, newPassword)
+      case None => logger.debug("Reset code not found")
+    }
   }
 }
