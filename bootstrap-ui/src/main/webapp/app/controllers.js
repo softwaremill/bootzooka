@@ -218,6 +218,7 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
     var self = this;
 
     $scope.login = '';
+    $scope.password = '';
 
     $scope.recoverPassword = function () {
         $scope.passwordResetRequestForm.login.$dirty = true;
@@ -231,4 +232,16 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
         FlashService.set("E-mail with link to reset your password has been sent. Please check your mailbox.");
         $location.path("");
     };
+
+    $scope.resetPassword = function () {
+        $scope.changePasswordForm.password.$dirty = true;
+        if (!$scope.changePasswordForm.$invalid) {
+            PasswordRecoveryService.changePassword("UOQENXUMLODRMNSBEDUFYGDDJXTBQVUT", $scope.password, self.onChangeSuccess);
+        }
+    }
+
+    this.onChangeSuccess = function () {
+        FlashService.set("Your password has been changed");
+        $location.path("");
+    }
 });
