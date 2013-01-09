@@ -58,7 +58,7 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
     codeDao.load(code) match {
       case Some(c) => {
         userDao.load(c.userId.toString) match {
-          case Some(u) => userDao.changePassword(u.login, Utils.sha256(newPassword, u.login))
+          case Some(u) => userDao.changePassword(u, Utils.sha256(newPassword, u.login))
           case None => logger.debug("User does not exist")
         }
       }

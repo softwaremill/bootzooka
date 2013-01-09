@@ -214,7 +214,7 @@ controllers.controller('LoginController', function LoginController($scope, UserS
     };
 });
 
-controllers.controller('PasswordRecoveryController', function PasswordRecoveryController($scope, PasswordRecoveryService, FlashService, $location) {
+controllers.controller('PasswordRecoveryController', function PasswordRecoveryController($scope, PasswordRecoveryService, FlashService, $location, $routeParams) {
     var self = this;
 
     $scope.login = '';
@@ -236,12 +236,13 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
     $scope.resetPassword = function () {
         $scope.changePasswordForm.password.$dirty = true;
         if (!$scope.changePasswordForm.$invalid) {
-            PasswordRecoveryService.changePassword("UOQENXUMLODRMNSBEDUFYGDDJXTBQVUT", $scope.password, self.onChangeSuccess);
+            PasswordRecoveryService.changePassword($routeParams.code, $scope.password, self.onChangeSuccess);
         }
     }
 
     this.onChangeSuccess = function () {
         FlashService.set("Your password has been changed");
+        $location.search("code", null);
         $location.path("");
     }
 });

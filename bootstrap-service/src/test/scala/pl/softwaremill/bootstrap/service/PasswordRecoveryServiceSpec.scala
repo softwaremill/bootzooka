@@ -98,7 +98,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
 
         //Then
         there was one(codeDao).load(code)
-        there was one(userDao).changePassword(anyString, Matchers.eq(Utils.sha256(password, login)))
+        there was one(userDao).changePassword(any[User], Matchers.eq(Utils.sha256(password, login)))
       }
     })
   }

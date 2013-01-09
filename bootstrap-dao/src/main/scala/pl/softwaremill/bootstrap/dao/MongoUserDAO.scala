@@ -51,7 +51,7 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
     findOne(MongoDBObject("loginLowerCased" -> login.toLowerCase, "password" -> encryptedPassword))
   }
 
-  def changePassword(login: String, password: String) {
-    update(MongoDBObject("login" -> login), MongoDBObject("password" -> "password"), false, false)
+  def changePassword(user: User, password: String) {
+    update(MongoDBObject("login" -> user.login), user.copy(password = password, token = password), false, false, new WriteConcern)
   }
 }
