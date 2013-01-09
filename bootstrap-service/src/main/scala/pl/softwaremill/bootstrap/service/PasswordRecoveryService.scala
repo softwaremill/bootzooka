@@ -13,6 +13,7 @@ import pl.softwaremill.common.util.RichString
  */
 class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
                               emailSendingService: EmailSendingService, emailTemplatingEngine: EmailTemplatingEngine) extends Logging {
+
   def sendResetCodeToUser(login: String) {
     logger.debug("Preparing to generate and send reset code to user")
     logger.debug("Searching for user")
@@ -49,5 +50,9 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
       "http://localhost:8080/password-reset?code=" + code.code
     }
     emailTemplatingEngine.passwordReset(user.login, resetLink)
+  }
+
+  def performPasswordReset(code: String, newPassword: String) {
+    logger.debug("Performing password reset")
   }
 }
