@@ -48,7 +48,7 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
     val resetLink: String = if (BootstrapConfiguration.resetLinkPattern != null) {
       String.format(BootstrapConfiguration.resetLinkPattern, code.code)
     } else {
-      "http://localhost:8080/password-reset?code=" + code.code
+      "http://localhost:8080/#/password-reset?code=" + code.code
     }
     emailTemplatingEngine.passwordReset(user.login, resetLink)
   }
