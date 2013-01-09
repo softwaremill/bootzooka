@@ -8,6 +8,7 @@ import util.Random
 import pl.softwaremill.bootstrap.domain.{User, PasswordResetCode}
 import org.joda.time.DateTime
 import com.weiglewilczek.slf4s.Logging
+import pl.softwaremill.common.util.RichString
 
 /**
  * .
@@ -22,24 +23,12 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO, e
       case Some(user) => {
         logger.debug("User found")
         val user = userOption.get
-        val code = PasswordResetCode(code = generateCode(), userId = user._id)
+        val code = PasswordResetCode(code = RichString.generateRandom(32), userId = user._id)
         storeCode(code)
         sendCode(user.email, code)
       }
       case None =>
     }
-  }
-
-  final val chars = ('a' to 'z') ++ (0 to 9)
-
-  private def generateCode(length: Int = 32) = {
-    def appendRandomChar(input: String, counter: Int): String = {
-      if (counter == 0) input
-      else appendRandomChar(input + chars(Random.nextInt(chars.length)), counter - 1)
-    }
-
-    logger.debug("Generating reset code")
-    appendRandomChar("", length)
   }
 
   private def storeCode(code: PasswordResetCode) {
