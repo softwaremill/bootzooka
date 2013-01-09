@@ -4,10 +4,11 @@ import com.mongodb.casbah.WriteConcern
 import pl.softwaremill.bootstrap.domain.User
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.MongoDB
-import com.mongodb.casbah.commons.MongoDBObject
+import com.mongodb.casbah.commons.{Logging, MongoDBObject}
 import com.novus.salat.dao.SalatDAO
 import com.novus.salat.global._
 import com.mongodb.casbah.query.Imports.ConcreteDBObjectOk
+import com.weiglewilczek.slf4s
 
 class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId](mongo("users")) with UserDAO {
 
@@ -51,4 +52,12 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
     findOne(MongoDBObject("loginLowerCased" -> login.toLowerCase, "password" -> encryptedPassword))
   }
 
+  def changePassword(userId: String, password: String) {
+    new slf4s.Logging {
+      val userOpt = load(userId)
+      userOpt.foreach(user => {
+        update(MongoDBObject("login" -> user.login), user.copy(password = password), false, false, defaultWriteConcern)
+      })
+    }
+  }
 }

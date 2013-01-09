@@ -31,4 +31,6 @@ trait UserDAO {
 
   def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String): Option[User]
 
+  def changePassword(userId: String, password: String)
+
 }

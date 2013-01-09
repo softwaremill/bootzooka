@@ -2,8 +2,9 @@ package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.common.Utils
+import com.weiglewilczek.slf4s.Logging
 
-class MongoUserDAOSpec extends SpecificationWithMongo {
+class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
   var userDAO: UserDAO = null
 
@@ -250,6 +251,15 @@ class MongoUserDAOSpec extends SpecificationWithMongo {
 
       // Then
       assert(userOpt.isEmpty === true)
+    }
+
+    "change password" in {
+        val login = "user1"
+        val password = Utils.sha256("newPassword", login)
+        val preModifyUserOpt = userDAO.findByLoginOrEmail(login)
+        userDAO.changePassword(preModifyUserOpt.get._id.toString, password)
+        val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
+        postModifyUserOpt foreach(user => assert(user.password === password))
     }
 
   }

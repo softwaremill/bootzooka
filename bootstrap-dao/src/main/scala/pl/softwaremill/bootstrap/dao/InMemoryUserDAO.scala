@@ -57,4 +57,13 @@ class InMemoryUserDAO extends UserDAO {
       case _ => None
     }
   }
+
+  def changePassword(userId: String, password: String) {
+    val userOpt = load(userId)
+    userOpt.foreach(user => {
+      val modifiedUser = new User(user._id, user.login, user.loginLowerCased, user.email, user.password, user.token)
+      val userIndex: Int = users.indexOf(user)
+      users = users.take(userIndex) ::: List(modifiedUser) ::: users.drop(userIndex + 1)
+    })
+  }
 }
