@@ -2,12 +2,9 @@ package pl.softwaremill.bootstrap.service
 
 import config.BootstrapConfiguration
 import schedulers.EmailSendingService
-import org.slf4j.LoggerFactory
 import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO}
-import templates.{EmailTemplatingEngine, EmailContentWithSubject}
-import util.Random
+import templates.EmailTemplatingEngine
 import pl.softwaremill.bootstrap.domain.{User, PasswordResetCode}
-import org.joda.time.DateTime
 import com.weiglewilczek.slf4s.Logging
 import pl.softwaremill.common.util.RichString
 
