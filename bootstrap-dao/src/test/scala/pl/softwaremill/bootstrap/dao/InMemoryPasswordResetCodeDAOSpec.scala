@@ -41,5 +41,22 @@ class InMemoryPasswordResetCodeDAOSpec extends Specification {
         case None =>
       }
     }
+
+    "delete code" in {
+      //Given
+      val code1: PasswordResetCode = PasswordResetCode(code = "code1", userId = new ObjectId())
+      val code2: PasswordResetCode = PasswordResetCode(code = "code2", userId = new ObjectId())
+      dao.store(code1)
+      dao.store(code2)
+
+      //When
+      dao.delete(code1)
+
+      //Then
+      assert(dao.count === 1)
+      assert(dao.load("code1").isEmpty)
+      assert(dao.load("code2").isDefined)
+    }
+
   }
 }

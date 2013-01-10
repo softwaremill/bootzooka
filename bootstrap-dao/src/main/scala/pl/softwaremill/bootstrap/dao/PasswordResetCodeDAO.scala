@@ -10,9 +10,12 @@ import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHe
  * .
  */
 trait PasswordResetCodeDAO {
+
   def store(code: PasswordResetCode)
 
   def load(code: String): Option[PasswordResetCode]
+
+  def delete(code: PasswordResetCode)
 }
 
 class InMemoryPasswordResetCodeDAO extends PasswordResetCodeDAO {
@@ -32,6 +35,11 @@ class InMemoryPasswordResetCodeDAO extends PasswordResetCodeDAO {
       passwordResetCode.code == code
     })
   }
+
+  def delete(code: PasswordResetCode) {
+    val index = codes.indexOf(code)
+    codes = codes.take(index) ::: codes.drop(index + 1)
+  }
 }
 
 class MongoPasswordResetCodeDAO(implicit val mongo: MongoDB) extends SalatDAO[PasswordResetCode, ObjectId](mongo("passwordResetCodes")) with PasswordResetCodeDAO {
@@ -44,5 +52,9 @@ class MongoPasswordResetCodeDAO(implicit val mongo: MongoDB) extends SalatDAO[Pa
 
   def load(code: String): Option[PasswordResetCode] = {
     findOne(MongoDBObject("code" -> code))
+  }
+
+  def delete(code: PasswordResetCode) {
+    remove(code, WriteConcern.Safe)
   }
 }
