@@ -96,11 +96,31 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
         userDao.load(userId) returns (Some(mockUser))
 
         //When
-        passwordRecoveryService.performPasswordReset(code, password)
+        val result = passwordRecoveryService.performPasswordReset(code, password)
 
         //Then
+        assert(result.isRight)
+        assert(result.right.get)
         there was one(codeDao).load(code)
         there was one(userDao).changePassword(any[User], Matchers.eq(Utils.sha256(password, login)))
+      }
+    })
+
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+      "not change password when code is past it's valid date" in {
+        //Given
+        val password = "password"
+        val code = "validCode"
+        val mockCode = mock[PasswordResetCode]
+        mockCode.validTo returns new DateTime().minusDays(2)
+        codeDao.load(code) returns Some(mockCode)
+
+        //When
+        val result = passwordRecoveryService.performPasswordReset(code, password)
+
+        //Then
+        assert(result.isLeft)
+        there was no(userDao).changePassword(any[User], anyString)
       }
     })
   }
