@@ -9,6 +9,7 @@ import com.weiglewilczek.slf4s.Logging
 import pl.softwaremill.common.util.RichString
 import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.domain.PasswordResetCode
+import org.joda.time.DateTime
 
 /**
  * .
@@ -54,22 +55,30 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
     emailTemplatingEngine.passwordReset(user.login, resetLink)
   }
 
-  def performPasswordReset(code: String, newPassword: String):Either[String, Boolean] = {
+  def performPasswordReset(code: String, newPassword: String): Either[String, Boolean] = {
     logger.debug("Performing password reset")
     codeDao.load(code) match {
       case Some(c) => {
-        userDao.load(c.userId.toString) match {
-          case Some(u) => userDao.changePassword(u, Utils.sha256(newPassword, u.login))
-          case None => logger.debug("User does not exist")
+        if (c.validTo.isAfter(new DateTime())) {
+          changePassword(c, newPassword)
+          Right(true)
+        } else {
+          Left("Your reset code is invalid. Please try again.")
         }
-        invalidateResetCode(c)
-        Right(true)
       }
       case None => {
         logger.debug("Reset code not found")
-        Left("Your reset code was not recognized. Please try again.")
+        Left("Your reset code is invalid. Please try again.")
       }
     }
+  }
+
+  private def changePassword(code: PasswordResetCode, newPassword: String) {
+    userDao.load(code.userId.toString) match {
+      case Some(u) => userDao.changePassword(u, Utils.sha256(newPassword, u.login))
+      case None => logger.debug("User does not exist")
+    }
+    invalidateResetCode(code)
   }
 
   private def invalidateResetCode(code: PasswordResetCode) {
