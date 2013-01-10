@@ -10,6 +10,7 @@ import templates.{EmailTemplatingEngine, EmailContentWithSubject}
 import org.mockito.Matchers
 import pl.softwaremill.bootstrap.common.Utils
 import org.bson.types.ObjectId
+import org.joda.time.DateTime
 
 /**
  * .
@@ -86,6 +87,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
         mockUserId.toString returns userId
 
         mockCode.userId returns mockUserId
+        mockCode.validTo returns new DateTime().plusHours(1)
 
         mockUser._id returns mockUserId
         mockUser.login returns login
