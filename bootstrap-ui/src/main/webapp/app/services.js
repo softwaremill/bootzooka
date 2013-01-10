@@ -190,7 +190,7 @@ services.factory("PasswordRecoveryService", function ($resource) {
         'resetPassword': {method: "POST"}
     });
 
-    this.changeResource = $resource("rest/passwordrecovery/:code", {code:"@code"}, {
+    this.changeResource = $resource("rest/passwordrecovery/:code", {code: "@code"}, {
         'changePassword': {method: "POST"}
     });
 
@@ -202,9 +202,11 @@ services.factory("PasswordRecoveryService", function ($resource) {
         });
     };
 
-    passwordRecoveryService.changePassword = function (code, password, onComplete) {
-        self.changeResource.changePassword({code:code, password: password}, function () {
+    passwordRecoveryService.changePassword = function (code, password, onComplete, onError) {
+        self.changeResource.changePassword({code: code, password: password}, function (data) {
             onComplete();
+        }, function (error) {
+            onError(error)
         })
     };
 
