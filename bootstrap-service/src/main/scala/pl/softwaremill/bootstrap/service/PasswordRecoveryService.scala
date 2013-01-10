@@ -4,10 +4,11 @@ import config.BootstrapConfiguration
 import schedulers.EmailSendingService
 import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO}
 import templates.EmailTemplatingEngine
-import pl.softwaremill.bootstrap.domain.{User, PasswordResetCode}
+import pl.softwaremill.bootstrap.domain.{PasswordResetCode, User}
 import com.weiglewilczek.slf4s.Logging
 import pl.softwaremill.common.util.RichString
 import pl.softwaremill.bootstrap.common.Utils
+import pl.softwaremill.bootstrap.domain.PasswordResetCode
 
 /**
  * .
@@ -57,12 +58,18 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
     logger.debug("Performing password reset")
     codeDao.load(code) match {
       case Some(c) => {
-        userDao.load(c.userId.toString) match {
+        val resetCode = userDao.load(c.userId.toString)
+        resetCode match {
           case Some(u) => userDao.changePassword(u, Utils.sha256(newPassword, u.login))
           case None => logger.debug("User does not exist")
         }
+        invalidateResetCode(c)
       }
       case None => logger.debug("Reset code not found")
     }
+  }
+
+  private def invalidateResetCode(code: PasswordResetCode) {
+    codeDao.delete(code)
   }
 }
