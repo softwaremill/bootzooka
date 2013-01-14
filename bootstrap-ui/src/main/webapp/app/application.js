@@ -12,8 +12,8 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             when("/error404", {controller: 'EntriesController', templateUrl: "partials/errorpages/error404.html"}).
             when("/error500", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
             when("/error", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
-            when("/recover-lost-password", {controller:'PasswordRecoveryController', templateUrl:"partials/recover-lost-password.html"}).
-            when("/password-reset", {controller:"PasswordRecoveryController", templateUrl:"partials/password-reset.html"}).
+            when("/recover-lost-password", {controller: 'PasswordRecoveryController', templateUrl: "partials/recover-lost-password.html"}).
+            when("/password-reset", {controller: "PasswordRecoveryController", templateUrl: "partials/password-reset.html"}).
             otherwise({redirectTo: '/error404'});
     })
 
