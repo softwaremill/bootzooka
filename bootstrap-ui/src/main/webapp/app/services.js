@@ -121,11 +121,6 @@ services.factory('UserSessionService', function ($resource) {
         }
     };
 
-    userSessionService.beginResetProcess = function (login, onComplete) {
-        console.log("userSessionService.beginResetProcess")
-        onComplete()
-    }
-
     return userSessionService;
 });
 
@@ -206,7 +201,7 @@ services.factory("PasswordRecoveryService", function ($resource) {
         self.changeResource.changePassword({code: code, password: password}, function (data) {
             onComplete();
         }, function (error) {
-            onError(error)
+            onError(error);
         })
     };
 
