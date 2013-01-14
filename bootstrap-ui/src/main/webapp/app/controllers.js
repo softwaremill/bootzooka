@@ -161,7 +161,7 @@ controllers.controller('RegisterController', function RegisterController($scope,
         $scope.registerForm.email.$dirty = true;
         $scope.registerForm.repeatPassword.$dirty = true;
 
-        if ($scope.registerForm.$valid) {
+        if ($scope.registerForm.$valid && !$scope.registerForm.repeatPassword.$error.dontMatch) {
             var jsonUser = {}; // create dedicated object to pass only specific fields
             jsonUser.login = $scope.user.login;
             jsonUser.email = $scope.user.email;
@@ -224,7 +224,7 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
     $scope.recoverPassword = function () {
         $scope.passwordResetRequestForm.login.$dirty = true;
 
-        if (!$scope.passwordResetRequestForm.$invalid) {
+        if ($scope.passwordResetRequestForm.$valid) {
             PasswordRecoveryService.beginResetProcess($scope.login, self.success);
         }
     };
@@ -237,12 +237,15 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
     $scope.resetPassword = function () {
         $scope.changePasswordForm.password.$dirty = true;
         $scope.changePasswordForm.repeatPassword.$dirty = true;
-        $scope.changePasswordForm.repeatPassword.$error.dontMatch = $scope.password != $scope.repeatPassword;
 
-        if (!$scope.changePasswordForm.$invalid) {
+        if ($scope.changePasswordForm.$valid && !$scope.changePasswordForm.repeatPassword.$error.dontMatch) {
             PasswordRecoveryService.changePassword($routeParams.code, $scope.password, self.onChangeSuccess, self.onChangeFailure);
         }
     };
+
+    $scope.checkPasswords = function () {
+        $scope.changePasswordForm.repeatPassword.$error.dontMatch = $scope.password != $scope.repeatPassword;
+    }
 
     this.onChangeSuccess = function () {
         FlashService.set("Your password has been changed");
