@@ -219,6 +219,7 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
 
     $scope.login = '';
     $scope.password = '';
+    $scope.repeatPassword = '';
 
     $scope.recoverPassword = function () {
         $scope.passwordResetRequestForm.login.$dirty = true;
@@ -235,6 +236,9 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
 
     $scope.resetPassword = function () {
         $scope.changePasswordForm.password.$dirty = true;
+        $scope.changePasswordForm.repeatPassword.$dirty = true;
+        $scope.changePasswordForm.repeatPassword.$error.dontMatch = $scope.password != $scope.repeatPassword;
+
         if (!$scope.changePasswordForm.$invalid) {
             PasswordRecoveryService.changePassword($routeParams.code, $scope.password, self.onChangeSuccess, self.onChangeFailure);
         }
