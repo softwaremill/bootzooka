@@ -61,8 +61,10 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
       case Some(c) => {
         if (c.validTo.isAfter(new DateTime())) {
           changePassword(c, newPassword)
+          invalidateResetCode(c)
           Right(true)
         } else {
+          invalidateResetCode(c)
           Left("Your reset code is invalid. Please try again.")
         }
       }
@@ -78,7 +80,6 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
       case Some(u) => userDao.changePassword(u, Utils.sha256(newPassword, u.login))
       case None => logger.debug("User does not exist")
     }
-    invalidateResetCode(code)
   }
 
   private def invalidateResetCode(code: PasswordResetCode) {

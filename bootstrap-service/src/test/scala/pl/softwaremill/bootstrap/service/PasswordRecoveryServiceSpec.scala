@@ -103,6 +103,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
         assert(result.right.get)
         there was one(codeDao).load(code)
         there was one(userDao).changePassword(any[User], Matchers.eq(Utils.sha256(password, login)))
+        there was one(codeDao).delete(mockCode)
       }
     })
 
@@ -120,6 +121,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
 
         //Then
         assert(result.isLeft)
+        there was one(codeDao).delete(mockCode)
         there was no(userDao).changePassword(any[User], anyString)
       }
     })
