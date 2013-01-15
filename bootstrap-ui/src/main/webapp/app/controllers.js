@@ -79,6 +79,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
                 addEntryInProgress = false;
             });
         }
+        $('[name="message"]').focus();
     };
 
     $scope.deleteEntry = function (logEntryId) {
