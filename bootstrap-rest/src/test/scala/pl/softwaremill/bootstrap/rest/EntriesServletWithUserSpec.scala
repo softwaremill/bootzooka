@@ -83,6 +83,6 @@ class EntriesServletWithUser(entryService: EntryService, userService: UserServic
 
   override def isAuthenticated = true
 
-  override def user = new UserJson(login, Utils.sha256("password", login))
+  override def user = new UserJson(login, "kowalski@kowalski.net", Utils.sha256("password", login))
 
 }

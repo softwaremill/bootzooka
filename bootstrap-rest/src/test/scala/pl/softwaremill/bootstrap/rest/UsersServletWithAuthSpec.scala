@@ -50,7 +50,7 @@ class UserServletWithAuthSpec extends BootstrapServletSpec {
   def returnInformationAboutLoggedUser = onServletWithMocks(authenticated = true, testToExecute = (userService, mock) =>
     get("/") {
       status must_== 200
-      body mustEqual("{\"login\":\"Jas Kowalski\",\"token\":\"token\"}")
+      body mustEqual("{\"login\":\"Jas Kowalski\",\"email\":\"kowalski@kowalski.net\",\"token\":\"token\"}")
     }
   )
 
@@ -62,6 +62,6 @@ class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson
     mockedScentry
   }
 
-  override def user = new UserJson("Jas Kowalski", "token")
+  override def user = new UserJson("Jas Kowalski", "kowalski@kowalski.net", "token")
 
 }

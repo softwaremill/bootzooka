@@ -16,7 +16,7 @@ class RememberMeStrategySpec extends MutableScalatraSpec with Mockito {
     val httpResponse = mock[HttpServletResponse]
     val app = mock[EntriesServlet]
     val userService = mock[UserService]
-    val loggedUser: UserJson = UserJson("admin", "token")
+    val loggedUser: UserJson = UserJson("admin", "admin@admin.net", "token")
     userService.authenticateWithToken(loggedUser.token) returns Option(loggedUser)
 
     val rememberMe = true
