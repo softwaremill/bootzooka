@@ -207,3 +207,9 @@ services.factory("PasswordRecoveryService", function ($resource) {
 
     return passwordRecoveryService;
 });
+
+services.factory("ProfileService", function () {
+    var profileService = {};
+
+    return profileService;
+});

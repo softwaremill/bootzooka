@@ -260,3 +260,7 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
         $location.path("recover-lost-password");
     };
 });
+
+controllers.controller("ProfileController", function ProfileController($scope, UserSessionService) {
+    $scope.user = UserSessionService.loggedUser;
+});
