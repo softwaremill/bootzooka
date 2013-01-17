@@ -175,7 +175,7 @@ object SmlBootstrapBuild extends Build {
       appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },
       jasmineTestDir <+= sourceDirectory { src => src / "test" / "unit" },
       jasmineConfFile <+= sourceDirectory { src => src / "test" / "unit" / "test.dependencies.js" },
-      jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" / "require" / "require-2.0.6.js" },
+      jasmineRequireJsFile <+= sourceDirectory { src => src / "test" / "lib" / "require" / "require-2.0.6.js" },
       jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "unit" / "require.conf.js" },
       (test in Test) <<= (test in Test) dependsOn (jasmine))
   ) dependsOn (rest)
