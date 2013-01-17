@@ -4,10 +4,10 @@ import org.specs2.mutable.Specification
 import pl.softwaremill.bootstrap.dao.{InMemoryUserDAO, UserDAO}
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.service.data.UserJson
 import pl.softwaremill.bootstrap.service.schedulers.EmailSendingService
-import org.mockito.Matchers
 import pl.softwaremill.bootstrap.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
+import org.mockito.Matchers
+import pl.softwaremill.bootstrap.service.data.UserJson
 
 class UserServiceSpec extends Specification with Mockito {
 
@@ -23,7 +23,8 @@ class UserServiceSpec extends Specification with Mockito {
   val emailTemplatingEngine = mock[EmailTemplatingEngine]
   val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService, emailTemplatingEngine)
 
-  "findByEmail" should { // this test is silly :\
+  "findByEmail" should {
+    // this test is silly :\
     "return user for admin@sml.pl" in {
       val user: UserJson = userService.findByEmail("admin@sml.com").getOrElse(null)
 
@@ -109,6 +110,38 @@ class UserServiceSpec extends Specification with Mockito {
         .scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
     }
 
+  }
+
+  "changeEmail" should {
+    val userDAO: UserDAO = prepareUserDAOMock
+    val userService = new UserService(userDAO, registrationDataValidator, emailSendingService, emailTemplatingEngine)
+
+    "change email for specified user" in {
+      val user = userDAO.findByLowerCasedLogin("admin")
+      val userId = user.get._id.toString
+      val newEmail = "new@email.com"
+      userService.changeEmail(userId, newEmail)
+      userDAO.findByEmail(newEmail) match {
+        case Some(cu) => success
+        case None => failure("User not found. Maybe e-mail wasn't really changed?")
+      }
+    }
+  }
+
+  "changeLogin" should {
+    val userDAO: UserDAO = prepareUserDAOMock
+    val userService = new UserService(userDAO, registrationDataValidator, emailSendingService, emailTemplatingEngine)
+
+    "change login for specified user" in {
+      val user = userDAO.findByLowerCasedLogin("admin")
+      val userId = user.get._id.toString
+      val newLogin = "newadmin"
+      userService.changeLogin(userId, newLogin)
+      userDAO.findByLowerCasedLogin(newLogin) match {
+        case Some(cu) => success
+        case None => failure("User not found. Maybe login wasn't really changed?")
+      }
+    }
   }
 
 }

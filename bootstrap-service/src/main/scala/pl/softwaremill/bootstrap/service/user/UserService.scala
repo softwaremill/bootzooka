@@ -8,7 +8,7 @@ import pl.softwaremill.bootstrap.service.schedulers.EmailScheduler
 import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
-    emailTemplatingEngine: EmailTemplatingEngine) {
+                  emailTemplatingEngine: EmailTemplatingEngine) {
 
   def load(userId: String) = {
     UserJson(userDAO.load(userId))
@@ -67,6 +67,14 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     findByEmail(userEmail) foreach (_ => messageEither = Left("E-mail already in use!"))
 
     messageEither
+  }
+
+  def changeLogin(userId: String, newLogin: String) {
+    userDAO.changeLogin(userId, newLogin)
+  }
+
+  def changeEmail(userId: String, newEmail: String) {
+    userDAO.changeEmail(userId, newEmail)
   }
 
 }
