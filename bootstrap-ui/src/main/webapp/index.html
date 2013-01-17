@@ -60,7 +60,7 @@
                     <ul class="nav pull-right" ng-controller="EntriesController">
                         <li ng-show="isNotLogged()"><a href="#/register">Register</a></li>
                         <li ng-show="isNotLogged()"><a href="#/login">Login</a></li>
-                        <li ng-show="isLogged()" class="user-info-dashboard">Logged as {{getLoggedUserName()}}</li>
+                        <li ng-show="isLogged()"><a href="#/profile">Logged in as {{getLoggedUserName()}}</a></li>
                         <li ng-show="isLogged()"><a href ng-click="logout();">Logout</a></li>
                     </ul>
                 </div>
