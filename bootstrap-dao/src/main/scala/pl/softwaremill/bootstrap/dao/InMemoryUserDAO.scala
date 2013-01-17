@@ -31,7 +31,7 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def findByEmail(email: String): Option[User] = {
-    users.find(user => user.email == email.toLowerCase)
+    users.find(user => user.email.toLowerCase == email.toLowerCase)
   }
 
   def findByLowerCasedLogin(login: String): Option[User] = {
@@ -39,7 +39,7 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def findByLoginOrEmail(loginOrEmail: String): Option[User] = {
-    users.find(user => user.email == loginOrEmail.toLowerCase) match {
+    users.find(user => user.email.toLowerCase == loginOrEmail.toLowerCase) match {
       case Some(user) => Option(user)
       case _ => users.find(user => user.loginLowerCased == loginOrEmail.toLowerCase)
     }
@@ -62,5 +62,23 @@ class InMemoryUserDAO extends UserDAO {
     val modifiedUser = user.copy(password = password, token = password)
     val userIndex: Int = users.indexOf(user)
     users = users.take(userIndex) ::: List(modifiedUser) ::: users.drop(userIndex + 1)
+  }
+
+  def changeLogin(userId: String, login: String) {
+    load(userId) match {
+      case Some(user) => {
+        users = users.updated(users.indexOf(user), user.copy(login = login, loginLowerCased = login.toLowerCase))
+      }
+      case _ =>
+    }
+  }
+
+  def changeEmail(userId: String, email: String) {
+    load(userId) match {
+      case Some(user) => {
+        users = users.updated(users.indexOf(user), user.copy(email = email))
+      }
+      case _ =>
+    }
   }
 }

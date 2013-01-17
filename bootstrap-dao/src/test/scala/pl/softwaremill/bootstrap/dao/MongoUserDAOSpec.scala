@@ -13,20 +13,20 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
     step({
       userDAO = new MongoUserDAO()
 
-      for(i <- 1 to 3) {
+      for (i <- 1 to 3) {
         val login = "user" + i
         val password: String = "pass" + 1
-        userDAO.add(User(login, i +"email@sml.com", Utils.sha256(password, login.toLowerCase),
+        userDAO.add(User(login, i + "email@sml.com", Utils.sha256(password, login.toLowerCase),
           Utils.sha256(password, login.toLowerCase)))
       }
     })
 
     "load all users" in {
-      assert(userDAO.loadAll.size === 3)
+      userDAO.loadAll.size === 3
     }
 
     "count all users" in {
-      assert(userDAO.countItems() === 3)
+      userDAO.countItems() === 3
     }
 
     "add new user" in {
@@ -40,7 +40,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
         Utils.sha256("pass", login.toLowerCase)))
 
       // Then
-      assert(userDAO.countItems() - numberOfUsersBefore === 1)
+      userDAO.countItems() - numberOfUsersBefore === 1
     }
 
 
@@ -51,7 +51,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // When
       userDAO.add(User(login, email, Utils.sha256("pass", login.toLowerCase),
-        Utils.sha256("pass", login.toLowerCase))) should(throwA[Exception])(message = "User with given e-mail or login already exists")
+        Utils.sha256("pass", login.toLowerCase))) should (throwA[Exception])(message = "User with given e-mail or login already exists")
     }
 
     "throw exception when trying to add user with existing email" in {
@@ -61,7 +61,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // When
       userDAO.add(User(login, email, Utils.sha256("pass", login.toLowerCase),
-        Utils.sha256("pass", login.toLowerCase))) should(throwA[Exception])(message = "User with given e-mail or login already exists")
+        Utils.sha256("pass", login.toLowerCase))) should (throwA[Exception])(message = "User with given e-mail or login already exists")
     }
 
     "remove user" in {
@@ -73,7 +73,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       userOpt.foreach(u => userDAO.remove(u._id.toString))
 
       // Then
-      assert(userDAO.countItems() - numberOfUsersBefore === -1)
+      userDAO.countItems() - numberOfUsersBefore === -1
     }
 
     "find by email" in {
@@ -85,7 +85,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.email.equals(email) === true)
+        case Some(u) => u.email.equals(email) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -99,7 +99,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.email.equalsIgnoreCase(email) === true)
+        case Some(u) => u.email.equalsIgnoreCase(email) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -113,7 +113,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.login.equals(login) === true)
+        case Some(u) => u.login.equals(login) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -127,7 +127,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.login.equalsIgnoreCase(login) === true)
+        case Some(u) => u.login.equalsIgnoreCase(login) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -141,7 +141,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.login.equalsIgnoreCase(login) === true)
+        case Some(u) => u.login.equalsIgnoreCase(login) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -155,7 +155,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.login.equalsIgnoreCase(login) === true)
+        case Some(u) => u.login.equalsIgnoreCase(login) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -169,7 +169,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.email.equalsIgnoreCase(email) === true)
+        case Some(u) => u.email.equalsIgnoreCase(email) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -183,7 +183,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.email.equalsIgnoreCase(email) === true)
+        case Some(u) => u.email.equalsIgnoreCase(email) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -197,7 +197,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.token.equals(token) === true)
+        case Some(u) => u.token.equals(token) === true
         case _ => failure("User option should be defined")
       }
     }
@@ -210,7 +210,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val userOpt: Option[User] = userDAO.findByToken(token)
 
       // Then
-      assert(userOpt.isEmpty === true)
+      userOpt.isEmpty === true
     }
 
     "should find by login and password" in {
@@ -223,7 +223,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.login.equalsIgnoreCase(login))
+        case Some(u) => u.login.equalsIgnoreCase(login)
         case _ => failure("User option should be defined")
       }
     }
@@ -237,7 +237,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       // Then
       userOpt match {
-        case Some(u) => assert(u.login.equalsIgnoreCase(login))
+        case Some(u) => u.login.equalsIgnoreCase(login)
         case _ => failure("User option should be defined")
       }
     }
@@ -250,23 +250,54 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val userOpt: Option[User] = userDAO.findByLoginAndEncryptedPassword(login, Utils.sha256("invalid", login))
 
       // Then
-      assert(userOpt.isEmpty === true)
+      userOpt.isEmpty === true
     }
 
     "change password" in {
-        val login = "user1"
-        val password = Utils.sha256("newPassword", login)
-        val user = userDAO.findByLoginOrEmail(login).get
-        userDAO.changePassword(user, password)
-        val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
-        postModifyUserOpt foreach(u => {
-          assert(u.password === password)
-          assert(u.login === user.login)
-          assert(u.email === user.email)
-          assert(u._id === user._id)
-        })
+      val login = "user1"
+      val password = Utils.sha256("newPassword", login)
+      val user = userDAO.findByLoginOrEmail(login).get
+      userDAO.changePassword(user, password)
+      val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
+      val u = postModifyUserOpt.get
+      u.password === password and
+        u.login === user.login and
+        u.email === user.email and
+        u._id === user._id
     }
 
-  }
+    "change login" in {
+      val user = userDAO.findByLowerCasedLogin("user1")
+      val u = user.get
+      val newLogin: String = "changedUser1"
+      userDAO.changeLogin(u._id.toString, newLogin)
+      val postModifyUser = userDAO.findByLowerCasedLogin(newLogin)
+      postModifyUser match {
+        case Some(pmu) => {
+          pmu._id === u._id and
+            pmu.login === newLogin and
+            pmu.email === u.email and
+            pmu.password === u.password and
+            pmu.token === u.token
+        }
+        case None => failure("Changed user was not found. Maybe login wasn't really changed?")
+      }
+    }
 
+    "change email" in {
+      val newEmail = "newmail@sml.pl"
+      val user = userDAO.findByEmail("1email@sml.com")
+      val u = user.get
+      userDAO.changeEmail(u._id.toString, newEmail)
+      userDAO.findByEmail(newEmail) match {
+        case Some(cu) => {
+          cu._id === u._id and
+            cu.login === u.login and
+            cu.password === u.password and
+            cu.token === u.token
+        }
+        case None => failure("User couldn't be found. Maybe e-mail wasn't really changed?")
+      }
+    }
+  }
 }
