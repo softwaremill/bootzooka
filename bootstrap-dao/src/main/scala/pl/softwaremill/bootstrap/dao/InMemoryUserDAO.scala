@@ -39,9 +39,9 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def findByLoginOrEmail(loginOrEmail: String): Option[User] = {
-    users.find(user => user.email.toLowerCase == loginOrEmail.toLowerCase) match {
+    findByEmail(loginOrEmail) match {
       case Some(user) => Option(user)
-      case _ => users.find(user => user.loginLowerCased == loginOrEmail.toLowerCase)
+      case _ => findByLowerCasedLogin(loginOrEmail)
     }
   }
 
