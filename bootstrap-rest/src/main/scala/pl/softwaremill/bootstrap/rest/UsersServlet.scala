@@ -5,6 +5,8 @@ import pl.softwaremill.bootstrap.common.JsonWrapper
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.data.UserJson
 import org.apache.commons.lang3.StringEscapeUtils._
+import pl.softwaremill.common.util.ObjectUtil
+import org.apache.commons.lang3.StringUtils
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
 
@@ -67,6 +69,20 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
 
   override def rememberMe: Boolean = {
     (parsedBody \ "rememberme").extractOpt[Boolean].getOrElse(false)
+  }
+
+  def email: String = {
+    (parsedBody \ "email").extractOpt[String].getOrElse("")
+  }
+
+  patch("/") {
+    haltIfNotAuthenticated()
+    if(!login.isEmpty) {
+      userService.changeLogin(user.login, login)
+    }
+    if(!email.isEmpty) {
+      userService.changeEmail(user.email, email)
+    }
   }
 
 }
