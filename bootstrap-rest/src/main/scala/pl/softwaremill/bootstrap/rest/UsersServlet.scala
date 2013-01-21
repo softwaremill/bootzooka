@@ -5,8 +5,6 @@ import pl.softwaremill.bootstrap.common.JsonWrapper
 import pl.softwaremill.bootstrap.service.user.UserService
 import pl.softwaremill.bootstrap.service.data.UserJson
 import org.apache.commons.lang3.StringEscapeUtils._
-import pl.softwaremill.common.util.ObjectUtil
-import org.apache.commons.lang3.StringUtils
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
 
