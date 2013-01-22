@@ -263,4 +263,8 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
 
 controllers.controller("ProfileController", function ProfileController($scope, UserSessionService) {
     $scope.user = UserSessionService.loggedUser;
+
+    $scope.notify = function() {
+        alert("bsBlur!");
+    }
 });

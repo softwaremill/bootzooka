@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters', 'smlBootstrap.controllers', 'ngSanitize', 'ajaxthrobber'])
+angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters', 'smlBootstrap.controllers', 'smlBootstrap.directives', 'ngSanitize', 'ajaxthrobber'])
 
     .config(function ($routeProvider) {
 
