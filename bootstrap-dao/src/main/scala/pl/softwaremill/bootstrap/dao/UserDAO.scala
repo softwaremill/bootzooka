@@ -33,8 +33,8 @@ trait UserDAO {
 
   def changePassword(user: User, password: String)
 
-  def changeLogin(userId: String, login: String)
+  def changeLogin(currentLogin: String, newLogin: String)
 
-  def changeEmail(userId: String, email: String)
+  def changeEmail(currentEmail: String, newEmail: String)
 
 }

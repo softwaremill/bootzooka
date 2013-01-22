@@ -270,7 +270,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val user = userDAO.findByLowerCasedLogin("user1")
       val u = user.get
       val newLogin: String = "changedUser1"
-      userDAO.changeLogin(u._id.toString, newLogin)
+      userDAO.changeLogin(u.login, newLogin)
       val postModifyUser = userDAO.findByLowerCasedLogin(newLogin)
       postModifyUser match {
         case Some(pmu) => {
@@ -288,7 +288,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val newEmail = "newmail@sml.pl"
       val user = userDAO.findByEmail("1email@sml.com")
       val u = user.get
-      userDAO.changeEmail(u._id.toString, newEmail)
+      userDAO.changeEmail(u.email, newEmail)
       userDAO.findByEmail(newEmail) match {
         case Some(cu) => {
           (cu._id must be equalTo u._id) and

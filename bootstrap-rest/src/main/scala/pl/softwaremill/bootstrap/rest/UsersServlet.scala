@@ -75,11 +75,14 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
 
   patch("/") {
     haltIfNotAuthenticated()
+    logger.debug("Updating user profile")
     if(!login.isEmpty) {
+      logger.debug("Updating login: " + user.login + "->" + login)
       userService.changeLogin(user.login, login)
     }
     if(!email.isEmpty) {
-      userService.changeEmail(user.email, email)
+      logger.debug("Updating email: " + user.email + "->" + email)
+      userService.changeEmail(user.email, email.toLowerCase)
     }
   }
 

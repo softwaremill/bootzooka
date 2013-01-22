@@ -20,7 +20,7 @@ class InMemoryUserDAOSpec extends Specification with BeforeExample {
 
     "change login of existing user" in {
       val newLogin = "newLogin"
-      dao.changeLogin(user._id.toString, newLogin)
+      dao.changeLogin(user.login, newLogin)
       dao.findByLowerCasedLogin(newLogin) match {
         case Some(cu) => {
           cu._id === user._id and
@@ -36,7 +36,7 @@ class InMemoryUserDAOSpec extends Specification with BeforeExample {
 
     "change email of existing user" in {
       val newEmail = "newEmail"
-      dao.changeEmail(user._id.toString, newEmail)
+      dao.changeEmail(user.email, newEmail)
       dao.findByEmail(newEmail) match {
         case Some(cu) => {
           cu._id === user._id and

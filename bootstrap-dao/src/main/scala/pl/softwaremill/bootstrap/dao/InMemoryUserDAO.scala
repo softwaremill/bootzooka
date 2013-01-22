@@ -64,19 +64,19 @@ class InMemoryUserDAO extends UserDAO {
     users = users.take(userIndex) ::: List(modifiedUser) ::: users.drop(userIndex + 1)
   }
 
-  def changeLogin(userId: String, login: String) {
-    load(userId) match {
+  def changeLogin(currentLogin: String, newLogin: String) {
+    findByLowerCasedLogin(currentLogin) match {
       case Some(user) => {
-        users = users.updated(users.indexOf(user), user.copy(login = login, loginLowerCased = login.toLowerCase))
+        users = users.updated(users.indexOf(user), user.copy(login = newLogin, loginLowerCased = newLogin.toLowerCase))
       }
       case _ =>
     }
   }
 
-  def changeEmail(userId: String, email: String) {
-    load(userId) match {
+  def changeEmail(currentEmail: String, newEmail: String) {
+    findByEmail(currentEmail) match {
       case Some(user) => {
-        users = users.updated(users.indexOf(user), user.copy(email = email))
+        users = users.updated(users.indexOf(user), user.copy(email = newEmail))
       }
       case _ =>
     }

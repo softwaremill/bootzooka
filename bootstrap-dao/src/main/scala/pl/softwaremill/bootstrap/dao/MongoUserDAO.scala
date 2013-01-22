@@ -56,11 +56,11 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
     update(MongoDBObject("_id" -> user._id), user.copy(password = password, token = password), false, false, WriteConcern.Safe)
   }
 
-  def changeLogin(userId: String, login: String) {
-    update(MongoDBObject("_id" -> new ObjectId(userId)), $set("login" -> login, "loginLowerCased" -> login.toLowerCase), wc = WriteConcern.Safe)
+  def changeLogin(currentLogin: String, newLogin: String) {
+    update(MongoDBObject("login" -> currentLogin), $set("login" -> newLogin, "loginLowerCased" -> newLogin.toLowerCase), wc = WriteConcern.Safe)
   }
 
-  def changeEmail(userId: String, email: String) {
-    update(MongoDBObject("_id" -> new ObjectId(userId)), $set("email" -> email), wc = WriteConcern.Safe)
+  def changeEmail(currentEmail: String, newEmail: String) {
+    update(MongoDBObject("email" -> currentEmail), $set("email" -> newEmail), wc = WriteConcern.Safe)
   }
 }

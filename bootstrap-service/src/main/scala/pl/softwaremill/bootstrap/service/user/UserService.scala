@@ -69,12 +69,12 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     messageEither
   }
 
-  def changeLogin(userId: String, newLogin: String) {
-    userDAO.changeLogin(userId, newLogin)
+  def changeLogin(currentLogin: String, newLogin: String) {
+    userDAO.changeLogin(currentLogin, newLogin)
   }
 
-  def changeEmail(userId: String, newEmail: String) {
-    userDAO.changeEmail(userId, newEmail)
+  def changeEmail(currentEmail: String, newEmail: String) {
+    userDAO.changeEmail(currentEmail, newEmail)
   }
 
 }
