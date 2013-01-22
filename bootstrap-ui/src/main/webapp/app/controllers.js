@@ -261,10 +261,25 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
     };
 });
 
-controllers.controller("ProfileController", function ProfileController($scope, UserSessionService) {
+controllers.controller("ProfileController", function ProfileController($scope, UserSessionService, ProfileService) {
     $scope.user = UserSessionService.loggedUser;
+    this.origEmail = UserSessionService.loggedUser.email;
 
-    $scope.notify = function() {
-        alert("bsBlur!");
-    }
+    var self = this;
+
+    $scope.changeLogin = function () {
+        ProfileService.changeLogin($scope.user.login, function () {
+            console.log("User data changed: login");
+        });
+    };
+
+    $scope.changeEmail = function () {
+        if ($scope.profileForm.email.$dirty && self.origEmail != $scope.user.email) {
+            ProfileService.changeEmail($scope.user.email, function () {
+                self.origEmail = $scope.user.email;
+                UserSessionService.loggedUser.email = $scope.user.email;
+                console.log("User data changed: email");
+            });
+        }
+    };
 });

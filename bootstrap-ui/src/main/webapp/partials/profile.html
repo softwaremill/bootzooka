@@ -1,20 +1,23 @@
 <div class="row">
     <div class="offset3 span6">
-        <div class="row form-horizontal">
-            <div class="control-group">
-                <label class="control-label" for="login">Login</label>
+        <div class="row">
+            <form name="profileForm" class="form-horizontal" onsubmit="return false;">
 
-                <div class="controls">
-                    <input type="text" id="login" name="login" ng-model="user.login" bs-blur="notify()">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="email">E-Mail</label>
+                <div class="control-group">
+                    <label class="control-label" for="login">Login</label>
 
-                <div class="controls">
-                    <input type="email" id="email" name="email" ng-model="user.email">
+                    <div class="controls">
+                        <input type="text" id="login" name="login" ng-model="user.login" bs-blur="changeLogin()" disabled>
+                    </div>
                 </div>
-            </div>
+                <div class="control-group">
+                    <label class="control-label" for="email">E-Mail</label>
+
+                    <div class="controls">
+                        <input type="email" id="email" name="email" ng-model="user.email" bs-blur="changeEmail()">
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

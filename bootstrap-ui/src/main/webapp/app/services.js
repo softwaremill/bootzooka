@@ -208,8 +208,31 @@ services.factory("PasswordRecoveryService", function ($resource) {
     return passwordRecoveryService;
 });
 
-services.factory("ProfileService", function () {
+services.factory("ProfileService", function ($resource) {
     var profileService = {};
+
+    this.profileResource = $resource("rest/users", {}, {
+        'changeLogin': {method: 'PATCH'},
+        'changeEmail': {method: 'PATCH'}
+    });
+
+    var self = this;
+
+    profileService.changeLogin = function(newLogin, onSuccess) {
+        self.profileResource.changeLogin({login: newLogin}, function(result) {
+            onSuccess();
+        }, function(error) {
+            console.log(error);
+        });
+    };
+
+    profileService.changeEmail = function(newEmail, onSuccess) {
+        self.profileResource.changeEmail({email: newEmail}, function(result) {
+            onSuccess();
+        }, function(error) {
+            console.log(error);
+        });
+    };
 
     return profileService;
 });
