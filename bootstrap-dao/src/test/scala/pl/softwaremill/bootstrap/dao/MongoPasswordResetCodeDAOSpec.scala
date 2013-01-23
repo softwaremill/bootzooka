@@ -2,7 +2,6 @@ package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.PasswordResetCode
 import org.bson.types.ObjectId
-import org.joda.time.DateTime
 
 /**
  * Specification for [[pl.softwaremill.bootstrap.dao.MongoPasswordResetCodeDAO]]
@@ -50,9 +49,9 @@ class MongoPasswordResetCodeDAOSpec extends SpecificationWithMongo {
       dao.delete(code1)
 
       //Then
-      assert(dao.count() - count === 1)
-      assert(dao.load("code1").isEmpty)
-      assert(dao.load("code2").isDefined)
+      (dao.count() - count === 1).and
+        (dao.load("code1") must be none) and
+        (dao.load("code2") must be some)
     }
   }
 }

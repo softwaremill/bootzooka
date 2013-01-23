@@ -53,9 +53,9 @@ class InMemoryPasswordResetCodeDAOSpec extends Specification {
       dao.delete(code1)
 
       //Then
-      assert(dao.count === 1)
-      assert(dao.load("code1").isEmpty)
-      assert(dao.load("code2").isDefined)
+      (dao.count === 1) and
+      (dao.load("code1") must be none) and
+      (dao.load("code2") must be some)
     }
 
   }
