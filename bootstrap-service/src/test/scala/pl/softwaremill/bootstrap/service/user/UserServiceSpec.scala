@@ -118,9 +118,9 @@ class UserServiceSpec extends Specification with Mockito {
 
     "change email for specified user" in {
       val user = userDAO.findByLowerCasedLogin("admin")
-      val userId = user.get._id.toString
+      val userEmail = user.get.email
       val newEmail = "new@email.com"
-      userService.changeEmail(userId, newEmail)
+      userService.changeEmail(userEmail, newEmail)
       userDAO.findByEmail(newEmail) match {
         case Some(cu) => success
         case None => failure("User not found. Maybe e-mail wasn't really changed?")
@@ -134,9 +134,9 @@ class UserServiceSpec extends Specification with Mockito {
 
     "change login for specified user" in {
       val user = userDAO.findByLowerCasedLogin("admin")
-      val userId = user.get._id.toString
+      val userLogin = user.get.login
       val newLogin = "newadmin"
-      userService.changeLogin(userId, newLogin)
+      userService.changeLogin(userLogin, newLogin)
       userDAO.findByLowerCasedLogin(newLogin) match {
         case Some(cu) => success
         case None => failure("User not found. Maybe login wasn't really changed?")
