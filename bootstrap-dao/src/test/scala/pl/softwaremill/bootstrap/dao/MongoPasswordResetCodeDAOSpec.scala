@@ -49,7 +49,7 @@ class MongoPasswordResetCodeDAOSpec extends SpecificationWithMongo {
       dao.delete(code1)
 
       //Then
-      (dao.count() - count === 1).and
+      (dao.count() - count === 1) and
         (dao.load("code1") must be none) and
         (dao.load("code2") must be some)
     }
