@@ -8,6 +8,7 @@ import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat.dao.SalatDAO
 import com.mongodb.casbah.query.Imports.ConcreteDBObjectOk
 import com.mongodb.casbah.commons.TypeImports.ObjectId
+import com.novus.salat.global._
 
 class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId](mongo("users")) with UserDAO {
 
