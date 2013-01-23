@@ -2,12 +2,10 @@ package pl.softwaremill.bootstrap.rest
 
 import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
-import pl.softwaremill.bootstrap.dao.{InMemoryUserDAO, UserDAO}
+import pl.softwaremill.bootstrap.dao.InMemoryUserDAO
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.BootstrapServletSpec
 import org.json4s.JsonDSL._
-import com.mongodb.casbah.Imports._
-import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
 import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 import org.mockito.Matchers
@@ -33,7 +31,7 @@ class UsersServletSpec extends BootstrapServletSpec {
 
   def onServletWithMocks(testToExecute: (UserService) => MatchResult[Any]): MatchResult[Any] = {
     val dao = new InMemoryUserDAO
-    dao.add(User("Admin", "admin@sml.com", Utils.sha256("pass", "admin")))
+    dao.add(User("Admin", "admin@sml.com", "pass", "salt"))
 
     val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService(), new EmailTemplatingEngine))
 

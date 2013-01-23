@@ -1,7 +1,6 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.common.Utils
 
 class InMemoryUserDAO extends UserDAO {
 
@@ -46,16 +45,7 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def findByToken(token: String): Option[User] = {
-    users.find(user => user.token == Utils.sha256(user.password, token))
-  }
-
-  def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String): Option[User] = {
-    users.find(user => user.loginLowerCased == login.toLowerCase) match {
-      case Some(user) => user.password == encryptedPassword match {
-        case true => Some(user)
-      }
-      case _ => None
-    }
+    users.find(user => user.token == token)
   }
 
   def changePassword(user: User, password: String) {
