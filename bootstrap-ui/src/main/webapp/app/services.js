@@ -226,11 +226,12 @@ services.factory("ProfileService", function ($resource) {
         });
     };
 
-    profileService.changeEmail = function(newEmail, onSuccess) {
+    profileService.changeEmail = function(newEmail, onSuccess, onError) {
         self.profileResource.changeEmail({email: newEmail}, function(result) {
             onSuccess();
         }, function(error) {
             console.log(error);
+            onError(error);
         });
     };
 

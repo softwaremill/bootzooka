@@ -278,8 +278,20 @@ controllers.controller("ProfileController", function ProfileController($scope, U
             ProfileService.changeEmail($scope.user.email, function () {
                 self.origEmail = $scope.user.email;
                 UserSessionService.loggedUser.email = $scope.user.email;
-                console.log("User data changed: email");
+                self.showEmailSavedNotification();
+                $scope.profileForm.email.$dirty = false;
+                $scope.profileForm.email.$pristine = true;
+            }, function(error) {
+                self.showEmailNotSavedNotification();
             });
         }
+    };
+
+    this.showEmailSavedNotification = function() {
+        showInfoMessage("Email saved!");
+    };
+
+    this.showEmailNotSavedNotification = function() {
+        showErrorMessage("Email not saved, try again.");
     };
 });
