@@ -69,11 +69,17 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def changeLogin(currentLogin: String, newLogin: String) {
-    userDAO.changeLogin(currentLogin, newLogin)
+    findByLogin(newLogin) match {
+      case Some(u) => throw new IllegalArgumentException("Login is already taken")
+      case None => userDAO.changeLogin(currentLogin, newLogin)
+    }
   }
 
   def changeEmail(currentEmail: String, newEmail: String) {
-    userDAO.changeEmail(currentEmail, newEmail)
+    findByEmail(newEmail) match {
+      case Some(u) => throw new IllegalArgumentException("E-mail used by another user")
+      case None => userDAO.changeEmail(currentEmail, newEmail)
+    }
   }
 
 }

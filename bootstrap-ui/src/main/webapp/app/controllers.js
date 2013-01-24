@@ -275,7 +275,8 @@ controllers.controller("ProfileController", function ProfileController($scope, U
             $scope.profileForm.login.$dirty = false;
             $scope.profileForm.login.$pristine = true;
         }, function(error) {
-            showErrorMessage("Login not changed, try again.");
+            console.log("ProfileController.changeLogin.error: " + error);
+            showErrorMessage(error.value);
         });
     };
 
@@ -288,7 +289,8 @@ controllers.controller("ProfileController", function ProfileController($scope, U
                 $scope.profileForm.email.$dirty = false;
                 $scope.profileForm.email.$pristine = true;
             }, function(error) {
-                showErrorMessage("Email not changed, try again.");
+                console.log("ProfileController.changeEmail.error: " + error);
+                showErrorMessage(error.value);
             });
         }
     };

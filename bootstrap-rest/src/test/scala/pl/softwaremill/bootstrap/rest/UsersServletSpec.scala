@@ -20,10 +20,12 @@ class UsersServletSpec extends BootstrapServletSpec {
     "PATCH should not update login when not in request" ! shouldNotUpdateLoginWhenNoLoginPresent ^
     "PATCH should not update login when login is blank" ! shouldNotUpdateLoginWhenBlankLoginIsSent ^
     "PATCH should not update login when user is not authenticated" ! shouldNotUpdateLoginForUnauthenticatedUser ^
+    "PATCH should not update login when already used by another user" ! shouldNotUpdateLoginWhenLoginIsAlreadyTaken ^
     "PATCH should update email when email is given" ! shouldUpdateEmailWhenPresent ^
     "PATCH should not update email when not in request" ! shouldNotUpdateEmailWhenNoEmailPresent ^
-    "PATCH should not update email when email is blank" ! shouldNotUpdateEmailWhenBlankEmailIsSent
-    "PATCH should not update email when user in not authenticated" ! shouldNotUpdateEmailForUnauthenticatedUser
+    "PATCH should not update email when email is blank" ! shouldNotUpdateEmailWhenBlankEmailIsSent ^
+    "PATCH should not update email when user in not authenticated" ! shouldNotUpdateEmailForUnauthenticatedUser ^
+    "PATCH should not update email when it's used by another user" ! shouldNotUpdateEmailWhenAlreadyUsed
 
   end
 
@@ -32,6 +34,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   def onServletWithMocks(testToExecute: (UserService) => MatchResult[Any]): MatchResult[Any] = {
     val dao = new InMemoryUserDAO
     dao.add(User("Admin", "admin@sml.com", "pass", "salt"))
+    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt"))
 
     val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService(), new EmailTemplatingEngine))
 
@@ -100,6 +103,20 @@ class UsersServletSpec extends BootstrapServletSpec {
     }
   })
 
+  def shouldNotUpdateEmailWhenAlreadyUsed = onServletWithMocks(userService => {
+    session {
+      //authenticate to perform change
+      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+        status must be equalTo 200
+      }
+      patch("/", mapToJson(Map("email" -> "admin2@sml.com")), defaultJsonHeaders) {
+        val opt = (stringToJson(body) \ "value").extractOpt[String]
+        status must be equalTo (403)
+        opt must be some ("E-mail used by another user")
+      }
+    }
+  })
+
   def shouldNotUpdateLoginWhenNoLoginPresent = onServletWithMocks(userService => {
     patch("/", mapToJson(Map("irrelevant" -> "")), defaultJsonHeaders) {
       there was no(userService).changeLogin(anyString, anyString)
@@ -130,6 +147,20 @@ class UsersServletSpec extends BootstrapServletSpec {
   def shouldNotUpdateLoginForUnauthenticatedUser = onServletWithMocks(userService => {
     patch("/", mapToJson(Map("login" -> "admin")), defaultJsonHeaders) {
       status must be equalTo 401
+    }
+  })
+
+  def shouldNotUpdateLoginWhenLoginIsAlreadyTaken = onServletWithMocks(userService => {
+    session {
+      //authenticate to perform change
+      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+        status must be equalTo 200
+      }
+      patch("/", mapToJson(Map("login" -> "admin2")), defaultJsonHeaders) {
+        val opt = (stringToJson(body) \ "value").extractOpt[String]
+        status must be equalTo 403
+        opt must be some ("Login is already taken")
+      }
     }
   })
 

@@ -218,11 +218,11 @@ services.factory("ProfileService", function ($resource) {
 
     var self = this;
 
-    profileService.changeLogin = function(newLogin, onSuccess) {
+    profileService.changeLogin = function(newLogin, onSuccess, onError) {
         self.profileResource.changeLogin({login: newLogin}, function(result) {
             onSuccess();
         }, function(error) {
-            console.log(error);
+            onError(error.data);
         });
     };
 
@@ -230,8 +230,7 @@ services.factory("ProfileService", function ($resource) {
         self.profileResource.changeEmail({email: newEmail}, function(result) {
             onSuccess();
         }, function(error) {
-            console.log(error);
-            onError(error);
+            onError(error.data);
         });
     };
 

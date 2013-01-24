@@ -126,6 +126,10 @@ class UserServiceSpec extends Specification with Mockito {
         case None => failure("User not found. Maybe e-mail wasn't really changed?")
       }
     }
+
+    "not change email if already used by someone else" in {
+       userService.changeEmail("admin@sml.com", "admin2@sml.com") should throwA[IllegalArgumentException]("E-mail used by another user")
+    }
   }
 
   "changeLogin" should {
@@ -141,6 +145,10 @@ class UserServiceSpec extends Specification with Mockito {
         case Some(cu) => success
         case None => failure("User not found. Maybe login wasn't really changed?")
       }
+    }
+
+    "not change login if already used by someone else" in {
+      userService.changeLogin("admin", "admin2") should throwA[IllegalArgumentException]("Login is already taken")
     }
   }
 

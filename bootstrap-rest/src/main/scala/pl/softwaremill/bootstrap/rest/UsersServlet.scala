@@ -24,7 +24,8 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   }
 
   get("/logout") {
-    if (isAuthenticated) { // call logout only when logged in to avoid NPE
+    if (isAuthenticated) {
+      // call logout only when logged in to avoid NPE
       logOut()
     }
   }
@@ -76,13 +77,18 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   patch("/") {
     haltIfNotAuthenticated()
     logger.debug("Updating user profile")
-    if(!login.isEmpty) {
-      logger.debug("Updating login: " + user.login + "->" + login)
-      userService.changeLogin(user.login, login)
+    try {
+      if (!login.isEmpty) {
+        logger.debug("Updating login: " + user.login + "->" + login)
+        userService.changeLogin(user.login, login)
+      }
+      if (!email.isEmpty) {
+        logger.debug("Updating email: " + user.email + "->" + email)
+        userService.changeEmail(user.email, email.toLowerCase)
+      }
     }
-    if(!email.isEmpty) {
-      logger.debug("Updating email: " + user.email + "->" + email)
-      userService.changeEmail(user.email, email.toLowerCase)
+    catch {
+      case e:IllegalArgumentException => halt(403, JsonWrapper(e.getMessage))
     }
   }
 
