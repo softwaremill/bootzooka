@@ -108,7 +108,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     };
 
     $scope.logout = function () {
-        UserSessionService.logout(function(data) {
+        UserSessionService.logout(function (data) {
             showInfoMessage("Logged out successfully");
             $location.path("/");
         });
@@ -262,36 +262,42 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
 });
 
 controllers.controller("ProfileController", function ProfileController($scope, UserSessionService, ProfileService) {
-    $scope.user = UserSessionService.loggedUser;
-    this.origEmail = UserSessionService.loggedUser.email;
+    $scope.login = UserSessionService.loggedUser.login.concat();
+    $scope.email = UserSessionService.loggedUser.email.concat();
 
     var self = this;
 
     $scope.changeLogin = function () {
-        ProfileService.changeLogin($scope.user.login, function () {
-            self.origLogin = $scope.user.login;
-            UserSessionService.loggedUser.login = $scope.user.login;
-            showInfoMessage("Login changed!");
-            $scope.profileForm.login.$dirty = false;
-            $scope.profileForm.login.$pristine = true;
-        }, function(error) {
-            console.log("ProfileController.changeLogin.error: " + error);
-            showErrorMessage(error.value);
-        });
-    };
-
-    $scope.changeEmail = function () {
-        if ($scope.profileForm.email.$dirty && self.origEmail != $scope.user.email) {
-            ProfileService.changeEmail($scope.user.email, function () {
-                self.origEmail = $scope.user.email;
-                UserSessionService.loggedUser.email = $scope.user.email;
-                showInfoMessage("Email changed!");
-                $scope.profileForm.email.$dirty = false;
-                $scope.profileForm.email.$pristine = true;
-            }, function(error) {
-                console.log("ProfileController.changeEmail.error: " + error);
+        if (self.canPerformLoginChange()) {
+            ProfileService.changeLogin($scope.login, function () {
+                UserSessionService.loggedUser.login = $scope.login.concat();
+                showInfoMessage("Login changed!");
+                $scope.profileForm.login.$dirty = false;
+                $scope.profileForm.login.$pristine = true;
+            }, function (error) {
                 showErrorMessage(error.value);
             });
         }
     };
+
+    this.canPerformLoginChange = function () {
+        return $scope.profileForm.login.$dirty && $scope.login != UserSessionService.loggedUser.login && $scope.profileForm.login.$valid;
+    };
+
+    $scope.changeEmail = function () {
+        if (self.canPerformEmailChange()) {
+            ProfileService.changeEmail($scope.email, function () {
+                UserSessionService.loggedUser.email = $scope.email;
+                showInfoMessage("Email changed!");
+                $scope.profileForm.email.$dirty = false;
+                $scope.profileForm.email.$pristine = true;
+            }, function (error) {
+                showErrorMessage(error.value);
+            });
+        }
+    };
+
+    this.canPerformEmailChange = function () {
+        return $scope.profileForm.email.$dirty && $scope.email != UserSessionService.loggedUser.email && $scope.profileForm.email.$valid;
+    }
 });

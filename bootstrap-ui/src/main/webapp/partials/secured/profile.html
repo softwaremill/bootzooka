@@ -2,19 +2,22 @@
     <div class="offset3 span6">
         <div class="row">
             <form name="profileForm" class="form-horizontal" onsubmit="return false;">
-
                 <div class="control-group">
                     <label class="control-label" for="login">Login</label>
 
                     <div class="controls">
-                        <input type="text" id="login" name="login" ng-model="user.login" bs-blur="changeLogin()">
+                        <input type="text" id="login" name="login" ng-model="login" bs-blur="changeLogin()" ng-minlength="3" required>
+                        <span class="text-error" ng-show="profileForm.login.$error.required">Login is required</span>
+                        <span class="text-error" ng-show="profileForm.login.$error.minlength">At least three characters!</span>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="email">E-Mail</label>
 
                     <div class="controls">
-                        <input type="email" id="email" name="email" ng-model="user.email" bs-blur="changeEmail()">
+                        <input type="email" id="email" name="email" ng-model="email" bs-blur="changeEmail()" required>
+                        <span class="text-error" ng-show="profileForm.email.$error.required">E-mail is required</span>
+                        <span class="text-error" ng-show="profileForm.email.$error.email">It's not a valid email!</span>
                     </div>
                 </div>
             </form>
