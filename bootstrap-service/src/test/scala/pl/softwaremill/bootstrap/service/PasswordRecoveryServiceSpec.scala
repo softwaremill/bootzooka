@@ -8,7 +8,6 @@ import pl.softwaremill.bootstrap.domain.{PasswordResetCode, User}
 import org.specs2.specification.Fragment
 import templates.{EmailTemplatingEngine, EmailContentWithSubject}
 import org.mockito.Matchers
-import pl.softwaremill.bootstrap.common.Utils
 import org.bson.types.ObjectId
 import org.joda.time.DateTime
 
@@ -31,7 +30,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
 
   def prepareUserDaoMock = {
     val userDao = mock[InMemoryUserDAO]
-    userDao.findByLoginOrEmail(validLogin) returns Some(User(validLogin, "user@sml.pl", "pass"))
+    userDao.findByLoginOrEmail(validLogin) returns Some(User(validLogin, "user@sml.pl", "pass", "salt"))
     userDao.findByLoginOrEmail(invalidLogin) returns None
     userDao
   }
@@ -80,6 +79,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
         val login = "login"
         val userId = "id"
         val password = "password"
+        val salt = "salt"
         val mockUserId = mock[ObjectId]
         val mockCode = mock[PasswordResetCode]
         val mockUser = mock[User]
@@ -91,6 +91,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
 
         mockUser._id returns mockUserId
         mockUser.login returns login
+        mockUser.salt returns "salt"
 
         codeDao.load(code) returns (Some(mockCode))
         userDao.load(userId) returns (Some(mockUser))
@@ -102,7 +103,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
         assert(result.isRight)
         assert(result.right.get)
         there was one(codeDao).load(code)
-        there was one(userDao).changePassword(any[User], Matchers.eq(Utils.sha256(password, login)))
+        there was one(userDao).changePassword(any[User], Matchers.eq(User.encryptPassword(password, salt)))
         there was one(codeDao).delete(mockCode)
       }
     })

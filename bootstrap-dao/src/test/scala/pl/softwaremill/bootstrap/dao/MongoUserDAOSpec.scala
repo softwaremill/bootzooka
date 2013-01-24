@@ -1,7 +1,6 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.common.Utils
 import com.weiglewilczek.slf4s.Logging
 
 class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
@@ -15,9 +14,9 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
       for (i <- 1 to 3) {
         val login = "user" + i
-        val password: String = "pass" + 1
-        userDAO.add(User(login, i + "email@sml.com", Utils.sha256(password, login.toLowerCase),
-          Utils.sha256(password, login.toLowerCase)))
+        val password: String = "pass" + i
+        val salt = "salt" + i
+        userDAO.add(User(login, i + "email@sml.com", password, salt))
       }
     })
 
@@ -36,11 +35,10 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val email = "newemail@sml.com"
 
       // When
-      userDAO.add(User(login, email, Utils.sha256("pass", login.toLowerCase),
-        Utils.sha256("pass", login.toLowerCase)))
+      userDAO.add(User(login, email, "pass", "salt"))
 
       // Then
-      userDAO.countItems() - numberOfUsersBefore must be equalTo (1)
+      (userDAO.countItems() - numberOfUsersBefore) must be equalTo (1)
     }
 
 
@@ -50,8 +48,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val email = "anotherEmaill@sml.com"
 
       // When
-      userDAO.add(User(login, email, Utils.sha256("pass", login.toLowerCase),
-        Utils.sha256("pass", login.toLowerCase))) should (throwA[Exception])(message = "User with given e-mail or login already exists")
+      userDAO.add(User(login, email, "pass", "salt")) should (throwA[Exception])(message = "User with given e-mail or login already exists")
     }
 
     "throw exception when trying to add user with existing email" in {
@@ -60,8 +57,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val email = "newemail@sml.com"
 
       // When
-      userDAO.add(User(login, email, Utils.sha256("pass", login.toLowerCase),
-        Utils.sha256("pass", login.toLowerCase))) should (throwA[Exception])(message = "User with given e-mail or login already exists")
+      userDAO.add(User(login, email, "pass", "salt")) should (throwA[Exception])(message = "User with given e-mail or login already exists")
     }
 
     "remove user" in {
@@ -190,7 +186,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
     "find by token" in {
       // Given
-      val token = Utils.sha256("pass1", "user1")
+      val token = User.generateToken("pass1", "salt1")
 
       // When
       val userOpt: Option[User] = userDAO.findByToken(token)
@@ -204,7 +200,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
     "not find by uppercased token" in {
       // Given
-      val token = Utils.sha256("pass1", "user1").toUpperCase
+      val token = User.generateToken("pass1", "salt1").toUpperCase
 
       // When
       val userOpt: Option[User] = userDAO.findByToken(token)
@@ -213,49 +209,9 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       userOpt must be none
     }
 
-    "should find by login and password" in {
-      // Given
-      val login: String = "user1"
-
-      // When
-      val userOpt: Option[User] = userDAO.findByLoginAndEncryptedPassword(login, Utils.sha256("pass1", login))
-      val users = userDAO.loadAll
-
-      // Then
-      userOpt match {
-        case Some(u) => u.login must beEqualTo(login).ignoreCase
-        case _ => failure("User option should be defined")
-      }
-    }
-
-    "should find by uppercased login and password" in {
-      // Given
-      val login: String = "user1"
-
-      // When
-      val userOpt: Option[User] = userDAO.findByLoginAndEncryptedPassword(login.toUpperCase, Utils.sha256("pass1", login))
-
-      // Then
-      userOpt match {
-        case Some(u) => u.login must beEqualTo(login).ignoreCase
-        case _ => failure("User option should be defined")
-      }
-    }
-
-    "should not find by login and invalid password" in {
-      // Given
-      val login: String = "user1"
-
-      // When
-      val userOpt: Option[User] = userDAO.findByLoginAndEncryptedPassword(login, Utils.sha256("invalid", login))
-
-      // Then
-      userOpt must be none
-    }
-
     "change password" in {
       val login = "user1"
-      val password = Utils.sha256("newPassword", login)
+      val password = User.encryptPassword("pass1", "salt1")
       val user = userDAO.findByLoginOrEmail(login).get
       userDAO.changePassword(user, password)
       val postModifyUserOpt = userDAO.findByLoginOrEmail(login)

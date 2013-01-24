@@ -4,10 +4,9 @@ import config.BootstrapConfiguration
 import schedulers.EmailSendingService
 import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO}
 import templates.EmailTemplatingEngine
-import pl.softwaremill.bootstrap.domain.{PasswordResetCode, User}
+import pl.softwaremill.bootstrap.domain.User
 import com.weiglewilczek.slf4s.Logging
 import pl.softwaremill.common.util.RichString
-import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.domain.PasswordResetCode
 import org.joda.time.DateTime
 
@@ -77,7 +76,7 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
 
   private def changePassword(code: PasswordResetCode, newPassword: String) {
     userDao.load(code.userId.toString) match {
-      case Some(u) => userDao.changePassword(u, Utils.sha256(newPassword, u.login))
+      case Some(u) => userDao.changePassword(u, User.encryptPassword(newPassword, u.salt))
       case None => logger.debug("User does not exist")
     }
   }

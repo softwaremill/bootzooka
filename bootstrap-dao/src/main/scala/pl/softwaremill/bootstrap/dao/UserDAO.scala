@@ -29,8 +29,6 @@ trait UserDAO {
 
   def findByToken(token: String): Option[User]
 
-  def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String): Option[User]
-
   def changePassword(user: User, password: String)
 
   def changeLogin(currentLogin: String, newLogin: String)

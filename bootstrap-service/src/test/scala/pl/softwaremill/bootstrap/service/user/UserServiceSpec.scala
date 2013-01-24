@@ -13,8 +13,8 @@ class UserServiceSpec extends Specification with Mockito {
 
   def prepareUserDAOMock: UserDAO = {
     val dao = new InMemoryUserDAO
-    dao.add(User("Admin", "admin@sml.com", "pass"))
-    dao.add(User("Admin2", "admin2@sml.com", "pass"))
+    dao.add(User("Admin", "admin@sml.com", "pass", "salt"))
+    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt"))
     dao
   }
 

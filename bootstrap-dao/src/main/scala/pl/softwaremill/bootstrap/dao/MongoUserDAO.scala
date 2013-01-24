@@ -6,9 +6,9 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.MongoDB
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat.dao.SalatDAO
-import com.novus.salat.global._
 import com.mongodb.casbah.query.Imports.ConcreteDBObjectOk
 import com.mongodb.casbah.commons.TypeImports.ObjectId
+import com.novus.salat.global._
 
 class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId](mongo("users")) with UserDAO {
 
@@ -46,10 +46,6 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
 
   def findByToken(token: String) = {
     findOne(MongoDBObject("token" -> token))
-  }
-
-  def findByLoginAndEncryptedPassword(login: String, encryptedPassword: String) = {
-    findOne(MongoDBObject("loginLowerCased" -> login.toLowerCase, "password" -> encryptedPassword))
   }
 
   def changePassword(user: User, password: String) {

@@ -2,10 +2,10 @@ package pl.softwaremill.bootstrap.service.user
 
 import pl.softwaremill.bootstrap.dao.UserDAO
 import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.service.data.UserJson
 import pl.softwaremill.bootstrap.service.schedulers.EmailScheduler
 import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
+import pl.softwaremill.common.util.RichString
 
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
                   emailTemplatingEngine: EmailTemplatingEngine) {
@@ -23,8 +23,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def registerNewUser(login: String, email: String, password: String) {
-    userDAO.add(User(login, email.toLowerCase, Utils.sha256(password, login.toLowerCase),
-      Utils.sha256(password, login.toLowerCase)))
+    userDAO.add(User(login, email.toLowerCase, password, RichString.generateRandom(16)))
 
     val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
     emailScheduler.scheduleEmail(email, confirmationEmail)
@@ -34,7 +33,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     val userOpt: Option[User] = userDAO.findByLoginOrEmail(login)
     userOpt match {
       case Some(u) => {
-        if (u.password.equals(Utils.sha256(nonEncryptedPassword, u.login.toLowerCase))) {
+        if (u.password.equals(User.encryptPassword(nonEncryptedPassword, u.salt))) {
           UserJson(userOpt)
         } else {
           None
