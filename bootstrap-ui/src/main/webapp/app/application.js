@@ -69,7 +69,7 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
 
     .run(function ($rootScope, UserSessionService, $location) {
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
-            if (!UserSessionService.isLogged() && next.templateUrl.indexOf("/secured/") > -1) {
+            if (!UserSessionService.isLogged() && (typeof next.templateUrl !== "undefined") && next.templateUrl.indexOf("/secured/") > -1) {
                 $location.path("/login");
             } else if (UserSessionService.isLogged() && next.templateUrl === "partials/login.html") {
                 $location.path("/");
