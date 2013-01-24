@@ -4,8 +4,6 @@ var controllers = angular.module('smlBootstrap.controllers', ['smlBootstrap.serv
 
 controllers.controller('UptimeController', function UptimeController($scope, $timeout, UtilService) {
 
-    var self = this;
-
     $scope.update = function () {
         UtilService.loadUptime(function (data) {
             $scope.uptime = data.value;
@@ -246,7 +244,7 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
 
     $scope.checkPasswords = function () {
         $scope.changePasswordForm.repeatPassword.$error.dontMatch = $scope.password != $scope.repeatPassword;
-    }
+    };
 
     this.onChangeSuccess = function () {
         FlashService.set("Your password has been changed");
@@ -269,7 +267,13 @@ controllers.controller("ProfileController", function ProfileController($scope, U
 
     $scope.changeLogin = function () {
         ProfileService.changeLogin($scope.user.login, function () {
-            console.log("User data changed: login");
+            self.origLogin = $scope.user.login;
+            UserSessionService.loggedUser.login = $scope.user.login;
+            showInfoMessage("Login changed!");
+            $scope.profileForm.login.$dirty = false;
+            $scope.profileForm.login.$pristine = true;
+        }, function(error) {
+            showErrorMessage("Login not changed, try again.");
         });
     };
 
@@ -278,20 +282,12 @@ controllers.controller("ProfileController", function ProfileController($scope, U
             ProfileService.changeEmail($scope.user.email, function () {
                 self.origEmail = $scope.user.email;
                 UserSessionService.loggedUser.email = $scope.user.email;
-                self.showEmailSavedNotification();
+                showInfoMessage("Email changed!");
                 $scope.profileForm.email.$dirty = false;
                 $scope.profileForm.email.$pristine = true;
             }, function(error) {
-                self.showEmailNotSavedNotification();
+                showErrorMessage("Email not changed, try again.");
             });
         }
-    };
-
-    this.showEmailSavedNotification = function() {
-        showInfoMessage("Email saved!");
-    };
-
-    this.showEmailNotSavedNotification = function() {
-        showErrorMessage("Email not saved, try again.");
     };
 });
