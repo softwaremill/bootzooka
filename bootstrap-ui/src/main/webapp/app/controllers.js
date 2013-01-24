@@ -23,7 +23,7 @@ controllers.controller('UptimeController', function UptimeController($scope, $ti
 
 });
 
-controllers.controller('EntriesController', function EntriesController($scope, $timeout, $window, EntriesService, UserSessionService) {
+controllers.controller('EntriesController', function EntriesController($scope, $timeout, $window, EntriesService, UserSessionService, $location) {
 
     var self = this;
 
@@ -108,8 +108,10 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     };
 
     $scope.logout = function () {
-        UserSessionService.logout();
-        showInfoMessage("Logged out successfully");
+        UserSessionService.logout(function(data) {
+            showInfoMessage("Logged out successfully");
+            $location.path("/");
+        });
     };
 });
 

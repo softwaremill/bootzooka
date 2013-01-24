@@ -14,7 +14,7 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             when("/error", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
             when("/recover-lost-password", {controller: 'PasswordRecoveryController', templateUrl: "partials/recover-lost-password.html"}).
             when("/password-reset", {controller: "PasswordRecoveryController", templateUrl: "partials/password-reset.html"}).
-            when("/profile", {controller: "ProfileController", templateUrl: "partials/profile.html"}).
+            when("/profile", {controller: "ProfileController", templateUrl: "partials/secured/profile.html"}).
             otherwise({redirectTo: '/error404'});
     })
 
@@ -63,6 +63,16 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             var message = FlashService.get();
             if (angular.isDefined(message)) {
                 showInfoMessage(message);
+            }
+        });
+    })
+
+    .run(function ($rootScope, UserSessionService, $location) {
+        $rootScope.$on("$routeChangeStart", function (event, next, current) {
+            if (!UserSessionService.isLogged() && next.templateUrl.indexOf("/secured/") > -1) {
+                $location.path("/login");
+            } else if (UserSessionService.isLogged() && next.templateUrl === "partials/login.html") {
+                $location.path("/");
             }
         });
     });
