@@ -33,7 +33,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     val userOpt: Option[User] = userDAO.findByLoginOrEmail(login)
     userOpt match {
       case Some(u) => {
-        if (u.password.equals(User.encryptPassword(nonEncryptedPassword, u.salt))) {
+        if (User.passwordsMatch(nonEncryptedPassword, u)) {
           UserJson(userOpt)
         } else {
           None
@@ -79,6 +79,17 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     findByEmail(newEmail) match {
       case Some(u) => Left("E-mail used by another user")
       case None => Right(userDAO.changeEmail(currentEmail, newEmail))
+    }
+  }
+
+  def changePassword(userId: String, currentPassword: String, newPassword: String): Either[String, Unit] = {
+    userDAO.load(userId) match {
+      case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
+        Right(userDAO.changePassword(userId, User.encryptPassword(newPassword, u.salt)))
+      } else {
+        Left("Current password is invalid")
+      }
+      case None => Left("User not found hence cannot change password")
     }
   }
 

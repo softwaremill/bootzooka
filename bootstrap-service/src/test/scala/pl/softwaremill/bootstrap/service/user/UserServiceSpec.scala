@@ -152,4 +152,31 @@ class UserServiceSpec extends Specification with Mockito {
     }
   }
 
+  "changePassword" should {
+    val userDAO: UserDAO = prepareUserDAOMock
+    val userService = new UserService(userDAO, registrationDataValidator, emailSendingService, emailTemplatingEngine)
+    val user = userDAO.findByLowerCasedLogin("admin").get
+
+    "change password if current is correct and new is present" in {
+      val currentPassword = "pass"
+      val newPassword = "newPass"
+      userService.changePassword(user._id.toString, currentPassword, newPassword) must beRight[Unit]
+      userDAO.findByLowerCasedLogin("admin") match {
+        case Some(cu) => {
+          (cu.password must be equalTo User.encryptPassword(newPassword, cu.salt)) and
+          (cu.token must be equalTo User.generateToken(newPassword, cu.salt))
+        }
+        case None => failure("Something bad happened, maybe mocked DAO is broken?")
+      }
+    }
+
+    "not change password if current is incorrect" in {
+      userService.changePassword(user._id.toString, "someillegalpass", "newpass") must beLeft("Current password is invalid")
+    }
+
+    "complain when user cannot be found" in {
+      userService.changePassword("someirrelevantid", "pass", "newpass") must beLeft("User not found hence cannot change password")
+    }
+  }
+
 }

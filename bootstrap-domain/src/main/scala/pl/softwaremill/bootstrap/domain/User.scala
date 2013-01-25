@@ -18,4 +18,8 @@ object User {
   def generateToken(base:String, randomizer:String) = {
     Utils.sha256(base, randomizer)
   }
+
+  def passwordsMatch(plainPassword:String, user:User) = {
+    user.password.equals(encryptPassword(plainPassword, user.salt))
+  }
 }
