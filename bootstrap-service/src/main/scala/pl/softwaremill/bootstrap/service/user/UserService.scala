@@ -68,17 +68,17 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     messageEither
   }
 
-  def changeLogin(currentLogin: String, newLogin: String) {
+  def changeLogin(currentLogin: String, newLogin: String): Either[String, Unit] = {
     findByLogin(newLogin) match {
-      case Some(u) => throw new IllegalArgumentException("Login is already taken")
-      case None => userDAO.changeLogin(currentLogin, newLogin)
+      case Some(u) => Left("Login is already taken")
+      case None => Right(userDAO.changeLogin(currentLogin, newLogin))
     }
   }
 
-  def changeEmail(currentEmail: String, newEmail: String) {
+  def changeEmail(currentEmail: String, newEmail: String): Either[String, Unit] = {
     findByEmail(newEmail) match {
-      case Some(u) => throw new IllegalArgumentException("E-mail used by another user")
-      case None => userDAO.changeEmail(currentEmail, newEmail)
+      case Some(u) => Left("E-mail used by another user")
+      case None => Right(userDAO.changeEmail(currentEmail, newEmail))
     }
   }
 

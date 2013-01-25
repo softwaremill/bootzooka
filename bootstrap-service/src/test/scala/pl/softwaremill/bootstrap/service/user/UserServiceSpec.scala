@@ -120,7 +120,7 @@ class UserServiceSpec extends Specification with Mockito {
       val user = userDAO.findByLowerCasedLogin("admin")
       val userEmail = user.get.email
       val newEmail = "new@email.com"
-      userService.changeEmail(userEmail, newEmail)
+      userService.changeEmail(userEmail, newEmail) must beRight[Unit]
       userDAO.findByEmail(newEmail) match {
         case Some(cu) => success
         case None => failure("User not found. Maybe e-mail wasn't really changed?")
@@ -128,7 +128,7 @@ class UserServiceSpec extends Specification with Mockito {
     }
 
     "not change email if already used by someone else" in {
-       userService.changeEmail("admin@sml.com", "admin2@sml.com") should throwA[IllegalArgumentException]("E-mail used by another user")
+       userService.changeEmail("admin@sml.com", "admin2@sml.com") must beLeft[String]("E-mail used by another user")
     }
   }
 
@@ -140,7 +140,7 @@ class UserServiceSpec extends Specification with Mockito {
       val user = userDAO.findByLowerCasedLogin("admin")
       val userLogin = user.get.login
       val newLogin = "newadmin"
-      userService.changeLogin(userLogin, newLogin)
+      userService.changeLogin(userLogin, newLogin) must beRight[Unit]
       userDAO.findByLowerCasedLogin(newLogin) match {
         case Some(cu) => success
         case None => failure("User not found. Maybe login wasn't really changed?")
@@ -148,7 +148,7 @@ class UserServiceSpec extends Specification with Mockito {
     }
 
     "not change login if already used by someone else" in {
-      userService.changeLogin("admin", "admin2") should throwA[IllegalArgumentException]("Login is already taken")
+      userService.changeLogin("admin", "admin2") must beLeft[String]("Login is already taken")
     }
   }
 
