@@ -49,8 +49,10 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def changePassword(userId: String, password: String) {
-    val user = load(userId).get
-    users = users.updated(users.indexOf(user), user.copy(password = password, token = password))
+    load(userId) match {
+      case Some(u) => users = users.updated(users.indexOf(u), u.copy(password = password, token = password))
+      case None =>
+    }
   }
 
   def changeLogin(currentLogin: String, newLogin: String) {
