@@ -213,7 +213,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val login = "user1"
       val password = User.encryptPassword("pass1", "salt1")
       val user = userDAO.findByLoginOrEmail(login).get
-      userDAO.changePassword(user, password)
+      userDAO.changePassword(user._id.toString, password)
       val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
       val u = postModifyUserOpt.get
       (u.password must be equalTo password) and

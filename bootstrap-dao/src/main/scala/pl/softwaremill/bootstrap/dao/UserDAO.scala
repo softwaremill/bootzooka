@@ -29,7 +29,7 @@ trait UserDAO {
 
   def findByToken(token: String): Option[User]
 
-  def changePassword(user: User, password: String)
+  def changePassword(userId:String, password: String)
 
   def changeLogin(currentLogin: String, newLogin: String)
 

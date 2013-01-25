@@ -48,10 +48,9 @@ class InMemoryUserDAO extends UserDAO {
     users.find(user => user.token == token)
   }
 
-  def changePassword(user: User, password: String) {
-    val modifiedUser = user.copy(password = password, token = password)
-    val userIndex: Int = users.indexOf(user)
-    users = users.take(userIndex) ::: List(modifiedUser) ::: users.drop(userIndex + 1)
+  def changePassword(userId: String, password: String) {
+    val user = load(userId).get
+    users = users.updated(users.indexOf(user), user.copy(password = password, token = password))
   }
 
   def changeLogin(currentLogin: String, newLogin: String) {

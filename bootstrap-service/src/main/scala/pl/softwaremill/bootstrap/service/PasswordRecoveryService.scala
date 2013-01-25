@@ -76,7 +76,7 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
 
   private def changePassword(code: PasswordResetCode, newPassword: String) {
     userDao.load(code.userId.toString) match {
-      case Some(u) => userDao.changePassword(u, User.encryptPassword(newPassword, u.salt))
+      case Some(u) => userDao.changePassword(u._id.toString, User.encryptPassword(newPassword, u.salt))
       case None => logger.debug("User does not exist")
     }
   }

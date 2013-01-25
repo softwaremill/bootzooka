@@ -10,13 +10,25 @@ import org.specs2.specification.BeforeExample
 class InMemoryUserDAOSpec extends Specification with BeforeExample {
   isolated
   var dao: InMemoryUserDAO = new InMemoryUserDAO
-  val user = User("login", "email", "pass", "token")
+  val user = User("login", "email", "pass", "salt")
 
   def before {
     dao.users = List(user)
   }
 
   "InMemoryUserDAO" should {
+
+    "change password of existing user" in {
+      val encryptedNewPassword = User.encryptPassword("newPass", user.salt)
+      dao.changePassword(user._id.toString, encryptedNewPassword)
+      dao.load(user._id.toString) match {
+        case Some(u) => {
+          (u.password must be equalTo encryptedNewPassword) and
+          (u.token must be equalTo encryptedNewPassword)
+        }
+        case None => failure("Couldn't load user")
+      }
+    }
 
     "change login of existing user" in {
       val newLogin = "newLogin"
