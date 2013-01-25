@@ -268,7 +268,7 @@ controllers.controller("ProfileController", function ProfileController($scope, U
     var self = this;
 
     $scope.changeLogin = function () {
-        if (self.canPerformLoginChange()) {
+        if (self.shouldPerformLoginChange()) {
             ProfileService.changeLogin($scope.login, function () {
                 UserSessionService.loggedUser.login = $scope.login.concat();
                 showInfoMessage("Login changed!");
@@ -280,12 +280,12 @@ controllers.controller("ProfileController", function ProfileController($scope, U
         }
     };
 
-    this.canPerformLoginChange = function () {
+    this.shouldPerformLoginChange = function () {
         return $scope.profileForm.login.$dirty && $scope.login != UserSessionService.loggedUser.login && $scope.profileForm.login.$valid;
     };
 
     $scope.changeEmail = function () {
-        if (self.canPerformEmailChange()) {
+        if (self.shouldPerformEmailChange()) {
             ProfileService.changeEmail($scope.email, function () {
                 UserSessionService.loggedUser.email = $scope.email;
                 showInfoMessage("Email changed!");
@@ -297,7 +297,7 @@ controllers.controller("ProfileController", function ProfileController($scope, U
         }
     };
 
-    this.canPerformEmailChange = function () {
+    this.shouldPerformEmailChange = function () {
         return $scope.profileForm.email.$dirty && $scope.email != UserSessionService.loggedUser.email && $scope.profileForm.email.$valid;
     }
 });
