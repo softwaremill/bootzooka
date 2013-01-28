@@ -305,8 +305,19 @@ controllers.controller("ProfileController", function ProfileController($scope, U
     $scope.newPassword = '';
     $scope.newPasswordRepeated = '';
 
-    $scope.changePassword = function() {
-        console.log("Not implemented yet");
-        console.log("DEBUG: cp: " + $scope.currentPassword + ", np: " + $scope.newPassword + ", npr: " + $scope.newPasswordRepeated);
+    $scope.changePassword = function () {
+        validatePasswordChangeForm();
+        if ($scope.passwordChangeForm.$valid) {
+            console.log("Actual change not implemented yet");
+            console.log("DEBUG: cp: " + $scope.currentPassword + ", np: " + $scope.newPassword + ", npr: " + $scope.newPasswordRepeated);
+        } else {
+            console.log("Form invalid");
+        }
     };
+
+    function validatePasswordChangeForm() {
+        $scope.passwordChangeForm.newPasswordRepeated.$error.dontMatch = $scope.newPassword != $scope.newPasswordRepeated;
+        $scope.passwordChangeForm.$valid = $scope.passwordChangeForm.$valid && !$scope.passwordChangeForm.newPasswordRepeated.$error.dontMatch;
+    }
+
 });
