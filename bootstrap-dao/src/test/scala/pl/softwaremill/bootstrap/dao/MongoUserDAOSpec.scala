@@ -16,7 +16,8 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
         val login = "user" + i
         val password: String = "pass" + i
         val salt = "salt" + i
-        userDAO.add(User(login, i + "email@sml.com", password, salt))
+        val token = "token" + i
+        userDAO.add(User(login, i + "email@sml.com", password, salt, token))
       }
     })
 
@@ -35,7 +36,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val email = "newemail@sml.com"
 
       // When
-      userDAO.add(User(login, email, "pass", "salt"))
+      userDAO.add(User(login, email, "pass", "salt", "token"))
 
       // Then
       (userDAO.countItems() - numberOfUsersBefore) must be equalTo (1)
@@ -48,7 +49,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val email = "anotherEmaill@sml.com"
 
       // When
-      userDAO.add(User(login, email, "pass", "salt")) should (throwA[Exception])(message = "User with given e-mail or login already exists")
+      userDAO.add(User(login, email, "pass", "salt", "token")) should (throwA[Exception])(message = "User with given e-mail or login already exists")
     }
 
     "throw exception when trying to add user with existing email" in {
@@ -57,7 +58,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val email = "newemail@sml.com"
 
       // When
-      userDAO.add(User(login, email, "pass", "salt")) should (throwA[Exception])(message = "User with given e-mail or login already exists")
+      userDAO.add(User(login, email, "pass", "salt", "token")) should (throwA[Exception])(message = "User with given e-mail or login already exists")
     }
 
     "remove user" in {
@@ -186,7 +187,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
 
     "find by token" in {
       // Given
-      val token = User.generateToken("pass1", "salt1")
+      val token = "token1"
 
       // When
       val userOpt: Option[User] = userDAO.findByToken(token)
@@ -198,17 +199,6 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       }
     }
 
-    "not find by uppercased token" in {
-      // Given
-      val token = User.generateToken("pass1", "salt1").toUpperCase
-
-      // When
-      val userOpt: Option[User] = userDAO.findByToken(token)
-
-      // Then
-      userOpt must be none
-    }
-
     "change password" in {
       val login = "user1"
       val password = User.encryptPassword("pass1", "salt1")
@@ -217,6 +207,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
       val u = postModifyUserOpt.get
       (u.password must be equalTo password) and
+//        (u.token must be equalTo user.token) and
         (u.login must be equalTo user.login) and
         (u.email must be equalTo user.email) and
         (u._id must be equalTo user._id)
@@ -234,7 +225,8 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
             (pmu.login must be equalTo newLogin) and
             (pmu.email must be equalTo u.email) and
             (pmu.password must be equalTo u.password) and
-            (pmu.token must be equalTo u.token)
+            (pmu.token must be equalTo u.token) and
+            (pmu.salt must be equalTo u.salt)
         }
         case None => failure("Changed user was not found. Maybe login wasn't really changed?")
       }

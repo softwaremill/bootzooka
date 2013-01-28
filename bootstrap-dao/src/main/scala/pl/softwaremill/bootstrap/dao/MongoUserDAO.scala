@@ -9,6 +9,7 @@ import com.novus.salat.dao.SalatDAO
 import com.mongodb.casbah.query.Imports.ConcreteDBObjectOk
 import com.mongodb.casbah.commons.TypeImports.ObjectId
 import com.novus.salat.global._
+import java.util.UUID
 
 class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId](mongo("users")) with UserDAO {
 
@@ -49,7 +50,7 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
   }
 
   def changePassword(userId: String, password: String) {
-    update(MongoDBObject("_id" -> userId), $set("password" -> password, "token" -> password), false, false, WriteConcern.Safe)
+    update(MongoDBObject("_id" -> userId), $set("password" -> password), false, false, WriteConcern.Safe)
   }
 
   def changeLogin(currentLogin: String, newLogin: String) {

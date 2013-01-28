@@ -50,7 +50,7 @@ class InMemoryUserDAO extends UserDAO {
 
   def changePassword(userId: String, password: String) {
     load(userId) match {
-      case Some(u) => users = users.updated(users.indexOf(u), u.copy(password = password, token = password))
+      case Some(u) => users = users.updated(users.indexOf(u), u.copy(password = password))
       case None =>
     }
   }

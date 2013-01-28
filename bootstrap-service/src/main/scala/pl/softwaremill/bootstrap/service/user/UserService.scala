@@ -6,6 +6,7 @@ import pl.softwaremill.bootstrap.service.data.UserJson
 import pl.softwaremill.bootstrap.service.schedulers.EmailScheduler
 import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 import pl.softwaremill.common.util.RichString
+import java.util.UUID
 
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
                   emailTemplatingEngine: EmailTemplatingEngine) {
@@ -23,7 +24,9 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def registerNewUser(login: String, email: String, password: String) {
-    userDAO.add(User(login, email.toLowerCase, password, RichString.generateRandom(16)))
+    val salt = RichString.generateRandom(16)
+    val token = UUID.randomUUID().toString
+    userDAO.add(User(login, email.toLowerCase, password, salt, token))
 
     val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
     emailScheduler.scheduleEmail(email, confirmationEmail)

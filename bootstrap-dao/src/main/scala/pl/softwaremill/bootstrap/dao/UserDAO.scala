@@ -1,6 +1,7 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
+import java.util.UUID
 
 trait UserDAO {
 

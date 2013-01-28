@@ -13,8 +13,8 @@ class UserServiceSpec extends Specification with Mockito {
 
   def prepareUserDAOMock: UserDAO = {
     val dao = new InMemoryUserDAO
-    dao.add(User("Admin", "admin@sml.com", "pass", "salt"))
-    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt"))
+    dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
+    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
     dao
   }
 
@@ -162,10 +162,7 @@ class UserServiceSpec extends Specification with Mockito {
       val newPassword = "newPass"
       userService.changePassword(user._id.toString, currentPassword, newPassword) must beRight[Unit]
       userDAO.findByLowerCasedLogin("admin") match {
-        case Some(cu) => {
-          (cu.password must be equalTo User.encryptPassword(newPassword, cu.salt)) and
-          (cu.token must be equalTo User.generateToken(newPassword, cu.salt))
-        }
+        case Some(cu) => cu.password must be equalTo User.encryptPassword(newPassword, cu.salt)
         case None => failure("Something bad happened, maybe mocked DAO is broken?")
       }
     }

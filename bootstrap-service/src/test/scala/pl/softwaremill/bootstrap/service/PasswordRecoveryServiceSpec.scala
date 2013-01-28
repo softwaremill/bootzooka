@@ -30,7 +30,7 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
 
   def prepareUserDaoMock = {
     val userDao = mock[InMemoryUserDAO]
-    userDao.findByLoginOrEmail(validLogin) returns Some(User(validLogin, "user@sml.pl", "pass", "salt"))
+    userDao.findByLoginOrEmail(validLogin) returns Some(User(validLogin, "user@sml.pl", "pass", "salt", "token"))
     userDao.findByLoginOrEmail(invalidLogin) returns None
     userDao
   }

@@ -33,8 +33,8 @@ class UsersServletSpec extends BootstrapServletSpec {
 
   def onServletWithMocks(testToExecute: (UserService) => MatchResult[Any]): MatchResult[Any] = {
     val dao = new InMemoryUserDAO
-    dao.add(User("Admin", "admin@sml.com", "pass", "salt"))
-    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt"))
+    dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
+    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
 
     val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService(), new EmailTemplatingEngine))
 
