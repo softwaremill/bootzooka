@@ -109,5 +109,31 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     }
   }
 
+  post("/changepassword") {
+    haltIfNotAuthenticated()
+    val currentPassword = (parsedBody \ "currentPassword").extractOpt[String].getOrElse("")
+    val newPassword = (parsedBody \ "newPassword").extractOpt[String].getOrElse("")
+    var messageOpt: Option[String] = None
+    if (currentPassword.isEmpty) {
+      messageOpt = Some("Parameter currentPassword is missing")
+    } else if (newPassword.isEmpty) {
+      messageOpt = Some("Parameter newPassword is missing")
+    } else {
+      messageOpt = changePassword(currentPassword, newPassword)
+    }
+
+    messageOpt match {
+      case Some(message) => halt(403, JsonWrapper(message))
+      case None => Ok
+    }
+  }
+
+  def changePassword(currentPassword: String, newPassword: String): Option[String] = {
+    userService.changePassword(user.token, currentPassword, newPassword) match {
+      case Left(error) => Some(error)
+      case _ => None
+    }
+  }
+
 }
 

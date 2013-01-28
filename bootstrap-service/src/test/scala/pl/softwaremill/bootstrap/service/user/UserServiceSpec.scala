@@ -160,7 +160,7 @@ class UserServiceSpec extends Specification with Mockito {
     "change password if current is correct and new is present" in {
       val currentPassword = "pass"
       val newPassword = "newPass"
-      userService.changePassword(user._id.toString, currentPassword, newPassword) must beRight[Unit]
+      userService.changePassword(user.token, currentPassword, newPassword) must beRight[Unit]
       userDAO.findByLowerCasedLogin("admin") match {
         case Some(cu) => cu.password must be equalTo User.encryptPassword(newPassword, cu.salt)
         case None => failure("Something bad happened, maybe mocked DAO is broken?")
@@ -168,11 +168,11 @@ class UserServiceSpec extends Specification with Mockito {
     }
 
     "not change password if current is incorrect" in {
-      userService.changePassword(user._id.toString, "someillegalpass", "newpass") must beLeft("Current password is invalid")
+      userService.changePassword(user.token, "someillegalpass", "newpass") must beLeft("Current password is invalid")
     }
 
     "complain when user cannot be found" in {
-      userService.changePassword("someirrelevantid", "pass", "newpass") must beLeft("User not found hence cannot change password")
+      userService.changePassword("someirrelevanttoken", "pass", "newpass") must beLeft("User not found hence cannot change password")
     }
   }
 
