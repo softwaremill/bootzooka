@@ -299,5 +299,14 @@ controllers.controller("ProfileController", function ProfileController($scope, U
 
     this.shouldPerformEmailChange = function () {
         return $scope.profileForm.email.$dirty && $scope.email != UserSessionService.loggedUser.email && $scope.profileForm.email.$valid;
-    }
+    };
+
+    $scope.currentPassword = '';
+    $scope.newPassword = '';
+    $scope.newPasswordRepeated = '';
+
+    $scope.changePassword = function() {
+        console.log("Not implemented yet");
+        console.log("DEBUG: cp: " + $scope.currentPassword + ", np: " + $scope.newPassword + ", npr: " + $scope.newPasswordRepeated);
+    };
 });
