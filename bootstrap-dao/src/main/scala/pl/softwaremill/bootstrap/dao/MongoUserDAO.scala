@@ -50,7 +50,7 @@ class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId]
   }
 
   def changePassword(userId: String, password: String) {
-    update(MongoDBObject("_id" -> userId), $set("password" -> password), false, false, WriteConcern.Safe)
+    update(MongoDBObject("_id" -> new ObjectId(userId)), $set("password" -> password), false, false, WriteConcern.Safe)
   }
 
   def changeLogin(currentLogin: String, newLogin: String) {
