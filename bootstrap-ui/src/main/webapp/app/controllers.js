@@ -308,10 +308,15 @@ controllers.controller("ProfileController", function ProfileController($scope, U
     $scope.changePassword = function () {
         validatePasswordChangeForm();
         if ($scope.passwordChangeForm.$valid) {
-            console.log("Actual change not implemented yet");
-            console.log("DEBUG: cp: " + $scope.currentPassword + ", np: " + $scope.newPassword + ", npr: " + $scope.newPasswordRepeated);
-        } else {
-            console.log("Form invalid");
+            ProfileService.changePassword($scope.currentPassword, $scope.newPassword, function () {
+                showInfoMessage("Password changed!");
+                $scope.passwordChangeForm.$setPristine();
+                $scope.currentPassword = '';
+                $scope.newPassword = '';
+                $scope.newPasswordRepeated = '';
+            }, function (error) {
+                showErrorMessage(error.value);
+            });
         }
     };
 

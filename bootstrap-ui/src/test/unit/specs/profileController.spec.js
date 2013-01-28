@@ -137,4 +137,108 @@ describe("Profile Controller", function () {
         });
     });
 
+    describe("when changing password", function () {
+        it("should call ReST service when form is valid", function () {
+            scope.passwordChangeForm = {
+                newPasswordRepeated: {
+                    $error: {
+                        dontMatch: false
+                    }
+                },
+                $valid: true,
+                $setPristine: function () {
+                }
+            };
+            $httpBackend.expectPOST('rest/users/changepassword', '{"currentPassword":"pass","newPassword":"NewPass"}').respond('nothing');
+            scope.currentPassword = 'pass';
+            scope.newPassword = 'NewPass';
+            scope.newPasswordRepeated = 'NewPass';
+            scope.changePassword();
+            $httpBackend.flush();
+        });
+        it("should not call ReST service when current password is missing", function () {
+            scope.passwordChangeForm = {
+                newPasswordRepeated: {
+                    $error: {
+                        dontMatch: false
+                    }
+                },
+                $valid: false,
+                $setPristine: function () {
+                }
+            };
+            scope.currentPassword = '';
+            scope.changePassword();
+        });
+        it("should not call ReST service when new password is missing", function () {
+            scope.passwordChangeForm = {
+                newPasswordRepeated: {
+                    $error: {
+                        dontMatch: false
+                    }
+                },
+                $valid: false,
+                $setPristine: function () {
+                }
+            };
+            scope.currentPassword = 'pass';
+            scope.newPassword = '';
+            scope.changePassword();
+        });
+        it("should not call ReST service when repeated password is missing", function () {
+            scope.passwordChangeForm = {
+                newPasswordRepeated: {
+                    $error: {
+                        dontMatch: false
+                    }
+                },
+                $valid: false,
+                $setPristine: function () {
+                }
+            };
+            scope.currentPassword = 'pass';
+            scope.newPassword = 'newPass';
+            scope.newPasswordRepeated = '';
+            scope.changePassword();
+        });
+        it("should not call ReST service when repeated password doesn't match new password", function () {
+            scope.passwordChangeForm = {
+                newPasswordRepeated: {
+                    $error: {
+                        dontMatch: true
+                    }
+                },
+                $valid: false,
+                $setPristine: function () {
+                }
+            };
+            scope.currentPassword = 'pass';
+            scope.newPassword = 'newPass';
+            scope.newPasswordRepeated = 'newwPass';
+            scope.changePassword();
+        });
+        it("should mark form pristine after successful change", function () {
+            scope.passwordChangeForm = {
+                newPasswordRepeated: {
+                    $error: {
+                        dontMatch: false
+                    }
+                },
+                $valid: true,
+                $setPristine: function () {
+                }
+            };
+            $httpBackend.expectPOST('rest/users/changepassword', '{"currentPassword":"pass","newPassword":"NewPass"}').respond('nothing');
+            scope.currentPassword = 'pass';
+            scope.newPassword = 'NewPass';
+            scope.newPasswordRepeated = 'NewPass';
+            scope.changePassword();
+            $httpBackend.flush();
+            expect(scope.passwordChangeForm.$setPristine());
+            expect(scope.currentPassword).toBe('');
+            expect(scope.newPassword).toBe('');
+            expect(scope.newPasswordRepeated).toBe('');
+        });
+    });
+
 });
