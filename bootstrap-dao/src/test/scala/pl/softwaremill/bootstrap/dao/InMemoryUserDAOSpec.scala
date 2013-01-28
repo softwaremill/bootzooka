@@ -22,13 +22,7 @@ class InMemoryUserDAOSpec extends Specification with BeforeExample {
       val encryptedNewPassword = User.encryptPassword("newPass", user.salt)
       dao.changePassword(user._id.toString, encryptedNewPassword)
       dao.load(user._id.toString) match {
-        case Some(u) => {
-          (u.password must be equalTo encryptedNewPassword) and
-            (u.token must be equalTo user.token) and
-            (u.login must be equalTo user.login) and
-            (u.email must be equalTo user.email) and
-            (u.salt must be equalTo user.salt)
-        }
+        case Some(u) => u must be equalTo user.copy(password = encryptedNewPassword)
         case None => failure("Couldn't load user")
       }
     }
@@ -37,14 +31,7 @@ class InMemoryUserDAOSpec extends Specification with BeforeExample {
       val newLogin = "newLogin"
       dao.changeLogin(user.login, newLogin)
       dao.findByLowerCasedLogin(newLogin) match {
-        case Some(cu) => {
-          cu._id === user._id and
-            cu.login === newLogin and
-            cu.loginLowerCased === newLogin.toLowerCase and
-            cu.email === user.email and
-            cu.password === user.password and
-            cu.token === user.token
-        }
+        case Some(cu) => cu must be equalTo user.copy(login = newLogin, loginLowerCased = newLogin.toLowerCase)
         case None => failure("")
       }
     }
@@ -53,14 +40,7 @@ class InMemoryUserDAOSpec extends Specification with BeforeExample {
       val newEmail = "newEmail"
       dao.changeEmail(user.email, newEmail)
       dao.findByEmail(newEmail) match {
-        case Some(cu) => {
-          cu._id === user._id and
-            cu.login === user.login and
-            cu.loginLowerCased === user.loginLowerCased and
-            cu.email === newEmail and
-            cu.password === user.password and
-            cu.token === user.token
-        }
+        case Some(cu) => cu must be equalTo user.copy(email = newEmail)
         case None => failure("")
       }
     }

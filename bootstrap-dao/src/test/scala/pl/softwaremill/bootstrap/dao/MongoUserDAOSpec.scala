@@ -206,11 +206,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       userDAO.changePassword(user._id.toString, password)
       val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
       val u = postModifyUserOpt.get
-      (u.password must be equalTo password) and
-//        (u.token must be equalTo user.token) and
-        (u.login must be equalTo user.login) and
-        (u.email must be equalTo user.email) and
-        (u._id must be equalTo user._id)
+      u must be equalTo user.copy(password = password)
     }
 
     "change login" in {
@@ -220,14 +216,7 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       userDAO.changeLogin(u.login, newLogin)
       val postModifyUser = userDAO.findByLowerCasedLogin(newLogin)
       postModifyUser match {
-        case Some(pmu) => {
-          (pmu._id must be equalTo u._id) and
-            (pmu.login must be equalTo newLogin) and
-            (pmu.email must be equalTo u.email) and
-            (pmu.password must be equalTo u.password) and
-            (pmu.token must be equalTo u.token) and
-            (pmu.salt must be equalTo u.salt)
-        }
+        case Some(pmu) => pmu must be equalTo u.copy(login = newLogin, loginLowerCased = newLogin.toLowerCase)
         case None => failure("Changed user was not found. Maybe login wasn't really changed?")
       }
     }
@@ -238,14 +227,10 @@ class MongoUserDAOSpec extends SpecificationWithMongo with Logging {
       val u = user.get
       userDAO.changeEmail(u.email, newEmail)
       userDAO.findByEmail(newEmail) match {
-        case Some(cu) => {
-          (cu._id must be equalTo u._id) and
-            (cu.login must be equalTo u.login) and
-            (cu.password must be equalTo u.password) and
-            (cu.token must be equalTo u.token)
-        }
+        case Some(cu) => cu must be equalTo u.copy(email = newEmail)
         case None => failure("User couldn't be found. Maybe e-mail wasn't really changed?")
       }
     }
+
   }
 }
