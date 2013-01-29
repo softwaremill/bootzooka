@@ -301,28 +301,22 @@ controllers.controller("ProfileController", function ProfileController($scope, U
         return $scope.profileForm.email.$dirty && $scope.email != UserSessionService.loggedUser.email && $scope.profileForm.email.$valid;
     };
 
-    $scope.currentPassword = '';
-    $scope.newPassword = '';
-    $scope.newPasswordRepeated = '';
+    $scope.currentPassword = undefined;
+    $scope.newPassword = undefined;
+    $scope.newPasswordRepeated = undefined;
 
     $scope.changePassword = function () {
-        validatePasswordChangeForm();
         if ($scope.passwordChangeForm.$valid) {
             ProfileService.changePassword($scope.currentPassword, $scope.newPassword, function () {
                 showInfoMessage("Password changed!");
                 $scope.passwordChangeForm.$setPristine();
-                $scope.currentPassword = '';
-                $scope.newPassword = '';
-                $scope.newPasswordRepeated = '';
+                $scope.currentPassword = undefined;
+                $scope.newPassword = undefined;
+                $scope.newPasswordRepeated = undefined;
             }, function (error) {
                 showErrorMessage(error.value);
             });
         }
     };
-
-    function validatePasswordChangeForm() {
-        $scope.passwordChangeForm.newPasswordRepeated.$error.dontMatch = $scope.newPassword != $scope.newPasswordRepeated;
-        $scope.passwordChangeForm.$valid = $scope.passwordChangeForm.$valid && !$scope.passwordChangeForm.newPasswordRepeated.$error.dontMatch;
-    }
 
 });

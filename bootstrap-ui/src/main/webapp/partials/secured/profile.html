@@ -62,11 +62,11 @@
 
                 <div class="controls">
                     <input type="password" id="newPasswordRepeated" name="newPasswordRepeated"
-                           ng-model="newPasswordRepeated" required>
+                           ng-model="newPasswordRepeated" string-matches="newPassword" required>
                     <span class="text-error"
                           ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.required">Repeat password</span>
                     <span class="text-error"
-                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.dontMatch">Passwords don't match</span>
+                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.match">Passwords don't match</span>
                 </div>
             </div>
 
