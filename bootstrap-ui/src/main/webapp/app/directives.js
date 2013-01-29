@@ -10,18 +10,23 @@ directives.directive("bsBlur", function() {
     }
 });
 
-directives.directive("stringMatches", function() {
+directives.directive("repeatPassword", function() {
     return {
         require: "ngModel",
         link: function(scope, elem, attrs, ctrl) {
-            ctrl.$parsers.unshift(function(viewValue) {
-                if(viewValue === scope[attrs.stringMatches]) {
-                    ctrl.$setValidity("match", true);
-                    return viewValue;
-                } else {
-                    ctrl.$setValidity("match", false);
-                    return undefined;
+            var otherInput = elem.inheritedData("$formController")[attrs.repeatPassword];
+
+            ctrl.$parsers.push(function(value) {
+                if(value === otherInput.$viewValue) {
+                    ctrl.$setValidity("repeat", true);
+                    return value;
                 }
+                ctrl.$setValidity("repeat", false);
+            });
+
+            otherInput.$parsers.push(function(value) {
+                ctrl.$setValidity("repeat", value === ctrl.$viewValue);
+                return value;
             });
         }
     };

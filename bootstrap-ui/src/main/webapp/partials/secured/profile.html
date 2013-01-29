@@ -32,7 +32,7 @@
     </div>
 
     <div class="offset3 span7">
-        <form name="passwordChangeForm" class="form-horizontal" ng-submit="changePassword()">
+        <form name="passwordChangeForm" class="form-horizontal" ng-submit="changePassword()" novalidate>
             <fieldset>
                 <legend>Password</legend>
             </fieldset>
@@ -62,11 +62,11 @@
 
                 <div class="controls">
                     <input type="password" id="newPasswordRepeated" name="newPasswordRepeated"
-                           ng-model="newPasswordRepeated" string-matches="newPassword" required>
+                           ng-model="newPasswordRepeated" repeat-password="newPassword" required>
                     <span class="text-error"
                           ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.required">Repeat password</span>
                     <span class="text-error"
-                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.match">Passwords don't match</span>
+                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.repeat">Passwords don't match</span>
                 </div>
             </div>
 

@@ -305,6 +305,9 @@ controllers.controller("ProfileController", function ProfileController($scope, U
     $scope.newPasswordRepeated = undefined;
 
     $scope.changePassword = function () {
+        $scope.passwordChangeForm.currentPassword.$dirty = true;
+        $scope.passwordChangeForm.newPassword.$dirty = true;
+        $scope.passwordChangeForm.newPasswordRepeated.$dirty = true;
         if ($scope.passwordChangeForm.$valid) {
             ProfileService.changePassword($scope.currentPassword, $scope.newPassword, function () {
                 showInfoMessage("Password changed!");
