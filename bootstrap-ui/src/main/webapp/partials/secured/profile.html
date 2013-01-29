@@ -66,7 +66,7 @@
                     <span class="text-error"
                           ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.required">Repeat password</span>
                     <span class="text-error"
-                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.repeat">Passwords don't match</span>
+                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && !passwordChangeForm.newPasswordRepeated.$error.required && passwordChangeForm.newPasswordRepeated.$error.repeat">Passwords don't match</span>
                 </div>
             </div>
 
