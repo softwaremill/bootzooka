@@ -109,8 +109,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
 
     $scope.logout = function () {
         UserSessionService.logout(function (data) {
-            showInfoMessage("Logged out successfully");
-            $location.path("/");
+            $location.path("");
         });
     };
 });

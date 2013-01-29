@@ -95,7 +95,7 @@ services.factory('UserSessionService', function ($resource) {
         }, errorFunction);
     };
 
-    userSessionService.logout = function (user, successFunction) {
+    userSessionService.logout = function (successFunction) {
         self.logoutResource.query(null, function (data) {
             userSessionService.loggedUser = null;
             if (typeof successFunction === "function") {
