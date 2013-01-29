@@ -171,10 +171,6 @@ controllers.controller('RegisterController', function RegisterController($scope,
         }
     };
 
-    $scope.checkPassword = function () {
-        $scope.registerForm.repeatPassword.$error.dontMatch = $scope.user.password !== $scope.user.repeatPassword;
-    };
-
     this.registerOk = function () {
         $location.path("");
     };
@@ -241,10 +237,6 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
         if ($scope.changePasswordForm.$valid && !$scope.changePasswordForm.repeatPassword.$error.dontMatch) {
             PasswordRecoveryService.changePassword($routeParams.code, $scope.password, self.onChangeSuccess, self.onChangeFailure);
         }
-    };
-
-    $scope.checkPasswords = function () {
-        $scope.changePasswordForm.repeatPassword.$error.dontMatch = $scope.password != $scope.repeatPassword;
     };
 
     this.onChangeSuccess = function () {

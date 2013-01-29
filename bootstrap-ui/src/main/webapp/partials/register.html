@@ -29,9 +29,9 @@
                 <div class="control-group">
                     <label class="control-label" for="repeatPassword">Repeat password</label>
                     <div class="controls">
-                        <input type="password" name="repeatPassword" id="repeatPassword" placeholder="repeat password" ng-model="user.repeatPassword" ng-change="checkPassword()" required>
+                        <input type="password" name="repeatPassword" id="repeatPassword" placeholder="repeat password" ng-model="user.repeatPassword" repeat-password="password" required>
                         <span class="text-error" ng-show="registerForm.repeatPassword.$dirty && registerForm.repeatPassword.$error.required">Repeat password</span>
-                        <span class="text-error" ng-show="registerForm.repeatPassword.$dirty && registerForm.repeatPassword.$error.dontMatch">Passwords don't match!</span>
+                        <span class="text-error" ng-show="registerForm.repeatPassword.$dirty && !registerForm.repeatPassword.$error.required && registerForm.repeatPassword.$error.repeat">Passwords don't match!</span>
                     </div>
                 </div>
                 <div class="control-group">
