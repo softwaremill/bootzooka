@@ -62,7 +62,7 @@ services.factory('EntriesService', function ($resource) {
 });
 
 
-services.factory('UserSessionService', function ($resource) {
+services.factory('UserSessionService', function ($resource, $cookies) {
 
     var self = this;
 
@@ -79,11 +79,11 @@ services.factory('UserSessionService', function ($resource) {
     };
 
     userSessionService.isLogged = function () {
-        return userSessionService.loggedUser !== null;
+        return $cookies["scentry.auth.default.user"] !== undefined;
     };
 
     userSessionService.isNotLogged = function () {
-        return userSessionService.loggedUser === null;
+        return !userSessionService.isLogged();
     };
 
     userSessionService.login = function (user, successFunction, errorFunction) {
