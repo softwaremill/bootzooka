@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters', 'smlBootstrap.controllers', 'smlBootstrap.directives', 'ngSanitize', 'ajaxthrobber'])
+angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters', 'smlBootstrap.controllers', 'smlBootstrap.directives', 'ngSanitize', 'ajaxthrobber', 'ngCookies'])
 
     .config(function ($routeProvider) {
 
@@ -70,7 +70,7 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
     .run(function ($rootScope, UserSessionService, $location) {
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
             if (!UserSessionService.isLogged() && (typeof next.templateUrl !== "undefined") && next.templateUrl.indexOf("/secured/") > -1) {
-                $location.path("/login");
+                $location.search("page", $location.url()).path("/login");
             } else if (UserSessionService.isLogged() && next.templateUrl === "partials/login.html") {
                 $location.path("/");
             }

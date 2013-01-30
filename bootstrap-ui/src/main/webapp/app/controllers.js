@@ -181,7 +181,7 @@ controllers.controller('RegisterController', function RegisterController($scope,
 
 });
 
-controllers.controller('LoginController', function LoginController($scope, UserSessionService, $location) {
+controllers.controller('LoginController', function LoginController($scope, UserSessionService, $location, $routeParams) {
 
     var self = this;
 
@@ -202,7 +202,13 @@ controllers.controller('LoginController', function LoginController($scope, UserS
 
 
     this.loginOk = function () {
-        $location.path("");
+        var optionalRedir = $routeParams.page;
+        if (typeof optionalRedir !== "undefined") {
+            $location.search("page", null);
+            $location.path(optionalRedir);
+        } else {
+            $location.path("");
+        }
     };
 
     this.loginFailed = function () {
