@@ -5,6 +5,9 @@ Simple showcase project to allow quickly start with development process of moder
 Live demo is available on http://bootstrap.softwaremill.com.
 
 * [Changelog](#changelog)
+    * [Iteration 8](#iteration-8)
+    * [Iteration 7](#iteration-7)
+    * [Iteration 6](#iteration-6)
 * [Technology stack](#technology-stack)
     * [Why Scala?](#why-scala)
     * [Why AngularJS?](#why-angularjs)
