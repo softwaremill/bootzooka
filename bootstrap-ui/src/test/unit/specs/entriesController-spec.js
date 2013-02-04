@@ -12,7 +12,7 @@ describe("Entries Controller", function () {
     describe('with not-empty data response and logged user', function () {
         var scope, $httpBackend, ctrl, userSessionService;
 
-        beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller, UserSessionService) {
+        beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller, $cookies, UserSessionService) {
             $httpBackend = _$httpBackend_;
             $httpBackend.whenGET('/rest/entries/count').respond('{"value":2}');
             var timestamp = 1356969850745;
@@ -27,6 +27,7 @@ describe("Entries Controller", function () {
             userSessionService.loggedUser = {
                 login: "Jan Kowalski"
             };
+            $cookies["scentry.auth.default.user"] = "Jan Kowalski";
 
             $httpBackend.flush();
         }));
@@ -81,7 +82,6 @@ describe("Entries Controller", function () {
            $httpBackend.flush();
 
            // Then
-           expect(userSessionService.loggedUser).toBe(null);
            expect(scope.isLogged()).toBe(false);
         });
 

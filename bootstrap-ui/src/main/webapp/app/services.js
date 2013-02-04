@@ -98,6 +98,7 @@ services.factory('UserSessionService', function ($resource, $cookies) {
     userSessionService.logout = function (successFunction) {
         self.logoutResource.query(null, function (data) {
             userSessionService.loggedUser = null;
+            $cookies["scentry.auth.default.user"] = undefined;
             if (typeof successFunction === "function") {
                 successFunction(data);
             }
