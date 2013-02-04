@@ -1,6 +1,6 @@
 "use strict";
 
-var controllers = angular.module('smlBootstrap.controllers', ['smlBootstrap.services']);
+var controllers = angular.module('smlBootstrap.controllers', ['smlBootstrap.services', 'ngCookies']);
 
 controllers.controller('UptimeController', function UptimeController($scope, $timeout, UtilService) {
 
