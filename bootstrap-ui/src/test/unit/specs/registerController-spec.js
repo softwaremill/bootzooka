@@ -35,7 +35,7 @@ describe("Register Controller", function () {
             repeatPassword: {
                 $dirty: false,
                 $error: {
-                    dontMatch: false
+                    repeat: false
                 }
             },
             $invalid: false,
@@ -63,32 +63,15 @@ describe("Register Controller", function () {
         // verifyNoOutstandingRequest(); is checked after each test
     });
 
-    it('Should set error flag when passwords don\'t match', function () {
-        // Given
-        expect(scope.registerForm.repeatPassword.$error.dontMatch).toBe(false);
+    it("should not call register rest service when passwords don't match", function() {
+        //Given
+        scope.registerForm.repeatPassword.$error.repeat = true;
 
-        scope.user.password = "secret";
-        scope.user.repeatPassword = "othersecret";
+        //When
+        scope.register();
 
-        // When
-        scope.checkPassword();
-
-        // Then
-        expect(scope.registerForm.repeatPassword.$error.dontMatch).toBe(true);
-    });
-
-    it('Should not set error flag when passwords match', function () {
-        // Given
-        expect(scope.registerForm.repeatPassword.$error.dontMatch).toBe(false);
-
-        scope.user.password = "secret";
-        scope.user.repeatPassword = "secret";
-
-        // When
-        scope.checkPassword();
-
-        // Then
-        expect(scope.registerForm.repeatPassword.$error.dontMatch).toBe(false);
+        //Then
+        //no outstanding requests (checked after test)
     });
 
 });
