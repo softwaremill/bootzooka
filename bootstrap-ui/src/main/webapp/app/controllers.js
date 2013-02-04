@@ -161,7 +161,7 @@ controllers.controller('RegisterController', function RegisterController($scope,
         $scope.registerForm.email.$dirty = true;
         $scope.registerForm.repeatPassword.$dirty = true;
 
-        if ($scope.registerForm.$valid && !$scope.registerForm.repeatPassword.$error.dontMatch) {
+        if ($scope.registerForm.$valid && !$scope.registerForm.repeatPassword.$error.repeat) {
             var jsonUser = {}; // create dedicated object to pass only specific fields
             jsonUser.login = $scope.user.login;
             jsonUser.email = $scope.user.email;
@@ -240,7 +240,7 @@ controllers.controller('PasswordRecoveryController', function PasswordRecoveryCo
         $scope.changePasswordForm.password.$dirty = true;
         $scope.changePasswordForm.repeatPassword.$dirty = true;
 
-        if ($scope.changePasswordForm.$valid && !$scope.changePasswordForm.repeatPassword.$error.dontMatch) {
+        if ($scope.changePasswordForm.$valid && !$scope.changePasswordForm.repeatPassword.$error.repeat) {
             PasswordRecoveryService.changePassword($routeParams.code, $scope.password, self.onChangeSuccess, self.onChangeFailure);
         }
     };
