@@ -138,17 +138,26 @@ describe("Profile Controller", function () {
     });
 
     describe("when changing password", function () {
-        it("should call ReST service when form is valid", function () {
+        beforeEach(function () {
             scope.passwordChangeForm = {
+                currentPassword: {
+                    $dirty: false
+                },
+                newPassword: {
+                    $dirty: false
+                },
                 newPasswordRepeated: {
+                    $dirty: false,
                     $error: {
-                        dontMatch: false
+                        repeat: false
                     }
                 },
                 $valid: true,
                 $setPristine: function () {
                 }
             };
+        });
+        it("should call ReST service when form is valid", function () {
             $httpBackend.expectPOST('rest/users/changepassword', '{"currentPassword":"pass","newPassword":"NewPass"}').respond('nothing');
             scope.currentPassword = 'pass';
             scope.newPassword = 'NewPass';
@@ -157,77 +166,31 @@ describe("Profile Controller", function () {
             $httpBackend.flush();
         });
         it("should not call ReST service when current password is missing", function () {
-            scope.passwordChangeForm = {
-                newPasswordRepeated: {
-                    $error: {
-                        dontMatch: false
-                    }
-                },
-                $valid: false,
-                $setPristine: function () {
-                }
-            };
+            scope.passwordChangeForm.$valid = false;
             scope.currentPassword = '';
             scope.changePassword();
         });
         it("should not call ReST service when new password is missing", function () {
-            scope.passwordChangeForm = {
-                newPasswordRepeated: {
-                    $error: {
-                        dontMatch: false
-                    }
-                },
-                $valid: false,
-                $setPristine: function () {
-                }
-            };
+            scope.passwordChangeForm.$valid = false;
             scope.currentPassword = 'pass';
             scope.newPassword = '';
             scope.changePassword();
         });
         it("should not call ReST service when repeated password is missing", function () {
-            scope.passwordChangeForm = {
-                newPasswordRepeated: {
-                    $error: {
-                        dontMatch: false
-                    }
-                },
-                $valid: false,
-                $setPristine: function () {
-                }
-            };
+            scope.passwordChangeForm.$valid = false;
             scope.currentPassword = 'pass';
             scope.newPassword = 'newPass';
             scope.newPasswordRepeated = '';
             scope.changePassword();
         });
         it("should not call ReST service when repeated password doesn't match new password", function () {
-            scope.passwordChangeForm = {
-                newPasswordRepeated: {
-                    $error: {
-                        dontMatch: true
-                    }
-                },
-                $valid: false,
-                $setPristine: function () {
-                }
-            };
+            scope.passwordChangeForm.$valid = false;
             scope.currentPassword = 'pass';
             scope.newPassword = 'newPass';
             scope.newPasswordRepeated = 'newwPass';
             scope.changePassword();
         });
         it("should mark form pristine after successful change", function () {
-            scope.passwordChangeForm = {
-                newPasswordRepeated: {
-                    $error: {
-                        dontMatch: false
-                    }
-                },
-                $valid: true,
-                $setPristine: function () {
-                }
-            };
             $httpBackend.expectPOST('rest/users/changepassword', '{"currentPassword":"pass","newPassword":"NewPass"}').respond('nothing');
             scope.currentPassword = 'pass';
             scope.newPassword = 'NewPass';
@@ -235,9 +198,9 @@ describe("Profile Controller", function () {
             scope.changePassword();
             $httpBackend.flush();
             expect(scope.passwordChangeForm.$setPristine());
-            expect(scope.currentPassword).toBe('');
-            expect(scope.newPassword).toBe('');
-            expect(scope.newPasswordRepeated).toBe('');
+            expect(scope.currentPassword).toBe(undefined);
+            expect(scope.newPassword).toBe(undefined);
+            expect(scope.newPasswordRepeated).toBe(undefined);
         });
     });
 
