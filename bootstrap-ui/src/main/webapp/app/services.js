@@ -1,6 +1,6 @@
 "use strict";
 
-var services = angular.module('smlBootstrap.services', ['ngResource']);
+var services = angular.module('smlBootstrap.services', ['ngResource', 'ngCookies']);
 
 var dontBlockOnAjaxHeader = { "dontBlockPageOnAjax": "true" };
 var nonArrayGetWithoutBlockOnAjax = { method: "GET", isArray: false, headers: dontBlockOnAjaxHeader };
