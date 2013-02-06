@@ -107,6 +107,8 @@ object Dependencies {
 
   val scalate = "org.fusesource.scalate" % "scalate-core_2.9" % "1.6.0"
 
+  val jruby = "org.jruby" % "jruby-complete" % "1.7.2"
+
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
   val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
@@ -178,6 +180,12 @@ object SmlBootstrapBuild extends Build {
       jasmineRequireJsFile <+= sourceDirectory { src => src / "test" / "lib" / "require" / "require-2.0.6.js" },
       jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "unit" / "require.conf.js" },
       (test in Test) <<= (test in Test) dependsOn (jasmine))
+  ) dependsOn (rest)
+
+  lazy val uiTests = Project(
+  "bootstrap-ui-tests",
+  file("bootstrap-ui-tests"),
+  settings = buildSettings ++ Seq(libraryDependencies ++= Seq(jruby))
   ) dependsOn (rest)
 
 }
