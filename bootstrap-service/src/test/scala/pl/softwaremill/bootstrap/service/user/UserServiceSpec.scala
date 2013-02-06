@@ -1,16 +1,15 @@
 package pl.softwaremill.bootstrap.service.user
 
-import org.specs2.mutable.Specification
 import pl.softwaremill.bootstrap.dao.{InMemoryUserDAO, UserDAO}
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.service.schedulers.EmailSendingService
 import pl.softwaremill.bootstrap.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import org.mockito.Matchers
-import pl.softwaremill.bootstrap.service.data.UserJson
+import org.scalatest.{BeforeAndAfter, FlatSpec}
+import org.scalatest.matchers.ShouldMatchers
 
-class UserServiceSpec extends Specification with Mockito {
-
+class UserServiceSpec extends FlatSpec with ShouldMatchers with Mockito with BeforeAndAfter {
   def prepareUserDAOMock: UserDAO = {
     val dao = new InMemoryUserDAO
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
@@ -21,159 +20,146 @@ class UserServiceSpec extends Specification with Mockito {
   val registrationDataValidator: RegistrationDataValidator = mock[RegistrationDataValidator]
   val emailSendingService: EmailSendingService = mock[EmailSendingService]
   val emailTemplatingEngine = mock[EmailTemplatingEngine]
-  val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService, emailTemplatingEngine)
+  var userDAO: UserDAO = _
+  var userService: UserService = _
 
-  "findByEmail" should {
-    // this test is silly :\
-    "return user for admin@sml.pl" in {
-      val user: UserJson = userService.findByEmail("admin@sml.com").getOrElse(null)
+  before {
+    userDAO = prepareUserDAOMock
+    userService = new UserService(userDAO, registrationDataValidator, emailSendingService, emailTemplatingEngine)
+  }
 
-      there was user !== null
-      there was user.login === "Admin"
+  // this test is silly :\
+  "findByEmail" should "return user for admin@sml.pl" in {
+    val userOpt = userService.findByEmail("admin@sml.com")
+
+    userOpt.map(_.login) should be (Some("Admin"))
+  }
+
+  "findByEmail" should  "return user for uppercased ADMIN@SML.PL" in {
+    val userOpt = userService.findByEmail("ADMIN@SML.COM")
+
+    userOpt.map(_.login) should be (Some("Admin"))
+  }
+
+  "checkExistence" should "don't find given user login and e-mail" in {
+    val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("newUser", "newUser@sml.com")
+    userExistence.isRight should be (true)
+  }
+
+  "checkExistence" should "find duplicated login" in {
+    val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("Admin", "newUser@sml.com")
+
+    userExistence.isLeft should be (true)
+    userExistence.left.get.equals("Login already in use!")
+  }
+
+  "checkExistence" should "find duplicated login written as upper cased string" in {
+    val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("ADMIN", "newUser@sml.com")
+
+    userExistence.isLeft should be (true)
+    userExistence.left.get.equals("Login already in use!")
+  }
+
+  "checkExistence" should "find duplicated email" in {
+    val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("newUser", "admin@sml.com")
+
+    userExistence.isLeft should be (true)
+    userExistence.left.get.equals("E-mail already in use!")
+  }
+
+  "checkExistence" should "find duplicated email written as upper cased string" in {
+    val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("newUser", "ADMIN@sml.com")
+
+    userExistence.isLeft should be (true)
+    userExistence.left.get.equals("E-mail already in use!")
+  }
+
+
+  "registerNewUser" should "add user with duplicated lowercased login info" in {
+    // When
+    userService.registerNewUser("John", "newUser@sml.com", "password")
+
+    // Then
+    val userOpt: Option[User] = userDAO.findByLowerCasedLogin("John")
+    userOpt.isDefined should be (true)
+    val user = userOpt.get
+
+    user.login should be ("John")
+    user.loginLowerCased should be ("john")
+    there was one(emailTemplatingEngine).registrationConfirmation(Matchers.eq("John"))
+    there was one(emailSendingService)
+      .scheduleEmail(Matchers.eq("newUser@sml.com"), any[EmailContentWithSubject])
+  }
+
+  "registerNewUser" should "not schedule an email on existing login" in {
+    // When
+    try {
+      userService.registerNewUser("John", "secondEmail@sml.com", "password")
     }
+    catch {
+      case e: Exception =>
+    }
+    // Then
+    there was no(emailSendingService)
+      .scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
+  }
 
-    "return user for uppercased ADMIN@SML.PL" in {
-      val user: UserJson = userService.findByEmail("ADMIN@SML.COM").getOrElse(null)
-
-      there was user !== null
-      there was user.login === "Admin"
+  "changeEmail" should "change email for specified user" in {
+    val user = userDAO.findByLowerCasedLogin("admin")
+    val userEmail = user.get.email
+    val newEmail = "new@email.com"
+    userService.changeEmail(userEmail, newEmail) should be ('right)
+    userDAO.findByEmail(newEmail) match {
+      case Some(cu) =>
+      case None => fail("User not found. Maybe e-mail wasn't really changed?")
     }
   }
 
-  "checkExistence" should {
-    val userService = new UserService(prepareUserDAOMock, registrationDataValidator, emailSendingService, emailTemplatingEngine)
+  "changeEmail" should "not change email if already used by someone else" in {
+    userService.changeEmail("admin@sml.com", "admin2@sml.com") should be ('left)
+  }
 
-    "don't find given user login and e-mail" in {
-      val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("newUser", "newUser@sml.com")
-      userExistence.isRight === true
-    }
-
-    "find duplicated login" in {
-      val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("Admin", "newUser@sml.com")
-
-      userExistence.isLeft === true
-      userExistence.left.get.equals("Login already in use!")
-    }
-
-    "find duplicated login written as upper cased string" in {
-      val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("ADMIN", "newUser@sml.com")
-
-      userExistence.isLeft === true
-      userExistence.left.get.equals("Login already in use!")
-    }
-
-    "find duplicated email" in {
-      val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("newUser", "admin@sml.com")
-
-      userExistence.isLeft === true
-      userExistence.left.get.equals("E-mail already in use!")
-    }
-
-    "find duplicated email written as upper cased string" in {
-      val userExistence: Either[String, Unit] = userService.checkUserExistenceFor("newUser", "ADMIN@sml.com")
-
-      userExistence.isLeft === true
-      userExistence.left.get.equals("E-mail already in use!")
+  "changeLogin" should "change login for specified user" in {
+    val user = userDAO.findByLowerCasedLogin("admin")
+    val userLogin = user.get.login
+    val newLogin = "newadmin"
+    userService.changeLogin(userLogin, newLogin) should be ('right)
+    userDAO.findByLowerCasedLogin(newLogin) match {
+      case Some(cu) =>
+      case None => fail("User not found. Maybe login wasn't really changed?")
     }
   }
 
-  "registerNewUser" should {
-    val userDAOMock: UserDAO = prepareUserDAOMock
-    val userService = new UserService(userDAOMock, registrationDataValidator, emailSendingService, emailTemplatingEngine)
-
-    "add user with duplicated lowercased login info" in {
-      // When
-      userService.registerNewUser("John", "newUser@sml.com", "password")
-
-      // Then
-      val userOpt: Option[User] = userDAOMock.findByLowerCasedLogin("John")
-      userOpt.isDefined === true
-      val user = userOpt.get
-
-      there was user.login === "John"
-      there was user.loginLowerCased === "john"
-      there was one(emailTemplatingEngine).registrationConfirmation(Matchers.eq("John"))
-      there was one(emailSendingService)
-        .scheduleEmail(Matchers.eq("newUser@sml.com"), any[EmailContentWithSubject])
-    }
-
-    "not schedule an email on existing login" in {
-      // When
-      try {
-        userService.registerNewUser("John", "secondEmail@sml.com", "password")
-      }
-      catch {
-        case e: Exception =>
-      }
-      // Then
-      there was no(emailSendingService)
-        .scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
-    }
-
+  "changeLogin" should "not change login if already used by someone else" in {
+    userService.changeLogin("admin", "admin2") should be ('left)
   }
 
-  "changeEmail" should {
-    val userDAO: UserDAO = prepareUserDAOMock
-    val userService = new UserService(userDAO, registrationDataValidator, emailSendingService, emailTemplatingEngine)
 
-    "change email for specified user" in {
-      val user = userDAO.findByLowerCasedLogin("admin")
-      val userEmail = user.get.email
-      val newEmail = "new@email.com"
-      userService.changeEmail(userEmail, newEmail) must beRight[Unit]
-      userDAO.findByEmail(newEmail) match {
-        case Some(cu) => success
-        case None => failure("User not found. Maybe e-mail wasn't really changed?")
-      }
-    }
+  "changePassword" should "change password if current is correct and new is present" in {
+    // Given
+    val user = userDAO.findByLowerCasedLogin("admin").get
+    val currentPassword = "pass"
+    val newPassword = "newPass"
 
-    "not change email if already used by someone else" in {
-       userService.changeEmail("admin@sml.com", "admin2@sml.com") must beLeft[String]("E-mail used by another user")
+    // When
+    userService.changePassword(user.token, currentPassword, newPassword) should be ('right)
+
+    // Then
+    userDAO.findByLowerCasedLogin("admin") match {
+      case Some(cu) => cu.password should be (User.encryptPassword(newPassword, cu.salt))
+      case None => fail("Something bad happened, maybe mocked DAO is broken?")
     }
   }
 
-  "changeLogin" should {
-    val userDAO: UserDAO = prepareUserDAOMock
-    val userService = new UserService(userDAO, registrationDataValidator, emailSendingService, emailTemplatingEngine)
-
-    "change login for specified user" in {
-      val user = userDAO.findByLowerCasedLogin("admin")
-      val userLogin = user.get.login
-      val newLogin = "newadmin"
-      userService.changeLogin(userLogin, newLogin) must beRight[Unit]
-      userDAO.findByLowerCasedLogin(newLogin) match {
-        case Some(cu) => success
-        case None => failure("User not found. Maybe login wasn't really changed?")
-      }
-    }
-
-    "not change login if already used by someone else" in {
-      userService.changeLogin("admin", "admin2") must beLeft[String]("Login is already taken")
-    }
-  }
-
-  "changePassword" should {
-    val userDAO: UserDAO = prepareUserDAOMock
-    val userService = new UserService(userDAO, registrationDataValidator, emailSendingService, emailTemplatingEngine)
+  "changePassword" should "not change password if current is incorrect" in {
+    // Given
     val user = userDAO.findByLowerCasedLogin("admin").get
 
-    "change password if current is correct and new is present" in {
-      val currentPassword = "pass"
-      val newPassword = "newPass"
-      userService.changePassword(user.token, currentPassword, newPassword) must beRight[Unit]
-      userDAO.findByLowerCasedLogin("admin") match {
-        case Some(cu) => cu.password must be equalTo User.encryptPassword(newPassword, cu.salt)
-        case None => failure("Something bad happened, maybe mocked DAO is broken?")
-      }
-    }
-
-    "not change password if current is incorrect" in {
-      userService.changePassword(user.token, "someillegalpass", "newpass") must beLeft("Current password is invalid")
-    }
-
-    "complain when user cannot be found" in {
-      userService.changePassword("someirrelevanttoken", "pass", "newpass") must beLeft("User not found hence cannot change password")
-    }
+    // When, Then
+    userService.changePassword(user.token, "someillegalpass", "newpass") should be ('left)
   }
 
+  "changePassword" should "complain when user cannot be found" in {
+    userService.changePassword("someirrelevanttoken", "pass", "newpass") should be ('left)
+  }
 }

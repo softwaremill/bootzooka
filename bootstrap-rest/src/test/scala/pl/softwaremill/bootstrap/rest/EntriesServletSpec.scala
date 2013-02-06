@@ -1,34 +1,15 @@
 package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
-import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.BootstrapServletSpec
 import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, EntryJson}
 import org.json4s.JsonDSL._
 import pl.softwaremill.bootstrap.service.entry.EntryService
 
-// For more on Specs2, see http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html
 class EntriesServletSpec extends BootstrapServletSpec {
+  behavior of "EntriesServlet"
 
-  def is =
-    sequential ^
-      "EntriesServlet" ^
-      "GET should return status 200"                        ! root200 ^
-      "GET should return content-type application/json"     ! contentJson ^
-      "GET with id should return not escaped entry details" ! returnNotEscapedSingleEntryDetails ^
-      "GET should return escaped JSON entries"              ! escapedJsonEntries add
-      "GET /count on EntriesServlet" ^
-        "should return number of entries"                   ! countEntries add
-      "GET /count-newer on EntriesServlet" ^
-        "should return number of new entries"               ! countNewEntries add
-      "POST / on EntriesServiet" ^
-        "should return 401 for non logged user"             ! tryUpdateExistingEntry add
-      "PUT / on EntriesServiet" ^
-        "should return 401 for non logged user"             ! tryCreateNewEntry
-
-  end
-
-  def onServletWithMocks(test:(EntryService, UserService) => MatchResult[Any]): MatchResult[Any] = {
+  def onServletWithMocks(test:(EntryService, UserService) => Unit) {
     val userService = mock[UserService]
 
     val entryService = mock[EntryService]
@@ -45,58 +26,73 @@ class EntriesServletSpec extends BootstrapServletSpec {
     test(entryService, userService)
   }
 
-  def root200 = onServletWithMocks { (entryService, userService) =>
+  "GET /" should "return status 200" in {
+    onServletWithMocks { (entryService, userService) =>
+      get("/") {
+        status === 200
+        there was one(entryService).loadAll
+        there was no(entryService).load("0")
+      }
+    }
+  }
+
+  "GET /" should "return content-type application/json" in {
+    onServletWithMocks { (entryService, userService) =>
+      get("/") {
+        header("Content-Type") contains "application/json"
+        there was one(entryService).loadAll
+        there was no(entryService).load("0")
+      }
+    }
+  }
+
+  "GET with id" should "return not escaped entry details" in {
+    onServletWithMocks{ (entryService, userService) =>
+      get("/1", defaultJsonHeaders) {
+        body should be (mapToStringifiedJson(Map("id" -> "1", "text"-> "<script>alert('hacker')</script>", "author" -> "Jas Kowalski", "entered" -> "")))
+      }
+    }
+  }
+
+  "GET /" should "return escaped JSON entries" in {
     get("/") {
-      status === 200
-      there was one(entryService).loadAll
-      there was no(entryService).load("0")
+      body should include ("[{\"id\":\"1\",\"text\":\"&lt;script&gt;alert('hacker')&lt;/script&gt;\",\"author\":\"Jas Kowalski\",\"entered\":\"\"}]")
     }
   }
 
-  def contentJson = onServletWithMocks { (entryService, userService) =>
-    get("/") {
-      header("Content-Type") contains "application/json"
-      there was one(entryService).loadAll
-      there was no(entryService).load("0")
+  "GET /count" should "return number of entries" in {
+    onServletWithMocks { (entryService, userService) =>
+      get("/count") {
+        body should include ("{\"value\":4}")
+        there was one(entryService).count()
+      }
     }
   }
 
-  def returnNotEscapedSingleEntryDetails = onServletWithMocks{ (entryService, userService) =>
-    get("/1", defaultJsonHeaders) {
-      body mustEqual(mapToStringifiedJson(Map("id" -> "1", "text"-> "<script>alert('hacker')</script>", "author" -> "Jas Kowalski", "entered" -> "")))
+  "GET /count-newer" should "return number of new entries" in {
+    onServletWithMocks { (entryService, userService) =>
+      get("count-newer/10000") {
+        body should include ("{\"value\":10}")
+        there was one(entryService).countNewerThan(10000)
+      }
     }
   }
 
-  def escapedJsonEntries = get("/") {
-    body must contain("[{\"id\":\"1\",\"text\":\"&lt;script&gt;alert('hacker')&lt;/script&gt;\",\"author\":\"Jas Kowalski\",\"entered\":\"\"}]")
-  }
-
-  def countEntries = onServletWithMocks { (entryService, userService) =>
-    get("/count") {
-      body must contain("{\"value\":4}")
-      there was one(entryService).count()
+  "POST /" should "return 401 for non logged user" in {
+    onServletWithMocks { (entryService, userService) =>
+      post("/", "anything") {
+        status should be (401)
+        there was noCallsTo(entryService)
+      }
     }
   }
 
-  def countNewEntries = onServletWithMocks { (entryService, userService) =>
-    get("count-newer/10000") {
-      body must contain("{\"value\":10}")
-      there was one(entryService).countNewerThan(10000)
+  "PUT /" should "return 401 for non logged user" in {
+    onServletWithMocks { (entryService, userService) =>
+      put("/", "anything") {
+        status should be (401)
+        there was noCallsTo(entryService)
+      }
     }
   }
-
-  def tryUpdateExistingEntry = onServletWithMocks { (entryService, userService) =>
-    post("/", "anything") {
-      status === 401
-      there was noCallsTo(entryService)
-    }
-  }
-
-  def tryCreateNewEntry =  onServletWithMocks { (entryService, userService) =>
-    put("/", "anything") {
-      status === 401
-      there was noCallsTo(entryService)
-    }
-  }
-
 }

@@ -1,6 +1,5 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
 import pl.softwaremill.bootstrap.dao.InMemoryUserDAO
 import pl.softwaremill.bootstrap.domain.User
@@ -11,30 +10,9 @@ import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
 import org.mockito.Matchers
 
 class UsersServletSpec extends BootstrapServletSpec {
-
-  def is = sequential ^ "UserServlet" ^
-    "PUT should register new user" ! shouldRegisterNewUser ^
-    "PUT with invalid data return error message" ! shouldReturnErrorMessageOnInvalidData ^
-    "PUT should use escaped Strings" ! registerShouldUseEscapedStrings ^
-    "PATCH should should complain when user is not authenticated" ! shouldDoNothingForUnathenticatedUser ^
-    "PATCH should update login when login is given" ! shouldUpdateLoginWhenPresent ^
-    "PATCH should not update login when not in request" ! shouldNotUpdateLoginWhenNoLoginPresent ^
-    "PATCH should not update login when login is blank" ! shouldNotUpdateLoginWhenBlankLoginIsSent ^
-    "PATCH should not update login when already used by another user" ! shouldNotUpdateLoginWhenLoginIsAlreadyTaken ^
-    "PATCH should update email when email is given" ! shouldUpdateEmailWhenPresent ^
-    "PATCH should not update email when not in request" ! shouldNotUpdateEmailWhenNoEmailPresent ^
-    "PATCH should not update email when email is blank" ! shouldNotUpdateEmailWhenBlankEmailIsSent ^
-    "PATCH should not update email when it's used by another user" ! shouldNotUpdateEmailWhenAlreadyUsed ^
-    "POST /changepassword should update password if current is correct and new is present" ! shouldChangePasswordIfCurrentIsOk ^
-    "POST /changepassword should not update password if current is wrong" ! shouldNotChangePasswordIfCurrentIsWrong ^
-    "POST /changepassword should not update password if current is missing" ! shouldNotChangePasswordIfCurrentIsMissing ^
-    "POST /changepassword should not update password if current is correct but new is missing" ! shouldNotChangePasswordIfNewIsMissing
-
-  end
-
   var servlet: UsersServlet = _
 
-  def onServletWithMocks(testToExecute: (UserService) => MatchResult[Any]): MatchResult[Any] = {
+  def onServletWithMocks(testToExecute: (UserService) => Unit) = {
     val dao = new InMemoryUserDAO
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
     dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
@@ -47,176 +25,208 @@ class UsersServletSpec extends BootstrapServletSpec {
     testToExecute(userService)
   }
 
-  def shouldRegisterNewUser = onServletWithMocks {
-    (userService) =>
-      post("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),
-        defaultJsonHeaders) {
-        there was one(userService).registerNewUser("newUser", "newUser@sml.com", "secret")
-        status must_== 200
-      }
-  }
-
-  def shouldReturnErrorMessageOnInvalidData = onServletWithMocks {
-    (userService) =>
-      post("/register", defaultJsonHeaders) {
-        val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
-        option must beEqualTo(Some("Wrong user data!"))
-        status must_== 200
-      }
-  }
-
-  def registerShouldUseEscapedStrings = onServletWithMocks {
-    (userService) =>
-      post("/register", mapToJson(Map("login" -> "<script>alert('haxor');</script>", "email" -> "newUser@sml.com", "password" -> "secret")), defaultJsonHeaders) {
-        there was one(userService).registerNewUser("&lt;script&gt;alert('haxor');&lt;/script&gt;", "newUser@sml.com", "secret")
-      }
-  }
-
-  def shouldNotUpdateEmailWhenNoEmailPresent = onServletWithMocks(userService => {
-    patch("/", mapToJson(Map("irrelevant" -> "")), defaultJsonHeaders) {
-      there was no(userService).changeEmail(anyString, anyString)
+  "POST /" should "register new user" in {
+    onServletWithMocks {
+      (userService) =>
+        post("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),
+          defaultJsonHeaders) {
+          there was one(userService).registerNewUser("newUser", "newUser@sml.com", "secret")
+          status should be (200)
+        }
     }
-  })
+  }
 
-  def shouldNotUpdateEmailWhenBlankEmailIsSent = onServletWithMocks(userService => {
-    patch("/", mapToJson(Map("email" -> "")), defaultJsonHeaders) {
-      there was no(userService).changeEmail(anyString, anyString)
+  "POST / with invalid data" should "return error message" in {
+    onServletWithMocks {
+      (userService) =>
+        post("/register", defaultJsonHeaders) {
+          val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
+          option should be(Some("Wrong user data!"))
+          status should be (200)
+        }
     }
-  })
+  }
 
-  def shouldUpdateEmailWhenPresent = onServletWithMocks(userService => {
-    val email = "coolmail@awesome.rox"
-    session {
-      //authenticate to perform change
-      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
-        status must be equalTo 200
+  "POST /register" should "use escaped Strings" in {
+    onServletWithMocks {
+      (userService) =>
+        post("/register", mapToJson(Map("login" -> "<script>alert('haxor');</script>", "email" -> "newUser@sml.com", "password" -> "secret")), defaultJsonHeaders) {
+          there was one(userService).registerNewUser("&lt;script&gt;alert('haxor');&lt;/script&gt;", "newUser@sml.com", "secret")
+        }
+    }
+  }
+
+  "PATCH /" should "not update email when not in request" in {
+    onServletWithMocks(userService => {
+      patch("/", mapToJson(Map("irrelevant" -> "")), defaultJsonHeaders) {
+        there was no(userService).changeEmail(anyString, anyString)
       }
+    })
+  }
 
+  "PATCH /" should "not update email when email is blank" in {
+    onServletWithMocks(userService => {
+      patch("/", mapToJson(Map("email" -> "")), defaultJsonHeaders) {
+        there was no(userService).changeEmail(anyString, anyString)
+      }
+    })
+  }
+
+  "PATCH /" should "update email when email is given" in {
+    onServletWithMocks(userService => {
+      val email = "coolmail@awesome.rox"
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be (200)
+        }
+
+        patch("/", mapToJson(Map("email" -> email)), defaultJsonHeaders) {
+          status should be (200)
+          there was one(userService).changeEmail(anyString, Matchers.eq(email))
+        }
+      }
+    })
+  }
+
+  "PATCH /" should "complain when user is not authenticated" in {
+    onServletWithMocks(userService => {
+      val email = "coolmail@awesome.rox"
       patch("/", mapToJson(Map("email" -> email)), defaultJsonHeaders) {
-        status must be equalTo 200
-        there was one(userService).changeEmail(anyString, Matchers.eq(email))
+        status should be (401)
       }
-    }
-  })
+    })
+  }
 
-  def shouldDoNothingForUnathenticatedUser = onServletWithMocks(userService => {
-    val email = "coolmail@awesome.rox"
-    patch("/", mapToJson(Map("email" -> email)), defaultJsonHeaders) {
-      status must be equalTo 401
-    }
-  })
-
-  def shouldNotUpdateEmailWhenAlreadyUsed = onServletWithMocks(userService => {
-    session {
-      //authenticate to perform change
-      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
-        status must be equalTo 200
+  "PATCH /" should "not update email when it's used by another user" in {
+    onServletWithMocks(userService => {
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be (200)
+        }
+        patch("/", mapToJson(Map("email" -> "admin2@sml.com")), defaultJsonHeaders) {
+          val opt = (stringToJson(body) \ "value").extractOpt[String]
+          status should be (403)
+          opt must be (Some("E-mail used by another user"))
+        }
       }
-      patch("/", mapToJson(Map("email" -> "admin2@sml.com")), defaultJsonHeaders) {
-        val opt = (stringToJson(body) \ "value").extractOpt[String]
-        status must be equalTo (403)
-        opt must be some ("E-mail used by another user")
-      }
-    }
-  })
+    })
+  }
 
-  def shouldNotUpdateLoginWhenNoLoginPresent = onServletWithMocks(userService => {
-    patch("/", mapToJson(Map("irrelevant" -> "")), defaultJsonHeaders) {
-      there was no(userService).changeLogin(anyString, anyString)
-    }
-  })
-
-  def shouldNotUpdateLoginWhenBlankLoginIsSent = onServletWithMocks(userService => {
-    patch("/", mapToJson(Map("login" -> "")), defaultJsonHeaders) {
-      there was no(userService).changeLogin(anyString, anyString)
-    }
-  })
-
-  def shouldUpdateLoginWhenPresent = onServletWithMocks(userService => {
-    val login = "coolNewLogin"
-    session {
-      //authenticate to perform change
-      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
-        status must be equalTo 200
+  "PATCH /" should "not update login when not in request" in {
+    onServletWithMocks(userService => {
+      patch("/", mapToJson(Map("irrelevant" -> "")), defaultJsonHeaders) {
+        there was no(userService).changeLogin(anyString, anyString)
       }
+    })
+  }
 
-      patch("/", mapToJson(Map("login" -> login)), defaultJsonHeaders) {
-        status must be equalTo 200
-        there was one(userService).changeLogin(anyString, Matchers.eq(login))
+  "PATCH /" should "not update login when login is blank" in {
+    onServletWithMocks(userService => {
+      patch("/", mapToJson(Map("login" -> "")), defaultJsonHeaders) {
+        there was no(userService).changeLogin(anyString, anyString)
       }
-    }
-  })
+    })
+  }
 
-  def shouldNotUpdateLoginWhenLoginIsAlreadyTaken = onServletWithMocks(userService => {
-    session {
-      //authenticate to perform change
-      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
-        status must be equalTo 200
-      }
-      patch("/", mapToJson(Map("login" -> "admin2")), defaultJsonHeaders) {
-        val opt = (stringToJson(body) \ "value").extractOpt[String]
-        status must be equalTo 403
-        opt must be some ("Login is already taken")
-      }
-    }
-  })
+  "PATCH /" should "update login when login is given" in {
+    onServletWithMocks(userService => {
+      val login = "coolNewLogin"
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be (200)
+        }
 
-  def shouldChangePasswordIfCurrentIsOk = onServletWithMocks(userService => {
-    session {
-      //authenticate to perform change
-      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
-        status must be equalTo 200
+        patch("/", mapToJson(Map("login" -> login)), defaultJsonHeaders) {
+          status should be (200)
+          there was one(userService).changeLogin(anyString, Matchers.eq(login))
+        }
       }
+    })
+  }
 
-      post("/changepassword", mapToJson(Map("currentPassword" -> "pass", "newPassword" -> "newPass")), defaultJsonHeaders) {
-        status must be equalTo 200
+  "PATCH /" should "not update login when already used by another user" in {
+    onServletWithMocks(userService => {
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be (200)
+        }
+        patch("/", mapToJson(Map("login" -> "admin2")), defaultJsonHeaders) {
+          val opt = (stringToJson(body) \ "value").extractOpt[String]
+          status should be (403)
+          opt must be (Some("Login is already taken"))
+        }
       }
-    }
-  })
+    })
+  }
 
-  def shouldNotChangePasswordIfCurrentIsWrong = onServletWithMocks(userService => {
-    session {
-      //authenticate to perform change
-      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
-        status must be equalTo 200
-      }
+  "POST /changepassword" should "update password if current is correct and new is present" in {
+    onServletWithMocks(userService => {
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be (200)
+        }
 
-      post("/changepassword", mapToJson(Map("currentPassword" -> "passwrong", "newPassword" -> "newPass")), defaultJsonHeaders) {
-        val opt = (stringToJson(body) \ "value").extractOpt[String]
-        status must be equalTo 403
-        opt must be some("Current password is invalid")
+        post("/changepassword", mapToJson(Map("currentPassword" -> "pass", "newPassword" -> "newPass")), defaultJsonHeaders) {
+          status should be (200)
+        }
       }
-    }
-  })
+    })
+  }
 
-  def shouldNotChangePasswordIfCurrentIsMissing = onServletWithMocks(userService => {
-    session {
-      //authenticate to perform change
-      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
-        status must be equalTo 200
-      }
+  "POST /changepassword" should "not update password if current is wrong" in {
+    onServletWithMocks(userService => {
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be (200)
+        }
 
-      post("/changepassword", mapToJson(Map("newPassword" -> "pass")), defaultJsonHeaders) {
-        val opt = (stringToJson(body) \ "value").extractOpt[String]
-        status must be equalTo 403
-        opt must be some("Parameter currentPassword is missing")
+        post("/changepassword", mapToJson(Map("currentPassword" -> "passwrong", "newPassword" -> "newPass")), defaultJsonHeaders) {
+          val opt = (stringToJson(body) \ "value").extractOpt[String]
+          status should be (403)
+          opt must be (Some("Current password is invalid"))
+        }
       }
-    }
-  })
+    })
+  }
 
-  def shouldNotChangePasswordIfNewIsMissing = onServletWithMocks(userService => {
-    session {
-      //authenticate to perform change
-      post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
-        status must be equalTo 200
-      }
+  "POST /changepassword" should "not update password if current is missing" in {
+    onServletWithMocks(userService => {
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be (200)
+        }
 
-      post("/changepassword", mapToJson(Map("currentPassword" -> "pass")), defaultJsonHeaders) {
-        val opt = (stringToJson(body) \ "value").extractOpt[String]
-        status must be equalTo 403
-        opt must be some("Parameter newPassword is missing")
+        post("/changepassword", mapToJson(Map("newPassword" -> "pass")), defaultJsonHeaders) {
+          val opt = (stringToJson(body) \ "value").extractOpt[String]
+          status should be (403)
+          opt must be (Some("Parameter currentPassword is missing"))
+        }
       }
-    }
-  })
+    })
+  }
+
+  "POST /changepassword" should "not update password if current is correct but new is missing" in {
+    onServletWithMocks(userService => {
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be (200)
+        }
+
+        post("/changepassword", mapToJson(Map("currentPassword" -> "pass")), defaultJsonHeaders) {
+          val opt = (stringToJson(body) \ "value").extractOpt[String]
+          status should be (403)
+          opt must be (Some("Parameter newPassword is missing"))
+        }
+      }
+    })
+  }
 
 }

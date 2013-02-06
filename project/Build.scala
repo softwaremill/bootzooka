@@ -78,7 +78,7 @@ object Dependencies {
   val databaseLibs = Seq(casbah, salat)
 
   val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
-  val scalatraSpec2 = "org.scalatra" % "scalatra-specs2" % scalatraVersion % "test"
+  val scalatraScalatest = "org.scalatra" % "scalatra-scalatest" % scalatraVersion % "test"
   val scalatraJson = "org.scalatra" % "scalatra-json" % scalatraVersion
   val json4s = "org.json4s" %% "json4s-jackson" % "3.0.0"
   val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion  exclude("commons-logging", "commons-logging")
@@ -92,12 +92,12 @@ object Dependencies {
   val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container"
 
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
-  val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
+  val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
-  val scalatraStack = Seq(scalatra, scalatraSpec2, scalatraJson, json4s, scalatraAuth, commonsLang)
+  val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, json4s, scalatraAuth, commonsLang)
 
-  val testingDependencies = Seq(mockito, specs2)
+  val testingDependencies = Seq(mockito, scalatest)
 
   val javaxMail = "javax.mail" % "mail" % "1.4.5"
 

@@ -1,29 +1,29 @@
 package pl.softwaremill.bootstrap.service.templates
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.FlatSpec
 
-class EmailTemplatingEngineSpec extends Specification {
+class EmailTemplatingEngineSpec extends FlatSpec with ShouldMatchers {
+  behavior of "splitToContentAndSubject"
 
+  val engine = new EmailTemplatingEngine
 
-  "splitToContentAndSubject" should {
-
-    val engine = new EmailTemplatingEngine
-    "throw exception on invalid template" in {
-      engine.splitToContentAndSubject("invalid template") should throwA[IllegalArgumentException]
-    }
-
-    "not throw exception on correct template" in {
-      engine.splitToContentAndSubject("subect\nContent") should(throwA[IllegalArgumentException]).not
-    }
-
-    "split template into subject and content" in {
-      // When
-      val email = engine.splitToContentAndSubject("subject\nContent\nsecond line")
-
-      // Then
-      email.subject shouldEqual("subject")
-      email.content shouldEqual("Content\nsecond line")
+  it should "throw exception on invalid template" in {
+    intercept[Exception] {
+      engine.splitToContentAndSubject("invalid template")
     }
   }
 
+  it should "not throw exception on correct template" in {
+    engine.splitToContentAndSubject("subect\nContent")
+  }
+
+  it should "split template into subject and content" in {
+    // When
+    val email = engine.splitToContentAndSubject("subject\nContent\nsecond line")
+
+    // Then
+    email.subject should be ("subject")
+    email.content should be ("Content\nsecond line")
+  }
 }

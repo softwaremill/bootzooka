@@ -1,21 +1,21 @@
 package pl.softwaremill.bootstrap.service.user
 
-import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
-import org.specs2.specification.Fragment
 import org.bson.types.ObjectId
 import pl.softwaremill.bootstrap.domain.Entry
 import pl.softwaremill.bootstrap.service.entry.EntryService
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.FlatSpec
 
-class EntryServiceSpec extends Specification with Mockito {
+class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
 
   val validEntryId: String = "1" * 24
   val validUserId: String = "2" * 24
   val invalidEntryId: String = "-1"
   val validMessage: String = "This is a valid message"
 
-  def withCleanMocks(test: (EntryDAO, EntryService) => Fragment ) = {
+  def withCleanMocks(test: (EntryDAO, EntryService) => Unit) = {
     val entry = Entry(new ObjectId(validEntryId), validMessage, new ObjectId(validUserId))
 
     val entryDAOMock = mock[EntryDAO]
@@ -29,43 +29,38 @@ class EntryServiceSpec extends Specification with Mockito {
     test(entryDAOMock, entryService)
   }
 
-  "load" should {
+  "load" should "return EntryJson for valid id" in {
     withCleanMocks((entryDAO, entryService) => {
-      "return EntryJson for valid id" in {
-        val entry = entryService.load(validEntryId)
+      val entry = entryService.load(validEntryId)
 
-        there was one(entryDAO).load(validEntryId)
-        entry.isDefined must beTrue
-        entry.get.text must equalTo(validMessage)
-      }
-    })
-    withCleanMocks((entryDAO, entryService) => {
-      "return None for invalid id" in {
-        val entry = entryService.load(invalidEntryId)
-
-        there was one(entryDAO).load(invalidEntryId)
-        entry.isDefined must beFalse
-      }
+      there was one(entryDAO).load(validEntryId)
+      entry.isDefined should be (true)
+      entry.get.text should be (validMessage)
     })
   }
 
-  "remove" should {
+  "load" should "return None for invalid id" in {
     withCleanMocks((entryDAO, entryService) => {
-      "delegate to DAO" in {
-        entryService.remove(validEntryId)
+      val entry = entryService.load(invalidEntryId)
 
-        there was one(entryDAO).remove(validEntryId)
-      }
+      there was one(entryDAO).load(invalidEntryId)
+      entry should be (None)
     })
   }
 
-  "update" should {
+  "remove" should "delegate to DAO" in {
     withCleanMocks((entryDAO, entryService) => {
-      "delegate to DAO" in {
-        entryService.update(validEntryId, "text")
+      entryService.remove(validEntryId)
 
-        there was one(entryDAO).update(validEntryId, "text")
-      }
+      there was one(entryDAO).remove(validEntryId)
+    })
+  }
+
+  "update" should "delegate to DAO" in {
+    withCleanMocks((entryDAO, entryService) => {
+      entryService.update(validEntryId, "text")
+
+      there was one(entryDAO).update(validEntryId, "text")
     })
   }
 }

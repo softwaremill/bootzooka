@@ -1,77 +1,71 @@
 package pl.softwaremill.bootstrap.service.user
 
 import org.specs2.mock.Mockito
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.FlatSpec
 
-class RegistrationDataValidatorSpec extends Specification with Mockito {
+class RegistrationDataValidatorSpec extends FlatSpec with ShouldMatchers with Mockito {
+  val validator = new RegistrationDataValidator()
 
-    val validator = new RegistrationDataValidator()
+  "isDataValid()" should "accept valid data" in {
+    val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("admin@sml.com"), Some("password"))
 
+    dataIsValid should be (true)
+  }
 
-    "isDataValid()" should {
+  "isDataValid()" should "not accept missing login" in {
+    val dataIsValid: Boolean = validator.isDataValid(None, Some("admin@sml.com"), Some("password"))
 
-      "accept valid data" in {
-        val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("admin@sml.com"), Some("password"))
+    dataIsValid should be (false)
+  }
 
-        dataIsValid === true
-      }
+  "isDataValid()" should "not accept login containing only empty spaces" in {
+    val dataIsValid: Boolean = validator.isDataValid(Some("   "), Some("admin@sml.com"), Some("password"))
 
-      "not accept missing login" in {
-        val dataIsValid: Boolean = validator.isDataValid(None, Some("admin@sml.com"), Some("password"))
+    dataIsValid should be (false)
+  }
 
-        dataIsValid === false
-      }
+  "isDataValid()" should "not accept too short login" in {
+    val tooShortLogin: String = "a" * (RegistrationDataValidator.MinLoginLength - 1)
+    val dataIsValid: Boolean = validator.isDataValid(Some(tooShortLogin), Some("admin@sml.com"), Some("password"))
 
-      "not accept login containing only empty spaces" in {
-        val dataIsValid: Boolean = validator.isDataValid(Some("   "), Some("admin@sml.com"), Some("password"))
+    dataIsValid should be (false)
+  }
 
-        dataIsValid === false
-      }
+  "isDataValid()" should "not accept too short login after trimming" in {
+    val loginTooShortAfterTrim: String = "a" * (RegistrationDataValidator.MinLoginLength - 1) + "   "
+    val dataIsValid: Boolean = validator.isDataValid(Some(loginTooShortAfterTrim), Some("admin@sml.com"), Some("password"))
 
-      "not accept too short login" in {
-        val tooShortLogin: String = "a" * (RegistrationDataValidator.MinLoginLength - 1)
-        val dataIsValid: Boolean = validator.isDataValid(Some(tooShortLogin), Some("admin@sml.com"), Some("password"))
+    dataIsValid should be (false)
+  }
 
-        dataIsValid === false
-      }
+  "isDataValid()" should "not accept missing email" in {
+    val dataIsValid: Boolean = validator.isDataValid(Some("login"), None, Some("password"))
 
-      "not accept too short login after trimming" in {
-        val loginTooShortAfterTrim: String = "a" * (RegistrationDataValidator.MinLoginLength - 1) + "   "
-        val dataIsValid: Boolean = validator.isDataValid(Some(loginTooShortAfterTrim), Some("admin@sml.com"), Some("password"))
+    dataIsValid should be (false)
+  }
 
-        dataIsValid === false
-      }
+  "isDataValid()" should "not accept missing email with spaces only" in {
+    val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("   "), Some("password"))
 
-      "not accept missing email" in {
-        val dataIsValid: Boolean = validator.isDataValid(Some("login"), None, Some("password"))
+    dataIsValid should be (false)
+  }
 
-        dataIsValid === false
-      }
+  "isDataValid()" should "not accept invalid email" in {
+    val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("invalidEmail"), Some("password"))
 
-      "not accept missing email with spaces only" in {
-        val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("   "), Some("password"))
+    dataIsValid should be (false)
+  }
 
-        dataIsValid === false
-      }
+  "isDataValid()" should "not accept missing password" in {
+    val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("admin@sml.com"), None)
 
-      "not accept invalid email" in {
-        val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("invalidEmail"), Some("password"))
+    dataIsValid should be (false)
+  }
 
-        dataIsValid === false
-      }
+  "isDataValid()" should "not accept password with empty spaces only" in {
+    val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("admin@sml.com"), Some("    "))
 
-      "not accept missing password" in {
-        val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("admin@sml.com"), None)
-
-        dataIsValid === false
-      }
-
-      "not accept password with empty spaces only" in {
-        val dataIsValid: Boolean = validator.isDataValid(Some("login"), Some("admin@sml.com"), Some("    "))
-
-        dataIsValid === false
-      }
-
-    }
-
+    dataIsValid should be (false)
+  }
 }

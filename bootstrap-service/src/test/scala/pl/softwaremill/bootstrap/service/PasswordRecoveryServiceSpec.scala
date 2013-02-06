@@ -1,24 +1,21 @@
 package pl.softwaremill.bootstrap.service
 
-import org.specs2.mutable.Specification
 import schedulers.EmailSendingService
 import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO, InMemoryUserDAO}
 import pl.softwaremill.bootstrap.domain.{PasswordResetCode, User}
-import org.specs2.specification.Fragment
 import templates.{EmailTemplatingEngine, EmailContentWithSubject}
 import org.mockito.Matchers
 import org.bson.types.ObjectId
 import org.joda.time.DateTime
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.FlatSpec
 
-/**
- * .
- */
-class PasswordRecoveryServiceSpec extends Specification with Mockito {
+class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
   val invalidLogin = "user2"
   val validLogin = "user"
 
-  def withCleanMocks(test: (UserDAO, PasswordResetCodeDAO, EmailSendingService, PasswordRecoveryService, EmailTemplatingEngine) => Fragment) = {
+  def withCleanMocks(test: (UserDAO, PasswordResetCodeDAO, EmailSendingService, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
     val userDao = prepareUserDaoMock
     val codeDao = mock[PasswordResetCodeDAO]
     val emailSendingService = mock[EmailSendingService]
@@ -35,96 +32,93 @@ class PasswordRecoveryServiceSpec extends Specification with Mockito {
     userDao
   }
 
-  "sendResetCodeToUser" should {
-
+  "sendResetCodeToUser" should "search for user using provided login" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
-      "search for user using provided login" in {
-        passwordRecoveryService.sendResetCodeToUser(invalidLogin)
-        there was one(userDao).findByLoginOrEmail(invalidLogin)
-      }
+      passwordRecoveryService.sendResetCodeToUser(invalidLogin)
+      there was one(userDao).findByLoginOrEmail(invalidLogin)
     })
+  }
 
+  "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
-      "do nothing when login doesn't exist" in {
-        passwordRecoveryService.sendResetCodeToUser(invalidLogin)
-        there was no(emailSendingService).scheduleEmail(anyString, any)
-      }
+      passwordRecoveryService.sendResetCodeToUser(invalidLogin)
+      there was no(emailSendingService).scheduleEmail(anyString, any)
     })
+  }
 
+  "sendResetCodeToUser" should "store generated code for reuse" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
-      "store generated code for reuse" in {
-        passwordRecoveryService.sendResetCodeToUser(validLogin)
-        there was one(codeDao).store(any[PasswordResetCode])
-      }
+      passwordRecoveryService.sendResetCodeToUser(validLogin)
+      there was one(codeDao).store(any[PasswordResetCode])
     })
+  }
 
+  "sendResetCodeToUser" should "send e-mail to user containing link to reset page with generated reset code" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
-      "send e-mail to user containing link to reset page with generated reset code" in {
-        passwordRecoveryService.sendResetCodeToUser(validLogin)
-        there was one(emailSendingService).scheduleEmail(Matchers.eq("user@sml.pl"), any[EmailContentWithSubject])
-      }
+      passwordRecoveryService.sendResetCodeToUser(validLogin)
+      there was one(emailSendingService).scheduleEmail(Matchers.eq("user@sml.pl"), any[EmailContentWithSubject])
     })
+  }
 
+  "sendResetCodeToUser" should "use template to generate e-mail" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
-      "use template to generate e-mail" in {
-        passwordRecoveryService.sendResetCodeToUser(validLogin)
-        there was one(emailTemplatingEngine).passwordReset(Matchers.eq(validLogin), anyString)
-      }
+      passwordRecoveryService.sendResetCodeToUser(validLogin)
+      there was one(emailTemplatingEngine).passwordReset(Matchers.eq(validLogin), anyString)
     })
+  }
 
+  "sendResetCodeToUser" should "change password for user" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
-      "change password for user" in {
-        //Given
-        val code = "validCode"
-        val login = "login"
-        val userId = "id"
-        val password = "password"
-        val salt = "salt"
-        val mockUserId = mock[ObjectId]
-        val mockCode = mock[PasswordResetCode]
-        val mockUser = mock[User]
+      //Given
+      val code = "validCode"
+      val login = "login"
+      val userId = "id"
+      val password = "password"
+      val salt = "salt"
+      val mockUserId = mock[ObjectId]
+      val mockCode = mock[PasswordResetCode]
+      val mockUser = mock[User]
 
-        mockUserId.toString returns userId
+      mockUserId.toString returns userId
 
-        mockCode.userId returns mockUserId
-        mockCode.validTo returns new DateTime().plusHours(1)
+      mockCode.userId returns mockUserId
+      mockCode.validTo returns new DateTime().plusHours(1)
 
-        mockUser._id returns mockUserId
-        mockUser.login returns login
-        mockUser.salt returns "salt"
+      mockUser._id returns mockUserId
+      mockUser.login returns login
+      mockUser.salt returns "salt"
 
-        codeDao.load(code) returns (Some(mockCode))
-        userDao.load(userId) returns (Some(mockUser))
+      codeDao.load(code) returns (Some(mockCode))
+      userDao.load(userId) returns (Some(mockUser))
 
-        //When
-        val result = passwordRecoveryService.performPasswordReset(code, password)
+      //When
+      val result = passwordRecoveryService.performPasswordReset(code, password)
 
-        //Then
-        assert(result.isRight)
-        assert(result.right.get)
-        there was one(codeDao).load(code)
-        there was one(userDao).changePassword(Matchers.eq(userId), Matchers.eq(User.encryptPassword(password, salt)))
-        there was one(codeDao).delete(mockCode)
-      }
+      //Then
+      assert(result.isRight)
+      assert(result.right.get)
+      there was one(codeDao).load(code)
+      there was one(userDao).changePassword(Matchers.eq(userId), Matchers.eq(User.encryptPassword(password, salt)))
+      there was one(codeDao).delete(mockCode)
     })
+  }
 
+  "sendResetCodeToUser" should "not change password when code is past it's valid date" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
-      "not change password when code is past it's valid date" in {
-        //Given
-        val password = "password"
-        val code = "validCode"
-        val mockCode = mock[PasswordResetCode]
-        mockCode.validTo returns new DateTime().minusDays(2)
-        codeDao.load(code) returns Some(mockCode)
+      //Given
+      val password = "password"
+      val code = "validCode"
+      val mockCode = mock[PasswordResetCode]
+      mockCode.validTo returns new DateTime().minusDays(2)
+      codeDao.load(code) returns Some(mockCode)
 
-        //When
-        val result = passwordRecoveryService.performPasswordReset(code, password)
+      //When
+      val result = passwordRecoveryService.performPasswordReset(code, password)
 
-        //Then
-        assert(result.isLeft)
-        there was one(codeDao).delete(mockCode)
-        there was no(userDao).changePassword(anyString, anyString)
-      }
+      //Then
+      assert(result.isLeft)
+      there was one(codeDao).delete(mockCode)
+      there was no(userDao).changePassword(anyString, anyString)
     })
   }
 }

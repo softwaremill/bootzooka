@@ -9,24 +9,15 @@ import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, UserJson, E
 import pl.softwaremill.bootstrap.service.entry.EntryService
 import pl.softwaremill.bootstrap.domain.User
 
-
 class EntriesServletWithUserSpec extends BootstrapServletSpec {
-
-  def is =
-    sequential ^
-      "EntriesServlet with logged user" ^
-      "POST / request should modify entry that user owns" ! modifyExistingEntryThatLoggedUserOwns ^
-      "POST / request should not update non existing entry" ! notUpdateNonExistingEntry ^
-      "POST / request should not update non owner entry" ! notAllowToUpdateNotOwnedEntry ^
-      "PUT / request should create new entry" ! shouldCreateNewEntry ^
-      end
+  behavior of "EntriesServlet with logged in user"
 
   val loginJasKowalski = "JasKowalski"
 
   val entryOne = EntryJson("1", "Message from Jas", loginJasKowalski, "")
   val entryTwo = EntryJson("2", "Message 2 from Jas", loginJasKowalski, "")
 
-  def onServletWithMocks(login: String, testToExecute: (EntryService, UserService) => MatchResult[Any]): MatchResult[Any] = {
+  def onServletWithMocks(login: String, testToExecute: (EntryService, UserService) => Unit): Unit = {
     val userService = mock[UserService]
 
     val entryService = mock[EntryService]
@@ -44,44 +35,48 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
     testToExecute(entryService, userService)
   }
 
-  def modifyExistingEntryThatLoggedUserOwns = onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
-    put("/", mapToJson(Map[String, JValue]("id" -> "1", "text" -> "Important message")), defaultJsonHeaders) {
-      there was one(entryService).isAuthor(loginJasKowalski, "1")
-      there was one(entryService).update("1", "Important message")
-      status must_== 200
-    }
-  )
+  "POST /" should "modify entry that user owns" in {
+    onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
+      put("/", mapToJson(Map[String, JValue]("id" -> "1", "text" -> "Important message")), defaultJsonHeaders) {
+        there was one(entryService).isAuthor(loginJasKowalski, "1")
+        there was one(entryService).update("1", "Important message")
+        status should be (200)
+      }
+    )
+  }
 
-  def notUpdateNonExistingEntry = onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
-    put("/", mapToJson(Map[String, JValue]("id" -> "3", "text" -> "Important message")), defaultJsonHeaders) {
-      there was one(entryService).isAuthor(loginJasKowalski, "3")
-      there was no(entryService).update(anyString, anyString)
-      status must_== 403
-    }
-  )
+  "POST /" should "not update non existing entry" in {
+    onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
+      put("/", mapToJson(Map[String, JValue]("id" -> "3", "text" -> "Important message")), defaultJsonHeaders) {
+        there was one(entryService).isAuthor(loginJasKowalski, "3")
+        there was no(entryService).update(anyString, anyString)
+        status should be (403)
+      }
+    )
+  }
 
-  def notAllowToUpdateNotOwnedEntry = onServletWithMocks(login = "PiotrNowak", testToExecute = (entryService, usersService) =>
-    put("/", mapToJson(Map[String, JValue]("id" -> "2", "text" -> "Important message")), defaultJsonHeaders) {
-      there was one(entryService).isAuthor("PiotrNowak", "2")
-      there was no(entryService).update(anyString, anyString)
-      status must_== 403
-    }
-  )
+  "POST /" should "not update non owner entry" in {
+    onServletWithMocks(login = "PiotrNowak", testToExecute = (entryService, usersService) =>
+      put("/", mapToJson(Map[String, JValue]("id" -> "2", "text" -> "Important message")), defaultJsonHeaders) {
+        there was one(entryService).isAuthor("PiotrNowak", "2")
+        there was no(entryService).update(anyString, anyString)
+        status should be (403)
+      }
+    )
+  }
 
-  def shouldCreateNewEntry = onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
-    post("/", mapToJson(Map("text" -> "New message")), defaultJsonHeaders) {
-      there was one(entryService).add(loginJasKowalski, "New message")
-      there was no(entryService).update(anyString, anyString)
-      status must_== 200
-    }
-  )
+  "PUT /" should "create new entry" in {
+    onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
+      post("/", mapToJson(Map("text" -> "New message")), defaultJsonHeaders) {
+        there was one(entryService).add(loginJasKowalski, "New message")
+        there was no(entryService).update(anyString, anyString)
+        status should be (200)
+      }
+    )
+  }
 
-}
-
-class EntriesServletWithUser(entryService: EntryService, userService: UserService, login: String) extends EntriesServlet(entryService, userService) {
-
-  override def isAuthenticated = true
-
-  override def user = new UserJson(login, "kowalski@kowalski.net", User.encryptPassword("password", "salt"))
-
+  class EntriesServletWithUser(entryService: EntryService, userService: UserService, login: String) extends EntriesServlet(entryService, userService) {
+    override def isAuthenticated = true
+    override def user = new UserJson(login, "kowalski@kowalski.net", User.encryptPassword("password", "salt"))
+  }
 }
