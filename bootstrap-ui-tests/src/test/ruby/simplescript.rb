@@ -1,3 +1,3 @@
 require 'rspec'
 
-RSpec::Core::Runner::run([@filepath], @errs, @output)
+RSpec::Core::Runner::run([@filepath], $stderr, $stdout)
