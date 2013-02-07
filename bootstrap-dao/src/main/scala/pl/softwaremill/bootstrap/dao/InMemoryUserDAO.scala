@@ -20,7 +20,7 @@ class InMemoryUserDAO extends UserDAO {
 
   def remove(userId: String) {
     load(userId) match {
-      case Some(user) => users.diff(List(user))
+      case Some(user) => users = users.diff(List(user))
       case _ =>
     }
   }
