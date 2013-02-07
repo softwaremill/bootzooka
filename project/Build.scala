@@ -85,6 +85,7 @@ object Dependencies {
   val commonsLang = "org.apache.commons" % "commons-lang3" % "3.1"
 
   val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container"
+  val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "test"
 
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
   val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
@@ -180,7 +181,7 @@ object SmlBootstrapBuild extends Build {
   lazy val uiTests = Project(
   "bootstrap-ui-tests",
   file("bootstrap-ui-tests"),
-  settings = buildSettings ++ Seq(libraryDependencies ++= Seq(jruby))
+  settings = buildSettings ++ Seq(libraryDependencies ++= Seq(jruby, jettyTest, servletApiProvided))
   ) dependsOn (rest)
 
 }
