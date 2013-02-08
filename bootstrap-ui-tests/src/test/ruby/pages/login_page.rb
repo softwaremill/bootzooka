@@ -8,7 +8,6 @@ class LoginPage < SitePrism::Page
 	element :login_button, "button[type=submit]"
 	
 	def login(user, pass)
-		wait_for_login_field 
 		login_field.set user
 		password_field.set pass
 		login_button.click
