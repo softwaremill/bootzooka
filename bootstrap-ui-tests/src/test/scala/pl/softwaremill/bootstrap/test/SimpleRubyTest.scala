@@ -17,18 +17,16 @@ class SimpleRubyTest extends FlatSpec with ShouldMatchers with BeforeAndAfter wi
     stopJetty()
   }
 
-  for (spec <- foundSpecs()) {
-    it should "run " + spec + " and pass" in {
-      val container = new ScriptingContainer()
-      container.put("@filepath", "bootstrap-ui-tests/src/test/ruby/" + spec + ".rb")
-      val script = container.parse(PathType.RELATIVE, "bootstrap-ui-tests/src/test/ruby/simplescript.rb")
-      val executionResult: RubyFixnum = script.run().asInstanceOf[RubyFixnum]
-      executionResult.to_s.asJavaString() should be("0")
-    }
+  it should "run spec and pass" in {
+    runSpec(".")
   }
 
-  def foundSpecs() = {
-    List("login_spec", "register_spec")
+  private def runSpec(spec: String) {
+    val container = new ScriptingContainer()
+    container.put("@filepath", "bootstrap-ui-tests/src/test/ruby/" + spec)
+    val script = container.parse(PathType.RELATIVE, "bootstrap-ui-tests/src/test/ruby/simplescript.rb")
+    val executionResult: RubyFixnum = script.run().asInstanceOf[RubyFixnum]
+    executionResult.to_s.asJavaString() should be("0")
   }
 
 }
