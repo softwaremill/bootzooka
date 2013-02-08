@@ -11,7 +11,8 @@ object Resolvers {
     "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases/",
     "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
     "SotwareMill Public Releases" at "https://nexus.softwaremill.com/content/repositories/releases/",
-    "SotwareMill Public Snapshots" at "https://nexus.softwaremill.com/content/repositories/snapshots/"
+    "SotwareMill Public Snapshots" at "https://nexus.softwaremill.com/content/repositories/snapshots/",
+    "TorqueBox Releases" at "http://rubygems-proxy.torquebox.org/releases"
   )
 }
 
@@ -104,6 +105,8 @@ object Dependencies {
   val scalate = "org.fusesource.scalate" % "scalate-core_2.9" % "1.6.0"
 
   val jruby = "org.jruby" % "jruby-complete" % "1.7.2"
+  val sitePrism = "rubygems" % "site_prism" % "2.1"
+  val nokogiri = "rubygems" % "nokogiri" % "1.5.6"
 
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
@@ -179,9 +182,9 @@ object SmlBootstrapBuild extends Build {
   ) dependsOn (rest)
 
   lazy val uiTests = Project(
-  "bootstrap-ui-tests",
-  file("bootstrap-ui-tests"),
-  settings = buildSettings ++ Seq(libraryDependencies ++= Seq(jruby, jettyTest, servletApiProvided))
+    "bootstrap-ui-tests",
+    file("bootstrap-ui-tests"),
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(jruby, jettyTest, servletApiProvided))
   ) dependsOn (rest)
 
 }
