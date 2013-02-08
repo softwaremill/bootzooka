@@ -8,6 +8,7 @@ import org.jruby.RubyFixnum
 import org.jruby.embed.{ScriptingContainer, PathType}
 
 class SimpleRubyTest extends FlatSpec with ShouldMatchers with BeforeAndAfter with EmbeddedJetty {
+
   before {
     startJetty()
   }
@@ -15,7 +16,6 @@ class SimpleRubyTest extends FlatSpec with ShouldMatchers with BeforeAndAfter wi
   after {
     stopJetty()
   }
-
 
   "This test" should "start jruby" in {
     val container = new ScriptingContainer()

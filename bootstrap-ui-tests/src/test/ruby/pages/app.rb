@@ -6,6 +6,7 @@ require "#{File.dirname(__FILE__)}/register_page"
 
 
 class App < SitePrism::Page
+  element :throbber, "#ajaxthrobber"
   def login_page
     LoginPage.new
   end
