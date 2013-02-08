@@ -8,7 +8,7 @@ import org.jruby.RubyFixnum
 import org.jruby.embed.{ScriptingContainer, PathType}
 
 class SimpleRubyTest extends FlatSpec with ShouldMatchers with BeforeAndAfter with EmbeddedJetty {
-
+  behavior of "Capybara UI tests"
   before {
     startJetty()
   }
@@ -17,13 +17,20 @@ class SimpleRubyTest extends FlatSpec with ShouldMatchers with BeforeAndAfter wi
     stopJetty()
   }
 
-  "This test" should "start jruby" in {
-    val container = new ScriptingContainer()
-    container.put("@filepath", "bootstrap-ui-tests/src/test/ruby/register_spec.rb")
-    val script = container.parse(PathType.RELATIVE, "bootstrap-ui-tests/src/test/ruby/simplescript.rb")
-    val executionResult: RubyFixnum = script.run().asInstanceOf[RubyFixnum]
-    executionResult.to_s.asJavaString() should be("0")
+  for (spec <- foundSpecs()) {
+    it should "run " + spec + " and pass" in {
+      val container = new ScriptingContainer()
+      container.put("@filepath", "bootstrap-ui-tests/src/test/ruby/" + spec + ".rb")
+      val script = container.parse(PathType.RELATIVE, "bootstrap-ui-tests/src/test/ruby/simplescript.rb")
+      val executionResult: RubyFixnum = script.run().asInstanceOf[RubyFixnum]
+      executionResult.to_s.asJavaString() should be("0")
+    }
   }
+
+  def foundSpecs() = {
+    List("login_spec", "register_spec")
+  }
+
 }
 
 trait EmbeddedJetty {
