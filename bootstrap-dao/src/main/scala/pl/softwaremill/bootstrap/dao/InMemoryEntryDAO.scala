@@ -7,7 +7,7 @@ class InMemoryEntryDAO extends EntryDAO {
   var entries = List[Entry]()
 
   def loadAll: List[Entry] = {
-    entries
+    entries.sortBy(- _.entered.getMillis)
   }
 
   def countItems(): Long = {
@@ -20,7 +20,7 @@ class InMemoryEntryDAO extends EntryDAO {
 
   def remove(entryId: String) {
     load(entryId) match {
-      case Some(entry) => entries.diff(List(entry))
+      case Some(entry) => entries = entries.diff(List(entry))
       case _ =>
     }
   }

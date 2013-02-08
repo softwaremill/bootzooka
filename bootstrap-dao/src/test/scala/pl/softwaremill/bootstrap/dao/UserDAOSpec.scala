@@ -3,16 +3,28 @@ package pl.softwaremill.bootstrap.dao
 import pl.softwaremill.bootstrap.domain.User
 import com.weiglewilczek.slf4s.Logging
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.BeforeAndAfterAll
+import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 
-class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with BeforeAndAfterAll with Logging {
+class MongoUserDAOSpec extends FlatSpecWithMongo with UserDAOSpec {
   behavior of "MongoUserDAO"
+
+  def createDAO = new MongoUserDAO()
+}
+
+class InMemoryUserDAOSpec extends FlatSpecWithMongo with UserDAOSpec {
+  behavior of "InMemoryUserDAO"
+
+  def createDAO = new InMemoryUserDAO()
+}
+
+trait UserDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll with Logging {
+  def createDAO: UserDAO
 
   var userDAO: UserDAO = null
 
   override def beforeAll() {
     super.beforeAll()
-    userDAO = new MongoUserDAO()
+    userDAO = createDAO
 
     for (i <- 1 to 3) {
       val login = "user" + i

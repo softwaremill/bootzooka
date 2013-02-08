@@ -4,17 +4,29 @@ import pl.softwaremill.bootstrap.domain.Entry
 import org.bson.types.ObjectId
 import org.joda.time.DateTime
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.BeforeAndAfterAll
+import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 
-class MongoEntryDAOSpec extends FlatSpecWithMongo with ShouldMatchers with BeforeAndAfterAll {
+class MongoEntryDAOSpec extends FlatSpecWithMongo with EntryDAOSpec {
   behavior of "MongoEntryDAO"
 
-  var entryDAO: EntryDAO = null
+  def createDAO = new MongoEntryDAO()
+}
+
+class InMemoryEntryDAOSpec extends EntryDAOSpec {
+  behavior of "InMemoryEntryDAO"
+
+  def createDAO = new InMemoryEntryDAO()
+}
+
+trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
+  def createDAO: EntryDAO
+
+  var entryDAO: EntryDAO = _
   val referenceDate = new DateTime().withDate(2012, 12, 10)
 
   override def beforeAll() {
     super.beforeAll()
-    entryDAO = new MongoEntryDAO()
+    entryDAO = createDAO
     for (i <- 1 to 3)  {
       entryDAO.add(Entry(_id = new ObjectId(i.toString * 24), text = "Message " + i, authorId = new ObjectId((10-i).toString * 24),
         entered = referenceDate.minusDays(i-1)))

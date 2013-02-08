@@ -6,9 +6,6 @@ import com.mongodb.casbah.Imports._
 import com.novus.salat.global._
 import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHelpers
 
-/**
- * .
- */
 trait PasswordResetCodeDAO {
 
   def store(code: PasswordResetCode)
@@ -24,10 +21,6 @@ class InMemoryPasswordResetCodeDAO extends PasswordResetCodeDAO {
 
   def store(code: PasswordResetCode) {
     codes ::= code
-  }
-
-  def count = {
-    codes.length
   }
 
   def load(code: String): Option[PasswordResetCode] = {
