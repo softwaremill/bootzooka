@@ -7,35 +7,32 @@ require 'capybara-screenshot'
 
 require "#{File.dirname(__FILE__)}/pages/app"
 
-include Capybara::DSL
-
 Capybara.default_driver = :selenium
-Capybara.default_wait_time = 15
+Capybara.default_wait_time = 30
 user = msg_text=[*('A'..'Z')].sample(5).join
 email = msg_text=[*('A'..'Z')].sample(5).join + "@example.org"
 pass = msg_text=[*('A'..'Z')].sample(8).join
 
 describe "register test" do
   before do
+    include Capybara::DSL
     @app = App.new
   end
 
   it "Should register" do
     @app.register_page.load
-    @app.register_page.should be_all_there
     @app.wait_until_throbber_invisible
     @app.register_page.register(user, email, pass)
 
-
     @app.messages_page.should have_content("Please wait")
-
     @app.wait_until_throbber_invisible
-    click_link 'Login' #@app.messages_page.login_link
+    @app.login_page.open
 
-    @app.login_page.should be_all_there
+	@app.wait_until_throbber_invisible
     @app.login_page.login(email, pass)
 
-    @app.messages_page.wait_for_logout_link
+	@app.messages_page.should have_content("Please wait")
+	@app.wait_until_throbber_invisible
     @app.messages_page.should have_content("Logged in as #{user}")
   end
 
@@ -44,6 +41,3 @@ describe "register test" do
     @app.messages_page.should have_no_content("Logged in as #{user}")
   end
 end
-
-
-
