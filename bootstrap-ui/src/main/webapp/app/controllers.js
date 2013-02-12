@@ -46,7 +46,9 @@ controllers.controller('EntriesController', function EntriesController($scope, $
         });
     };
 
-    $scope.reloadEntries();
+    if($location.path() === "/") {
+        $scope.reloadEntries();
+    }
 
     this.checkForNewEntries = function () {
         EntriesService.countNewEntries($scope.lastLoadedTimestamp, function (data) {
