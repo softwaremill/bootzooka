@@ -46,9 +46,7 @@ controllers.controller('EntriesController', function EntriesController($scope, $
         });
     };
 
-    if($location.path() === "/") {
-        $scope.reloadEntries();
-    }
+    $scope.reloadEntries();
 
     this.checkForNewEntries = function () {
         EntriesService.countNewEntries($scope.lastLoadedTimestamp, function (data) {
@@ -96,17 +94,19 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     $scope.isOwnerOf = function (entry) {
         return UserSessionService.isLogged() && entry.author === UserSessionService.loggedUser.login;
     };
+});
 
-    $scope.getLoggedUserName = function () {
-        return UserSessionService.getLoggedUserName();
-    };
-
+controllers.controller('UserSessionController', function UserSessionController($scope, $location, UserSessionService) {
     $scope.isLogged = function () {
         return UserSessionService.isLogged();
     };
 
     $scope.isNotLogged = function () {
         return UserSessionService.isNotLogged();
+    };
+
+    $scope.getLoggedUserName = function () {
+        return UserSessionService.getLoggedUserName();
     };
 
     $scope.logout = function () {

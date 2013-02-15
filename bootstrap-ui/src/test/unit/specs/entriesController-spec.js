@@ -51,10 +51,6 @@ describe("Entries Controller", function () {
             expect(scope.noEntries()).toBe(false);
         });
 
-        it('Should have user logged', function () {
-            expect(scope.isLogged()).toBe(true);
-        });
-
         it("Should mark user as an owner of first entry", function () {
             expect(scope.isOwnerOf(scope.logs[0])).toBe(true);
         });
@@ -71,19 +67,6 @@ describe("Entries Controller", function () {
             //Then
             expect(scope.numberOfNewEntries).toBe(5);
         })
-
-        it("Should logout user", function() {
-           // Given
-           $httpBackend.expectGET('rest/users/logout').respond('anything');
-           expect(userSessionService.loggedUser).not.toBe(null);
-
-           // When
-           scope.logout();
-           $httpBackend.flush();
-
-           // Then
-           expect(scope.isLogged()).toBe(false);
-        });
 
         it("should fill entry with date on page", function() {
             // given
@@ -139,27 +122,4 @@ describe("Entries Controller", function () {
             expect(scope.noEntries()).toBe(true);
         });
     });
-
-    describe('without logged user', function () {
-        var scope, $httpBackend, ctrl;
-
-        beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller) {
-            $httpBackend = _$httpBackend_;
-            $httpBackend.whenGET('/rest/entries/count').respond('{"value":2}');
-            $httpBackend.whenGET('rest/entries').respond('{"entries":[{"id":1,"author":"Jan Kowalski","text":"Short message"},' +
-                '{"id":2,"author":"Piotr Nowak","text":"Very long message"}], "timestamp": 11111');
-
-            scope = $rootScope.$new();
-            ctrl = $controller('EntriesController', {$scope: scope});
-
-            $httpBackend.flush();
-        }));
-
-        it('Should have user not logged', function () {
-            expect(scope.isLogged()).toBe(false);
-        });
-    });
-
-
-
 });
