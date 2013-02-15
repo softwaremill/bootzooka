@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <title>SML Bootstrap</title>
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
@@ -61,10 +61,10 @@
                         <li class="active"><a href="/#/">Home</a></li>
                     </ul>
                     <ul class="nav pull-right" ng-controller="UserSessionController">
-                        <li ng-show="isNotLogged()"><a href="#/register">Register</a></li>
-                        <li ng-show="isNotLogged()"><a href="#/login">Login</a></li>
-                        <li ng-show="isLogged()"><a href="#/profile">Logged in as {{getLoggedUserName()}}</a></li>
-                        <li ng-show="isLogged()"><a href ng-click="logout();">Logout</a></li>
+                        <li ng-show="isNotLogged()"><a id="registerLink" href="#/register">Register</a></li>
+                        <li ng-show="isNotLogged()"><a id="loginLink" href="#/login">Login</a></li>
+                        <li ng-show="isLogged()"><a id="profileLink" href="#/profile">Logged in as {{getLoggedUserName()}}</a></li>
+                        <li ng-show="isLogged()"><a id="logoutLink" href ng-click="logout();">Logout</a></li>
                     </ul>
                 </div>
             </div>
