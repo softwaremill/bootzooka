@@ -3,6 +3,8 @@ package pl.softwaremill.bootstrap.service.schedulers
 import pl.softwaremill.bootstrap.service.templates.EmailContentWithSubject
 import collection.mutable.ListBuffer
 
+case class EmailToSend(address: String, subject: String, content: String)
+
 class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 
   private val emailsToSend: ListBuffer[EmailToSend] = ListBuffer()
@@ -27,5 +29,8 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
     logger.debug("Email to " + address + " scheduled")
   }
 
-  case class EmailToSend(address: String, subject: String, content: String)
+  def isEmailScheduled(address:String):Boolean = {
+    emailsToSend.exists(_.address.eq(address))
+  }
 }
+
