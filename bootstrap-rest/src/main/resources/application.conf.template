@@ -9,3 +9,4 @@ smtpUsername=
 smtpPassword=
 from=
 encoding=UTF-8
+resetLinkPattern=
