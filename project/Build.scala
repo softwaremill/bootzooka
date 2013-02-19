@@ -189,7 +189,12 @@ object SmlBootstrapBuild extends Build {
   lazy val uiTests = Project(
     "bootstrap-ui-tests",
     file("bootstrap-ui-tests"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= selenium ++ Seq(jettyTest, servletApiProvided))
+    settings = buildSettings ++ Seq(
+      libraryDependencies ++= selenium ++ Seq(jettyTest, servletApiProvided),
+      testOptions in Test += Tests.Setup(() => {
+        System.setProperty("withInMemory", "true")
+      }))
+
   ) dependsOn (rest)
 
 }
