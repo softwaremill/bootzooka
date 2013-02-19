@@ -1,4 +1,5 @@
 import com.mongodb.casbah.{ MongoDB, MongoConnection }
+import com.weiglewilczek.slf4s.Logging
 import java.util.concurrent.{ ScheduledExecutorService, TimeUnit, Executors }
 import org.json4s.{ DefaultFormats, Formats }
 import pl.softwaremill.bootstrap.dao._
@@ -22,11 +23,13 @@ class ScalatraBootstrap extends LifeCycle {
   val Prefix = "/rest"
   val MongoKey = "MONGO_DB"
   val SchedulerKey = "SCHEDULER"
+  val EMAILSERVICE = "EMAILSERVICE"
 
   override def init(context: ServletContext) {
 
     val factory = createDAOsFactory(context)
     val emailSendingService = createEmailSendingService
+    context.put(EMAILSERVICE, emailSendingService)
 
     val scheduler = Executors.newScheduledThreadPool(4)
     context.put(SchedulerKey, scheduler)
