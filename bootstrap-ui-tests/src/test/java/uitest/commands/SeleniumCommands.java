@@ -17,13 +17,11 @@ public class SeleniumCommands {
 
         wait = new FluentWait<WebDriver>(driver)
                 .withTimeout(20, TimeUnit.SECONDS.SECONDS)
-                .pollingEvery(100, TimeUnit.MILLISECONDS)
-                .ignoring(NoSuchElementException.class)
-                .ignoring(StaleElementReferenceException.class);
+                .pollingEvery(100, TimeUnit.MILLISECONDS);
     }
 
     public void waitForFinishLoading() throws Exception {
-        wait.until(isElementNotVisible(By.cssSelector("#ajaxthrobber")));
+        waitForElementInvisible(By.cssSelector("#ajaxthrobber"));
     }
 
     public void waitForElementClickable(By locator) {
@@ -32,6 +30,14 @@ public class SeleniumCommands {
 
     public void waitForElementVisible(WebElement element) {
         wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
+    public void waitForElementVisible(By locator) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    public void waitForElementInvisible(By locator) {
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
 
     public void waitForElementPresent(By locator) {

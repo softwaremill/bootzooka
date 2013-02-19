@@ -1,7 +1,6 @@
 package uitest.pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -24,21 +23,16 @@ public class MessagesPage {
 
     public void logout() throws Exception {
         logoutLink.click();
-        SeleniumCommands sc = new SeleniumCommands(driver);
         sc.waitForFinishLoading();
     }
 
-    public boolean isUserLogged() throws Exception {
-        try {
-            driver.findElement(By.cssSelector("#logoutLink"));
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
-        }
+    public boolean isUserLogged(String user) throws Exception {
+        sc.waitForElementVisible(By.linkText("Logged in as " + user));
+        return true;
     }
 
     public String getInfoText() {
-       sc.waitForElementVisible(alert);
+       sc.waitForElementVisible(By.cssSelector("#info-message"));
        return alert.getText();
     }
 }

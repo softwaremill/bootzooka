@@ -14,16 +14,18 @@ class ScalaRegisterUITest extends BootstrapUITest {
 
   test("register") {
     val driver = new FirefoxDriver()
-    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
     val registrationPage: RegistrationPage = PageFactory.initElements(driver, classOf[RegistrationPage])
-    registrationPage.register(LOGIN, EMAIL, PASSWORD)
-
     val messagesPage: MessagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
+    val loginPage: LoginPage = PageFactory.initElements(driver, classOf[LoginPage])
+
+    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
+
+    registrationPage.register(LOGIN, EMAIL, PASSWORD)
     Assertions.assertThat(messagesPage.getInfoText).contains("User registered successfully")
 
-    val loginPage: LoginPage = PageFactory.initElements(driver, classOf[LoginPage])
     loginPage.openLoginPage()
     loginPage.login(LOGIN, PASSWORD)
-    Assertions.assertThat(messagesPage.isUserLogged).isTrue()
+    Assertions.assertThat(messagesPage.isUserLogged(LOGIN)).isTrue()
+    Assertions.assertThat(emailSendingService.isEmailScheduled(EMAIL)).isFalse()
   }
 }
