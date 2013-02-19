@@ -1,7 +1,7 @@
 package pl.softwaremill.bootstrap.dao
 
 import com.mongodb.casbah.{MongoDB, MongoConnection}
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FlatSpec}
+import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
 trait FlatSpecWithMongo extends FlatSpec with BeforeAndAfterAll {
   val mongoPort = 24567
