@@ -17,7 +17,7 @@ public class SeleniumCommands {
 
         wait = new FluentWait<WebDriver>(driver)
                 .withTimeout(20, TimeUnit.SECONDS.SECONDS)
-                .pollingEvery(5, TimeUnit.MILLISECONDS)
+                .pollingEvery(100, TimeUnit.MILLISECONDS)
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class);
     }
