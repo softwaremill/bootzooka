@@ -3,10 +3,15 @@ package uitest
 import org.scalatest.{FunSuite, BeforeAndAfter}
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.webapp.WebAppContext
+import javax.servlet.ServletContext
+import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
 
 class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfter {
+  var emailSendingService:DummyEmailSendingService = _
   before {
     startJetty()
+    emailSendingService = context.getAttribute("EMAILSERVICE").asInstanceOf[DummyEmailSendingService]
+    assert(emailSendingService != null)
   }
 
   after {
@@ -15,7 +20,8 @@ class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfter {
 }
 
 trait EmbeddedJetty {
-  private var jetty: Server = _
+  protected var jetty: Server = null
+  protected var context: ServletContext = null
 
   def startJetty() {
     jetty = new Server(8080)
@@ -27,6 +33,7 @@ trait EmbeddedJetty {
     val context = new WebAppContext()
     context setContextPath "/"
     context setResourceBase "bootstrap-ui/src/main/webapp"
+    this.context = context.getServletContext
     context
   }
 
