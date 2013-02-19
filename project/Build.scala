@@ -106,9 +106,12 @@ object Dependencies {
 
   val scalate = "org.fusesource.scalate" % "scalate-core_2.9" % "1.6.0"
 
-  val jruby = "org.jruby" % "jruby-complete" % "1.7.2"
-  val sitePrism = "rubygems" % "site_prism" % "2.1"
-  val nokogiri = "rubygems" % "nokogiri" % "1.5.6"
+  val seleniumVer = "2.29.0"
+  val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"
+  val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
+  val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
+
+  val selenium = Seq(seleniumJava, seleniumFirefox, fest)
 
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
@@ -186,7 +189,7 @@ object SmlBootstrapBuild extends Build {
   lazy val uiTests = Project(
     "bootstrap-ui-tests",
     file("bootstrap-ui-tests"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(jruby, jettyTest, servletApiProvided))
+    settings = buildSettings ++ Seq(libraryDependencies ++= selenium ++ Seq(jettyTest, servletApiProvided))
   ) dependsOn (rest)
 
 }
