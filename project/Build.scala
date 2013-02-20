@@ -39,15 +39,18 @@ object BuildSettings {
 
     testOptions in Test <+= mongoDirectory map {
       md => Tests.Setup{ () =>
-      if(System.getProperty("withInMemory") != "true") {
-        val mongoFile = new File(md.getAbsolutePath + "/bin/mongod")
-        if(mongoFile.exists) {
-          System.setProperty("mongo.directory", md.getAbsolutePath)
-        } else {
-          throw new RuntimeException(
-            "Trying to launch with MongoDB but unable to find it in 'mongo.directory' (%s). Please check your ~/.sbt/local.sbt file or run with -DwithInMemory=true.".format(mongoFile.getAbsolutePath))
+        sys.props.get("withInMemory") match {
+          case Some("true") => //we'll be using in memory storage
+          case None => { //attempt to start mongo
+            val mongoFile = new File(md.getAbsolutePath + "/bin/mongod")
+            if(mongoFile.exists) {
+              System.setProperty("mongo.directory", md.getAbsolutePath)
+            } else {
+              throw new RuntimeException(
+                "Trying to launch with MongoDB but unable to find it in 'mongo.directory' (%s). Please check your ~/.sbt/local.sbt file or run with -DwithInMemory=true.".format(mongoFile.getAbsolutePath))
+            }
+          }
         }
-      }
     }
   }
   )
@@ -192,10 +195,8 @@ object SmlBootstrapBuild extends Build {
     "bootstrap-ui-tests",
     file("bootstrap-ui-tests"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= selenium ++ Seq(jettyTest, servletApiProvided),
-      testOptions in Test += Tests.Setup(() => {
-        System.setProperty("withInMemory", "true")
-      }))
+      libraryDependencies ++= selenium ++ Seq(jettyTest, servletApiProvided)
+    )
 
   ) dependsOn (rest)
 

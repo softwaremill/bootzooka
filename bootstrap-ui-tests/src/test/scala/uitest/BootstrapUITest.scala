@@ -9,12 +9,14 @@ import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
 class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfter {
   var emailSendingService:DummyEmailSendingService = _
   before {
+    System.setProperty("withInMemory", "true")
     startJetty()
     emailSendingService = context.getAttribute("EMAILSERVICE").asInstanceOf[DummyEmailSendingService]
     assert(emailSendingService != null)
   }
 
   after {
+    System.clearProperty("withInMemory")
     stopJetty()
   }
 }
