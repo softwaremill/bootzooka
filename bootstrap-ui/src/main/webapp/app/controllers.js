@@ -23,6 +23,26 @@ controllers.controller('UptimeController', function UptimeController($scope, $ti
 
 });
 
+controllers.controller('UserSessionController', function UserSessionController($scope, $location, UserSessionService) {
+    $scope.isLogged = function () {
+        return UserSessionService.isLogged();
+    };
+
+    $scope.isNotLogged = function () {
+        return UserSessionService.isNotLogged();
+    };
+
+    $scope.getLoggedUserName = function () {
+        return UserSessionService.getLoggedUserName();
+    };
+
+    $scope.logout = function () {
+        UserSessionService.logout(function (data) {
+            $location.path("");
+        });
+    };
+});
+
 controllers.controller('EntriesController', function EntriesController($scope, $timeout, $window, EntriesService, UserSessionService, $location) {
 
     var self = this;
@@ -94,26 +114,10 @@ controllers.controller('EntriesController', function EntriesController($scope, $
     $scope.isOwnerOf = function (entry) {
         return UserSessionService.isLogged() && entry.author === UserSessionService.loggedUser.login;
     };
-});
 
-controllers.controller('UserSessionController', function UserSessionController($scope, $location, UserSessionService) {
-    $scope.isLogged = function () {
+    $scope.isLogged = function() {
         return UserSessionService.isLogged();
-    };
-
-    $scope.isNotLogged = function () {
-        return UserSessionService.isNotLogged();
-    };
-
-    $scope.getLoggedUserName = function () {
-        return UserSessionService.getLoggedUserName();
-    };
-
-    $scope.logout = function () {
-        UserSessionService.logout(function (data) {
-            $location.path("");
-        });
-    };
+    }
 });
 
 controllers.controller('EntryEditController', function EntryEditController($scope, EntriesService, $routeParams, $location, UserSessionService) {
