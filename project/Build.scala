@@ -43,8 +43,10 @@ object BuildSettings {
       if(mongoFile.exists) {
         System.setProperty("mongo.directory", md.getAbsolutePath)
       } else {
-        throw new RuntimeException(
-          "Unable to find [mongodb] in 'mongo.directory' (%s). Please check your ~/.sbt/local.sbt file.".format(mongoFile.getAbsolutePath))
+        if(System.getProperty("withInMemory") != "true") {
+          throw new RuntimeException(
+            "Trying to launch with MongoDB but unable to find it in 'mongo.directory' (%s). Please check your ~/.sbt/local.sbt file or run with -DwithInMemory=true.".format(mongoFile.getAbsolutePath))
+        }
       }
     }
   }
