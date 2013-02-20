@@ -9,10 +9,12 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 
   private val emailsToSend: ListBuffer[EmailToSend] = ListBuffer()
 
+  private val sentEmails: ListBuffer[EmailToSend] = ListBuffer()
+
   def run() {
     var tempList: ListBuffer[EmailToSend] = null
     this.synchronized {
-      tempList = ListBuffer(emailsToSend: _*)
+      sentEmails ++= emailsToSend
       emailsToSend.clear()
     }
     logger.info("I should be sending emails now but I am dummy :)")
@@ -30,7 +32,11 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
   }
 
   def isEmailScheduled(address:String):Boolean = {
-    emailsToSend.exists(_.address.eq(address))
+    emailsToSend.exists(_.address == address)
+  }
+
+  def wasEmailSent(address:String, subject:String):Boolean = {
+    sentEmails.exists(email => email.address == address && email.subject == subject)
   }
 }
 

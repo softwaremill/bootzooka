@@ -22,10 +22,10 @@ class ScalaRegisterUITest extends BootstrapUITest {
 
     registrationPage.register(LOGIN, EMAIL, PASSWORD)
     Assertions.assertThat(messagesPage.getInfoText).contains("User registered successfully")
+    Assertions.assertThat(emailSendingService.isEmailScheduled(EMAIL)).isTrue()
 
     loginPage.openLoginPage()
     loginPage.login(LOGIN, PASSWORD)
     Assertions.assertThat(messagesPage.isUserLogged(LOGIN)).isTrue()
-    Assertions.assertThat(emailSendingService.isEmailScheduled(EMAIL)).isFalse()
   }
 }
