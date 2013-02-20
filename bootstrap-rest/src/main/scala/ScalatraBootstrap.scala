@@ -37,9 +37,11 @@ class ScalatraBootstrap extends LifeCycle {
 
     val emailTemplatingEngine = new EmailTemplatingEngine
 
-    val userService = new UserService(factory.userDAO, new RegistrationDataValidator(), emailSendingService, emailTemplatingEngine)
-    val entryService = new EntryService(factory.entryDAO, factory.userDAO)
-    val passwordRecoveryService = new PasswordRecoveryService(factory.userDAO, factory.codeDAO, emailSendingService, emailTemplatingEngine)
+    val userDAO = factory.userDAO
+
+    val userService = new UserService(userDAO, new RegistrationDataValidator(), emailSendingService, emailTemplatingEngine)
+    val entryService = new EntryService(factory.entryDAO, userDAO)
+    val passwordRecoveryService = new PasswordRecoveryService(userDAO, factory.codeDAO, emailSendingService, emailTemplatingEngine)
 
     // Mount one or more servlets
     context.mount(new EntriesServlet(entryService, userService), Prefix + "/entries")
