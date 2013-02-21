@@ -31,10 +31,6 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
     logger.debug("Email to " + address + " scheduled")
   }
 
-  def isEmailScheduled(address:String):Boolean = {
-    emailsToSend.exists(_.address == address)
-  }
-
   def wasEmailSent(address:String, subject:String):Boolean = {
     sentEmails.exists(email => email.address == address && email.subject == subject)
   }

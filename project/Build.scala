@@ -115,6 +115,7 @@ object Dependencies {
   val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"
   val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
   val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
+  val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.3.5" % "test"
 
   val selenium = Seq(seleniumJava, seleniumFirefox, fest)
 
@@ -195,7 +196,7 @@ object SmlBootstrapBuild extends Build {
     "bootstrap-ui-tests",
     file("bootstrap-ui-tests"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= selenium ++ Seq(jettyTest, servletApiProvided)
+      libraryDependencies ++= selenium ++ Seq(awaitility, jettyTest, servletApiProvided)
     )
 
   ) dependsOn (rest)
