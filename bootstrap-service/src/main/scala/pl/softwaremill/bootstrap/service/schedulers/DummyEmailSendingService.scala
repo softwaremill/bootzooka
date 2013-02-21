@@ -2,18 +2,18 @@ package pl.softwaremill.bootstrap.service.schedulers
 
 import pl.softwaremill.bootstrap.service.templates.EmailContentWithSubject
 import collection.mutable.ListBuffer
-
-case class EmailToSend(address: String, subject: String, content: String)
+import pl.softwaremill.common.sqs.util.EmailDescription
 
 class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 
-  private val emailsToSend: ListBuffer[EmailToSend] = ListBuffer()
+  private val emailsToSend: ListBuffer[EmailDescription] = ListBuffer()
 
-  private val sentEmails: ListBuffer[EmailToSend] = ListBuffer()
+  private val sentEmails: ListBuffer[EmailDescription] = ListBuffer()
 
   def run() {
-    var tempList: ListBuffer[EmailToSend] = null
+    var tempList: ListBuffer[EmailDescription] = null
     this.synchronized {
+      tempList ++= emailsToSend
       sentEmails ++= emailsToSend
       emailsToSend.clear()
     }
@@ -26,13 +26,17 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 
   def scheduleEmail(address: String, emailData: EmailContentWithSubject) {
     this.synchronized {
-      emailsToSend += EmailToSend(address, emailData.subject, emailData.content)
+      emailsToSend += new EmailDescription(address, emailData.subject, emailData.content)
     }
     logger.debug("Email to " + address + " scheduled")
   }
 
   def wasEmailSent(address:String, subject:String):Boolean = {
-    sentEmails.exists(email => email.address == address && email.subject == subject)
+    sentEmails.exists(email => email.getEmails.contains(address) && email.getSubject == subject)
+  }
+
+  def wasEmailSent(email:EmailDescription):Boolean = {
+    sentEmails.contains(email)
   }
 }
 
