@@ -16,6 +16,12 @@ public class MessagesPage {
     @FindBy(css = ".alert-info")
     private WebElement alert;
 
+    @FindBy(css = "textarea")
+    private WebElement messageField;
+
+    @FindBy(css = "input[type=submit]")
+    private WebElement sendButton;
+
     public MessagesPage(WebDriver driver) {
         this.driver = driver;
         sc = new SeleniumCommands(driver);
@@ -26,8 +32,19 @@ public class MessagesPage {
         sc.waitForFinishLoading();
     }
 
+    public void sendMessage(String messagetext) throws Exception {
+        messageField.sendKeys(messagetext);
+        sendButton.click();
+        sc.waitForFinishLoading();
+    }
+
     public boolean isUserLogged(String user) throws Exception {
         sc.waitForElementVisible(By.linkText("Logged in as " + user));
+        return true;
+    }
+
+    public boolean isUMessageDisplayed(String message) throws Exception {
+        sc.waitForElementVisible(By.xpath("//p[text()='" + message + "']"));
         return true;
     }
 
