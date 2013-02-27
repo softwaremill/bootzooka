@@ -11,7 +11,7 @@ class ScalaLoginUITest extends BootstrapUITest {
   final val PASSWORD = "test"
 
 
-  test("login") {
+  ignore("login") {
     val driver = new FirefoxDriver()
     driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
     val loginPage: LoginPage = PageFactory.initElements(driver, classOf[LoginPage])

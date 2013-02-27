@@ -1,21 +1,34 @@
 package uitest
 
-import org.scalatest.{FunSuite, BeforeAndAfter}
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.webapp.WebAppContext
 import javax.servlet.ServletContext
 import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
+import org.openqa.selenium.firefox.FirefoxDriver
+import java.util.concurrent.TimeUnit
 
-class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfter {
-  var emailSendingService:DummyEmailSendingService = _
-  before {
+class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
+  var emailSendingService: DummyEmailSendingService = _
+  var driver: FirefoxDriver = _
+
+  override def beforeAll() {
     System.setProperty("withInMemory", "true")
     startJetty()
     emailSendingService = context.getAttribute("EMAILSERVICE").asInstanceOf[DummyEmailSendingService]
     assert(emailSendingService != null)
   }
 
+  before {
+    driver = new FirefoxDriver()
+    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
+  }
+
   after {
+    driver = null
+  }
+
+  override def afterAll() {
     System.clearProperty("withInMemory")
     stopJetty()
   }
