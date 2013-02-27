@@ -40,14 +40,13 @@ object BuildSettings {
     testOptions in Test <+= mongoDirectory map {
       md: File => Tests.Setup {
         () =>
-        //attempt to start mongo
           val mongoFile = new File(md.getAbsolutePath + "/bin/mongod")
           val mongoFileWin = new File(mongoFile.getAbsolutePath + ".exe")
           if (mongoFile.exists || mongoFileWin.exists) {
             System.setProperty("mongo.directory", md.getAbsolutePath)
           } else {
             throw new RuntimeException(
-              "Trying to launch with MongoDB but unable to find it in 'mongo.directory' (%s). Please check your ~/.sbt/local.sbt file or run with -DwithInMemory=true.".format(mongoFile.getAbsolutePath))
+              "Trying to launch with MongoDB but unable to find it in 'mongo.directory' (%s). Please check your ~/.sbt/local.sbt file.".format(mongoFile.getAbsolutePath))
           }
       }
     }
