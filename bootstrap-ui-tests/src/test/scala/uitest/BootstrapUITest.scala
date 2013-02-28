@@ -4,23 +4,24 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.webapp.WebAppContext
 import javax.servlet.ServletContext
-import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
 import org.openqa.selenium.firefox.FirefoxDriver
 import java.util.concurrent.TimeUnit
+import pl.softwaremill.bootstrap.Beans
+import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
 import pages.{MessagesPage, LoginPage}
 import org.openqa.selenium.support.PageFactory
 
-class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
-  var emailSendingService: DummyEmailSendingService = _
+class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with Beans {
   var driver: FirefoxDriver = _
+  var emailService: DummyEmailSendingService = _
   var loginPage: LoginPage = _
   var messagesPage: MessagesPage = _
 
   override def beforeAll() {
-    System.setProperty("withInMemory", "true")
+    sys.props.put("withInMemory", "true")
     startJetty()
-    emailSendingService = context.getAttribute("EMAILSERVICE").asInstanceOf[DummyEmailSendingService]
-    assert(emailSendingService != null)
+    userService.registerNewUser("regtest", "regtest@test.pl", "test")
+    emailService = emailSendingService.asInstanceOf[DummyEmailSendingService]
   }
 
   before {
@@ -36,7 +37,7 @@ class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   }
 
   override def afterAll() {
-    System.clearProperty("withInMemory")
+    sys.props.remove("withInMemory")
     stopJetty()
   }
 }

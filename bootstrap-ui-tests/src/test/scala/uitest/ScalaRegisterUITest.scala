@@ -20,7 +20,7 @@ class ScalaRegisterUITest extends BootstrapUITest with AwaitilitySupport {
     Assertions.assertThat(messagesPage.getInfoText).contains("User registered successfully")
 
     await atMost(60, TimeUnit.SECONDS) until {
-      emailSendingService.wasEmailSent(EMAIL, "SML Bootstrap - registration confirmation for user " + LOGIN)
+      emailService.wasEmailSent(EMAIL, "SML Bootstrap - registration confirmation for user " + LOGIN)
     }
   }
 
