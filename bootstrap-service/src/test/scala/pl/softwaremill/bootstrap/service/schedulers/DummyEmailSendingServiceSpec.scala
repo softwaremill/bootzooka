@@ -12,9 +12,5 @@ class DummyEmailSendingServiceSpec extends FunSpec with ShouldMatchers {
       service.run()
       service.wasEmailSent("test@sml.com", "subject") should be(true)
     }
-
-    it("should fail just because I want!") {
-      assert(false === true)
-    }
   }
 }
