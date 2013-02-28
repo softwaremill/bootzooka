@@ -11,7 +11,7 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
   private val sentEmails: ListBuffer[EmailDescription] = ListBuffer()
 
   def run() {
-    var tempList: ListBuffer[EmailDescription] = null
+    var tempList: ListBuffer[EmailDescription] = ListBuffer()
     this.synchronized {
       tempList ++= emailsToSend
       sentEmails ++= emailsToSend
@@ -19,24 +19,24 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
     }
     logger.info("I should be sending emails now but I am dummy :)")
     for (email <- tempList) {
-      logger.info("Dummy send email: " + email.toString)
+      logger.info("Dummy send email: " + emailToString(email))
     }
 
+  }
+
+  def emailToString(email: EmailDescription): String = {
+    email.getEmails.mkString + ", " + email.getSubject + ", " + email.getMessage
   }
 
   def scheduleEmail(address: String, emailData: EmailContentWithSubject) {
     this.synchronized {
-      emailsToSend += new EmailDescription(address, emailData.subject, emailData.content)
+      emailsToSend += new EmailDescription(address, emailData.content, emailData.subject)
     }
     logger.debug("Email to " + address + " scheduled")
   }
 
-  def wasEmailSent(address:String, subject:String):Boolean = {
+  def wasEmailSent(address: String, subject: String): Boolean = {
     sentEmails.exists(email => email.getEmails.contains(address) && email.getSubject == subject)
-  }
-
-  def wasEmailSent(email:EmailDescription):Boolean = {
-    sentEmails.contains(email)
   }
 }
 
