@@ -7,10 +7,14 @@ import javax.servlet.ServletContext
 import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
 import org.openqa.selenium.firefox.FirefoxDriver
 import java.util.concurrent.TimeUnit
+import pages.{MessagesPage, LoginPage}
+import org.openqa.selenium.support.PageFactory
 
 class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
   var emailSendingService: DummyEmailSendingService = _
   var driver: FirefoxDriver = _
+  var loginPage: LoginPage = _
+  var messagesPage: MessagesPage = _
 
   override def beforeAll() {
     System.setProperty("withInMemory", "true")
@@ -22,9 +26,12 @@ class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   before {
     driver = new FirefoxDriver()
     driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
+    loginPage = PageFactory.initElements(driver, classOf[LoginPage])
+    messagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
   }
 
   after {
+    driver.close
     driver = null
   }
 

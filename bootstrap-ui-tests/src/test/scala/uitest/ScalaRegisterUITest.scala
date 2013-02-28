@@ -7,7 +7,6 @@ import org.fest.assertions.Assertions
 import pl.softwaremill.common.util.RichString
 import com.jayway.awaitility.scala.AwaitilitySupport
 import com.jayway.awaitility.Awaitility._
-import pages.{MessagesPage, LoginPage}
 
 class ScalaRegisterUITest extends BootstrapUITest with AwaitilitySupport {
   final val LOGIN = RichString.generateRandom(5)
@@ -18,7 +17,6 @@ class ScalaRegisterUITest extends BootstrapUITest with AwaitilitySupport {
     val registrationPage: RegistrationPage = PageFactory.initElements(driver, classOf[RegistrationPage])
 
     registrationPage.register(LOGIN, EMAIL, PASSWORD)
-    val messagesPage: MessagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
     Assertions.assertThat(messagesPage.getInfoText).contains("User registered successfully")
 
     await atMost(60, TimeUnit.SECONDS) until {
@@ -27,10 +25,9 @@ class ScalaRegisterUITest extends BootstrapUITest with AwaitilitySupport {
   }
 
   test("login") {
-    val loginPage: LoginPage = PageFactory.initElements(driver, classOf[LoginPage])
     loginPage.openLoginPage()
     loginPage.login(EMAIL, PASSWORD)
-    val messagesPage: MessagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
+
     Assertions.assertThat(messagesPage.isUserLogged(LOGIN)).isTrue()
     messagesPage.logout()
   }
