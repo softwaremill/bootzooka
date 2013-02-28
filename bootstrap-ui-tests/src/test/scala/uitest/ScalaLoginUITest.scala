@@ -11,9 +11,10 @@ class ScalaLoginUITest extends BootstrapUITest {
   final val PASSWORD = "test"
 
   ignore("login") {
+    val loginPage: LoginPage = PageFactory.initElements(driver, classOf[LoginPage])
     loginPage.openLoginPage()
     loginPage.login(LOGIN, PASSWORD)
-
+    val messagesPage: MessagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
     Assertions.assertThat(messagesPage.isUserLogged(LOGIN)).isTrue()
     messagesPage.logout()
   }
