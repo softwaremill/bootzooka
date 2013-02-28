@@ -11,17 +11,19 @@ import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
 import pages.{MessagesPage, LoginPage}
 import org.openqa.selenium.support.PageFactory
 
-class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with Beans {
+class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
   var driver: FirefoxDriver = _
   var emailService: DummyEmailSendingService = _
   var loginPage: LoginPage = _
   var messagesPage: MessagesPage = _
+  var beans: Beans = _
 
   override def beforeAll() {
     sys.props.put("withInMemory", "true")
     startJetty()
-    userService.registerNewUser("regtest", "regtest@test.pl", "test")
-    emailService = emailSendingService.asInstanceOf[DummyEmailSendingService]
+    beans = context.getAttribute("bootstrap").asInstanceOf[Beans]
+    beans.userService.registerNewUser("regtest", "regtest@test.pl", "test")
+    emailService = beans.emailSendingService.asInstanceOf[DummyEmailSendingService]
   }
 
   before {

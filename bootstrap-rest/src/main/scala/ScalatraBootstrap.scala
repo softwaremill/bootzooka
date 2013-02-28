@@ -10,7 +10,6 @@ import javax.servlet.ServletContext
  * run at application start (e.g. database configurations), and init params.
  */
 class ScalatraBootstrap extends LifeCycle with Beans {
-
   val Prefix = "/rest"
 
   override def init(context: ServletContext) {
@@ -20,6 +19,8 @@ class ScalatraBootstrap extends LifeCycle with Beans {
     context.mount(new UptimeServlet, Prefix + "/uptime")
     context.mount(new UsersServlet(userService), Prefix + "/users")
     context.mount(new PasswordRecoveryServlet(passwordRecoveryService), Prefix + "/passwordrecovery")
+
+    context.put("bootstrap", this)
   }
 
 

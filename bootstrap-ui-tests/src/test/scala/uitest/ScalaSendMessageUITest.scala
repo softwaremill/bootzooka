@@ -14,7 +14,7 @@ class ScalaSendMessageUITest extends BootstrapUITest {
     loginPage.login(LOGIN, PASSWORD)
 
     Assertions.assertThat(messagesPage.isUserLogged(LOGIN)).isTrue()
-    messagesPage.sendMessage(MSG_TEXT);
+    messagesPage.sendMessage(MSG_TEXT)
     Assertions.assertThat(messagesPage.isUMessageDisplayed(MSG_TEXT)).isTrue()
     messagesPage.logout()
   }
