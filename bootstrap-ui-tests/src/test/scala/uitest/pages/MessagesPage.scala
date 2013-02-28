@@ -6,49 +6,43 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import uitest.commands.SeleniumCommands;
 
-public class MessagesPage {
-    private final WebDriver driver;
-    SeleniumCommands sc;
+class MessagesPage(driver: WebDriver) {
+    private val sc: SeleniumCommands  = new SeleniumCommands(driver)
 
     @FindBy(css = "#logoutLink")
-    private WebElement logoutLink;
+    val logoutLink: WebElement = null
 
     @FindBy(css = ".alert-info")
-    private WebElement alert;
+    val alert: WebElement = null
 
     @FindBy(css = "textarea")
-    private WebElement messageField;
+    val messageField: WebElement = null
 
     @FindBy(css = "input[type=submit]")
-    private WebElement sendButton;
+    val sendButton: WebElement = null
 
-    public MessagesPage(WebDriver driver) {
-        this.driver = driver;
-        sc = new SeleniumCommands(driver);
-    }
-
-    public void logout() throws Exception {
+    def logout() {
         logoutLink.click();
         sc.waitForFinishLoading();
     }
 
-    public void sendMessage(String messagetext) throws Exception {
+    def sendMessage(messagetext: String){
         messageField.sendKeys(messagetext);
         sendButton.click();
         sc.waitForFinishLoading();
     }
 
-    public boolean isUserLogged(String user) throws Exception {
+    def isUserLogged(user: String): Boolean = {
         sc.waitForElementVisible(By.linkText("Logged in as " + user));
         return true;
     }
 
-    public boolean isUMessageDisplayed(String message) throws Exception {
+    def isUMessageDisplayed(message: String): Boolean = {
         sc.waitForElementVisible(By.xpath("//p[text()='" + message + "']"));
         return true;
     }
 
-    public String getInfoText() {
+    def getInfoText(): String = {
        sc.waitForElementVisible(By.cssSelector("#info-message"));
        return alert.getText();
     }

@@ -5,32 +5,27 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import uitest.commands.SeleniumCommands;
 
-public class RegistrationPage {
+class RegistrationPage(driver: WebDriver) {
+    val url = "http://localhost:8080/#/register"
 
-    private final WebDriver driver;
-    SeleniumCommands sc;
+    private val sc: SeleniumCommands = new SeleniumCommands(driver)
 
     @FindBy(css = "#login")
-    private WebElement loginField;
+    val loginField: WebElement = null
 
     @FindBy(css = "#email")
-    private WebElement emailField;
+    val emailField: WebElement = null
 
     @FindBy(css = "#password")
-    private WebElement passwordField;
+    val passwordField: WebElement =null
 
     @FindBy(css = "#repeatPassword")
-    private WebElement repeatPassField;
+    val repeatPassField: WebElement = null
 
     @FindBy(css = "button[type=submit]")
-    private WebElement registerButton;
+    val registerButton: WebElement = null
 
-    public RegistrationPage(WebDriver driver) {
-        this.driver = driver;
-        sc = new SeleniumCommands(driver);
-    }
-
-    public void register(String login, String email, String password) throws Exception {
+    def register(login: String, email: String, password: String) {
         openRegistrationPage();
 
         loginField.sendKeys(login);
@@ -41,8 +36,8 @@ public class RegistrationPage {
         sc.waitForFinishLoading();
     }
 
-    public void openRegistrationPage() throws Exception {
-        driver.get("http://localhost:8080/#/register");
+    def openRegistrationPage() {
+        driver.get(url);
         sc.waitForFinishLoading();
     }
 }

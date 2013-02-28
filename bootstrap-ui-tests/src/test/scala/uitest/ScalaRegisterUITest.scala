@@ -1,7 +1,7 @@
 package uitest
 
 import java.util.concurrent.TimeUnit
-import pages.{LoginPage, MessagesPage, RegistrationPage}
+import pages.RegistrationPage
 import org.openqa.selenium.support.PageFactory
 import org.fest.assertions.Assertions
 import pl.softwaremill.common.util.RichString
@@ -15,7 +15,6 @@ class ScalaRegisterUITest extends BootstrapUITest with AwaitilitySupport {
 
   test("register") {
     val registrationPage: RegistrationPage = PageFactory.initElements(driver, classOf[RegistrationPage])
-    val messagesPage: MessagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
 
     registrationPage.register(LOGIN, EMAIL, PASSWORD)
     Assertions.assertThat(messagesPage.getInfoText).contains("User registered successfully")
@@ -28,11 +27,8 @@ class ScalaRegisterUITest extends BootstrapUITest with AwaitilitySupport {
   test("login") {
     val loginPage: LoginPage = PageFactory.initElements(driver, classOf[LoginPage])
     loginPage.openLoginPage()
-    loginPage.login(LOGIN, PASSWORD)
-    val messagesPage: MessagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
+    loginPage.login(EMAIL, PASSWORD)
     Assertions.assertThat(messagesPage.isUserLogged(LOGIN)).isTrue()
     messagesPage.logout()
-
-    driver.quit()
   }
 }
