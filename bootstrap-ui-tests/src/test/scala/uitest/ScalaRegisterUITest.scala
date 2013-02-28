@@ -23,12 +23,4 @@ class ScalaRegisterUITest extends BootstrapUITest with AwaitilitySupport {
       emailService.wasEmailSent(EMAIL, "SML Bootstrap - registration confirmation for user " + LOGIN)
     }
   }
-
-  test("login") {
-    loginPage.openLoginPage()
-    loginPage.login(EMAIL, PASSWORD)
-
-    Assertions.assertThat(messagesPage.isUserLogged(LOGIN)).isTrue()
-    messagesPage.logout()
-  }
 }

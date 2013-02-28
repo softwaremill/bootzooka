@@ -12,6 +12,10 @@ import pages.{MessagesPage, LoginPage}
 import org.openqa.selenium.support.PageFactory
 
 class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
+  final val REGUSER = "reguser"
+  final val REGPASS = "regpass"
+  final val REGMAIL = "reguser@regmail.pl"
+
   var driver: FirefoxDriver = _
   var emailService: DummyEmailSendingService = _
   var loginPage: LoginPage = _
@@ -22,7 +26,7 @@ class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
     sys.props.put("withInMemory", "true")
     startJetty()
     beans = context.getAttribute("bootstrap").asInstanceOf[Beans]
-    beans.userService.registerNewUser("regtest", "regtest@test.pl", "test")
+    beans.userService.registerNewUser(REGUSER, REGMAIL, REGPASS)
     emailService = beans.emailSendingService.asInstanceOf[DummyEmailSendingService]
   }
 
