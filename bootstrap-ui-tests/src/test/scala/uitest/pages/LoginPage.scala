@@ -6,9 +6,8 @@ import org.openqa.selenium.support.FindBy;
 import uitest.commands.SeleniumCommands;
 
 class LoginPage(driver: WebDriver) {
-  val url = "http://localhost:8080/#/login"
-
   private val sc: SeleniumCommands = new SeleniumCommands(driver)
+  val url = sc.URL + "login"
 
   @FindBy(css = "#login")
   val loginField: WebElement = null
@@ -20,14 +19,14 @@ class LoginPage(driver: WebDriver) {
   val loginButton: WebElement = null
 
   def login(login: String, password: String){
-      loginField.sendKeys(login);
-      passwordField.sendKeys(password);
-      loginButton.click();
-      sc.waitForFinishLoading();
+    loginField.sendKeys(login);
+    passwordField.sendKeys(password);
+    loginButton.click();
+    sc.waitForFinishLoading();
   }
 
   def openLoginPage(){
-      driver.get(url)
-      sc.waitForFinishLoading();
+    driver.get(url)
+    sc.waitForFinishLoading();
   }
 }
