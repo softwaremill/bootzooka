@@ -1,7 +1,9 @@
 "use strict";
+angular.module('smlBootstrap.directives', []);
+angular.module('smlBootstrap.filters', []);
 angular.module('smlBootstrap.maintenance', ['ngResource']);
 
-angular.module('smlBootstrap.profile', ['smlBootstrap.maintenance', 'smlBootstrap.session']).config(function ($routeProvider) {
+angular.module('smlBootstrap.profile', ['smlBootstrap.maintenance', 'smlBootstrap.session', 'smlBootstrap.directives']).config(function ($routeProvider) {
     $routeProvider.
         when("/login", {controller: 'LoginCtrl', templateUrl: "partials/login.html"}).
         when("/register", {controller: 'RegisterCtrl', templateUrl: "partials/register.html"}).
@@ -10,7 +12,7 @@ angular.module('smlBootstrap.profile', ['smlBootstrap.maintenance', 'smlBootstra
         when("/profile", {controller: "ProfileCtrl", templateUrl: "partials/secured/profile.html"});
 });
 
-angular.module('smlBootstrap.entries', ['smlBootstrap.session']).config(function ($routeProvider) {
+angular.module('smlBootstrap.entries', ['smlBootstrap.session', 'smlBootstrap.filters']).config(function ($routeProvider) {
     $routeProvider.
         when('/', {controller: 'EntriesCtrl', templateUrl: 'partials/main.html'}).
         when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "partials/entry.html"});
@@ -90,14 +92,6 @@ angular.module(
             }
         });
     });
-
-angular.module('smlBootstrap.filters', []).
-    filter('newlines', function () {
-        return function (text) {
-            return text.replace(/\n/g, '<br/>');
-        };
-    });
-
 
 angular.module("ajaxthrobber", [])
     .config(["$httpProvider", function ($httpProvider) {

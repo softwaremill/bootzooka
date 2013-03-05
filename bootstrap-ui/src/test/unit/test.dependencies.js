@@ -13,7 +13,6 @@ EnvJasmine.loadGlobal(EnvJasmine.testDir + "require.conf.js");
 EnvJasmine.loadGlobal(EnvJasmine.testDir + "../lib/angular/angular-mocks-1.1.1.js");
 
 // Application
-EnvJasmine.loadGlobal(EnvJasmine.rootDir + "directives.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "application.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "flashService.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "effects.js")
@@ -35,3 +34,8 @@ EnvJasmine.loadGlobal(EnvJasmine.rootDir + "registerService.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "userSessionService.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "uptimeCtrl.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "utilService.js");
+
+EnvJasmine.loadGlobal(EnvJasmine.rootDir + "bsBlur.js");
+EnvJasmine.loadGlobal(EnvJasmine.rootDir + "bsRepeatPassword.js");
+
+EnvJasmine.loadGlobal(EnvJasmine.rootDir + "newlines.js");

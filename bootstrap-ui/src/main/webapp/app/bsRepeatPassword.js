@@ -1,20 +1,10 @@
 "use strict";
 
-var directives = angular.module("smlBootstrap.directives", []);
-
-directives.directive("bsBlur", function() {
-    return function(scope, element, attrs) {
-        element.bind("blur", function() {
-            scope.$eval(attrs.bsBlur);
-        });
-    }
-});
-
-directives.directive("repeatPassword", function() {
+angular.module('smlBootstrap.directives').directive('bsRepeatPassword', function() {
     return {
         require: "ngModel",
         link: function(scope, elem, attrs, ctrl) {
-            var otherInput = elem.inheritedData("$formController")[attrs.repeatPassword];
+            var otherInput = elem.inheritedData("$formController")[attrs.bsRepeatPassword];
 
             ctrl.$parsers.push(function(value) {
                 if(value === otherInput.$viewValue) {
