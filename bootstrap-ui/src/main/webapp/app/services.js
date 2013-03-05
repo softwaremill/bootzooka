@@ -1,12 +1,11 @@
 "use strict";
 
-var services = angular.module('smlBootstrap.services', ['ngResource', 'ngCookies']);
 
 var dontBlockOnAjaxHeader = { "dontBlockPageOnAjax": "true" };
 var nonArrayGetWithoutBlockOnAjax = { method: "GET", isArray: false, headers: dontBlockOnAjaxHeader };
 
 
-services.factory('EntriesService', function ($resource) {
+angular.module("smlBootstrap.entries").factory('EntriesService', function ($resource) {
 
     var self = this;
 
@@ -62,7 +61,7 @@ services.factory('EntriesService', function ($resource) {
 });
 
 
-services.factory('UserSessionService', function ($resource, $cookies) {
+angular.module("smlBootstrap.session").factory('UserSessionService', function ($resource, $cookies) {
 
     var self = this;
 
@@ -126,7 +125,7 @@ services.factory('UserSessionService', function ($resource, $cookies) {
 });
 
 
-services.factory('UtilService', function ($resource) {
+angular.module("smlBootstrap.maintenance").factory('UtilService', function ($resource) {
 
     var self = this;
 
@@ -143,7 +142,7 @@ services.factory('UtilService', function ($resource) {
     return utilService;
 });
 
-services.factory('RegisterService', function ($resource, FlashService) {
+angular.module("smlBootstrap.profile").factory('RegisterService', function ($resource, FlashService) {
 
     var self = this;
     self.registerResource = $resource('rest/users/register');
@@ -164,7 +163,7 @@ services.factory('RegisterService', function ($resource, FlashService) {
     return registerService;
 });
 
-services.factory("FlashService", function () {
+angular.module("smlBootstrap.maintenance").factory("FlashService", function () {
 
     var queue = [];
 
@@ -179,7 +178,7 @@ services.factory("FlashService", function () {
 });
 
 
-services.factory("PasswordRecoveryService", function ($resource) {
+angular.module("smlBootstrap.profile").factory("PasswordRecoveryService", function ($resource) {
     var passwordRecoveryService = {};
 
     this.recoveryResource = $resource("rest/passwordrecovery", {}, {
@@ -209,7 +208,7 @@ services.factory("PasswordRecoveryService", function ($resource) {
     return passwordRecoveryService;
 });
 
-services.factory("ProfileService", function ($resource) {
+angular.module("smlBootstrap.profile").factory("ProfileService", function ($resource) {
     var profileService = {};
 
     this.profileResource = $resource("rest/users", {}, {

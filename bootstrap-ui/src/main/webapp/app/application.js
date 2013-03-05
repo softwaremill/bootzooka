@@ -1,25 +1,39 @@
 "use strict";
+angular.module('smlBootstrap.maintenance', ['ngResource']);
 
-angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters', 'smlBootstrap.controllers', 'smlBootstrap.directives', 'ngSanitize', 'ajaxthrobber'])
+angular.module('smlBootstrap.profile', ['smlBootstrap.maintenance', 'smlBootstrap.session']).config(function ($routeProvider) {
+    $routeProvider.
+        when("/login", {controller: 'LoginCtrl', templateUrl: "partials/login.html"}).
+        when("/register", {controller: 'RegisterCtrl', templateUrl: "partials/register.html"}).
+        when("/recover-lost-password", {controller: 'PasswordRecoveryCtrl', templateUrl: "partials/recover-lost-password.html"}).
+        when("/password-reset", {controller: "PasswordRecoveryCtrl", templateUrl: "partials/password-reset.html"}).
+        when("/profile", {controller: "ProfileCtrl", templateUrl: "partials/secured/profile.html"});
+});
 
-    .config(function ($routeProvider) {
+angular.module('smlBootstrap.entries', ['smlBootstrap.session']).config(function ($routeProvider) {
+    $routeProvider.
+        when('/', {controller: 'EntriesCtrl', templateUrl: 'partials/main.html'}).
+        when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "partials/entry.html"});
+});
 
+angular.module('smlBootstrap.session', ['ngCookies', 'ngResource']);
+
+angular.module(
+        'smlBootstrap', [
+            'smlBootstrap.filters',
+            'smlBootstrap.profile',
+            'smlBootstrap.entries',
+            'smlBootstrap.maintenance',
+            'smlBootstrap.session',
+            'smlBootstrap.directives', 'ngSanitize', 'ajaxthrobber']).config(function ($routeProvider) {
         $routeProvider.
-            when('/', {controller: 'EntriesCtrl', templateUrl: 'partials/main.html'}).
-            when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "partials/entry.html"}).
-            when("/login", {controller: 'LoginCtrl', templateUrl: "partials/login.html"}).
-            when("/register", {controller: 'RegisterCtrl', templateUrl: "partials/register.html"}).
             when("/error404", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error404.html"}).
             when("/error500", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error500.html"}).
             when("/error", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error500.html"}).
-            when("/recover-lost-password", {controller: 'PasswordRecoveryCtrl', templateUrl: "partials/recover-lost-password.html"}).
-            when("/password-reset", {controller: "PasswordRecoveryCtrl", templateUrl: "partials/password-reset.html"}).
-            when("/profile", {controller: "ProfileCtrl", templateUrl: "partials/secured/profile.html"}).
             otherwise({redirectTo: '/error404'});
     })
 
     .config(['$httpProvider', function ($httpProvider) {
-
         var interceptor = ['$q', '$location', 'FlashService', '$injector', function ($q, $location, FlashService, $injector) {
             function success(response) {
                 return response;
@@ -76,7 +90,6 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
             }
         });
     });
-
 
 angular.module('smlBootstrap.filters', []).
     filter('newlines', function () {

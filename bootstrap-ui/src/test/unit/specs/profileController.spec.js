@@ -1,7 +1,7 @@
 "user strict";
 
 describe("Profile Controller", function () {
-    beforeEach(module("smlBootstrap.services", "smlBootstrap.controllers"));
+    beforeEach(module('smlBootstrap.profile'));
     afterEach(inject(function (_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();
         _$httpBackend_.verifyNoOutstandingRequest();

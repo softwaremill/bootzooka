@@ -1,8 +1,6 @@
 "use strict";
 
-var controllers = angular.module('smlBootstrap.controllers', ['smlBootstrap.services', 'ngCookies']);
-
-controllers.controller('UptimeCtrl', function UptimeCtrl($scope, $timeout, UtilService) {
+angular.module('smlBootstrap.maintenance').controller('UptimeCtrl', function UptimeCtrl($scope, $timeout, UtilService) {
 
     $scope.update = function () {
         UtilService.loadUptime(function (data) {
@@ -23,7 +21,7 @@ controllers.controller('UptimeCtrl', function UptimeCtrl($scope, $timeout, UtilS
 
 });
 
-controllers.controller('UserSessionCtrl', function UserSessionCtrl($scope, $location, UserSessionService) {
+angular.module('smlBootstrap.session').controller('UserSessionCtrl', function UserSessionCtrl($scope, $location, UserSessionService) {
     $scope.isLogged = function () {
         return UserSessionService.isLogged();
     };
@@ -43,7 +41,7 @@ controllers.controller('UserSessionCtrl', function UserSessionCtrl($scope, $loca
     };
 });
 
-controllers.controller('EntriesCtrl', function EntriesCtrl($scope, $timeout, $window, EntriesService, UserSessionService, $location) {
+angular.module('smlBootstrap.entries').controller('EntriesCtrl', function EntriesCtrl($scope, $timeout, $window, EntriesService, UserSessionService, $location) {
 
     var self = this;
 
@@ -120,7 +118,7 @@ controllers.controller('EntriesCtrl', function EntriesCtrl($scope, $timeout, $wi
     }
 });
 
-controllers.controller('EntryEditCtrl', function EntryEditCtrl($scope, EntriesService, $routeParams, $location, UserSessionService) {
+angular.module('smlBootstrap.entries').controller('EntryEditCtrl', function EntryEditCtrl($scope, EntriesService, $routeParams, $location, UserSessionService) {
 
     $scope.logId = $routeParams.entryId;
     $scope.log = {};
@@ -151,7 +149,7 @@ controllers.controller('EntryEditCtrl', function EntryEditCtrl($scope, EntriesSe
     };
 });
 
-controllers.controller('RegisterCtrl', function RegisterCtrl($scope, RegisterService, $location) {
+angular.module('smlBootstrap.profile').controller('RegisterCtrl', function RegisterCtrl($scope, RegisterService, $location) {
 
     var self = this;
 
@@ -187,7 +185,7 @@ controllers.controller('RegisterCtrl', function RegisterCtrl($scope, RegisterSer
 
 });
 
-controllers.controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $routeParams) {
+angular.module('smlBootstrap.profile').controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $routeParams) {
 
     var self = this;
 
@@ -222,7 +220,7 @@ controllers.controller('LoginCtrl', function LoginCtrl($scope, UserSessionServic
     };
 });
 
-controllers.controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $location, $routeParams) {
+angular.module('smlBootstrap.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $location, $routeParams) {
     var self = this;
 
     $scope.login = '';
@@ -264,7 +262,7 @@ controllers.controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($sc
     };
 });
 
-controllers.controller("ProfileCtrl", function ProfileCtrl($scope, UserSessionService, ProfileService) {
+angular.module('smlBootstrap.profile').controller("ProfileCtrl", function ProfileCtrl($scope, UserSessionService, ProfileService) {
     $scope.login = UserSessionService.loggedUser.login.concat();
     $scope.email = UserSessionService.loggedUser.email.concat();
 

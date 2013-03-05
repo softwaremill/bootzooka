@@ -2,7 +2,7 @@
 
 describe("Flash Service", function () {
 
-    beforeEach(module('smlBootstrap.services'));
+    beforeEach(module('smlBootstrap.maintenance'));
 
     var scope, srv;
 
