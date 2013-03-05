@@ -1,6 +1,12 @@
 package pl.softwaremill.bootstrap.domain
 
-import com.mongodb.casbah.Imports._
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
+import org.bson.types.ObjectId
 
-case class Entry(var _id: ObjectId = new ObjectId, var text: String, var authorId: ObjectId, var entered: DateTime = new DateTime())
+case class Entry(id: ObjectId, text: String, authorId: ObjectId, entered: DateTime)
+
+object Entry {
+  def apply(text: String, authorId: ObjectId) = {
+    new Entry(new ObjectId, text, authorId, new DateTime(DateTimeZone.UTC))
+  }
+}

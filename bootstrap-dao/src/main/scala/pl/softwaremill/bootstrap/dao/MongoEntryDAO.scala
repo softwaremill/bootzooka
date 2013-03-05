@@ -1,54 +1,76 @@
 package pl.softwaremill.bootstrap.dao
 
-import com.mongodb.casbah.WriteConcern
-import com.novus.salat.dao.SalatDAO
 import pl.softwaremill.bootstrap.domain.Entry
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
+import net.liftweb.mongodb.record.field.{ObjectIdField, ObjectIdPk}
+import com.foursquare.rogue.LiftRogue._
+import net.liftweb.record.field.{DateTimeField, StringField}
+import org.joda.time.{DateTimeZone, DateTime}
 import org.bson.types.ObjectId
-import com.mongodb.casbah.commons.MongoDBObject
-import com.novus.salat.global._
-import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHelpers
-import com.weiglewilczek.slf4s.Logging
-import org.joda.time.DateTime
+import java.util.Locale
 
-class MongoEntryDAO(implicit val mongo: MongoDB) extends SalatDAO[Entry, ObjectId](mongo("entries")) with EntryDAO with Logging {
+class MongoEntryDAO extends EntryDAO {
 
-  RegisterJodaTimeConversionHelpers()
+  import EntryImplicits._
 
   def loadAll = {
-    find(MongoDBObject()).sort(MongoDBObject("entered" -> -1)).toList
+    EntryRecord orderDesc (_.entered) fetch()
   }
 
   def countItems(): Long = {
-    super.count()
+    EntryRecord.count
   }
 
   def add(entry: Entry) {
-    logger.debug("Adding new entry: " + entry)
-    insert(entry, WriteConcern.Safe)
+    entry.save
   }
 
   def remove(entryId: String) {
-    remove(MongoDBObject("_id" -> new ObjectId(entryId)))
+    EntryRecord where (_.id eqs new ObjectId(entryId)) findAndDeleteOne()
   }
 
   def load(entryId: String): Option[Entry] = {
-    findOne(MongoDBObject("_id" -> new ObjectId(entryId)))
+    EntryRecord where (_.id eqs new ObjectId(entryId)) get()
   }
 
   def update(entryId: String, message: String) {
-    if (ObjectId.isValid(entryId)) {
-      load(entryId) match {
-        case Some(entry) =>
-          entry.text = message
-          update(MongoDBObject("_id" -> entry._id), entry, upsert = false, multi = false, wc = WriteConcern.Safe)
-        case _ =>
-      }
-    }
+    EntryRecord where (_.id eqs new ObjectId(entryId)) modify (_.text setTo message) updateOne()
   }
 
   def countNewerThan(timeInMillis: Long): Long = {
-    count(MongoDBObject("entered" -> MongoDBObject("$gt" -> new DateTime(timeInMillis))))
+    //EntryRecord.where(_.entered after new DateTime(timeInMillis, DateTimeZone.UTC)) count()
+    throw new UnsupportedOperationException("Not implemented yet")
+  }
+
+  private object EntryImplicits {
+    implicit def fromRecord(record: EntryRecord): Entry = {
+      Entry(record.id.get, record.text.get, record.authorId.get, new DateTime(record.entered.get))
+    }
+
+    implicit def fromRecords(records: List[EntryRecord]): List[Entry] = {
+      records map (fromRecord(_))
+    }
+
+    implicit def fromOptionalRecord(record: Option[EntryRecord]): Option[Entry] = {
+      record map (fromRecord(_))
+    }
+
+    implicit def toRecord(entry: Entry): EntryRecord = {
+      EntryRecord.createRecord.id(entry.id).text(entry.text).authorId(entry.authorId).entered(entry.entered.toCalendar(Locale.getDefault))
+    }
   }
 
 }
+
+private class EntryRecord extends MongoRecord[EntryRecord] with ObjectIdPk[EntryRecord] {
+  def meta = EntryRecord
+
+  object text extends StringField(this, 500)
+
+  object authorId extends ObjectIdField(this)
+
+  object entered extends DateTimeField(this)
+
+}
+
+private object EntryRecord extends EntryRecord with MongoMetaRecord[EntryRecord]

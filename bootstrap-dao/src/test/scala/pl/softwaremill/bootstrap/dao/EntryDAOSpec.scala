@@ -2,7 +2,7 @@ package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.Entry
 import org.bson.types.ObjectId
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 
@@ -22,14 +22,13 @@ trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
   def createDAO: EntryDAO
 
   var entryDAO: EntryDAO = _
-  val referenceDate = new DateTime().withDate(2012, 12, 10)
+  val referenceDate = new DateTime(DateTimeZone.UTC).withDate(2012, 12, 10)
 
   override def beforeAll() {
     super.beforeAll()
     entryDAO = createDAO
     for (i <- 1 to 3)  {
-      entryDAO.add(Entry(_id = new ObjectId(i.toString * 24), text = "Message " + i, authorId = new ObjectId((10-i).toString * 24),
-        entered = referenceDate.minusDays(i-1)))
+      entryDAO.add(Entry(new ObjectId(i.toString * 24), "Message " + i, new ObjectId((10-i).toString * 24), referenceDate.minusDays(i-1)))
     }
   }
 
@@ -56,8 +55,7 @@ trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
     val numberOfEntries = entryDAO.countItems()
 
     // When
-    entryDAO.add(Entry(_id = new ObjectId("a" * 24), text = "Message 9", authorId = new ObjectId("a" * 24),
-      entered = new DateTime()))
+    entryDAO.add(Entry(new ObjectId("a" * 24), "Message 9", new ObjectId("a" * 24), new DateTime()))
 
     // Then
     (entryDAO.countItems() - numberOfEntries) should be (1)
@@ -80,7 +78,7 @@ trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
     val message: String = "Updated message"
 
     // When
-    entryOpt.foreach( e => entryDAO.update(e._id.toString, message))
+    entryOpt.foreach( e => entryDAO.update(e.id.toString, message))
 
     // Then
     val updatedEntryOpt: Option[Entry] = entryDAO.load("1" * 24)

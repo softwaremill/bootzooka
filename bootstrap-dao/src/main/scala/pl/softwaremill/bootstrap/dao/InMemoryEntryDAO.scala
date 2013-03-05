@@ -26,7 +26,7 @@ class InMemoryEntryDAO extends EntryDAO {
   }
 
   def load(entryId: String): Option[Entry] = {
-    entries.find(entry => entry._id == entryId)
+    entries.find(entry => entry.id == entryId)
   }
 
   def update(entryId: String, message: String) {
