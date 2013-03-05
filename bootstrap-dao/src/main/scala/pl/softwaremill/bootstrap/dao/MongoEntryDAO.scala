@@ -5,7 +5,7 @@ import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field.{ObjectIdField, ObjectIdPk}
 import com.foursquare.rogue.LiftRogue._
 import net.liftweb.record.field.{DateTimeField, StringField}
-import org.joda.time.{DateTimeZone, DateTime}
+import org.joda.time.DateTime
 import org.bson.types.ObjectId
 import java.util.Locale
 
@@ -73,4 +73,6 @@ private class EntryRecord extends MongoRecord[EntryRecord] with ObjectIdPk[Entry
 
 }
 
-private object EntryRecord extends EntryRecord with MongoMetaRecord[EntryRecord]
+private object EntryRecord extends EntryRecord with MongoMetaRecord[EntryRecord] {
+  override def collectionName: String = "entries"
+}
