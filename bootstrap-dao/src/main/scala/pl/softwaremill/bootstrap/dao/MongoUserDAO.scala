@@ -104,4 +104,6 @@ private class UserRecord extends MongoRecord[UserRecord] with ObjectIdPk[UserRec
 
 }
 
-private object UserRecord extends UserRecord with MongoMetaRecord[UserRecord]
+private object UserRecord extends UserRecord with MongoMetaRecord[UserRecord] {
+  override def collectionName: String = "users"
+}
