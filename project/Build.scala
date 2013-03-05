@@ -120,6 +120,14 @@ object Dependencies {
   // As provided implies test, so is enough here.
   val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
 
+  //val bson = "org.mongodb" % "bson" % "2.5.3"
+
+  val rogueField = "com.foursquare" %% "rogue-field" % "2.0.0-beta22" intransitive()
+  val rogueCore = "com.foursquare" %% "rogue-core" % "2.0.0-beta22" intransitive()
+  val rogueLift = "com.foursquare" %% "rogue-lift" % "2.0.0-beta22" intransitive()
+  val liftMongoRecord = "net.liftweb" %% "lift-mongodb-record" % "2.5-M4"
+
+  val rogue = Seq(rogueCore, rogueField, rogueLift, liftMongoRecord)
 }
 
 object SmlBootstrapBuild extends Build {
@@ -149,7 +157,7 @@ object SmlBootstrapBuild extends Build {
   lazy val dao: Project = Project(
     "bootstrap-dao",
     file("bootstrap-dao"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= databaseLibs ++ Seq(smlCommonUtil))
+    settings = buildSettings ++ Seq(libraryDependencies ++= databaseLibs ++ rogue ++ Seq(smlCommonUtil))
   ) dependsOn(domain, common)
 
   lazy val service: Project = Project(
