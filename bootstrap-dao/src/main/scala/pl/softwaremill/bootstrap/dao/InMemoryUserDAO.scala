@@ -26,7 +26,7 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def load(userId: String): Option[User] = {
-    users.find(user => user._id == userId)
+    users.find(user => user.id == userId)
   }
 
   def findByEmail(email: String): Option[User] = {

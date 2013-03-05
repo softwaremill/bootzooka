@@ -1,63 +1,107 @@
 package pl.softwaremill.bootstrap.dao
 
-import com.mongodb.casbah.WriteConcern
 import pl.softwaremill.bootstrap.domain.User
-import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.MongoDB
-import com.mongodb.casbah.commons.MongoDBObject
-import com.novus.salat.dao.SalatDAO
-import com.mongodb.casbah.query.Imports.ConcreteDBObjectOk
-import com.mongodb.casbah.commons.TypeImports.ObjectId
-import com.novus.salat.global._
-import java.util.UUID
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
+import net.liftweb.mongodb.record.field.ObjectIdPk
+import com.foursquare.rogue.LiftRogue._
+import org.bson.types.ObjectId
+import net.liftweb.record.field.StringField
 
-class MongoUserDAO(implicit val mongo: MongoDB) extends SalatDAO[User, ObjectId](mongo("users")) with UserDAO {
+class MongoUserDAO extends UserDAO {
+
+  import UserImplicits._
 
   def loadAll = {
-    find(MongoDBObject()).toList
+    UserRecord.findAll
   }
 
   def countItems(): Long = {
-    super.count()
+    UserRecord.count
   }
 
   protected def internalAddUser(user: User) {
-    insert(user, WriteConcern.Safe)
+    user.save
   }
 
   def remove(userId: String) {
-    remove(MongoDBObject("_id" -> new ObjectId(userId)), WriteConcern.Safe)
+    UserRecord where (_.id eqs new ObjectId(userId)) findAndDeleteOne()
   }
 
   def load(userId: String): Option[User] = {
-    findOne(MongoDBObject("_id" -> new ObjectId(userId)))
+    UserRecord where (_.id eqs new ObjectId(userId)) get()
   }
 
   def findByEmail(email: String) = {
-    findOne(MongoDBObject("email" -> email.toLowerCase))
+    UserRecord where (_.email eqs email.toLowerCase) get()
   }
 
   def findByLowerCasedLogin(login: String) = {
-    findOne(MongoDBObject("loginLowerCased" -> login.toLowerCase))
+    UserRecord where (_.loginLowerCase eqs login.toLowerCase) get()
   }
 
   def findByLoginOrEmail(loginOrEmail: String) = {
-    findOne($or(MongoDBObject("loginLowerCased" -> loginOrEmail.toLowerCase), MongoDBObject("email" -> loginOrEmail.toLowerCase)))
+    val lowercased = loginOrEmail.toLowerCase
+    UserRecord or(_.where(_.loginLowerCase eqs lowercased), _.where(_.email eqs lowercased)) get()
   }
 
   def findByToken(token: String) = {
-    findOne(MongoDBObject("token" -> token))
+    UserRecord where (_.token eqs token) get()
   }
 
   def changePassword(userId: String, password: String) {
-    update(MongoDBObject("_id" -> new ObjectId(userId)), $set("password" -> password), false, false, WriteConcern.Safe)
+    UserRecord where (_.id eqs new ObjectId(userId)) modify (_.password setTo password) updateOne()
   }
 
   def changeLogin(currentLogin: String, newLogin: String) {
-    update(MongoDBObject("login" -> currentLogin), $set("login" -> newLogin, "loginLowerCased" -> newLogin.toLowerCase), wc = WriteConcern.Safe)
+    UserRecord where (_.login eqs currentLogin) modify (_.login setTo newLogin) and (_.loginLowerCase setTo newLogin.toLowerCase) updateOne()
   }
 
   def changeEmail(currentEmail: String, newEmail: String) {
-    update(MongoDBObject("email" -> currentEmail), $set("email" -> newEmail), wc = WriteConcern.Safe)
+    UserRecord where (_.email eqs currentEmail) modify (_.email setTo newEmail) updateOne()
   }
+
+  private object UserImplicits {
+    implicit def fromRecord(user: UserRecord): User = {
+      User(user.id.get, user.login.get, user.loginLowerCase.get, user.email.get, user.password.get, user.salt.get, user.token.get)
+    }
+
+    implicit def fromRecords(users: List[UserRecord]): List[User] = {
+      users.map(fromRecord(_))
+    }
+
+    implicit def fromOptionalRecord(userOpt: Option[UserRecord]): Option[User] = {
+      userOpt.map(fromRecord(_))
+    }
+
+    implicit def toRecord(user: User): UserRecord = {
+      UserRecord.createRecord
+        .id(user.id)
+        .login(user.login)
+        .loginLowerCase(user.loginLowerCased)
+        .email(user.email)
+        .password(user.password)
+        .salt(user.salt)
+        .token(user.token)
+    }
+  }
+
 }
+
+private class UserRecord extends MongoRecord[UserRecord] with ObjectIdPk[UserRecord] {
+  def meta = UserRecord
+
+  object login extends StringField(this, 500)
+
+  object loginLowerCase extends StringField(this, 500)
+
+  object email extends StringField(this, 500)
+
+  object password extends StringField(this, 500)
+
+  object salt extends StringField(this, 500)
+
+  object token extends StringField(this, 500)
+
+}
+
+private object UserRecord extends UserRecord with MongoMetaRecord[UserRecord]

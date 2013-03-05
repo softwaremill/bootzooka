@@ -85,7 +85,7 @@ trait UserDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll wi
     val userOpt: Option[User] = userDAO.findByLoginOrEmail("newuser")
 
     // When
-    userOpt.foreach(u => userDAO.remove(u._id.toString))
+    userOpt.foreach(u => userDAO.remove(u.id.toString))
 
     // Then
     (userDAO.countItems() - numberOfUsersBefore) should be (-1)
@@ -221,7 +221,7 @@ trait UserDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll wi
     val login = "user1"
     val password = User.encryptPassword("pass11", "salt1")
     val user = userDAO.findByLoginOrEmail(login).get
-    userDAO.changePassword(user._id.toString, password)
+    userDAO.changePassword(user.id.toString, password)
     val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
     val u = postModifyUserOpt.get
     u should be (user.copy(password = password))
