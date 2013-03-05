@@ -21,7 +21,7 @@ describe("Entries Controller", function () {
                 '{"id":2,"author":"Piotr Nowak","text":"Very long message"}], "timestamp": ' + timestamp + '}');
 
             scope = $rootScope.$new();
-            ctrl = $controller('EntriesController', {$scope:scope});
+            ctrl = $controller('EntriesCtrl', {$scope:scope});
 
             userSessionService = UserSessionService;
             userSessionService.loggedUser = {
@@ -105,7 +105,7 @@ describe("Entries Controller", function () {
             $httpBackend.whenGET('rest/entries').respond('{"entries":[],"timestamp":1356970017145}');
 
             scope = $rootScope.$new();
-            ctrl = $controller('EntriesController', {$scope:scope});
+            ctrl = $controller('EntriesCtrl', {$scope:scope});
 
             UserSessionService.loggedUser = {
                 login: "Jan Kowalski"

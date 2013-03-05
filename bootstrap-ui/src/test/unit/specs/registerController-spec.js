@@ -15,7 +15,7 @@ describe("Register Controller", function () {
         $httpBackend = _$httpBackend_;
 
         scope = $rootScope.$new();
-        ctrl = $controller('RegisterController', {$scope: scope});
+        ctrl = $controller('RegisterCtrl', {$scope: scope});
 
         scope.user = {
             password: '',

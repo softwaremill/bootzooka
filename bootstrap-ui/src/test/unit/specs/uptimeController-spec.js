@@ -17,7 +17,7 @@ describe("Uptime Controller", function () {
 
         scope = $rootScope.$new();
         scope.uptime = 0;
-        ctrl = $controller('UptimeController', {$scope: scope});
+        ctrl = $controller('UptimeCtrl', {$scope: scope});
 
         $httpBackend.flush();
     }));

@@ -8,7 +8,7 @@ describe('User Session Controller', function () {
 
         beforeEach(inject(function ($rootScope, $controller, UserSessionService) {
             scope = $rootScope.$new();
-            ctrl = $controller('UserSessionController', {$scope: scope});
+            ctrl = $controller('UserSessionCtrl', {$scope: scope});
             userSessionService = UserSessionService;
         }));
 
@@ -22,7 +22,7 @@ describe('User Session Controller', function () {
 
         beforeEach(inject(function ($rootScope, $controller, $cookies, _$httpBackend_, $location, UserSessionService) {
             scope = $rootScope.$new();
-            ctrl = $controller('UserSessionController', {$scope: scope});
+            ctrl = $controller('UserSessionCtrl', {$scope: scope});
             userSessionService = UserSessionService;
             userSessionService.loggedUser = {
                 login: "User1"

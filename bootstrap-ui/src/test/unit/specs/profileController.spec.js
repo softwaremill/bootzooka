@@ -16,7 +16,7 @@ describe("Profile Controller", function () {
         };
         userSessionService = UserSessionService;
         scope = $rootScope.$new();
-        ctrl = $controller("ProfileController", {$scope: scope});
+        ctrl = $controller("ProfileCtrl", {$scope: scope});
         $httpBackend = _$httpBackend_;
     }));
 

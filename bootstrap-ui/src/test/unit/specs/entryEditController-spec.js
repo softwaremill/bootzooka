@@ -20,7 +20,7 @@ describe("EntryEdit Controller", function () {
 
         scope = $rootScope.$new();
 
-        ctrl = $controller('EntryEditController', {$scope: scope});
+        ctrl = $controller('EntryEditCtrl', {$scope: scope});
 
         UserSessionService.loggedUser = {
             login: 'admin'

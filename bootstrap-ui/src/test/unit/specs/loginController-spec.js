@@ -15,7 +15,7 @@ describe("Login Controller", function () {
         $httpBackend = _$httpBackend_;
 
         scope = $rootScope.$new();
-        ctrl = $controller('LoginController', {$scope: scope});
+        ctrl = $controller('LoginCtrl', {$scope: scope});
 
         scope.loginForm = {
             login: {

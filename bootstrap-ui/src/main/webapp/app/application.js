@@ -5,16 +5,16 @@ angular.module('smlBootstrap', ['smlBootstrap.services', 'smlBootstrap.filters',
     .config(function ($routeProvider) {
 
         $routeProvider.
-            when('/', {controller: 'EntriesController', templateUrl: 'partials/main.html'}).
-            when("/entry/:entryId", {controller: 'EntryEditController', templateUrl: "partials/entry.html"}).
-            when("/login", {controller: 'LoginController', templateUrl: "partials/login.html"}).
-            when("/register", {controller: 'RegisterController', templateUrl: "partials/register.html"}).
-            when("/error404", {controller: 'EntriesController', templateUrl: "partials/errorpages/error404.html"}).
-            when("/error500", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
-            when("/error", {controller: 'EntriesController', templateUrl: "partials/errorpages/error500.html"}).
-            when("/recover-lost-password", {controller: 'PasswordRecoveryController', templateUrl: "partials/recover-lost-password.html"}).
-            when("/password-reset", {controller: "PasswordRecoveryController", templateUrl: "partials/password-reset.html"}).
-            when("/profile", {controller: "ProfileController", templateUrl: "partials/secured/profile.html"}).
+            when('/', {controller: 'EntriesCtrl', templateUrl: 'partials/main.html'}).
+            when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "partials/entry.html"}).
+            when("/login", {controller: 'LoginCtrl', templateUrl: "partials/login.html"}).
+            when("/register", {controller: 'RegisterCtrl', templateUrl: "partials/register.html"}).
+            when("/error404", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error404.html"}).
+            when("/error500", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error500.html"}).
+            when("/error", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error500.html"}).
+            when("/recover-lost-password", {controller: 'PasswordRecoveryCtrl', templateUrl: "partials/recover-lost-password.html"}).
+            when("/password-reset", {controller: "PasswordRecoveryCtrl", templateUrl: "partials/password-reset.html"}).
+            when("/profile", {controller: "ProfileCtrl", templateUrl: "partials/secured/profile.html"}).
             otherwise({redirectTo: '/error404'});
     })
 
