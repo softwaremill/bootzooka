@@ -1,10 +1,12 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.PasswordResetCode
-import com.novus.salat.dao.SalatDAO
-import com.mongodb.casbah.Imports._
-import com.novus.salat.global._
-import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHelpers
+import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
+import net.liftweb.mongodb.record.field.{ObjectIdField, ObjectIdPk}
+import net.liftweb.record.field.{DateTimeField, StringField}
+import org.joda.time.DateTime
+import com.foursquare.rogue.LiftRogue._
+import java.util.Locale
 
 trait PasswordResetCodeDAO {
 
@@ -35,19 +37,49 @@ class InMemoryPasswordResetCodeDAO extends PasswordResetCodeDAO {
   }
 }
 
-class MongoPasswordResetCodeDAO(implicit val mongo: MongoDB) extends SalatDAO[PasswordResetCode, ObjectId](mongo("passwordResetCodes")) with PasswordResetCodeDAO {
+class MongoPasswordResetCodeDAO extends PasswordResetCodeDAO {
 
-  RegisterJodaTimeConversionHelpers()
+  import PasswordResetCodeImplicits._
 
   def store(code: PasswordResetCode) {
-    insert(code)
+    code.save
   }
 
   def load(code: String): Option[PasswordResetCode] = {
-    findOne(MongoDBObject("code" -> code))
+    PasswordResetCodeRecord where (_.code eqs code) get()
   }
 
   def delete(code: PasswordResetCode) {
-    remove(code, WriteConcern.Safe)
+    PasswordResetCodeRecord where (_.id eqs code.id) findAndDeleteOne()
   }
+
+  private object PasswordResetCodeImplicits {
+    implicit def fromRecord(record: PasswordResetCodeRecord): PasswordResetCode = {
+      PasswordResetCode(record.id.get, record.code.get, record.userId.get, new DateTime(record.validTo.get))
+    }
+
+    implicit def fromOptionalRecord(record: Option[PasswordResetCodeRecord]): Option[PasswordResetCode] = {
+      record map (fromRecord(_))
+    }
+
+    implicit def toRecord(code: PasswordResetCode): PasswordResetCodeRecord = {
+      PasswordResetCodeRecord.createRecord.id(code.id).code(code.code).userId(code.userId).validTo(code.validTo.toCalendar(Locale.getDefault))
+    }
+  }
+
+}
+
+private class PasswordResetCodeRecord extends MongoRecord[PasswordResetCodeRecord] with ObjectIdPk[PasswordResetCodeRecord] {
+  def meta = PasswordResetCodeRecord
+
+  object code extends StringField(this, 50)
+
+  object userId extends ObjectIdField(this)
+
+  object validTo extends DateTimeField(this)
+
+}
+
+private object PasswordResetCodeRecord extends PasswordResetCodeRecord with MongoMetaRecord[PasswordResetCodeRecord] {
+  override def collectionName: String = "passwordResetCodes"
 }
