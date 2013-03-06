@@ -9,7 +9,7 @@ case class User(id: ObjectId, login: String, loginLowerCased: String, email: Str
 object User {
 
   def apply(login: String, email: String, plainPassword: String, salt: String, token: String) = {
-    new User(null, login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, token)
+    new User(new ObjectId, login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, token)
   }
 
   def encryptPassword(password: String, salt: String) = {
