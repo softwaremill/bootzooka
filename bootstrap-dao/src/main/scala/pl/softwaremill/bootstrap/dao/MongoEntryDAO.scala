@@ -2,9 +2,9 @@ package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.Entry
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
-import net.liftweb.mongodb.record.field.{ObjectIdField, ObjectIdPk}
+import net.liftweb.mongodb.record.field.{DateField, ObjectIdField, ObjectIdPk}
 import com.foursquare.rogue.LiftRogue._
-import net.liftweb.record.field.{DateTimeField, StringField}
+import net.liftweb.record.field.StringField
 import org.joda.time.DateTime
 import org.bson.types.ObjectId
 import java.util.Locale
@@ -38,8 +38,7 @@ class MongoEntryDAO extends EntryDAO {
   }
 
   def countNewerThan(timeInMillis: Long): Long = {
-    //EntryRecord.where(_.entered after new DateTime(timeInMillis, DateTimeZone.UTC)) count()
-    throw new UnsupportedOperationException("Not implemented yet")
+    EntryRecord.where(_.entered after new DateTime(timeInMillis)) count()
   }
 
   private object EntryImplicits {
@@ -56,7 +55,7 @@ class MongoEntryDAO extends EntryDAO {
     }
 
     implicit def toRecord(entry: Entry): EntryRecord = {
-      EntryRecord.createRecord.id(entry.id).text(entry.text).authorId(entry.authorId).entered(entry.entered.toCalendar(Locale.getDefault))
+      EntryRecord.createRecord.id(entry.id).text(entry.text).authorId(entry.authorId).entered(entry.entered.toDate)
     }
   }
 
@@ -69,7 +68,7 @@ private class EntryRecord extends MongoRecord[EntryRecord] with ObjectIdPk[Entry
 
   object authorId extends ObjectIdField(this)
 
-  object entered extends DateTimeField(this)
+  object entered extends DateField(this)
 
 }
 

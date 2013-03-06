@@ -101,41 +101,35 @@ trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
   }
 
   it should "find 1 entry newer than given time" in {
-    pendingUntilFixed({
-      // Given
-      val time = referenceDate.minusDays(1).getMillis
+    // Given
+    val time = referenceDate.minusDays(1).getMillis
 
-      // When
-      val counter = entryDAO.countNewerThan(time)
+    // When
+    val counter = entryDAO.countNewerThan(time)
 
-      // Then
-      counter should be(1)
-    })
+    // Then
+    counter should be(1)
   }
 
   it should "find 3 entries with time 1 ms before the oldest entry time" in {
-    pendingUntilFixed({
-      // Given
-      val time = referenceDate.minusDays(3).minusMillis(1).getMillis
+    // Given
+    val time = referenceDate.minusDays(3).minusMillis(1).getMillis
 
-      // When
-      val counter = entryDAO.countNewerThan(time)
+    // When
+    val counter = entryDAO.countNewerThan(time)
 
-      // Then
-      counter should be(3)
-    })
+    // Then
+    counter should be(3)
   }
 
   it should "find no entries with time 1 mssec after the youngest entry time" in {
-    pendingUntilFixed({
-      // Given
-      val time = referenceDate.plusMillis(1).getMillis
+    // Given
+    val time = referenceDate.plusMillis(1).getMillis
 
-      // When
-      val counter = entryDAO.countNewerThan(time)
+    // When
+    val counter = entryDAO.countNewerThan(time)
 
-      // Then
-      counter should be(0)
-    })
+    // Then
+    counter should be(0)
   }
 }
