@@ -70,7 +70,7 @@ object Dependencies {
   val logging = Seq(slf4jApi, logBackClassic, jclOverSlf4j, slf4s)
 
   val guava = "com.google.guava" % "guava" % "13.0.1"
-  val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "1.3.+"
+  val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "2.0.1"
 
   val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
   val scalatraScalatest = "org.scalatra" % "scalatra-scalatest" % scalatraVersion % "test"
