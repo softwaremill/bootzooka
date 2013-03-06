@@ -60,6 +60,7 @@ object Dependencies {
   val logBackVersion = "1.0.9"
   val smlCommonVersion = "72-SNAPSHOT"
   val scalatraVersion = "2.2.0-RC1"
+  val rogueVersion = "2.0.0-RC1"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
   val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -122,9 +123,9 @@ object Dependencies {
 
   //val bson = "org.mongodb" % "bson" % "2.5.3"
 
-  val rogueField = "com.foursquare" %% "rogue-field" % "2.0.0-beta22" intransitive()
-  val rogueCore = "com.foursquare" %% "rogue-core" % "2.0.0-beta22" intransitive()
-  val rogueLift = "com.foursquare" %% "rogue-lift" % "2.0.0-beta22" intransitive()
+  val rogueField = "com.foursquare" %% "rogue-field" % rogueVersion intransitive()
+  val rogueCore = "com.foursquare" %% "rogue-core" % rogueVersion intransitive()
+  val rogueLift = "com.foursquare" %% "rogue-lift" % rogueVersion intransitive()
   val liftMongoRecord = "net.liftweb" %% "lift-mongodb-record" % "2.5-M4"
 
   val rogue = Seq(rogueCore, rogueField, rogueLift, liftMongoRecord)
