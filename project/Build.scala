@@ -184,8 +184,8 @@ object SmlBootstrapBuild extends Build {
         "bootstrap." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },
       libraryDependencies ++= Seq(jetty, servletApiProvided),
-      appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "app" },
-      appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },
+      appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "scripts" },
+      appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "scripts" / "vendor" },
       jasmineTestDir <+= sourceDirectory { src => src / "test" / "unit" },
       jasmineConfFile <+= sourceDirectory { src => src / "test" / "unit" / "test.dependencies.js" },
       jasmineRequireJsFile <+= sourceDirectory { src => src / "test" / "lib" / "require" / "require-2.0.6.js" },

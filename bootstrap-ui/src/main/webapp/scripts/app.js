@@ -5,17 +5,17 @@ angular.module('smlBootstrap.maintenance', ['ngResource']);
 
 angular.module('smlBootstrap.profile', ['smlBootstrap.maintenance', 'smlBootstrap.session', 'smlBootstrap.directives']).config(function ($routeProvider) {
     $routeProvider.
-        when("/login", {controller: 'LoginCtrl', templateUrl: "partials/login.html"}).
-        when("/register", {controller: 'RegisterCtrl', templateUrl: "partials/register.html"}).
-        when("/recover-lost-password", {controller: 'PasswordRecoveryCtrl', templateUrl: "partials/recover-lost-password.html"}).
-        when("/password-reset", {controller: "PasswordRecoveryCtrl", templateUrl: "partials/password-reset.html"}).
-        when("/profile", {controller: "ProfileCtrl", templateUrl: "partials/secured/profile.html"});
+        when("/login", {controller: 'LoginCtrl', templateUrl: "views/login.html"}).
+        when("/register", {controller: 'RegisterCtrl', templateUrl: "views/register.html"}).
+        when("/recover-lost-password", {controller: 'PasswordRecoveryCtrl', templateUrl: "views/recover-lost-password.html"}).
+        when("/password-reset", {controller: "PasswordRecoveryCtrl", templateUrl: "views/password-reset.html"}).
+        when("/profile", {controller: "ProfileCtrl", templateUrl: "views/secured/profile.html"});
 });
 
 angular.module('smlBootstrap.entries', ['smlBootstrap.session', 'smlBootstrap.filters']).config(function ($routeProvider) {
     $routeProvider.
-        when('/', {controller: 'EntriesCtrl', templateUrl: 'partials/main.html'}).
-        when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "partials/entry.html"});
+        when('/', {controller: 'EntriesCtrl', templateUrl: 'views/main.html'}).
+        when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "views/entry.html"});
 });
 
 angular.module('smlBootstrap.session', ['ngCookies', 'ngResource']);
@@ -29,9 +29,9 @@ angular.module(
             'smlBootstrap.session',
             'smlBootstrap.directives', 'ngSanitize', 'ajaxthrobber']).config(function ($routeProvider) {
         $routeProvider.
-            when("/error404", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error404.html"}).
-            when("/error500", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error500.html"}).
-            when("/error", {controller: 'EntriesCtrl', templateUrl: "partials/errorpages/error500.html"}).
+            when("/error404", {controller: 'EntriesCtrl', templateUrl: "views/errorpages/error404.html"}).
+            when("/error500", {controller: 'EntriesCtrl', templateUrl: "views/errorpages/error500.html"}).
+            when("/error", {controller: 'EntriesCtrl', templateUrl: "views/errorpages/error500.html"}).
             otherwise({redirectTo: '/error404'});
     })
 

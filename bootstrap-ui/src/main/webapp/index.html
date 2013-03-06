@@ -4,62 +4,62 @@
     <meta charset="utf-8">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <title>SML Bootstrap</title>
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="assets/css/application.css" rel="stylesheet">
-    <link rel="shortcut icon" href="assets/img/favicon.gif" type="image/x-icon">
+    <link href="styles/bootstrap.css" rel="stylesheet">
+    <link href="styles/bootstrap-responsive.css" rel="stylesheet">
+    <link href="styles/application.css" rel="stylesheet">
+    <link rel="shortcut icon" href="img/favicon.gif" type="image/x-icon">
 
     <!-- Workaround for IE to provide console object -->
     <script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
-    <script type="text/javascript" src="assets/js/jquery-1.8.2-min.js"></script>
-    <script type="text/javascript" src="assets/js/jquery-blockui.min.js"></script>
+    <script type="text/javascript" src="scripts/vendor/jquery-1.8.2-min.js"></script>
+    <script type="text/javascript" src="scripts/vendor/jquery-blockui.min.js"></script>
 
-    <script type="text/javascript" src="assets/js/bootstrap-2.2.2.js"></script>
+    <script type="text/javascript" src="scripts/vendor/bootstrap-2.2.2.js"></script>
 
     <!-- angular stuff -->
-    <script type="text/javascript" src="assets/js/angular-1.1.1.js"></script>
-    <script type="text/javascript" src="assets/js/angular-resource-1.1.1.js"></script>
-    <script type="text/javascript" src="assets/js/angular-sanitize-1.1.1.js"></script>
-    <script type="text/javascript" src="assets/js/angular-cookies-1.1.1.js"></script>
+    <script type="text/javascript" src="scripts/vendor/angular-1.1.1.js"></script>
+    <script type="text/javascript" src="scripts/vendor/angular-resource-1.1.1.js"></script>
+    <script type="text/javascript" src="scripts/vendor/angular-sanitize-1.1.1.js"></script>
+    <script type="text/javascript" src="scripts/vendor/angular-cookies-1.1.1.js"></script>
 
     <!-- effects -->
-    <script type="text/javascript" src="app/effects.js"></script>
+    <script type="text/javascript" src="scripts/effects/effects.js"></script>
 
     <!-- logic -->
-    <script type="text/javascript" src="app/application.js"></script>
-    <script type="text/javascript" src="app/entriesCtrl.js"></script>
-    <script type="text/javascript" src="app/entriesService.js"></script>
-    <script type="text/javascript" src="app/entryEditCtrl.js"></script>
-    <script type="text/javascript" src="app/flashService.js"></script>
-    <script type="text/javascript" src="app/loginCtrl.js"></script>
-    <script type="text/javascript" src="app/passwordRecoveryCtrl.js"></script>
-    <script type="text/javascript" src="app/passwordRecoveryService.js"></script>
-    <script type="text/javascript" src="app/profileCtrl.js"></script>
-    <script type="text/javascript" src="app/profileService.js"></script>
-    <script type="text/javascript" src="app/registerCtrl.js"></script>
-    <script type="text/javascript" src="app/registerService.js"></script>
-    <script type="text/javascript" src="app/uptimeCtrl.js"></script>
-    <script type="text/javascript" src="app/userSessionCtrl.js"></script>
-    <script type="text/javascript" src="app/userSessionService.js"></script>
-    <script type="text/javascript" src="app/utilService.js"></script>
-    <script type="text/javascript" src="app/bsBlur.js"></script>
-    <script type="text/javascript" src="app/bsRepeatPassword.js"></script>
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <script type="text/javascript" src="scripts/controllers/entriesCtrl.js"></script>
+    <script type="text/javascript" src="scripts/controllers/entryEditCtrl.js"></script>
+    <script type="text/javascript" src="scripts/controllers/loginCtrl.js"></script>
+    <script type="text/javascript" src="scripts/controllers/passwordRecoveryCtrl.js"></script>
+    <script type="text/javascript" src="scripts/controllers/profileCtrl.js"></script>
+    <script type="text/javascript" src="scripts/controllers/registerCtrl.js"></script>
+    <script type="text/javascript" src="scripts/controllers/uptimeCtrl.js"></script>
+    <script type="text/javascript" src="scripts/controllers/userSessionCtrl.js"></script>
+    <script type="text/javascript" src="scripts/services/entriesService.js"></script>
+    <script type="text/javascript" src="scripts/services/flashService.js"></script>
+    <script type="text/javascript" src="scripts/services/passwordRecoveryService.js"></script>
+    <script type="text/javascript" src="scripts/services/profileService.js"></script>
+    <script type="text/javascript" src="scripts/services/registerService.js"></script>
+    <script type="text/javascript" src="scripts/services/userSessionService.js"></script>
+    <script type="text/javascript" src="scripts/services/utilService.js"></script>
+    <script type="text/javascript" src="scripts/directives/bsBlur.js"></script>
+    <script type="text/javascript" src="scripts/directives/bsRepeatPassword.js"></script>
 
     <!-- filters -->
-    <script type="text/javascript" src="app/newlines.js"></script>
+    <script type="text/javascript" src="scripts/filters/newlines.js"></script>
 
 </head>
 <body ng-app="smlBootstrap">
 
     <a href="https://github.com/softwaremill/bootstrap">
-        <img style="position: absolute; top: 40px; right: 0; border: 0;" src="assets/img/forkme_orange.png"
+        <img style="position: absolute; top: 40px; right: 0; border: 0;" src="img/forkme_orange.png"
              alt="Fork me on GitHub">
     </a>
 
     <span style="display: none">
         <ajaxthrobber>
             <br/><br/><br/>
-            <h4><img src="assets/img/busy.gif" border="0" id="ajaxthrobber"> Please wait ...</h4>
+            <h4><img src="img/busy.gif" border="0" id="ajaxthrobber"> Please wait ...</h4>
             <br/><br/><br/>
         </ajaxthrobber>
     </span>
