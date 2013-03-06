@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="offset3 span7">
+        <form name="profileForm" class="form-horizontal" onsubmit="return false;">
+            <fieldset>
+                <legend>Profile</legend>
+                <div class="control-group">
+                    <label class="control-label" for="login">Login</label>
+
+                    <div class="controls">
+                        <input type="text" id="login" name="login" ng-model="login" bs-blur="changeLogin()"
+                               ng-minlength="3" required>
+                            <span class="text-error"
+                                  ng-show="profileForm.login.$error.required">Login is required</span>
+                        <span class="text-error"
+                              ng-show="profileForm.login.$error.minlength">At least three characters!</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="email">E-Mail</label>
+
+                    <div class="controls">
+                        <input type="email" id="email" name="email" ng-model="email" bs-blur="changeEmail()"
+                               required>
+                            <span class="text-error"
+                                  ng-show="profileForm.email.$error.required">E-mail is required</span>
+                            <span class="text-error"
+                                  ng-show="profileForm.email.$error.email">It's not a valid email!</span>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="offset3 span7">
+        <form name="passwordChangeForm" class="form-horizontal" ng-submit="changePassword()" novalidate>
+            <fieldset>
+                <legend>Password</legend>
+            </fieldset>
+            <div class="control-group">
+                <label class="control-label" for="currentPassword">Current password</label>
+
+                <div class="controls">
+                    <input type="password" id="currentPassword" name="currentPassword" ng-model="currentPassword"
+                           required>
+                    <span class="text-error"
+                          ng-show="passwordChangeForm.currentPassword.$dirty && passwordChangeForm.currentPassword.$error.required">Current password is required</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="newPassword">New password</label>
+
+                <div class="controls">
+                    <input type="password" id="newPassword" name="newPassword" ng-model="newPassword" required>
+                    <span class="text-error"
+                          ng-show="passwordChangeForm.newPassword.$dirty && passwordChangeForm.newPassword.$error.required">New password is required</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="newPasswordRepeated">Repeat new password</label>
+
+                <div class="controls">
+                    <input type="password" id="newPasswordRepeated" name="newPasswordRepeated"
+                           ng-model="newPasswordRepeated" bs-repeat-password="newPassword" required>
+                    <span class="text-error"
+                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.required">Repeat password</span>
+                    <span class="text-error"
+                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && !passwordChangeForm.newPasswordRepeated.$error.required && passwordChangeForm.newPasswordRepeated.$error.repeat">Passwords don't match</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn">Change password</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>

@@ -70,7 +70,7 @@ object Dependencies {
   val logging = Seq(slf4jApi, logBackClassic, jclOverSlf4j, slf4s)
 
   val guava = "com.google.guava" % "guava" % "13.0.1"
-  val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "1.3.+"
+  val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "2.0.1"
 
   val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
   val scalatraScalatest = "org.scalatra" % "scalatra-scalatest" % scalatraVersion % "test"
@@ -184,8 +184,8 @@ object SmlBootstrapBuild extends Build {
         "bootstrap." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },
       libraryDependencies ++= Seq(jetty, servletApiProvided),
-      appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "app" },
-      appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "assets" / "js" },
+      appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "scripts" },
+      appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "scripts" / "vendor" },
       jasmineTestDir <+= sourceDirectory { src => src / "test" / "unit" },
       jasmineConfFile <+= sourceDirectory { src => src / "test" / "unit" / "test.dependencies.js" },
       jasmineRequireJsFile <+= sourceDirectory { src => src / "test" / "lib" / "require" / "require-2.0.6.js" },

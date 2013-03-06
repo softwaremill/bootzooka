@@ -1,85 +1,91 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <title>Jasmine Spec Runner</title>
+    <title>Jasmine Spec Runner</title>
 
-  <link rel="shortcut icon" type="image/png" href="lib/jasmine-1.3.1/jasmine_favicon.png">
-  <link rel="stylesheet" type="text/css" href="lib/jasmine-1.3.1/jasmine.css">
-  <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine.js"></script>
-  <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine-html.js"></script>
-
-
+    <link rel="shortcut icon" type="image/png" href="lib/jasmine-1.3.1/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="lib/jasmine-1.3.1/jasmine.css">
+    <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine.js"></script>
+    <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine-html.js"></script>
 
 
+    <!-- vendor libraries -->
+    <script type="text/javascript" src="../main/webapp/scripts/vendor/jquery-1.8.2-min.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/vendor/angular-1.1.1.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/vendor/angular-resource-1.1.1.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/vendor/angular-sanitize-1.1.1.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/vendor/angular-cookies-1.1.1.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/vendor/bootstrap-2.2.2.js"></script>
+
+    <!-- vendor test libraries -->
+    <script type="text/javascript" src="lib/angular/angular-mocks-1.1.1.js"></script>
+
+    <!-- application sources -->
+    <script type="text/javascript" src="../main/webapp/scripts/app.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/effects/effects.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/controllers/entriesCtrl.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/services/entriesService.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/controllers/entryEditCtrl.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/services/flashService.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/controllers/loginCtrl.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/controllers/passwordRecoveryCtrl.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/services/passwordRecoveryService.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/controllers/profileCtrl.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/services/profileService.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/controllers/registerCtrl.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/services/registerService.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/controllers/uptimeCtrl.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/controllers/userSessionCtrl.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/services/userSessionService.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/services/utilService.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/directives/bsBlur.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/directives/bsRepeatPassword.js"></script>
+    <script type="text/javascript" src="../main/webapp/scripts/filters/newlines.js"></script>
+
+    <!-- application specs -->
+    <script type="text/javascript" src="unit/specs/controllers/entriesCtrl-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/controllers/flashService-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/controllers/registerCtrl-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/controllers/entryEditCtrl-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/controllers/loginCtrl-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/controllers/uptimeCtrl-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/controllers/profileCtrl-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/controllers/userSessionCtrl-spec.js"></script>
+
+    <script type="text/javascript" src="unit/specs/directives/bsBlur-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/directives/bsRepeatPassword-spec.js"></script>
+    <script type="text/javascript" src="unit/specs/filters/newlines-spec.js"></script>
 
 
+    <script type="text/javascript">
+        (function () {
+            var jasmineEnv = jasmine.getEnv();
+            jasmineEnv.updateInterval = 1000;
 
+            var htmlReporter = new jasmine.HtmlReporter();
 
+            jasmineEnv.addReporter(htmlReporter);
 
-  <!-- vendor libraries -->
-  <script type="text/javascript" src="../main/webapp/assets/js/jquery-1.8.2-min.js"></script>
-  <script type="text/javascript" src="../main/webapp/assets/js/angular-1.1.1.js"></script>
-  <script type="text/javascript" src="../main/webapp/assets/js/angular-resource-1.1.1.js"></script>
-  <script type="text/javascript" src="../main/webapp/assets/js/angular-sanitize-1.1.1.js"></script>
-  <script type="text/javascript" src="../main/webapp/assets/js/angular-cookies-1.1.1.js"></script>
-  <script type="text/javascript" src="../main/webapp/assets/js/bootstrap-2.2.2.js"></script>
+            jasmineEnv.specFilter = function (spec) {
+                return htmlReporter.specFilter(spec);
+            };
 
-  <!-- vendor test libraries -->
-  <script type="text/javascript" src="lib/angular/angular-mocks-1.1.1.js"></script>
+            var currentWindowOnload = window.onload;
 
-  <!-- application sources -->
-  <script type="text/javascript" src="../main/webapp/app/application.js"></script>
-  <script type="text/javascript" src="../main/webapp/app/controllers.js"></script>
-  <script type="text/javascript" src="../main/webapp/app/effects.js"></script>
-  <script type="text/javascript" src="../main/webapp/app/services.js"></script>
+            window.onload = function () {
+                if (currentWindowOnload) {
+                    currentWindowOnload();
+                }
+                execJasmine();
+            };
 
-  <!-- application specs -->
-  <script type="text/javascript" src="unit/specs/entriesController-spec.js"></script>
-  <script type="text/javascript" src="unit/specs/FlashService-spec.js"></script>
-  <script type="text/javascript" src="unit/specs/registerController-spec.js"></script>
-  <script type="text/javascript" src="unit/specs/entryEditController-spec.js"></script>
-  <script type="text/javascript" src="unit/specs/loginController-spec.js"></script>
-  <script type="text/javascript" src="unit/specs/uptimeController-spec.js"></script>
-  <script type="text/javascript" src="unit/specs/profileController.spec.js"></script>
-  <script type="text/javascript" src="unit/specs/userSessionController-spec.js"></script>
+            function execJasmine() {
+                jasmineEnv.execute();
+            }
 
-
-
-
-
-
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.updateInterval = 1000;
-
-      var htmlReporter = new jasmine.HtmlReporter();
-
-      jasmineEnv.addReporter(htmlReporter);
-
-      jasmineEnv.specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
-      };
-
-      var currentWindowOnload = window.onload;
-
-      window.onload = function() {
-        if (currentWindowOnload) {
-          currentWindowOnload();
-        }
-        execJasmine();
-      };
-
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
-
-    })();
-  </script>
+        })();
+    </script>
 
 </head>
 

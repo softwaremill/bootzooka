@@ -1,0 +1,45 @@
+
+<div class="row">
+    <div class="span6 offset3">
+        <div class="row">
+            <form class="form-horizontal" name="registerForm" novalidate>
+                <div class="control-group">
+                    <label class="control-label" for="login">Login</label>
+                    <div class="controls">
+                        <input type="text" name="login" id="login" placeholder="login" ng-model="user.login" ng-minlength="3" required>
+                        <span class="text-error" ng-show="registerForm.login.$dirty && registerForm.login.$error.required">Login is required</span>
+                        <span class="text-error" ng-show="registerForm.login.$error.minlength">At least three characters!</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="email">e-mail</label>
+                    <div class="controls">
+                        <input type="email" name="email" id="email" placeholder="e-mail address" ng-model="user.email" required>
+                        <span class="text-error" ng-show="registerForm.email.$dirty && registerForm.email.$error.required">E-mail is required</span>
+                        <span class="text-error" ng-show="registerForm.email.$error.email">It's not a valid email!</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="password">Password</label>
+                    <div class="controls">
+                        <input type="password" name="password" id="password" placeholder="password" ng-model="user.password" required>
+                        <span class="text-error" ng-show="registerForm.password.$dirty && registerForm.password.$error.required">Password is required</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="repeatPassword">Repeat password</label>
+                    <div class="controls">
+                        <input type="password" name="repeatPassword" id="repeatPassword" placeholder="repeat password" ng-model="user.repeatPassword" bs-repeat-password="password" required>
+                        <span class="text-error" ng-show="registerForm.repeatPassword.$dirty && registerForm.repeatPassword.$error.required">Repeat password</span>
+                        <span class="text-error" ng-show="registerForm.repeatPassword.$dirty && !registerForm.repeatPassword.$error.required && registerForm.repeatPassword.$error.repeat">Passwords don't match!</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn" ng-click="register()">Register</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

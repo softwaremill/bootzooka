@@ -1,0 +1,51 @@
+<div class="alert alert-success hidden" id="success-info">
+    Hidden Info
+</div>
+<div class="alert alert-error hidden" id="error-info">
+    Hidden Error
+</div>
+<div class="row">
+    <div class="span2 pull-left">
+        <pre>Number of <br/>entries: {{size}}</pre>
+    </div>
+    <div class="span6 offset1">
+        <form name="myForm" ng-show="isLogged()" novalidate>
+            <div class="row">
+                <textarea name="message" rows="5" style="width: 95% " ng-model="entryText" autofocus required
+                          ng-minlength="5" ng-maxlength="140" placeholder="Type your message here">
+                </textarea>
+                <span class="text-error" ng-show="myForm.message.$error.maxlength">Message is too long!</span>
+                <span class="text-error" ng-show="myForm.message.$error.minlength">Message is too short</span>
+                <span class="text-error" ng-show="myForm.$pristine==false && myForm.message.$error.required">Message is required</span>
+                <div>
+                    <input type="submit" ng-click="addEntry()" ng-disabled="myForm.$invalid" class="btn btn-primary" value="Send message"/>
+                </div>
+            </div>
+        </form>
+        <div class="row" ng-show="isNotLogged()">
+            <div>Please login to add new entries</div><br/>
+        </div>
+        <div class="row">
+            <div ng-show="numberOfNewEntries > 0" class="new-entries-box" ng-click="reloadEntries()">
+                <div class="thumbnail center" ng-show="numberOfNewEntries == 1">There is one new entry. Click to refresh.</div>
+                <div class="thumbnail center" ng-show="numberOfNewEntries > 1">There are {{numberOfNewEntries}} new entries. Click to refresh.</div>
+                <br/>
+            </div>
+            <div ng-repeat="entry in logs">
+                 <div class="thumbnail">
+                    <p class="entryText" ng-bind-html="entry.text|newlines"></p>
+                    <i><small>Sent by {{entry.author}} on {{entry.entered}}</small></i>
+                     <span ng-show="isOwnerOf(entry)">
+                         <i><small><a ng-click="deleteEntry(entry.id)">Delete</a></small></i>&nbsp
+                         <i><small><a href="#/entry/{{entry.id}}">Edit</a></small></i>
+                    </span>
+                 </div>
+                 <br/>
+            </div>
+            <div ng-show="noEntries()">There are no entries. Be the first author!</div>
+        </div>
+    </div>
+    <div class="span3 pull-right" ng-controller="UptimeCtrl">
+        <pre>Server uptime <br/>in seconds: {{uptime}}</pre>
+    </div>
+</div>
