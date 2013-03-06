@@ -25,7 +25,7 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
       case Some(user) => {
         logger.debug("User found")
         val user = userOption.get
-        val code = PasswordResetCode(code = RichString.generateRandom(32), userId = user._id)
+        val code = PasswordResetCode(RichString.generateRandom(32), user.id)
         storeCode(code)
         sendCode(user, code)
       }
@@ -76,7 +76,7 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
 
   private def changePassword(code: PasswordResetCode, newPassword: String) {
     userDao.load(code.userId.toString) match {
-      case Some(u) => userDao.changePassword(u._id.toString, User.encryptPassword(newPassword, u.salt))
+      case Some(u) => userDao.changePassword(u.id.toString, User.encryptPassword(newPassword, u.salt))
       case None => logger.debug("User does not exist")
     }
   }

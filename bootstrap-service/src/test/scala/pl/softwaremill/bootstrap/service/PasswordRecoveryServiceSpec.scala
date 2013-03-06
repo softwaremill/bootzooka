@@ -84,7 +84,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with Mock
       mockCode.userId returns mockUserId
       mockCode.validTo returns new DateTime().plusHours(1)
 
-      mockUser._id returns mockUserId
+      mockUser.id returns mockUserId
       mockUser.login returns login
       mockUser.salt returns "salt"
 

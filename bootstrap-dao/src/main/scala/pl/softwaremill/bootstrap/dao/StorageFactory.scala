@@ -1,7 +1,5 @@
 package pl.softwaremill.bootstrap.dao
 
-import com.mongodb.casbah.TypeImports.MongoDB
-
 trait StorageFactory {
 
   def userDAO: UserDAO
@@ -12,7 +10,7 @@ trait StorageFactory {
 
 }
 
-class MongoFactory(implicit val mongo: MongoDB) extends StorageFactory {
+class MongoFactory extends StorageFactory {
 
   def userDAO = {
     new MongoUserDAO

@@ -1,4 +1,6 @@
+import com.mongodb.Mongo
 import java.util.concurrent.TimeUnit
+import net.liftweb.mongodb.{DefaultMongoIdentifier, MongoDB}
 import pl.softwaremill.bootstrap.Beans
 import pl.softwaremill.bootstrap.rest.{PasswordRecoveryServlet, UsersServlet, EntriesServlet, UptimeServlet}
 import org.scalatra._
@@ -13,6 +15,8 @@ class ScalatraBootstrap extends LifeCycle with Beans {
   val Prefix = "/rest"
 
   override def init(context: ServletContext) {
+    MongoDB.defineDb(DefaultMongoIdentifier, new Mongo, "bootstrap")
+
     scheduler.scheduleAtFixedRate(emailSendingService, 60, 60, TimeUnit.SECONDS)
 
     context.mount(new EntriesServlet(entryService, userService), Prefix + "/entries")
@@ -25,7 +29,6 @@ class ScalatraBootstrap extends LifeCycle with Beans {
 
 
   override def destroy(context: ServletContext) {
-    mongoConn.underlying.getMongo.close()
     scheduler.shutdownNow()
   }
 

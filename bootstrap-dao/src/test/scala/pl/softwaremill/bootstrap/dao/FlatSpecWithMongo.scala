@@ -8,7 +8,6 @@ trait FlatSpecWithMongo extends FlatSpec with BeforeAndAfterAll {
   val mongoPort = 24567
 
   protected var mongoRunner: MongoRunner = null
-  protected implicit var mongoConn: com.mongodb.casbah.MongoDB = null
 
   override protected def beforeAll() {
     super.beforeAll()
@@ -22,7 +21,6 @@ trait FlatSpecWithMongo extends FlatSpec with BeforeAndAfterAll {
 
   def startMongo() {
     mongoRunner = MongoRunner.run(mongoPort, verbose = true)
-    mongoConn = com.mongodb.casbah.MongoConnection("localhost", mongoPort)("bootstrap")
     MongoDB.defineDb(DefaultMongoIdentifier, new Mongo("localhost", mongoPort), "bootstrap_test")
   }
 

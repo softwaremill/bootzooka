@@ -1,7 +1,7 @@
 package pl.softwaremill.bootstrap.domain
 
-import com.mongodb.casbah.commons.TypeImports.ObjectId
 import org.joda.time.DateTime
+import org.bson.types.ObjectId
 
 /**
  * Code used in the process of password reset.

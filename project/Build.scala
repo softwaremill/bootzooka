@@ -72,11 +72,6 @@ object Dependencies {
   val guava = "com.google.guava" % "guava" % "13.0.1"
   val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "1.3.+"
 
-  // Casbah has a compile-time dependency on specs2. We don't it visible in the main classes.
-  val casbah = "org.mongodb" %% "casbah" % "2.4.1" exclude("org.specs2", "specs2_2.9.2")
-  val salat = "com.novus" %% "salat" % "1.9.1" exclude("org.specs2", "specs2_2.9.2")
-  val databaseLibs = Seq(casbah, salat)
-
   val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
   val scalatraScalatest = "org.scalatra" % "scalatra-scalatest" % scalatraVersion % "test"
   val scalatraJson = "org.scalatra" % "scalatra-json" % scalatraVersion
@@ -121,7 +116,7 @@ object Dependencies {
   // As provided implies test, so is enough here.
   val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
 
-  //val bson = "org.mongodb" % "bson" % "2.5.3"
+  val bson = "com.mongodb" % "bson" % "2.7.1" % "provided"
 
   val rogueField = "com.foursquare" %% "rogue-field" % rogueVersion intransitive()
   val rogueCore = "com.foursquare" %% "rogue-core" % rogueVersion intransitive()
@@ -152,19 +147,19 @@ object SmlBootstrapBuild extends Build {
   lazy val domain: Project = Project(
     "bootstrap-domain",
     file("bootstrap-domain"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(salat))
+    settings = buildSettings ++ Seq(libraryDependencies += bson)
   ) dependsOn (common)
 
   lazy val dao: Project = Project(
     "bootstrap-dao",
     file("bootstrap-dao"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= databaseLibs ++ rogue ++ Seq(smlCommonUtil))
+    settings = buildSettings ++ Seq(libraryDependencies ++= rogue ++ Seq(smlCommonUtil))
   ) dependsOn(domain, common)
 
   lazy val service: Project = Project(
     "bootstrap-service",
     file("bootstrap-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, casbah, smlCommonSqs, smlCommonConfig,
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, smlCommonSqs, smlCommonConfig,
       javaxMail, scalate))
   ) dependsOn(domain, dao, common)
 

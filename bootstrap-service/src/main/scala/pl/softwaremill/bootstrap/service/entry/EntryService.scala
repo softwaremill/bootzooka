@@ -30,7 +30,7 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
 
   def add(login: String, message: String) {
     userDAO.findByLowerCasedLogin(login) match {
-      case Some(user) => entryDAO.add(Entry(authorId = user._id, text = message))
+      case Some(user) => entryDAO.add(Entry(message, user.id))
       case _ =>
     }
   }
@@ -47,7 +47,7 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
   }
 
   def mapToEntryJson(entry: Entry): EntryJson = {
-    EntryJson(entry._id.toString, entry.text, readAuthorLogin(entry.authorId.toString), Utils.format(entry.entered))
+    EntryJson(entry.id.toString, entry.text, readAuthorLogin(entry.authorId.toString), Utils.format(entry.entered))
   }
 
   def update(entryId: String, message: String) {
@@ -58,7 +58,7 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
     entryDAO.load(entryId) match {
       case Some(entry) =>
         userDAO.findByLowerCasedLogin(login) match {
-          case Some(user) => entry.authorId == user._id
+          case Some(user) => entry.authorId == user.id
           case _ => false
         }
       case _ => false

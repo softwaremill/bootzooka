@@ -5,15 +5,12 @@ import service.config.BootstrapConfiguration
 import service.entry.EntryService
 import service.PasswordRecoveryService
 import service.schedulers.{DummyEmailSendingService, ProductionEmailSendingService}
-import com.mongodb.casbah.MongoConnection
 import service.templates.EmailTemplatingEngine
 import service.user.{RegistrationDataValidator, UserService}
 import java.util.concurrent.Executors
 
 trait Beans {
   lazy val scheduler = Executors.newScheduledThreadPool(4)
-
-  implicit val mongoConn = MongoConnection()("bootstrap")
 
   lazy val daoFactory = sys.props.get("withInMemory") match {
     case Some(value) => new InMemoryFactory

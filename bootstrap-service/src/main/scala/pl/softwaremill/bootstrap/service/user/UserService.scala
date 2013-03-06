@@ -88,7 +88,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   def changePassword(userToken: String, currentPassword: String, newPassword: String): Either[String, Unit] = {
     userDAO.findByToken(userToken) match {
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
-        Right(userDAO.changePassword(u._id.toString, User.encryptPassword(newPassword, u.salt)))
+        Right(userDAO.changePassword(u.id.toString, User.encryptPassword(newPassword, u.salt)))
       } else {
         Left("Current password is invalid")
       }
