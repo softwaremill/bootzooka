@@ -3,7 +3,7 @@ package pl.softwaremill.bootstrap.dao
 import pl.softwaremill.bootstrap.domain.PasswordResetCode
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field.{ObjectIdField, ObjectIdPk}
-import net.liftweb.record.field.{DateTimeField, StringField}
+import net.liftweb.record.field.DateTimeField
 import org.joda.time.DateTime
 import com.foursquare.rogue.LiftRogue._
 import java.util.Locale
@@ -72,7 +72,7 @@ class MongoPasswordResetCodeDAO extends PasswordResetCodeDAO {
 private class PasswordResetCodeRecord extends MongoRecord[PasswordResetCodeRecord] with ObjectIdPk[PasswordResetCodeRecord] {
   def meta = PasswordResetCodeRecord
 
-  object code extends StringField(this, 50)
+  object code extends LongStringField(this)
 
   object userId extends ObjectIdField(this)
 

@@ -4,10 +4,8 @@ import pl.softwaremill.bootstrap.domain.Entry
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field.{DateField, ObjectIdField, ObjectIdPk}
 import com.foursquare.rogue.LiftRogue._
-import net.liftweb.record.field.StringField
 import org.joda.time.DateTime
 import org.bson.types.ObjectId
-import java.util.Locale
 
 class MongoEntryDAO extends EntryDAO {
 
@@ -64,7 +62,7 @@ class MongoEntryDAO extends EntryDAO {
 private class EntryRecord extends MongoRecord[EntryRecord] with ObjectIdPk[EntryRecord] {
   def meta = EntryRecord
 
-  object text extends StringField(this, 500)
+  object text extends LongStringField(this)
 
   object authorId extends ObjectIdField(this)
 

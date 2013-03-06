@@ -5,7 +5,6 @@ import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field.ObjectIdPk
 import com.foursquare.rogue.LiftRogue._
 import org.bson.types.ObjectId
-import net.liftweb.record.field.StringField
 
 class MongoUserDAO extends UserDAO {
 
@@ -90,17 +89,17 @@ class MongoUserDAO extends UserDAO {
 private class UserRecord extends MongoRecord[UserRecord] with ObjectIdPk[UserRecord] {
   def meta = UserRecord
 
-  object login extends StringField(this, 500)
+  object login extends LongStringField(this)
 
-  object loginLowerCase extends StringField(this, 500)
+  object loginLowerCase extends LongStringField(this)
 
-  object email extends StringField(this, 500)
+  object email extends LongStringField(this)
 
-  object password extends StringField(this, 500)
+  object password extends LongStringField(this)
 
-  object salt extends StringField(this, 500)
+  object salt extends LongStringField(this)
 
-  object token extends StringField(this, 500)
+  object token extends LongStringField(this)
 
 }
 
