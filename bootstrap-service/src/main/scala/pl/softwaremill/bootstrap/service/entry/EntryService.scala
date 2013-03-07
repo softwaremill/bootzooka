@@ -1,16 +1,22 @@
 package pl.softwaremill.bootstrap.service.entry
 
-import pl.softwaremill.bootstrap.domain.Entry
+import pl.softwaremill.bootstrap.domain.{User, Entry}
 import pl.softwaremill.bootstrap.dao.{ UserDAO, EntryDAO }
 import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, EntryJson}
+import pl.softwaremill.bootstrap.common.Utils.{Clock, RealTimeClock}
 
-class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
+class EntryService(entryDAO: EntryDAO, userDAO: UserDAO, clock: Clock = RealTimeClock) {
+
+  private def findAuthorLogin(entry: Entry, users: List[User]): String = {
+    users.find(_.id == entry.authorId).get.login
+  }
 
   def loadAll = {
-    val entriesJson = entryDAO.loadAll.map(e => mapToEntryJson(e))
-
-    EntriesWithTimeStamp(entriesJson)
+    val allEntries = entryDAO.loadAll
+    val users = userDAO.findForIdentifiers(allEntries.map(_.authorId))
+    val entriesJson = allEntries.map(entry => mapToEntryJson(entry, findAuthorLogin(entry, users)))
+    EntriesWithTimeStamp(entriesJson, clock)
   }
 
   def readAuthorLogin(userId: String): String = {
@@ -41,13 +47,13 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO) {
 
   def load(entryId: String): Option[EntryJson] = {
     entryDAO.load(entryId) match {
-      case Some(e) => Option(mapToEntryJson(e))
+      case Some(e) => Option(mapToEntryJson(e, readAuthorLogin(e.authorId.toString)))
       case _ => None
     }
   }
 
-  def mapToEntryJson(entry: Entry): EntryJson = {
-    EntryJson(entry.id.toString, entry.text, readAuthorLogin(entry.authorId.toString), Utils.format(entry.entered))
+  def mapToEntryJson(entry: Entry, login: String): EntryJson = {
+    EntryJson(entry.id.toString, entry.text, login, Utils.format(entry.entered))
   }
 
   def update(entryId: String, message: String) {

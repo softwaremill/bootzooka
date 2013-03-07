@@ -10,7 +10,7 @@ object Entry {
     new Entry(new ObjectId, text, authorId, new DateTime(DateTimeZone.UTC))
   }
 
-  def apply(id: ObjectId, text: String, authorId: ObjectId) = {
-    new Entry(id, text, authorId, new DateTime(DateTimeZone.UTC))
+  def apply(id: ObjectId, text: String, authorId: ObjectId, time: Long) = {
+    new Entry(id, text, authorId, new DateTime(time))
   }
 }
