@@ -1,6 +1,7 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
+import org.bson.types.ObjectId
 
 class InMemoryUserDAO extends UserDAO {
 
@@ -9,6 +10,9 @@ class InMemoryUserDAO extends UserDAO {
   def loadAll: List[User] = {
     users
   }
+
+  override def findForIdentifiers(ids: List[ObjectId]): List[User] =
+    ids.distinct.map(id => users.find(user => user.id == id.toString).get);
 
   def countItems(): Long = {
     users.size

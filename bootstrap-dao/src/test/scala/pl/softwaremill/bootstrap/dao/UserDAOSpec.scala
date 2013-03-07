@@ -4,6 +4,7 @@ import pl.softwaremill.bootstrap.domain.User
 import com.weiglewilczek.slf4s.Logging
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{FlatSpec, BeforeAndAfterAll}
+import org.bson.types.ObjectId
 
 class MongoUserDAOSpec extends FlatSpecWithMongo with UserDAOSpec {
   behavior of "MongoUserDAO"
@@ -20,18 +21,21 @@ class InMemoryUserDAOSpec extends FlatSpecWithMongo with UserDAOSpec {
 trait UserDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll with Logging {
   def createDAO: UserDAO
 
+  val userIdPrefix = "507f1f77bcf86cd79943901"
   var userDAO: UserDAO = null
+  implicit def intSuffixToObjectId(suffix: Int): ObjectId = new ObjectId(userIdPrefix + suffix)
 
   override def beforeAll() {
     super.beforeAll()
     userDAO = createDAO
+
 
     for (i <- 1 to 3) {
       val login = "user" + i
       val password = "pass" + i
       val salt = "salt" + i
       val token = "token" + i
-      userDAO.add(User(login, i + "email@sml.com", password, salt, token))
+      userDAO.add(User(i, login, login.toLowerCase, i + "email@sml.com", password, salt, token))
     }
   }
 
@@ -131,6 +135,17 @@ trait UserDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll wi
       case Some(u) => u.login should be (login)
       case _ => fail("User option should be defined")
     }
+  }
+
+  it should "find users by identifiers" in {
+    // Given
+    val ids: List[ObjectId] = List(1, 2, 2);
+
+    // When
+    val users = userDAO.findForIdentifiers(ids)
+
+    // Then
+    users.map(user => user.login) should be(List("user1", "user2"))
   }
 
   it should "find by uppercased login" in {

@@ -26,6 +26,9 @@ class MongoUserDAO extends UserDAO {
     UserRecord where (_.id eqs new ObjectId(userId)) findAndDeleteOne()
   }
 
+  override def findForIdentifiers(ids: List[ObjectId]): List[User] =
+    UserRecord findAllByList(ids)
+
   def load(userId: String): Option[User] = {
     UserRecord where (_.id eqs new ObjectId(userId)) get()
   }
@@ -103,6 +106,6 @@ private class UserRecord extends MongoRecord[UserRecord] with ObjectIdPk[UserRec
 
 }
 
-private object UserRecord extends UserRecord with MongoMetaRecord[UserRecord] {
+private object  UserRecord extends UserRecord with MongoMetaRecord[UserRecord] {
   override def collectionName: String = "users"
 }

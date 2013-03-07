@@ -2,6 +2,7 @@ package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
 import java.util.UUID
+import org.bson.types.ObjectId
 
 trait UserDAO {
 
@@ -27,6 +28,8 @@ trait UserDAO {
   def findByLowerCasedLogin(login: String): Option[User]
 
   def findByLoginOrEmail(loginOrEmail: String): Option[User]
+
+  def findForIdentifiers(ids: List[ObjectId]): List[User]
 
   def findByToken(token: String): Option[User]
 
