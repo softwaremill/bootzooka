@@ -1,15 +1,17 @@
 package pl.softwaremill.bootstrap.service.user
 
 import pl.softwaremill.bootstrap.dao.{InMemoryUserDAO, UserDAO}
-import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.domain.User
 import pl.softwaremill.bootstrap.service.schedulers.EmailSendingService
 import pl.softwaremill.bootstrap.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
-import org.mockito.Matchers
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Matchers
 
-class UserServiceSpec extends FlatSpec with ShouldMatchers with Mockito with BeforeAndAfter {
+class UserServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar with BeforeAndAfter {
   def prepareUserDAOMock: UserDAO = {
     val dao = new InMemoryUserDAO
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
@@ -75,7 +77,7 @@ class UserServiceSpec extends FlatSpec with ShouldMatchers with Mockito with Bef
   }
 
 
-  "registerNewUser" should "add user with duplicated lowercased login info" in {
+  "registerNewUser" should "add user with unique lowercased login info" in {
     // When
     userService.registerNewUser("John", "newUser@sml.com", "password")
 
@@ -86,22 +88,21 @@ class UserServiceSpec extends FlatSpec with ShouldMatchers with Mockito with Bef
 
     user.login should be ("John")
     user.loginLowerCased should be ("john")
-    there was one(emailTemplatingEngine).registrationConfirmation(Matchers.eq("John"))
-    there was one(emailSendingService)
+    verify(emailTemplatingEngine).registrationConfirmation(Matchers.eq("John"))
+    verify(emailSendingService)
       .scheduleEmail(Matchers.eq("newUser@sml.com"), any[EmailContentWithSubject])
   }
 
   "registerNewUser" should "not schedule an email on existing login" in {
     // When
     try {
-      userService.registerNewUser("John", "secondEmail@sml.com", "password")
+      userService.registerNewUser("Admin", "secondEmail@sml.com", "password")
     }
     catch {
       case e: Exception =>
     }
     // Then
-    there was no(emailSendingService)
-      .scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
+    verify(emailSendingService, never()).scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
   }
 
   "changeEmail" should "change email for specified user" in {

@@ -27,7 +27,6 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
     val salt = RichString.generateRandom(16)
     val token = UUID.randomUUID().toString
     userDAO.add(User(login, email.toLowerCase, password, salt, token))
-
     val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
     emailScheduler.scheduleEmail(email, confirmationEmail)
   }

@@ -1,14 +1,16 @@
 package pl.softwaremill.bootstrap.rest
 
-import org.specs2.mock.Mockito
 import java.io.Writer
 import org.json4s.JsonAST.{JString, JObject, JField}
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.mockito.Matchers
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
+import org.mockito.Matchers._
 
-class JsonServletSpec extends FlatSpec with ShouldMatchers with Mockito {
+class JsonServletSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
   "writeJson" should "use escaped data" in {
     // Given
     val servlet = new JsonServletWithMockedMapper()
@@ -19,8 +21,8 @@ class JsonServletSpec extends FlatSpec with ShouldMatchers with Mockito {
     servlet.writeJson(json, mock[Writer])
 
     // Then
-    there was one(servlet.mockedMapper).writeValue(any[Writer], Matchers.eq(escapedJson))
-    there was no(servlet.mockedMapper).writeValue(any[Writer], Matchers.eq(json))
+    verify(servlet.mockedMapper) writeValue(any[Writer], Matchers.eq(escapedJson))
+    verify(servlet.mockedMapper, never()) writeValue(any[Writer], Matchers.eq(json))
   }
 
   "writeJson" should "use unwrapped and not escaped data" in {
@@ -34,9 +36,9 @@ class JsonServletSpec extends FlatSpec with ShouldMatchers with Mockito {
     servlet.writeJson(json, mock[Writer])
 
     // Then
-    there was one(servlet.mockedMapper).writeValue(any[Writer], Matchers.eq(jsonWithString))
-    there was no(servlet.mockedMapper).writeValue(any[Writer], Matchers.eq(json))
-    there was no(servlet.mockedMapper).writeValue(any[Writer], Matchers.eq(escapedJson))
+    verify(servlet.mockedMapper) writeValue(any[Writer], Matchers.eq(jsonWithString))
+    verify(servlet.mockedMapper, never()) writeValue(any[Writer], Matchers.eq(json))
+    verify(servlet.mockedMapper, never()) writeValue(any[Writer], Matchers.eq(escapedJson))
   }
 
   class JsonServletWithMockedMapper extends JsonServlet {

@@ -72,8 +72,8 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
       // when
       entryService.loadAll
       // then
-      verify(entryDAO, times(1)).loadAll
-      verify(userDAO, times(1)).findForIdentifiers(any)
+      verify(entryDAO).loadAll
+      verify(userDAO).findForIdentifiers(any)
     })
   }
 

@@ -1,7 +1,6 @@
 package pl.softwaremill.bootstrap.service
 
 import schedulers.EmailSendingService
-import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO, InMemoryUserDAO}
 import pl.softwaremill.bootstrap.domain.{PasswordResetCode, User}
 import templates.{EmailTemplatingEngine, EmailContentWithSubject}
@@ -10,8 +9,12 @@ import org.bson.types.ObjectId
 import org.joda.time.DateTime
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
+import org.scalatest.mock.MockitoSugar
+import org.mockito.BDDMockito._
+import org.mockito.Mockito._
+import org.mockito.Matchers._
 
-class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
+class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
   val invalidLogin = "user2"
   val validLogin = "user"
 
@@ -27,43 +30,43 @@ class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with Mock
 
   def prepareUserDaoMock = {
     val userDao = mock[InMemoryUserDAO]
-    userDao.findByLoginOrEmail(validLogin) returns Some(User(validLogin, "user@sml.pl", "pass", "salt", "token"))
-    userDao.findByLoginOrEmail(invalidLogin) returns None
+    when (userDao.findByLoginOrEmail(validLogin)) thenReturn Some(User(validLogin, "user@sml.pl", "pass", "salt", "token"))
+    when (userDao.findByLoginOrEmail(invalidLogin)) thenReturn None
     userDao
   }
 
   "sendResetCodeToUser" should "search for user using provided login" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       passwordRecoveryService.sendResetCodeToUser(invalidLogin)
-      there was one(userDao).findByLoginOrEmail(invalidLogin)
+      verify(userDao).findByLoginOrEmail(invalidLogin)
     })
   }
 
   "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       passwordRecoveryService.sendResetCodeToUser(invalidLogin)
-      there was no(emailSendingService).scheduleEmail(anyString, any)
+      verify(emailSendingService, never()).scheduleEmail(anyString, any[EmailContentWithSubject])
     })
   }
 
   "sendResetCodeToUser" should "store generated code for reuse" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       passwordRecoveryService.sendResetCodeToUser(validLogin)
-      there was one(codeDao).store(any[PasswordResetCode])
+      verify(codeDao).store(any[PasswordResetCode])
     })
   }
 
   "sendResetCodeToUser" should "send e-mail to user containing link to reset page with generated reset code" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       passwordRecoveryService.sendResetCodeToUser(validLogin)
-      there was one(emailSendingService).scheduleEmail(Matchers.eq("user@sml.pl"), any[EmailContentWithSubject])
+      verify(emailSendingService).scheduleEmail(Matchers.eq("user@sml.pl"), any[EmailContentWithSubject])
     })
   }
 
   "sendResetCodeToUser" should "use template to generate e-mail" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       passwordRecoveryService.sendResetCodeToUser(validLogin)
-      there was one(emailTemplatingEngine).passwordReset(Matchers.eq(validLogin), anyString)
+      verify(emailTemplatingEngine).passwordReset(Matchers.eq(validLogin), anyString)
     })
   }
 
@@ -79,17 +82,16 @@ class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with Mock
       val mockCode = mock[PasswordResetCode]
       val mockUser = mock[User]
 
-      mockUserId.toString returns userId
+      given(mockUserId.toString) willReturn userId
+      given(mockCode.userId) willReturn mockUserId
+      given(mockCode.validTo) willReturn new DateTime().plusHours(1)
 
-      mockCode.userId returns mockUserId
-      mockCode.validTo returns new DateTime().plusHours(1)
+      given(mockUser.id) willReturn  mockUserId
+      given(mockUser.login) willReturn login
+      given(mockUser.salt) willReturn "salt"
 
-      mockUser.id returns mockUserId
-      mockUser.login returns login
-      mockUser.salt returns "salt"
-
-      codeDao.load(code) returns (Some(mockCode))
-      userDao.load(userId) returns (Some(mockUser))
+      given(codeDao.load(code)) willReturn (Some(mockCode))
+      given(userDao.load(userId)) willReturn (Some(mockUser))
 
       //When
       val result = passwordRecoveryService.performPasswordReset(code, password)
@@ -97,9 +99,9 @@ class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with Mock
       //Then
       assert(result.isRight)
       assert(result.right.get)
-      there was one(codeDao).load(code)
-      there was one(userDao).changePassword(Matchers.eq(userId), Matchers.eq(User.encryptPassword(password, salt)))
-      there was one(codeDao).delete(mockCode)
+      verify(codeDao).load(code)
+      verify(userDao).changePassword(Matchers.eq(userId), Matchers.eq(User.encryptPassword(password, salt)))
+      verify(codeDao).delete(mockCode)
     })
   }
 
@@ -109,16 +111,16 @@ class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with Mock
       val password = "password"
       val code = "validCode"
       val mockCode = mock[PasswordResetCode]
-      mockCode.validTo returns new DateTime().minusDays(2)
-      codeDao.load(code) returns Some(mockCode)
+      given(mockCode.validTo) willReturn new DateTime().minusDays(2)
+      given(codeDao.load(code)) willReturn Some(mockCode)
 
       //When
       val result = passwordRecoveryService.performPasswordReset(code, password)
 
       //Then
       assert(result.isLeft)
-      there was one(codeDao).delete(mockCode)
-      there was no(userDao).changePassword(anyString, anyString)
+      verify(codeDao).delete(mockCode)
+      verify(userDao, never()).changePassword(anyString, anyString)
     })
   }
 }

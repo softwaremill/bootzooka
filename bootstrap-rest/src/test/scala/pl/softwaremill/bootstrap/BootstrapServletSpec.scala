@@ -1,13 +1,13 @@
 package pl.softwaremill.bootstrap
 
-import org.specs2.mock.Mockito
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.JsonAST.JValue
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.test.scalatest.ScalatraFlatSpec
+import org.scalatest.mock.MockitoSugar
 
-trait BootstrapServletSpec extends ScalatraFlatSpec with Mockito {
+trait BootstrapServletSpec extends ScalatraFlatSpec with MockitoSugar {
 
   val defaultJsonHeaders = Map("Content-Type" -> "application/json;charset=UTF-8")
 

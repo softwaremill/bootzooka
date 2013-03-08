@@ -1,10 +1,10 @@
 package pl.softwaremill.bootstrap.service.user
 
-import org.specs2.mock.Mockito
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
+import org.scalatest.mock.MockitoSugar
 
-class RegistrationDataValidatorSpec extends FlatSpec with ShouldMatchers with Mockito {
+class RegistrationDataValidatorSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
   val validator = new RegistrationDataValidator()
 
   "isDataValid()" should "accept valid data" in {

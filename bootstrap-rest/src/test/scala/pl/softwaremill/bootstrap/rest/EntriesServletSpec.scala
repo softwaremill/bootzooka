@@ -5,6 +5,7 @@ import pl.softwaremill.bootstrap.BootstrapServletSpec
 import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, EntryJson}
 import org.json4s.JsonDSL._
 import pl.softwaremill.bootstrap.service.entry.EntryService
+import org.mockito.Mockito._
 
 class EntriesServletSpec extends BootstrapServletSpec {
   behavior of "EntriesServlet"
@@ -13,11 +14,11 @@ class EntriesServletSpec extends BootstrapServletSpec {
     val userService = mock[UserService]
 
     val entryService = mock[EntryService]
-    entryService.count() returns 4
+    when(entryService.count()) thenReturn 4
     val entryOne: EntryJson = EntryJson("1", "<script>alert('hacker')</script>", "Jas Kowalski", "")
-    entryService.loadAll returns EntriesWithTimeStamp(List(entryOne))
-    entryService.load("1") returns Some(entryOne)
-    entryService.countNewerThan(10000) returns 10
+    when(entryService.loadAll) thenReturn EntriesWithTimeStamp(List(entryOne))
+    when(entryService.load("1")) thenReturn Some(entryOne)
+    when(entryService.countNewerThan(10000)) thenReturn 10
 
 
     val servlet: EntriesServlet = new EntriesServlet(entryService, userService)
@@ -30,8 +31,8 @@ class EntriesServletSpec extends BootstrapServletSpec {
     onServletWithMocks { (entryService, userService) =>
       get("/") {
         status === 200
-        there was one(entryService).loadAll
-        there was no(entryService).load("0")
+        verify(entryService).loadAll
+        verify(entryService, never()).load("0")
       }
     }
   }
@@ -40,8 +41,8 @@ class EntriesServletSpec extends BootstrapServletSpec {
     onServletWithMocks { (entryService, userService) =>
       get("/") {
         header("Content-Type") contains "application/json"
-        there was one(entryService).loadAll
-        there was no(entryService).load("0")
+        verify(entryService).loadAll
+        verify(entryService, never()).load("0")
       }
     }
   }
@@ -64,7 +65,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
     onServletWithMocks { (entryService, userService) =>
       get("/count") {
         body should include ("{\"value\":4}")
-        there was one(entryService).count()
+        verify(entryService).count()
       }
     }
   }
@@ -73,7 +74,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
     onServletWithMocks { (entryService, userService) =>
       get("count-newer/10000") {
         body should include ("{\"value\":10}")
-        there was one(entryService).countNewerThan(10000)
+        verify(entryService).countNewerThan(10000)
       }
     }
   }
@@ -82,7 +83,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
     onServletWithMocks { (entryService, userService) =>
       post("/", "anything") {
         status should be (401)
-        there was noCallsTo(entryService)
+        verifyZeroInteractions(entryService)
       }
     }
   }
@@ -91,7 +92,7 @@ class EntriesServletSpec extends BootstrapServletSpec {
     onServletWithMocks { (entryService, userService) =>
       put("/", "anything") {
         status should be (401)
-        there was noCallsTo(entryService)
+        verifyZeroInteractions(entryService)
       }
     }
   }

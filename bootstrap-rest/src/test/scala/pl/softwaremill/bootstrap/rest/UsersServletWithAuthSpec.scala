@@ -2,9 +2,10 @@ package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.BootstrapServletSpec
 import pl.softwaremill.bootstrap.service.user.UserService
-import org.specs2.mock.Mockito
 import org.scalatra.auth.Scentry
 import pl.softwaremill.bootstrap.service.data.UserJson
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
 
 class UsersServletWithAuthSpec extends BootstrapServletSpec {
 
@@ -12,7 +13,7 @@ class UsersServletWithAuthSpec extends BootstrapServletSpec {
     val userService = mock[UserService]
 
     val mockedScentry = mock[Scentry[UserJson]]
-    mockedScentry.isAuthenticated returns authenticated
+    when(mockedScentry.isAuthenticated) thenReturn authenticated
 
     val servlet: MockUsersServlet = new MockUsersServlet(userService, mockedScentry)
     addServlet(servlet, "/*")
@@ -23,9 +24,9 @@ class UsersServletWithAuthSpec extends BootstrapServletSpec {
   "GET /logout" should "call logout() when user is already authenticated" in {
     onServletWithMocks(authenticated = true, testToExecute = (userService, mock) =>
       get("/logout") {
-        there was two(mock).isAuthenticated // before() and get('/logout')
-        there was one(mock).logout()
-        there was noCallsTo(userService)
+        verify(mock, times(2)).isAuthenticated // before() and get('/logout')
+        verify(mock).logout()
+        verifyZeroInteractions(userService)
       }
     )
   }
@@ -33,9 +34,9 @@ class UsersServletWithAuthSpec extends BootstrapServletSpec {
   "GET /logout" should "not call logout() when user is not authenticated" in {
     onServletWithMocks(authenticated = false, testToExecute = (userService, mock) =>
       get("/logout") {
-        there was two(mock).isAuthenticated // before() and get('/logout')
-        there was no(mock).logout()
-        there was noCallsTo(userService)
+        verify(mock, times(2)).isAuthenticated // before() and get('/logout')
+        verify(mock, never).logout()
+        verifyZeroInteractions(userService)
       }
     )
   }
@@ -49,7 +50,7 @@ class UsersServletWithAuthSpec extends BootstrapServletSpec {
     )
   }
 
-  class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService) with Mockito {
+  class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService) with MockitoSugar {
     override def scentry = mockedScentry
     override def user = new UserJson("Jas Kowalski", "kowalski@kowalski.net", "token")
   }

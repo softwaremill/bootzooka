@@ -2,8 +2,10 @@ package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.BootstrapServletSpec
 import org.json4s.JsonDSL._
-import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.service.PasswordRecoveryService
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.mockito.BDDMockito._
 import org.mockito.Matchers
 
 class PasswordRecoveryServletSpec extends BootstrapServletSpec {
@@ -19,7 +21,7 @@ class PasswordRecoveryServletSpec extends BootstrapServletSpec {
     onServletWithMocks { (recoveryService) =>
       post("/", mapToJson(Map("login" -> "abc")), defaultJsonHeaders) {
         status should be (200)
-        there was one(recoveryService).sendResetCodeToUser("abc")
+        verify(recoveryService).sendResetCodeToUser("abc")
       }
     }
   }
@@ -28,7 +30,7 @@ class PasswordRecoveryServletSpec extends BootstrapServletSpec {
     onServletWithMocks { (recoveryService) =>
       post("/123", mapToJson(Map("password" -> "validPassword")), defaultJsonHeaders) {
         status should be (200)
-        there was one(recoveryService).performPasswordReset("123", "validPassword")
+        verify(recoveryService).performPasswordReset("123", "validPassword")
       }
     }
   }
@@ -38,14 +40,14 @@ class PasswordRecoveryServletSpec extends BootstrapServletSpec {
       post("/123", mapToJson(Map("password" -> "")), defaultJsonHeaders) {
         status should be (400)
         body should be ("{\"value\":\"missingpassword\"}")
-        there was no(recoveryService).performPasswordReset(Matchers.eq("123"), anyString)
+        verify(recoveryService, never()).performPasswordReset(Matchers.eq("123"), anyString)
       }
     }
   }
 
   "POST /123 with password but without code" should "complain" in {
     onServletWithMocks { (recoveryService) =>
-      recoveryService.performPasswordReset("123", "validPassword") returns Left("Error")
+      given(recoveryService.performPasswordReset("123", "validPassword")) willReturn  Left("Error")
       post("/123", mapToJson(Map("password" -> "validPassword")), defaultJsonHeaders) {
         status should be (403)
         body should be ("{\"value\":\"Error\"}")

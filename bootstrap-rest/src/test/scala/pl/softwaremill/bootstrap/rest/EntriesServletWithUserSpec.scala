@@ -1,13 +1,16 @@
 package pl.softwaremill.bootstrap.rest
 
 import pl.softwaremill.bootstrap.service.user.UserService
-import org.specs2.matcher.MatchResult
 import pl.softwaremill.bootstrap.BootstrapServletSpec
 import org.json4s.JsonDSL._
 import org.json4s.JsonAST.JValue
 import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, UserJson, EntryJson}
 import pl.softwaremill.bootstrap.service.entry.EntryService
 import pl.softwaremill.bootstrap.domain.User
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.mockito.BDDMockito._
+
 
 class EntriesServletWithUserSpec extends BootstrapServletSpec {
   behavior of "EntriesServlet with logged in user"
@@ -21,13 +24,13 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
     val userService = mock[UserService]
 
     val entryService = mock[EntryService]
-    entryService.count() returns 2
-    entryService.loadAll returns EntriesWithTimeStamp(List(entryOne, entryTwo))
-    entryService.load("1") returns Some(entryOne)
-    entryService.load("2") returns Some(entryTwo)
-    entryService.load("3") returns None
-    entryService.isAuthor(loginJasKowalski, "1") returns true
-    entryService.isAuthor(loginJasKowalski, "2") returns true
+    when(entryService.count()) thenReturn 2
+    when(entryService.loadAll) thenReturn EntriesWithTimeStamp(List(entryOne, entryTwo))
+    when(entryService.load("1")) thenReturn Some(entryOne)
+    when(entryService.load("2")) thenReturn Some(entryTwo)
+    when(entryService.load("3")) thenReturn None
+    when(entryService.isAuthor(loginJasKowalski, "1")) thenReturn true
+    when(entryService.isAuthor(loginJasKowalski, "2")) thenReturn true
 
     val servlet: EntriesServlet = new EntriesServletWithUser(entryService, userService, login)
     addServlet(servlet, "/*")
@@ -38,8 +41,8 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   "POST /" should "modify entry that user owns" in {
     onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
       put("/", mapToJson(Map[String, JValue]("id" -> "1", "text" -> "Important message")), defaultJsonHeaders) {
-        there was one(entryService).isAuthor(loginJasKowalski, "1")
-        there was one(entryService).update("1", "Important message")
+        verify(entryService).isAuthor(loginJasKowalski, "1")
+        verify(entryService).update("1", "Important message")
         status should be (200)
       }
     )
@@ -48,8 +51,8 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   "POST /" should "not update non existing entry" in {
     onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
       put("/", mapToJson(Map[String, JValue]("id" -> "3", "text" -> "Important message")), defaultJsonHeaders) {
-        there was one(entryService).isAuthor(loginJasKowalski, "3")
-        there was no(entryService).update(anyString, anyString)
+        verify(entryService).isAuthor(loginJasKowalski, "3")
+        verify(entryService, never()).update(anyString, anyString)
         status should be (403)
       }
     )
@@ -58,8 +61,8 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   "POST /" should "not update non owner entry" in {
     onServletWithMocks(login = "PiotrNowak", testToExecute = (entryService, usersService) =>
       put("/", mapToJson(Map[String, JValue]("id" -> "2", "text" -> "Important message")), defaultJsonHeaders) {
-        there was one(entryService).isAuthor("PiotrNowak", "2")
-        there was no(entryService).update(anyString, anyString)
+        verify(entryService).isAuthor("PiotrNowak", "2")
+        verify(entryService, never()).update(anyString, anyString)
         status should be (403)
       }
     )
@@ -68,8 +71,8 @@ class EntriesServletWithUserSpec extends BootstrapServletSpec {
   "PUT /" should "create new entry" in {
     onServletWithMocks(login = loginJasKowalski, testToExecute = (entryService, userService) =>
       post("/", mapToJson(Map("text" -> "New message")), defaultJsonHeaders) {
-        there was one(entryService).add(loginJasKowalski, "New message")
-        there was no(entryService).update(anyString, anyString)
+        verify(entryService).add(loginJasKowalski, "New message")
+        verify(entryService, never()).update(anyString, anyString)
         status should be (200)
       }
     )

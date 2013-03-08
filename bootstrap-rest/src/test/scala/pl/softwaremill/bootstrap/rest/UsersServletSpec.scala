@@ -7,6 +7,8 @@ import pl.softwaremill.bootstrap.BootstrapServletSpec
 import org.json4s.JsonDSL._
 import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
 import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.mockito.Matchers
 
 class UsersServletSpec extends BootstrapServletSpec {
@@ -30,7 +32,7 @@ class UsersServletSpec extends BootstrapServletSpec {
       (userService) =>
         post("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),
           defaultJsonHeaders) {
-          there was one(userService).registerNewUser("newUser", "newUser@sml.com", "secret")
+          verify(userService).registerNewUser("newUser", "newUser@sml.com", "secret")
           status should be (200)
         }
     }
@@ -51,7 +53,7 @@ class UsersServletSpec extends BootstrapServletSpec {
     onServletWithMocks {
       (userService) =>
         post("/register", mapToJson(Map("login" -> "<script>alert('haxor');</script>", "email" -> "newUser@sml.com", "password" -> "secret")), defaultJsonHeaders) {
-          there was one(userService).registerNewUser("&lt;script&gt;alert('haxor');&lt;/script&gt;", "newUser@sml.com", "secret")
+          verify(userService).registerNewUser("&lt;script&gt;alert('haxor');&lt;/script&gt;", "newUser@sml.com", "secret")
         }
     }
   }
@@ -59,7 +61,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   "PATCH /" should "not update email when not in request" in {
     onServletWithMocks(userService => {
       patch("/", mapToJson(Map("irrelevant" -> "")), defaultJsonHeaders) {
-        there was no(userService).changeEmail(anyString, anyString)
+        verify(userService, never()).changeEmail(anyString, anyString)
       }
     })
   }
@@ -67,7 +69,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   "PATCH /" should "not update email when email is blank" in {
     onServletWithMocks(userService => {
       patch("/", mapToJson(Map("email" -> "")), defaultJsonHeaders) {
-        there was no(userService).changeEmail(anyString, anyString)
+        verify(userService, never()).changeEmail(anyString, anyString)
       }
     })
   }
@@ -83,7 +85,7 @@ class UsersServletSpec extends BootstrapServletSpec {
 
         patch("/", mapToJson(Map("email" -> email)), defaultJsonHeaders) {
           status should be (200)
-          there was one(userService).changeEmail(anyString, Matchers.eq(email))
+          verify(userService).changeEmail(anyString, Matchers.eq(email))
         }
       }
     })
@@ -117,7 +119,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   "PATCH /" should "not update login when not in request" in {
     onServletWithMocks(userService => {
       patch("/", mapToJson(Map("irrelevant" -> "")), defaultJsonHeaders) {
-        there was no(userService).changeLogin(anyString, anyString)
+        verify(userService, never()).changeLogin(anyString, anyString)
       }
     })
   }
@@ -125,7 +127,7 @@ class UsersServletSpec extends BootstrapServletSpec {
   "PATCH /" should "not update login when login is blank" in {
     onServletWithMocks(userService => {
       patch("/", mapToJson(Map("login" -> "")), defaultJsonHeaders) {
-        there was no(userService).changeLogin(anyString, anyString)
+        verify(userService, never()).changeLogin(anyString, anyString)
       }
     })
   }
@@ -141,7 +143,7 @@ class UsersServletSpec extends BootstrapServletSpec {
 
         patch("/", mapToJson(Map("login" -> login)), defaultJsonHeaders) {
           status should be (200)
-          there was one(userService).changeLogin(anyString, Matchers.eq(login))
+          verify(userService).changeLogin(anyString, Matchers.eq(login))
         }
       }
     })

@@ -89,12 +89,11 @@ object Dependencies {
 
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
   val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
-  val specs2 = "org.specs2" %% "specs2" % "1.12.3" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
   val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, json4s, scalatraAuth, commonsLang)
 
-  val testingDependencies = Seq(mockito, scalatest, specs2)
+  val testingDependencies = Seq(mockito, scalatest)
 
   val javaxMail = "javax.mail" % "mail" % "1.4.5"
 
