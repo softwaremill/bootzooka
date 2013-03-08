@@ -1,7 +1,5 @@
 package pl.softwaremill.bootstrap.service.user
 
-import org.mockito.Mockito._
-import org.specs2.mock.Mockito
 import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
 import org.bson.types.ObjectId
 import pl.softwaremill.bootstrap.domain.{User, Entry}
@@ -12,8 +10,11 @@ import pl.softwaremill.bootstrap.service.data.{EntryJson, EntriesWithTimeStamp}
 import pl.softwaremill.bootstrap.common.Utils
 import org.joda.time.DateTime
 import pl.softwaremill.bootstrap.common.Utils.Clock
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 
-class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
+class EntryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
 
   val validEntryId: String = "1" * 24
   val validUserId: String = "2" * 24
@@ -35,8 +36,8 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
     val entry = Entry(new ObjectId(validEntryId), validMessage, new ObjectId(validUserId), fixtureTime)
 
     val entryDAOMock = mock[EntryDAO]
-    entryDAOMock.load(validEntryId) returns Some(entry)
-    entryDAOMock.load(invalidEntryId) returns None
+    when (entryDAOMock.load(validEntryId)) thenReturn Some(entry)
+    when (entryDAOMock.load(invalidEntryId)) thenReturn None
 
     val userDAOMock = mock[UserDAO]
 
@@ -60,8 +61,10 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
     implicit def identifierIntToUser(id: Int): User =
       User(userIdentifier(id), "login" + id, "login" + id, "dummyEmail", "dummyPassword", "dummySalt", "dummyToken");
 
-    entryDAOMock.loadAll returns entries
-    userDAOMock.findForIdentifiers(entries.map(_.authorId)) returns List(0, 1, 3, 2)
+    when(entryDAOMock.loadAll) thenReturn entries
+
+    val expectedUserList: List[User] = List(0, 1, 3, 2)
+    when(userDAOMock.findForIdentifiers(entries.map(_.authorId))) thenReturn(expectedUserList)
 
     val entryService: EntryService = new EntryService(entryDAOMock, userDAOMock, new FixtureTimeClock(fixtureTime))
     test(entryDAOMock, userDAOMock, entryService)
@@ -73,7 +76,7 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
       entryService.loadAll
       // then
       verify(entryDAO).loadAll
-      verify(userDAO).findForIdentifiers(any)
+      verify(userDAO).findForIdentifiers(any[List[ObjectId]])
     })
   }
 
@@ -98,7 +101,7 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
     withCleanMocks((entryDAO, entryService) => {
       val entry = entryService.load(validEntryId)
 
-      there was one(entryDAO).load(validEntryId)
+      verify(entryDAO).load(validEntryId)
       entry.isDefined should be (true)
       entry.get.text should be (validMessage)
     })
@@ -108,7 +111,7 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
     withCleanMocks((entryDAO, entryService) => {
       val entry = entryService.load(invalidEntryId)
 
-      there was one(entryDAO).load(invalidEntryId)
+      verify(entryDAO).load(invalidEntryId)
       entry should be (None)
     })
   }
@@ -117,7 +120,7 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
     withCleanMocks((entryDAO, entryService) => {
       entryService.remove(validEntryId)
 
-      there was one(entryDAO).remove(validEntryId)
+      verify(entryDAO).remove(validEntryId)
     })
   }
 
@@ -125,7 +128,7 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with Mockito {
     withCleanMocks((entryDAO, entryService) => {
       entryService.update(validEntryId, "text")
 
-      there was one(entryDAO).update(validEntryId, "text")
+      verify(entryDAO).update(validEntryId, "text")
     })
   }
 }
