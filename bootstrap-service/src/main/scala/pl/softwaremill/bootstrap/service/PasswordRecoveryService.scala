@@ -5,10 +5,10 @@ import schedulers.EmailSendingService
 import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO}
 import templates.EmailTemplatingEngine
 import pl.softwaremill.bootstrap.domain.User
-import com.weiglewilczek.slf4s.Logging
 import pl.softwaremill.common.util.RichString
 import pl.softwaremill.bootstrap.domain.PasswordResetCode
 import org.joda.time.DateTime
+import com.typesafe.scalalogging.slf4j.Logging
 
 /**
  * .

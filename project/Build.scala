@@ -26,7 +26,7 @@ object BuildSettings {
 
     organization := "pl.softwaremill",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.9.2",
+    scalaVersion := "2.10.0",
 
     resolvers := bootstrapResolvers,
     scalacOptions += "-unchecked",
@@ -59,24 +59,25 @@ object Dependencies {
   val slf4jVersion = "1.7.2"
   val logBackVersion = "1.0.9"
   val smlCommonVersion = "72-SNAPSHOT"
-  val scalatraVersion = "2.2.0-RC1"
+  val scalatraVersion = "2.2.0"
   val rogueVersion = "2.0.0-RC1"
+  val scalaLoggingVersion = "1.0.1"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
   val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
-  val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % slf4jVersion
-  val slf4s = "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7"
+//  val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % slf4jVersion
+  val scalaLogging = "com.typesafe" %% "scalalogging-slf4j" % scalaLoggingVersion
 
-  val logging = Seq(slf4jApi, logBackClassic, jclOverSlf4j, slf4s)
+  val logging = Seq(slf4jApi, logBackClassic, scalaLogging)
 
   val guava = "com.google.guava" % "guava" % "13.0.1"
   val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "2.0.1"
 
-  val scalatra = "org.scalatra" % "scalatra" % scalatraVersion
-  val scalatraScalatest = "org.scalatra" % "scalatra-scalatest" % scalatraVersion % "test"
-  val scalatraJson = "org.scalatra" % "scalatra-json" % scalatraVersion
-  val json4s = "org.json4s" %% "json4s-jackson" % "3.0.0"
-  val scalatraAuth = "org.scalatra" % "scalatra-auth" % scalatraVersion  exclude("commons-logging", "commons-logging")
+  val scalatra = "org.scalatra" %% "scalatra" % scalatraVersion
+  val scalatraScalatest = "org.scalatra" %% "scalatra-scalatest" % scalatraVersion % "test"
+  val scalatraJson = "org.scalatra" %% "scalatra-json" % scalatraVersion
+  val json4s = "org.json4s" %% "json4s-jackson" % "3.1.0"
+  val scalatraAuth = "org.scalatra" %% "scalatra-auth" % scalatraVersion  exclude("commons-logging", "commons-logging")
 
   val jodaTime = "joda-time" % "joda-time" % "2.0"
   val jodaConvert = "org.joda" % "joda-convert" % "1.2"
@@ -88,7 +89,7 @@ object Dependencies {
   val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "test"
 
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
-  val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+  val scalatest = "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
   val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, json4s, scalatraAuth, commonsLang)
@@ -101,7 +102,7 @@ object Dependencies {
   val smlCommonSqs = "pl.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
   val smlCommonConfig = "pl.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
 
-  val scalate = "org.fusesource.scalate" % "scalate-core_2.9" % "1.6.0"
+  val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.0"
 
   val seleniumVer = "2.29.0"
   val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"

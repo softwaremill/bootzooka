@@ -6,7 +6,7 @@ import com.mongodb.ServerAddress
 import java.util.Scanner
 import java.util.regex.Pattern
 import com.google.common.io.Files
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 
 class MongoRunner(process: KillableProcess, temporaryDataDir: File, port: Int, pidFile: String, verbose: Boolean) extends Logging {
 

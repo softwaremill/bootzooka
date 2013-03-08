@@ -51,8 +51,8 @@ class UsersServletWithAuthSpec extends BootstrapServletSpec {
   }
 
   class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService) with MockitoSugar {
-    override def scentry = mockedScentry
-    override def user = new UserJson("Jas Kowalski", "kowalski@kowalski.net", "token")
+    override def scentry(implicit request: javax.servlet.http.HttpServletRequest) = mockedScentry
+    override def user(implicit request: javax.servlet.http.HttpServletRequest) = new UserJson("Jas Kowalski", "kowalski@kowalski.net", "token")
   }
 }
 

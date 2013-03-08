@@ -1,10 +1,10 @@
 package pl.softwaremill.bootstrap.dao
 
 import pl.softwaremill.bootstrap.domain.User
-import com.weiglewilczek.slf4s.Logging
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 import org.bson.types.ObjectId
+import com.typesafe.scalalogging.slf4j.Logging
 
 class MongoUserDAOSpec extends FlatSpecWithMongo with UserDAOSpec {
   behavior of "MongoUserDAO"
@@ -28,7 +28,6 @@ trait UserDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll wi
   override def beforeAll() {
     super.beforeAll()
     userDAO = createDAO
-
 
     for (i <- 1 to 3) {
       val login = "user" + i

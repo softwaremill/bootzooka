@@ -30,7 +30,7 @@ class ProductionEmailSendingService extends EmailSendingService {
           emailQueue.deleteMessage(message)
         } catch {
           case e: MessagingException =>
-            logger.error("Sending email failed: " + e.getMessage)
+            logger.error(s"Sending email failed: ${e.getMessage}")
             break()
         }
 

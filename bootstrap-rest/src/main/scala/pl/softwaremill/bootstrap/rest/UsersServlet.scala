@@ -94,7 +94,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   }
 
   private def changeLogin(): Option[String] = {
-    logger.debug("Updating login: " + user.login + "->" + login)
+    logger.debug(s"Updating login: ${user.login} -> ${login}")
     userService.changeLogin(user.login, login) match {
       case Left(error) => Some(error)
       case _ => None
@@ -102,7 +102,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   }
 
   private def changeEmail(): Option[String] = {
-    logger.debug("Updating email: " + user.email + "->" + email)
+    logger.debug(s"Updating email: ${user.email} -> ${email}")
     userService.changeEmail(user.email, email.toLowerCase) match {
       case Left(error) => Some(error)
       case _ => None
