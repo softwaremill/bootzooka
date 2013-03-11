@@ -28,6 +28,7 @@ Project is divided in few separated modules but basically we have UI which is ba
 and REST backend based on [Scalatra](http://www.scalatra.org/).
 Backend can be interchanged as there is no dependency between frontend and backend - [spray.io](http://spray.io/) was also an option.
 
+
 ## Changelog
 
 ### Iteration 10
