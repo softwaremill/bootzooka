@@ -58,7 +58,7 @@ object Dependencies {
 
   val slf4jVersion = "1.7.2"
   val logBackVersion = "1.0.9"
-  val smlCommonVersion = "72-SNAPSHOT"
+  val smlCommonVersion = "72"
   val scalatraVersion = "2.2.0"
   val rogueVersion = "2.0.0-RC1"
   val scalaLoggingVersion = "1.0.1"
