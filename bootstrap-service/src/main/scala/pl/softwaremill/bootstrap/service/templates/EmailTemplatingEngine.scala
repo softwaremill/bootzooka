@@ -1,6 +1,5 @@
 package pl.softwaremill.bootstrap.service.templates
 
-import org.fusesource.scalate.TemplateEngine
 import org.fusesource.scalate._
 import java.io.File
 
