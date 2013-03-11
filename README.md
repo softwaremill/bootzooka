@@ -28,8 +28,14 @@ Backend can be interchanged as there is no dependency between frontend and backe
 
 ## Changelog
 
+### Iteration 10
+* Switch to Scala 2.10
+* Salat DAOs migrated to Rogue
+* Compatibility fixes for mobile browsers
+* Reorganization of UI project structure
+
 ### Iteration 9
-Development in progress
+* UI tests reimplemented in Scala
 
 ### Iteration 8
 * Possibility to run UI tests
