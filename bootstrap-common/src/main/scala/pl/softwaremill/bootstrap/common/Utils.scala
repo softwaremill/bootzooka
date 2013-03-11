@@ -5,14 +5,6 @@ import org.joda.time.format.{ DateTimeFormatter, DateTimeFormat }
 
 object Utils {
 
-  trait Clock {
-    def currentTime: Long
-  }
-
-  object RealTimeClock extends Clock {
-    def currentTime: Long = System.currentTimeMillis()
-  }
-
   val OneWeek = 7 * 24 * 3600
   val DateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 

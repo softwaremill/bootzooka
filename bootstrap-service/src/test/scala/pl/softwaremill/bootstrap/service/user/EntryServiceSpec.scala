@@ -9,10 +9,10 @@ import org.scalatest.FlatSpec
 import pl.softwaremill.bootstrap.service.data.{EntryJson, EntriesWithTimeStamp}
 import pl.softwaremill.bootstrap.common.Utils
 import org.joda.time.DateTime
-import pl.softwaremill.bootstrap.common.Utils.Clock
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import pl.softwaremill.common.util.time.FixtureTimeClock
 
 class EntryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
 
@@ -27,10 +27,6 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
 
   private def entryIdentifier(suffix: Int) = new ObjectId(validEntryPrefix + suffix)
   private def userIdentifier(suffix: Int) = new ObjectId(validUserPrefix + suffix)
-
-  class FixtureTimeClock(val time: Long) extends Clock {
-    def currentTime: Long = time
-  }
 
   def withCleanMocks(test: (EntryDAO, EntryService) => Unit) = {
     val entry = Entry(new ObjectId(validEntryId), validMessage, new ObjectId(validUserId), fixtureTime)

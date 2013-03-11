@@ -4,9 +4,9 @@ import pl.softwaremill.bootstrap.domain.{User, Entry}
 import pl.softwaremill.bootstrap.dao.{ UserDAO, EntryDAO }
 import pl.softwaremill.bootstrap.common.Utils
 import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, EntryJson}
-import pl.softwaremill.bootstrap.common.Utils.{Clock, RealTimeClock}
+import pl.softwaremill.common.util.time.{Clock, RealTimeClock}
 
-class EntryService(entryDAO: EntryDAO, userDAO: UserDAO, clock: Clock = RealTimeClock) {
+class EntryService(entryDAO: EntryDAO, userDAO: UserDAO, clock: Clock = new RealTimeClock()) {
 
   private def findAuthorLogin(entry: Entry, users: List[User]): String = {
     users.find(_.id == entry.authorId).get.login
@@ -16,7 +16,7 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO, clock: Clock = RealTime
     val allEntries = entryDAO.loadAll
     val users = userDAO.findForIdentifiers(allEntries.map(_.authorId))
     val entriesJson = allEntries.map(entry => mapToEntryJson(entry, findAuthorLogin(entry, users)))
-    EntriesWithTimeStamp(entriesJson, clock)
+    EntriesWithTimeStamp(entriesJson, clock )
   }
 
   def readAuthorLogin(userId: String): String = {
