@@ -3,7 +3,6 @@
 Simple showcase project to allow quickly start with development process of modern web based application.
 
 Live demo is available on http://bootstrap.softwaremill.com.
-
 * [Changelog](#changelog)
     * [Iteration 10](#iteration-10)
     * [Iteration 9](#iteration-9)
