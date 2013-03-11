@@ -5,6 +5,8 @@ Simple showcase project to allow quickly start with development process of moder
 Live demo is available on http://bootstrap.softwaremill.com.
 
 * [Changelog](#changelog)
+    * [Iteration 10](#iteration-10)
+    * [Iteration 9](#iteration-9)
     * [Iteration 8](#iteration-8)
     * [Iteration 7](#iteration-7)
     * [Iteration 6](#iteration-6)
