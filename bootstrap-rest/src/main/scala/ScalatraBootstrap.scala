@@ -17,7 +17,7 @@ class ScalatraBootstrap extends LifeCycle with Beans {
   override def init(context: ServletContext) {
     MongoDB.defineDb(DefaultMongoIdentifier, new Mongo, "bootstrap")
 
-    scheduler.scheduleAtFixedRate(emailSendingService, 60, 60, TimeUnit.SECONDS)
+    scheduler.scheduleAtFixedRate(emailSendingService, 60, 1, TimeUnit.SECONDS)
 
     context.mount(new EntriesServlet(entryService, userService), Prefix + "/entries")
     context.mount(new UptimeServlet, Prefix + "/uptime")
