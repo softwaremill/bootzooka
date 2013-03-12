@@ -89,7 +89,7 @@ object Dependencies {
   val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "test"
 
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
-  val scalatest = "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
+  val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
   val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, json4s, scalatraAuth, commonsLang)
