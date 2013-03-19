@@ -7,7 +7,7 @@ import sbtjslint.Plugin._
 import sbtjslint.Plugin.LintKeys._
 
 object Resolvers {
-  val bootstrapResolvers = Seq(
+  val bootzookaResolvers = Seq(
     "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases/",
     "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
     "SotwareMill Public Releases" at "https://nexus.softwaremill.com/content/repositories/releases/",
@@ -28,7 +28,7 @@ object BuildSettings {
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.10.0",
 
-    resolvers := bootstrapResolvers,
+    resolvers := bootzookaResolvers,
     scalacOptions += "-unchecked",
     classpathTypes ~= (_ + "orbit"),
     libraryDependencies ++= Dependencies.testingDependencies,
@@ -126,46 +126,46 @@ object Dependencies {
   val rogue = Seq(rogueCore, rogueField, rogueLift, liftMongoRecord)
 }
 
-object SmlBootstrapBuild extends Build {
+object SmlBootzookaBuild extends Build {
 
   import Dependencies._
   import BuildSettings._
   import com.github.siasia.WebPlugin.webSettings
 
   lazy val parent: Project = Project(
-    "bootstrap-root",
+    "bootzooka-root",
     file("."),
     settings = buildSettings
   ) aggregate(common, domain, dao, service, rest, ui)
 
   lazy val common: Project = Project(
-    "bootstrap-common",
-    file("bootstrap-common"),
+    "bootzooka-common",
+    file("bootzooka-common"),
     settings = buildSettings ++ Seq(libraryDependencies ++= jodaDependencies)
   )
 
   lazy val domain: Project = Project(
-    "bootstrap-domain",
-    file("bootstrap-domain"),
+    "bootzooka-domain",
+    file("bootzooka-domain"),
     settings = buildSettings ++ Seq(libraryDependencies += bson)
   ) dependsOn (common)
 
   lazy val dao: Project = Project(
-    "bootstrap-dao",
-    file("bootstrap-dao"),
+    "bootzooka-dao",
+    file("bootzooka-dao"),
     settings = buildSettings ++ Seq(libraryDependencies ++= rogue ++ Seq(smlCommonUtil))
   ) dependsOn(domain, common)
 
   lazy val service: Project = Project(
-    "bootstrap-service",
-    file("bootstrap-service"),
+    "bootzooka-service",
+    file("bootzooka-service"),
     settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, smlCommonSqs, smlCommonConfig,
       javaxMail, scalate))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
-    "bootstrap-rest",
-    file("bootstrap-rest"),
+    "bootzooka-rest",
+    file("bootzooka-rest"),
     settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided, smlCommonConfig))
   ) dependsOn(service, domain, common)
 
@@ -177,11 +177,11 @@ object SmlBootstrapBuild extends Build {
   ))
 
   lazy val ui: Project = Project(
-    "bootstrap-ui",
-    file("bootstrap-ui"),
+    "bootzooka-ui",
+    file("bootzooka-ui"),
     settings = buildSettings ++ jasmineSettings ++ graphSettings ++ webSettings ++ lintCustomSettings ++ Seq(
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
-        "bootstrap." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
+        "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },
       libraryDependencies ++= Seq(jetty, servletApiProvided),
       appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "scripts" },
@@ -194,8 +194,8 @@ object SmlBootstrapBuild extends Build {
   ) dependsOn (rest)
 
   lazy val uiTests = Project(
-    "bootstrap-ui-tests",
-    file("bootstrap-ui-tests"),
+    "bootzooka-ui-tests",
+    file("bootzooka-ui-tests"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= selenium ++ Seq(awaitility, jettyTest, servletApiProvided)
     )
