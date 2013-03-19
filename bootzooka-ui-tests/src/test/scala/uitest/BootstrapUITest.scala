@@ -61,7 +61,7 @@ trait EmbeddedJetty {
   private def prepareContext() = {
     val context = new WebAppContext()
     context setContextPath "/"
-    context setResourceBase "bootstrap-ui/src/main/webapp"
+    context setResourceBase "bootzooka-ui/src/main/webapp"
     this.context = context.getServletContext
     context
   }
