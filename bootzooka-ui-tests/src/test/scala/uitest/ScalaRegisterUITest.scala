@@ -20,7 +20,7 @@ class ScalaRegisterUITest extends BootzookaUITest with AwaitilitySupport {
     Assertions.assertThat(messagesPage.getInfoText).contains("User registered successfully")
 
     await atMost(60, TimeUnit.SECONDS) until {
-      emailService.wasEmailSent(EMAIL, "SML Bootstrap - registration confirmation for user " + LOGIN)
+      emailService.wasEmailSent(EMAIL, "SoftwareMill Bootzooka - registration confirmation for user " + LOGIN)
     }
   }
 }
