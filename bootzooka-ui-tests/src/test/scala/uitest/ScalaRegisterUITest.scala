@@ -8,7 +8,7 @@ import pl.softwaremill.common.util.RichString
 import com.jayway.awaitility.scala.AwaitilitySupport
 import com.jayway.awaitility.Awaitility._
 
-class ScalaRegisterUITest extends BootstrapUITest with AwaitilitySupport {
+class ScalaRegisterUITest extends BootzookaUITest with AwaitilitySupport {
   final val LOGIN = RichString.generateRandom(5)
   final val EMAIL = LOGIN + "@example.org"
   final val PASSWORD = "test"

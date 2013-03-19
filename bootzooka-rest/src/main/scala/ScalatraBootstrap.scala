@@ -24,7 +24,7 @@ class ScalatraBootstrap extends LifeCycle with Beans {
     context.mount(new UsersServlet(userService), Prefix + "/users")
     context.mount(new PasswordRecoveryServlet(passwordRecoveryService), Prefix + "/passwordrecovery")
 
-    context.put("bootstrap", this)
+    context.put("bootzooka", this)
   }
 
 

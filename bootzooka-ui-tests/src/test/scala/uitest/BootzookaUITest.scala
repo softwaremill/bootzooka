@@ -11,7 +11,7 @@ import com.softwaremill.bootzooka.service.schedulers.DummyEmailSendingService
 import pages.{MessagesPage, LoginPage}
 import org.openqa.selenium.support.PageFactory
 
-class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
+class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
   final val REGUSER = "reguser"
   final val REGPASS = "regpass"
   final val REGMAIL = "reguser@regmail.pl"
@@ -25,7 +25,7 @@ class BootstrapUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   override def beforeAll() {
     sys.props.put("withInMemory", "true")
     startJetty()
-    beans = context.getAttribute("bootstrap").asInstanceOf[Beans]
+    beans = context.getAttribute("bootzooka").asInstanceOf[Beans]
     beans.userService.registerNewUser(REGUSER, REGMAIL, REGPASS)
     emailService = beans.emailSendingService.asInstanceOf[DummyEmailSendingService]
   }
