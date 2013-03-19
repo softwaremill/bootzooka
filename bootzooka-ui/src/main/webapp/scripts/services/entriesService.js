@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("smlBootstrap.entries").factory('EntriesService', function ($resource) {
+angular.module("smlBootzooka.entries").factory('EntriesService', function ($resource) {
 
     var dontBlockOnAjaxHeader = { "dontBlockPageOnAjax": "true" };
     var nonArrayGetWithoutBlockOnAjax = { method: "GET", isArray: false, headers: dontBlockOnAjaxHeader };

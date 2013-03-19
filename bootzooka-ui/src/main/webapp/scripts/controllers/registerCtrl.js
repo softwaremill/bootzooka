@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootstrap.profile').controller('RegisterCtrl', function RegisterCtrl($scope, RegisterService, $location) {
+angular.module('smlBootzooka.profile').controller('RegisterCtrl', function RegisterCtrl($scope, RegisterService, $location) {
 
     var self = this;
 

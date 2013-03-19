@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootstrap.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $location, $routeParams) {
+angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $location, $routeParams) {
     var self = this;
 
     $scope.login = '';

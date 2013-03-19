@@ -1,9 +1,9 @@
 "use strict";
-angular.module('smlBootstrap.directives', []);
-angular.module('smlBootstrap.filters', []);
-angular.module('smlBootstrap.maintenance', ['ngResource']);
+angular.module('smlBootzooka.directives', []);
+angular.module('smlBootzooka.filters', []);
+angular.module('smlBootzooka.maintenance', ['ngResource']);
 
-angular.module('smlBootstrap.profile', ['smlBootstrap.maintenance', 'smlBootstrap.session', 'smlBootstrap.directives']).config(function ($routeProvider) {
+angular.module('smlBootzooka.profile', ['smlBootzooka.maintenance', 'smlBootzooka.session', 'smlBootzooka.directives']).config(function ($routeProvider) {
     $routeProvider.
         when("/login", {controller: 'LoginCtrl', templateUrl: "views/login.html"}).
         when("/register", {controller: 'RegisterCtrl', templateUrl: "views/register.html"}).
@@ -12,22 +12,22 @@ angular.module('smlBootstrap.profile', ['smlBootstrap.maintenance', 'smlBootstra
         when("/profile", {controller: "ProfileCtrl", templateUrl: "views/secured/profile.html"});
 });
 
-angular.module('smlBootstrap.entries', ['smlBootstrap.session', 'smlBootstrap.filters']).config(function ($routeProvider) {
+angular.module('smlBootzooka.entries', ['smlBootzooka.session', 'smlBootzooka.filters']).config(function ($routeProvider) {
     $routeProvider.
         when('/', {controller: 'EntriesCtrl', templateUrl: 'views/main.html'}).
         when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "views/entry.html"});
 });
 
-angular.module('smlBootstrap.session', ['ngCookies', 'ngResource']);
+angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);
 
 angular.module(
-        'smlBootstrap', [
-            'smlBootstrap.filters',
-            'smlBootstrap.profile',
-            'smlBootstrap.entries',
-            'smlBootstrap.maintenance',
-            'smlBootstrap.session',
-            'smlBootstrap.directives', 'ngSanitize', 'ajaxthrobber']).config(function ($routeProvider) {
+        'smlBootzooka', [
+            'smlBootzooka.filters',
+            'smlBootzooka.profile',
+            'smlBootzooka.entries',
+            'smlBootzooka.maintenance',
+            'smlBootzooka.session',
+            'smlBootzooka.directives', 'ngSanitize', 'ajaxthrobber']).config(function ($routeProvider) {
         $routeProvider.
             when("/error404", {controller: 'EntriesCtrl', templateUrl: "views/errorpages/error404.html"}).
             when("/error500", {controller: 'EntriesCtrl', templateUrl: "views/errorpages/error500.html"}).

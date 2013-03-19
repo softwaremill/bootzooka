@@ -1,4 +1,4 @@
-angular.module('smlBootstrap.profile').controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $routeParams) {
+angular.module('smlBootzooka.profile').controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $routeParams) {
 
     var self = this;
 

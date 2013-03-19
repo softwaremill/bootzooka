@@ -1,4 +1,4 @@
-angular.module('smlBootstrap.profile').controller("ProfileCtrl", function ProfileCtrl($scope, UserSessionService, ProfileService) {
+angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, UserSessionService, ProfileService) {
     $scope.login = UserSessionService.loggedUser.login.concat();
     $scope.email = UserSessionService.loggedUser.email.concat();
 

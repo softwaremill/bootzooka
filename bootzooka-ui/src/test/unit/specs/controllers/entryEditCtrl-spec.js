@@ -2,7 +2,7 @@
 
 describe("EntryEdit Controller", function () {
 
-    beforeEach(module('smlBootstrap.entries'));
+    beforeEach(module('smlBootzooka.entries'));
 
     afterEach(inject(function (_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();

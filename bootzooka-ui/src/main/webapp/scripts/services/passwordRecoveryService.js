@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("smlBootstrap.profile").factory("PasswordRecoveryService", function ($resource) {
+angular.module("smlBootzooka.profile").factory("PasswordRecoveryService", function ($resource) {
     var passwordRecoveryService = {};
 
     this.recoveryResource = $resource("rest/passwordrecovery", {}, {

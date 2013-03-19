@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootstrap.entries').controller('EntryEditCtrl', function EntryEditCtrl($scope, EntriesService, $routeParams, $location, UserSessionService) {
+angular.module('smlBootzooka.entries').controller('EntryEditCtrl', function EntryEditCtrl($scope, EntriesService, $routeParams, $location, UserSessionService) {
 
     $scope.logId = $routeParams.entryId;
     $scope.log = {};

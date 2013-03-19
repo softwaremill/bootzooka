@@ -4,7 +4,7 @@ describe("Repeat password directive", function () {
 
     var scope, form, elm;
 
-    beforeEach(module('smlBootstrap.directives'));
+    beforeEach(module('smlBootzooka.directives'));
 
     beforeEach(inject(function ($rootScope, $compile) {
         elm = angular.element(

@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("smlBootstrap.profile").factory('RegisterService', function ($resource, FlashService) {
+angular.module("smlBootzooka.profile").factory('RegisterService', function ($resource, FlashService) {
 
     var self = this;
     self.registerResource = $resource('rest/users/register');

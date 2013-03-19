@@ -2,7 +2,7 @@
 
 describe("Register Controller", function () {
 
-    beforeEach(module('smlBootstrap.profile'));
+    beforeEach(module('smlBootzooka.profile'));
 
     afterEach(inject(function (_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();

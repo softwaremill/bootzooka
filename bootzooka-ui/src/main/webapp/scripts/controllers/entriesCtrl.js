@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootstrap.entries').controller('EntriesCtrl', function EntriesCtrl($scope, $timeout, $window, EntriesService, UserSessionService, $location) {
+angular.module('smlBootzooka.entries').controller('EntriesCtrl', function EntriesCtrl($scope, $timeout, $window, EntriesService, UserSessionService, $location) {
 
     var self = this;
 

@@ -1,7 +1,7 @@
 'use strict';
 
 describe('User Session Controller', function () {
-    beforeEach(module('smlBootstrap.session'));
+    beforeEach(module('smlBootzooka.session'));
 
     describe('without logged user', function () {
         var scope, ctrl, userSessionService;

@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootstrap.directives').directive('bsRepeatPassword', function() {
+angular.module('smlBootzooka.directives').directive('bsRepeatPassword', function() {
     return {
         require: "ngModel",
         link: function(scope, elem, attrs, ctrl) {

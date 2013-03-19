@@ -1,6 +1,6 @@
 "user strict";
 
-angular.module("smlBootstrap.maintenance").factory('UtilService', function ($resource) {
+angular.module("smlBootzooka.maintenance").factory('UtilService', function ($resource) {
 
     var self = this;
     var dontBlockOnAjaxHeader = { "dontBlockPageOnAjax": "true" };

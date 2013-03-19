@@ -1,4 +1,4 @@
-angular.module("smlBootstrap.profile").factory("ProfileService", function ($resource) {
+angular.module("smlBootzooka.profile").factory("ProfileService", function ($resource) {
     var profileService = {};
 
     this.profileResource = $resource("rest/users", {}, {

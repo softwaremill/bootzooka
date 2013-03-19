@@ -2,7 +2,7 @@
 
 describe("Uptime Controller", function () {
 
-    beforeEach(module('smlBootstrap.maintenance'));
+    beforeEach(module('smlBootzooka.maintenance'));
 
     afterEach(inject(function (_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();

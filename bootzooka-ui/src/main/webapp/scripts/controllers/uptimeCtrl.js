@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootstrap.maintenance').controller('UptimeCtrl', function UptimeCtrl($scope, $timeout, UtilService) {
+angular.module('smlBootzooka.maintenance').controller('UptimeCtrl', function UptimeCtrl($scope, $timeout, UtilService) {
 
     $scope.update = function () {
         UtilService.loadUptime(function (data) {

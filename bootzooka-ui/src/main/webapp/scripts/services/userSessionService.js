@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("smlBootstrap.session").factory('UserSessionService', function ($resource, $cookies) {
+angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource, $cookies) {
 
     var self = this;
 
