@@ -18,8 +18,8 @@ object Plugins extends Build {
     // Shell access from sbt console, see https://github.com/steppenwells/sbt-sh
     uri("git://github.com/steppenwells/sbt-sh.git"),
 
-    // execute jasmin tests during sbt test phase
-    uri("git://github.com/guardian/sbt-jasmine-plugin.git#0.7")
+    // execute jasmin tests during sbt test phase, SoftwareMill addition: tests are reported to TeamCity so they can be listed in build report
+    uri("git://github.com/softwaremill/sbt-jasmine-plugin.git#0.8.1")
   )
 
 }
