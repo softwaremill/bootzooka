@@ -126,7 +126,7 @@ object Dependencies {
   val rogue = Seq(rogueCore, rogueField, rogueLift, liftMongoRecord)
 }
 
-object SmlBootzookaBuild extends Build {
+object BootzookaBuild extends Build {
 
   import Dependencies._
   import BuildSettings._
