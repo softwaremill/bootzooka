@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.service.user
+package com.softwaremill.bootzooka.service.user
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec

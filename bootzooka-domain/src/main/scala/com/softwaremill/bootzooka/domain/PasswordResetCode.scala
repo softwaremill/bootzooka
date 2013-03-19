@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.domain
+package com.softwaremill.bootzooka.domain
 
 import org.joda.time.DateTime
 import org.bson.types.ObjectId

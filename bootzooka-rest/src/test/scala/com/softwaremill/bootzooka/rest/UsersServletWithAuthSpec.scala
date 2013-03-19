@@ -1,9 +1,9 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
-import pl.softwaremill.bootstrap.BootstrapServletSpec
-import pl.softwaremill.bootstrap.service.user.UserService
+import com.softwaremill.bootzooka.BootstrapServletSpec
+import com.softwaremill.bootzooka.service.user.UserService
 import org.scalatra.auth.Scentry
-import pl.softwaremill.bootstrap.service.data.UserJson
+import com.softwaremill.bootzooka.service.data.UserJson
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 

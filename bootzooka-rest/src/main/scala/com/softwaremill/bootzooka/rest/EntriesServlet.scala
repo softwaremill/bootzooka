@@ -1,8 +1,8 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
-import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.common.{ SafeLong, NotEscapedJsonWrapper, JsonWrapper }
-import pl.softwaremill.bootstrap.service.entry.EntryService
+import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.common.{ SafeLong, NotEscapedJsonWrapper, JsonWrapper }
+import com.softwaremill.bootzooka.service.entry.EntryService
 
 class EntriesServlet(entryService: EntryService, val userService: UserService) extends JsonServletWithAuthentication {
 

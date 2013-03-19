@@ -1,7 +1,7 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
 import org.json4s.{ DefaultFormats, Formats }
-import pl.softwaremill.bootstrap.auth.RememberMeSupport
+import com.softwaremill.bootzooka.auth.RememberMeSupport
 
 abstract class JsonServletWithAuthentication extends JsonServlet with RememberMeSupport {
 

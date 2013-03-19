@@ -1,6 +1,6 @@
-package pl.softwaremill.bootstrap.domain
+package com.softwaremill.bootzooka.domain
 
-import pl.softwaremill.bootstrap.common.Utils
+import com.softwaremill.bootzooka.common.Utils
 import org.bson.types.ObjectId
 
 case class User(id: ObjectId, login: String, loginLowerCased: String, email: String, password: String, salt: String,

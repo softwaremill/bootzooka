@@ -1,9 +1,9 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
-import pl.softwaremill.bootstrap.service.PasswordRecoveryService
+import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import org.apache.commons.lang3.StringUtils
 import org.scalatra.BadRequest
-import pl.softwaremill.bootstrap.common.JsonWrapper
+import com.softwaremill.bootzooka.common.JsonWrapper
 
 /**
  * Servlet handling requests related to password recovery.

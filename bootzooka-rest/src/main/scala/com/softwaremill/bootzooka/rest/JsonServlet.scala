@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
 import org.scalatra._
 import org.scalatra.json.{ JValueResult, JacksonJsonSupport }

@@ -1,10 +1,10 @@
-package pl.softwaremill.bootstrap.auth
+package com.softwaremill.bootzooka.auth
 
 import org.scalatra.SweetCookies
 import javax.servlet.http.HttpServletResponse
-import pl.softwaremill.bootstrap.rest.EntriesServlet
-import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.service.data.UserJson
+import com.softwaremill.bootzooka.rest.EntriesServlet
+import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.service.data.UserJson
 import org.scalatra.test.scalatest.ScalatraFlatSpec
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._

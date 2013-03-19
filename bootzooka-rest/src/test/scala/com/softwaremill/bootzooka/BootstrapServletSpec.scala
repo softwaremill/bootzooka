@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap
+package com.softwaremill.bootzooka
 
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._

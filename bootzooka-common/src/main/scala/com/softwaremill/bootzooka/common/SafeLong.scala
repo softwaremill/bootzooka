@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.common
+package com.softwaremill.bootzooka.common
 
 object SafeLong {
   val LongPattern = "-?([0-9]+)"

@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap
+package com.softwaremill.bootzooka
 
 import dao.{MongoFactory, InMemoryFactory}
 import service.config.BootstrapConfiguration

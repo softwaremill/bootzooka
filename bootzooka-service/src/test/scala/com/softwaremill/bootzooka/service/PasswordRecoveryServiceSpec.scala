@@ -1,8 +1,8 @@
-package pl.softwaremill.bootstrap.service
+package com.softwaremill.bootzooka.service
 
 import schedulers.EmailSendingService
-import pl.softwaremill.bootstrap.dao.{PasswordResetCodeDAO, UserDAO, InMemoryUserDAO}
-import pl.softwaremill.bootstrap.domain.{PasswordResetCode, User}
+import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO, InMemoryUserDAO}
+import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import templates.{EmailTemplatingEngine, EmailContentWithSubject}
 import org.mockito.Matchers
 import org.bson.types.ObjectId

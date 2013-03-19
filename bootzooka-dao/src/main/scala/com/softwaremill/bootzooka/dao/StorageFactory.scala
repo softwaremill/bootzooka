@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.dao
+package com.softwaremill.bootzooka.dao
 
 trait StorageFactory {
 

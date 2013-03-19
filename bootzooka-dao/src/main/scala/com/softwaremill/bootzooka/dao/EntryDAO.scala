@@ -1,6 +1,6 @@
-package pl.softwaremill.bootstrap.dao
+package com.softwaremill.bootzooka.dao
 
-import pl.softwaremill.bootstrap.domain.Entry
+import com.softwaremill.bootzooka.domain.Entry
 
 trait EntryDAO {
 

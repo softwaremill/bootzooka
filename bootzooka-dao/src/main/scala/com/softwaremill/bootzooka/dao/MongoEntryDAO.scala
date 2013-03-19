@@ -1,6 +1,6 @@
-package pl.softwaremill.bootstrap.dao
+package com.softwaremill.bootzooka.dao
 
-import pl.softwaremill.bootstrap.domain.Entry
+import com.softwaremill.bootzooka.domain.Entry
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field.{DateField, ObjectIdField, ObjectIdPk}
 import com.foursquare.rogue.LiftRogue._

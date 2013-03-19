@@ -1,6 +1,6 @@
-package pl.softwaremill.bootstrap.dao
+package com.softwaremill.bootzooka.dao
 
-import pl.softwaremill.bootstrap.domain.User
+import com.softwaremill.bootzooka.domain.User
 import org.bson.types.ObjectId
 
 class InMemoryUserDAO extends UserDAO {

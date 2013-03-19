@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.common
+package com.softwaremill.bootzooka.common
 
 import org.joda.time.{ DateTime, Duration }
 

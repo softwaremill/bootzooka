@@ -1,9 +1,9 @@
-package pl.softwaremill.bootstrap.service.user
+package com.softwaremill.bootzooka.service.user
 
-import pl.softwaremill.bootstrap.dao.{InMemoryUserDAO, UserDAO}
-import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.service.schedulers.EmailSendingService
-import pl.softwaremill.bootstrap.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.dao.{InMemoryUserDAO, UserDAO}
+import com.softwaremill.bootzooka.domain.User
+import com.softwaremill.bootzooka.service.schedulers.EmailSendingService
+import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfter, FlatSpec}

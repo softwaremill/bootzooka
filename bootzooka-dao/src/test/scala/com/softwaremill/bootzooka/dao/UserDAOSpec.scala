@@ -1,6 +1,6 @@
-package pl.softwaremill.bootstrap.dao
+package com.softwaremill.bootzooka.dao
 
-import pl.softwaremill.bootstrap.domain.User
+import com.softwaremill.bootzooka.domain.User
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 import org.bson.types.ObjectId

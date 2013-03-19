@@ -1,8 +1,8 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
-import pl.softwaremill.bootstrap.BootstrapServletSpec
+import com.softwaremill.bootzooka.BootstrapServletSpec
 import org.json4s.JsonDSL._
-import pl.softwaremill.bootstrap.service.PasswordRecoveryService
+import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.BDDMockito._

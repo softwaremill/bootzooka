@@ -1,13 +1,13 @@
-package pl.softwaremill.bootstrap.service.user
+package com.softwaremill.bootzooka.service.user
 
-import pl.softwaremill.bootstrap.dao.{UserDAO, EntryDAO}
+import com.softwaremill.bootzooka.dao.{UserDAO, EntryDAO}
 import org.bson.types.ObjectId
-import pl.softwaremill.bootstrap.domain.{User, Entry}
-import pl.softwaremill.bootstrap.service.entry.EntryService
+import com.softwaremill.bootzooka.domain.{User, Entry}
+import com.softwaremill.bootzooka.service.entry.EntryService
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
-import pl.softwaremill.bootstrap.service.data.{EntryJson, EntriesWithTimeStamp}
-import pl.softwaremill.bootstrap.common.Utils
+import com.softwaremill.bootzooka.service.data.{EntryJson, EntriesWithTimeStamp}
+import com.softwaremill.bootzooka.common.Utils
 import org.joda.time.DateTime
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers._

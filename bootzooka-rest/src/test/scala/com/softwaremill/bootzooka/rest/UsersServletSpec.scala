@@ -1,12 +1,12 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
-import pl.softwaremill.bootstrap.service.user.{RegistrationDataValidator, UserService}
-import pl.softwaremill.bootstrap.dao.InMemoryUserDAO
-import pl.softwaremill.bootstrap.domain.User
-import pl.softwaremill.bootstrap.BootstrapServletSpec
+import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
+import com.softwaremill.bootzooka.dao.InMemoryUserDAO
+import com.softwaremill.bootzooka.domain.User
+import com.softwaremill.bootzooka.BootstrapServletSpec
 import org.json4s.JsonDSL._
-import pl.softwaremill.bootstrap.service.schedulers.DummyEmailSendingService
-import pl.softwaremill.bootstrap.service.templates.EmailTemplatingEngine
+import com.softwaremill.bootzooka.service.schedulers.DummyEmailSendingService
+import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.Matchers

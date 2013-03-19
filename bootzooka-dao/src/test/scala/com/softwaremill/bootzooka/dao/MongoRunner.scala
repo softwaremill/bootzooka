@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.dao
+package com.softwaremill.bootzooka.dao
 
 import java.io.File
 import pl.softwaremill.common.util.io.KillableProcess

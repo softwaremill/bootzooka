@@ -1,6 +1,6 @@
-package pl.softwaremill.bootstrap.dao
+package com.softwaremill.bootzooka.dao
 
-import pl.softwaremill.bootstrap.domain.PasswordResetCode
+import com.softwaremill.bootzooka.domain.PasswordResetCode
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field.{ObjectIdField, ObjectIdPk}
 import net.liftweb.record.field.DateTimeField

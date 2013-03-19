@@ -1,10 +1,10 @@
 
-package pl.softwaremill.bootstrap.auth
+package com.softwaremill.bootzooka.auth
 
 import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
-import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.service.data.UserJson
+import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.service.data.UserJson
 
 class UserPasswordStrategy(protected val app: ScalatraBase, login: String, password: String, val userService: UserService) extends ScentryStrategy[UserJson] {
 

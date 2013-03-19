@@ -1,7 +1,7 @@
-package pl.softwaremill.bootstrap.service.schedulers
+package com.softwaremill.bootzooka.service.schedulers
 
 import org.scalatest.FunSpec
-import pl.softwaremill.bootstrap.service.templates.EmailContentWithSubject
+import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
 import org.scalatest.matchers.ShouldMatchers
 
 class DummyEmailSendingServiceSpec extends FunSpec with ShouldMatchers {

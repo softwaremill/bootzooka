@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
 import java.io.Writer
 import org.json4s.JsonAST.{JString, JObject, JField}

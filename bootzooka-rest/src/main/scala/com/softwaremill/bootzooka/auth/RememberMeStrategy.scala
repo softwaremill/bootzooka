@@ -1,10 +1,10 @@
-package pl.softwaremill.bootstrap.auth
+package com.softwaremill.bootzooka.auth
 
 import org.scalatra.{ CookieOptions, Cookie, CookieSupport, ScalatraBase }
 import org.scalatra.auth.ScentryStrategy
-import pl.softwaremill.bootstrap.common.Utils
-import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.service.data.UserJson
+import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.service.data.UserJson
 
 class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rememberMe: Boolean, val userService: UserService) extends ScentryStrategy[UserJson] {
 

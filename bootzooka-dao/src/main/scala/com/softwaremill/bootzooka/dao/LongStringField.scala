@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.dao
+package com.softwaremill.bootzooka.dao
 
 import net.liftweb.record.Record
 import net.liftweb.record.field.StringField

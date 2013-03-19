@@ -1,12 +1,12 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
-import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.BootstrapServletSpec
+import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.BootstrapServletSpec
 import org.json4s.JsonDSL._
 import org.json4s.JsonAST.JValue
-import pl.softwaremill.bootstrap.service.data.{EntriesWithTimeStamp, UserJson, EntryJson}
-import pl.softwaremill.bootstrap.service.entry.EntryService
-import pl.softwaremill.bootstrap.domain.User
+import com.softwaremill.bootzooka.service.data.{EntriesWithTimeStamp, UserJson, EntryJson}
+import com.softwaremill.bootzooka.service.entry.EntryService
+import com.softwaremill.bootzooka.domain.User
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.BDDMockito._

@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.common
+package com.softwaremill.bootzooka.common
 
 import Utils._
 import org.scalatest.matchers.ShouldMatchers

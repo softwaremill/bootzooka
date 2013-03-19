@@ -1,6 +1,6 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
-import pl.softwaremill.bootstrap.BootstrapServletSpec
+import com.softwaremill.bootzooka.BootstrapServletSpec
 
 class UptimeServletSpecs extends BootstrapServletSpec {
   addServlet(new MockedUptimeServlet(), "/*")

@@ -1,9 +1,9 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
 import org.scalatra._
-import pl.softwaremill.bootstrap.common.JsonWrapper
-import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.service.data.UserJson
+import com.softwaremill.bootzooka.common.JsonWrapper
+import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.service.data.UserJson
 import org.apache.commons.lang3.StringEscapeUtils._
 
 class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {

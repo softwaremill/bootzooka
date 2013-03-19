@@ -1,4 +1,4 @@
-package pl.softwaremill.bootstrap.common
+package com.softwaremill.bootzooka.common
 
 import org.joda.time.DateTime
 import org.joda.time.format.{ DateTimeFormatter, DateTimeFormat }

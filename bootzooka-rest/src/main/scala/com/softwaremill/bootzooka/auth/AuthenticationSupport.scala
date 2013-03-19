@@ -1,12 +1,12 @@
-package pl.softwaremill.bootstrap.auth
+package com.softwaremill.bootzooka.auth
 
 import org.scalatra._
 import org.scalatra.auth.ScentryAuthStore.CookieAuthStore
 import org.scalatra.auth.{ Scentry, ScentryConfig, ScentrySupport }
 import scala.Some
-import pl.softwaremill.bootstrap.common.{ Utils, JsonWrapper }
-import pl.softwaremill.bootstrap.service.user.UserService
-import pl.softwaremill.bootstrap.service.data.UserJson
+import com.softwaremill.bootzooka.common.{ Utils, JsonWrapper }
+import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.service.data.UserJson
 
 /**
  * It should be used with each servlet to support RememberMe functionality for whole application

@@ -1,6 +1,6 @@
-package pl.softwaremill.bootstrap.rest
+package com.softwaremill.bootzooka.rest
 
-import pl.softwaremill.bootstrap.common.{ UptimeSupport, JsonWrapper }
+import com.softwaremill.bootzooka.common.{ UptimeSupport, JsonWrapper }
 
 class UptimeServlet extends JsonServlet with UptimeSupport {
 
