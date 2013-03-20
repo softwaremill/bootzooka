@@ -5,7 +5,7 @@ import java.io.File
 
 class EmailTemplatingEngine {
 
-  val TemplatesDirectory = "pl/softwaremill/bootstrap/service/templates/"
+  val TemplatesDirectory = "com/softwaremill/bootzooka/service/templates/"
 
   val scalateEngine = new TemplateEngine(List(new File(TemplatesDirectory)), "production")
 

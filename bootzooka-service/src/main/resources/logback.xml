@@ -10,7 +10,7 @@
         </encoder>
     </appender>
 
-    <logger name="pl.softwaremill.bootstrap" level="DEBUG" additivity="false">
+    <logger name="pl.softwaremill.bootzooka" level="DEBUG" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 

@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.service.schedulers
 
 import pl.softwaremill.common.sqs.email.EmailSender
-import com.softwaremill.bootzooka.service.config.BootstrapConfiguration._
+import com.softwaremill.bootzooka.service.config.BootzookaConfiguration._
 import pl.softwaremill.common.sqs.util.EmailDescription
 import javax.mail.MessagingException
 import pl.softwaremill.common.sqs.{ ReceivedMessage, Queue, SQS }

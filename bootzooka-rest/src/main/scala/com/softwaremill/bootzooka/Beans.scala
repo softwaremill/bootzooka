@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka
 
 import dao.{MongoFactory, InMemoryFactory}
-import service.config.BootstrapConfiguration
+import service.config.BootzookaConfiguration
 import service.entry.EntryService
 import service.PasswordRecoveryService
 import service.schedulers.{DummyEmailSendingService, ProductionEmailSendingService}
@@ -17,7 +17,7 @@ trait Beans {
     case None => new MongoFactory
   }
 
-  lazy val emailSendingService = Option(BootstrapConfiguration.smtpHost) match {
+  lazy val emailSendingService = Option(BootzookaConfiguration.smtpHost) match {
     case Some(host) => new ProductionEmailSendingService
     case None => new DummyEmailSendingService
   }

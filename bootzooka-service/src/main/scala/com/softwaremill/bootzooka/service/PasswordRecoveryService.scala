@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service
 
-import config.BootstrapConfiguration
+import config.BootzookaConfiguration
 import schedulers.EmailSendingService
 import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO}
 import templates.EmailTemplatingEngine
@@ -46,8 +46,8 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
   private def prepareResetEmail(user: User, code: PasswordResetCode) = {
     logger.debug("Preparing content for password reset e-mail")
 
-    val resetLink: String = if (BootstrapConfiguration.resetLinkPattern != null) {
-      String.format(BootstrapConfiguration.resetLinkPattern, code.code)
+    val resetLink: String = if (BootzookaConfiguration.resetLinkPattern != null) {
+      String.format(BootzookaConfiguration.resetLinkPattern, code.code)
     } else {
       "http://localhost:8080/#/password-reset?code=" + code.code
     }
