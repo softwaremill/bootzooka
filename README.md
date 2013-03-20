@@ -1,4 +1,4 @@
-# Bootstrap
+# Bootzooka
 
 Simple showcase project to allow quickly start with development process of modern web based application.
 
@@ -98,17 +98,17 @@ with proper path to your MongoDB installation directory.
 
 After that SBT will start MongoDB instance before executing each test class that exetends SpeficationWithMongo trait.
 
-It is now also possible to run UI tests. We have added a new project, bootstrap-ui-tests, that contains tests for UI.
-This project is not part of the normal build and hence these tests must be run manually. To do it, simply run sbt in the bootstrap
-project directory, switch to bootstrap-ui-tests project and invoke the tests task.
+It is now also possible to run UI tests. We have added a new project, bootzooka-ui-tests, that contains tests for UI.
+This project is not part of the normal build and hence these tests must be run manually. To do it, simply run sbt in the bootzooka
+project directory, switch to bootzooka-ui-tests project and invoke the tests task.
 
-    MacBook-Pro-Piotr:bootstrap pbu$ sbt
-    [info] Loading project definition from /Users/pbu/Work/bootstrap/project/project
-    [info] Loading project definition from /Users/pbu/Work/bootstrap/project
-    [info] Compiling 1 Scala source to /Users/pbu/Work/bootstrap/project/target/scala-2.9.2/sbt-0.12/classes...
-    [info] Set current project to bootstrap-root (in build file:/Users/pbu/Work/bootstrap/)
-    > project bootstrap-ui-tests
-    [info] Set current project to bootstrap-ui-tests (in build file:/Users/pbu/Work/bootstrap/)
+    MacBook-Pro-Piotr:bootzooka pbu$ sbt
+    [info] Loading project definition from /Users/pbu/Work/bootzooka/project/project
+    [info] Loading project definition from /Users/pbu/Work/bootzooka/project
+    [info] Compiling 1 Scala source to /Users/pbu/Work/bootzooka/project/target/scala-2.9.2/sbt-0.12/classes...
+    [info] Set current project to bootzooka-root (in build file:/Users/pbu/Work/bootzooka/)
+    > project bootzooka-ui-tests
+    [info] Set current project to bootzooka-ui-tests (in build file:/Users/pbu/Work/bootzooka/)
     > test
 
 Alternatively you can run a single test using the test-only task.
