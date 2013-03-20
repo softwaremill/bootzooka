@@ -15,7 +15,7 @@ class ScalatraBootstrap extends LifeCycle with Beans {
   val Prefix = "/rest"
 
   override def init(context: ServletContext) {
-    MongoDB.defineDb(DefaultMongoIdentifier, new Mongo, "bootstrap")
+    MongoDB.defineDb(DefaultMongoIdentifier, new Mongo, "bootzooka")
 
     scheduler.scheduleAtFixedRate(emailSendingService, 60, 1, TimeUnit.SECONDS)
 
