@@ -24,7 +24,7 @@ object BuildSettings {
 
   val buildSettings = Defaults.defaultSettings ++ Seq(mongoDirectory := file("")) ++ defaultScalariformSettings ++ Seq(
 
-    organization := "pl.softwaremill",
+    organization := "com.softwaremill",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.10.0",
 
