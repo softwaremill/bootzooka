@@ -21,7 +21,7 @@ trait FlatSpecWithMongo extends FlatSpec with BeforeAndAfterAll {
 
   def startMongo() {
     mongoRunner = MongoRunner.run(mongoPort, verbose = true)
-    MongoDB.defineDb(DefaultMongoIdentifier, new Mongo("localhost", mongoPort), "bootstrap_test")
+    MongoDB.defineDb(DefaultMongoIdentifier, new Mongo("localhost", mongoPort), "bootzooka_test")
   }
 
   def stopMongo() {
