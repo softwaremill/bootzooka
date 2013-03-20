@@ -12,7 +12,7 @@ import org.joda.time.DateTime
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import pl.softwaremill.common.util.time.FixtureTimeClock
+import com.softwaremill.common.util.time.FixtureTimeClock
 
 class EntryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
 

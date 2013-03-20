@@ -5,7 +5,7 @@ import schedulers.EmailSendingService
 import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO}
 import templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.domain.User
-import pl.softwaremill.common.util.RichString
+import com.softwaremill.common.util.RichString
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.joda.time.DateTime
 import com.typesafe.scalalogging.slf4j.Logging

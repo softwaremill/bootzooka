@@ -5,7 +5,7 @@ import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.schedulers.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
-import pl.softwaremill.common.util.RichString
+import com.softwaremill.common.util.RichString
 import java.util.UUID
 
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,

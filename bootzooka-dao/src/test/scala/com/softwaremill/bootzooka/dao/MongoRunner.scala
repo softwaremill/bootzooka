@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.dao
 
 import java.io.File
-import pl.softwaremill.common.util.io.KillableProcess
+import com.softwaremill.common.util.io.KillableProcess
 import com.mongodb.ServerAddress
 import java.util.Scanner
 import java.util.regex.Pattern

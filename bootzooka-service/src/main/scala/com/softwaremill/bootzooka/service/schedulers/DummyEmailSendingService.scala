@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.service.schedulers
 
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
 import collection.mutable.ListBuffer
-import pl.softwaremill.common.sqs.util.EmailDescription
+import com.softwaremill.common.sqs.util.EmailDescription
 
 class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
 

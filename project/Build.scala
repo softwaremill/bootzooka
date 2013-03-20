@@ -58,7 +58,7 @@ object Dependencies {
 
   val slf4jVersion = "1.7.2"
   val logBackVersion = "1.0.9"
-  val smlCommonVersion = "72"
+  val smlCommonVersion = "75"
   val scalatraVersion = "2.2.0"
   val rogueVersion = "2.0.0-RC1"
   val scalaLoggingVersion = "1.0.1"
@@ -98,9 +98,9 @@ object Dependencies {
 
   val javaxMail = "javax.mail" % "mail" % "1.4.5"
 
-  val smlCommonUtil = "pl.softwaremill.common" % "softwaremill-util" % smlCommonVersion
-  val smlCommonSqs = "pl.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
-  val smlCommonConfig = "pl.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
+  val smlCommonUtil = "com.softwaremill.common" % "softwaremill-util" % smlCommonVersion
+  val smlCommonSqs = "com.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
+  val smlCommonConfig = "com.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
 
   val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.0"
 

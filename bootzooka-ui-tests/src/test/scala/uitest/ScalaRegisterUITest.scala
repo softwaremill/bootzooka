@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 import pages.RegistrationPage
 import org.openqa.selenium.support.PageFactory
 import org.fest.assertions.Assertions
-import pl.softwaremill.common.util.RichString
+import com.softwaremill.common.util.RichString
 import com.jayway.awaitility.scala.AwaitilitySupport
 import com.jayway.awaitility.Awaitility._
 

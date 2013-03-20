@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.domain.{User, Entry}
 import com.softwaremill.bootzooka.dao.{ UserDAO, EntryDAO }
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.service.data.{EntriesWithTimeStamp, EntryJson}
-import pl.softwaremill.common.util.time.{Clock, RealTimeClock}
+import com.softwaremill.common.util.time.{Clock, RealTimeClock}
 
 class EntryService(entryDAO: EntryDAO, userDAO: UserDAO, clock: Clock = new RealTimeClock()) {
 

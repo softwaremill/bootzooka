@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service.config
 
-import pl.softwaremill.common.conf.{ MapWrapper, Configuration, Config }
+import com.softwaremill.common.conf.{ MapWrapper, Configuration, Config }
 import java.util
 
 object BootzookaConfiguration {

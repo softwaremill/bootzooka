@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service.data
 
-import pl.softwaremill.common.util.time.Clock
+import com.softwaremill.common.util.time.Clock
 
 case class EntriesWithTimeStamp(entries: List[EntryJson], timestamp: Long = System.currentTimeMillis)
 
