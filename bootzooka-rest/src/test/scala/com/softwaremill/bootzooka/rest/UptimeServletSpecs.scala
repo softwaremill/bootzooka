@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.rest
 
-import com.softwaremill.bootzooka.BootstrapServletSpec
+import com.softwaremill.bootzooka.BootzookaServletSpec
 
-class UptimeServletSpecs extends BootstrapServletSpec {
+class UptimeServletSpecs extends BootzookaServletSpec {
   addServlet(new MockedUptimeServlet(), "/*")
 
   "GET /" should "return status 200" in {

@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.rest
 
-import com.softwaremill.bootzooka.BootstrapServletSpec
+import com.softwaremill.bootzooka.BootzookaServletSpec
 import org.json4s.JsonDSL._
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import org.mockito.Matchers._
@@ -8,7 +8,7 @@ import org.mockito.Mockito._
 import org.mockito.BDDMockito._
 import org.mockito.Matchers
 
-class PasswordRecoveryServletSpec extends BootstrapServletSpec {
+class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
   def onServletWithMocks(testToExecute: (PasswordRecoveryService) => Unit) {
     val recoveryService = mock[PasswordRecoveryService]

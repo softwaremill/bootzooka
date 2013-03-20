@@ -1,13 +1,13 @@
 package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.service.user.UserService
-import com.softwaremill.bootzooka.BootstrapServletSpec
+import com.softwaremill.bootzooka.BootzookaServletSpec
 import com.softwaremill.bootzooka.service.data.{EntriesWithTimeStamp, EntryJson}
 import org.json4s.JsonDSL._
 import com.softwaremill.bootzooka.service.entry.EntryService
 import org.mockito.Mockito._
 
-class EntriesServletSpec extends BootstrapServletSpec {
+class EntriesServletSpec extends BootzookaServletSpec {
   behavior of "EntriesServlet"
 
   def onServletWithMocks(test:(EntryService, UserService) => Unit) {

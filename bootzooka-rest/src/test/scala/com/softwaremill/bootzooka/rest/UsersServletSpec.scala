@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.rest
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
 import com.softwaremill.bootzooka.dao.InMemoryUserDAO
 import com.softwaremill.bootzooka.domain.User
-import com.softwaremill.bootzooka.BootstrapServletSpec
+import com.softwaremill.bootzooka.BootzookaServletSpec
 import org.json4s.JsonDSL._
 import com.softwaremill.bootzooka.service.schedulers.DummyEmailSendingService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
@@ -11,7 +11,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.Matchers
 
-class UsersServletSpec extends BootstrapServletSpec {
+class UsersServletSpec extends BootzookaServletSpec {
   var servlet: UsersServlet = _
 
   def onServletWithMocks(testToExecute: (UserService) => Unit) = {

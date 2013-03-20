@@ -1,13 +1,13 @@
 package com.softwaremill.bootzooka.rest
 
-import com.softwaremill.bootzooka.BootstrapServletSpec
+import com.softwaremill.bootzooka.BootzookaServletSpec
 import com.softwaremill.bootzooka.service.user.UserService
 import org.scalatra.auth.Scentry
 import com.softwaremill.bootzooka.service.data.UserJson
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 
-class UsersServletWithAuthSpec extends BootstrapServletSpec {
+class UsersServletWithAuthSpec extends BootzookaServletSpec {
 
   def onServletWithMocks(authenticated: Boolean, testToExecute: (UserService, Scentry[UserJson]) => Unit) {
     val userService = mock[UserService]

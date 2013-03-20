@@ -7,7 +7,7 @@ import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.test.scalatest.ScalatraFlatSpec
 import org.scalatest.mock.MockitoSugar
 
-trait BootstrapServletSpec extends ScalatraFlatSpec with MockitoSugar {
+trait BootzookaServletSpec extends ScalatraFlatSpec with MockitoSugar {
 
   val defaultJsonHeaders = Map("Content-Type" -> "application/json;charset=UTF-8")
 

@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.service.user.UserService
-import com.softwaremill.bootzooka.BootstrapServletSpec
+import com.softwaremill.bootzooka.BootzookaServletSpec
 import org.json4s.JsonDSL._
 import org.json4s.JsonAST.JValue
 import com.softwaremill.bootzooka.service.data.{EntriesWithTimeStamp, UserJson, EntryJson}
@@ -12,7 +12,7 @@ import org.mockito.Mockito._
 import org.mockito.BDDMockito._
 
 
-class EntriesServletWithUserSpec extends BootstrapServletSpec {
+class EntriesServletWithUserSpec extends BootzookaServletSpec {
   behavior of "EntriesServlet with logged in user"
 
   val loginJasKowalski = "JasKowalski"
