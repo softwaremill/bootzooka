@@ -30,6 +30,10 @@ Backend can be interchanged as there is no dependency between frontend and backe
 
 ## Changelog
 
+### Iteration 11
+* Renamed project to Bootzooka
+* Added TeamCity Reporter for Jasmine Tests
+
 ### Iteration 10
 * Switch to Scala 2.10
 * Salat DAOs migrated to Rogue
