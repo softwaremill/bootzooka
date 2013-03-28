@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils
 import org.scalatra.BadRequest
 import com.softwaremill.bootzooka.common.JsonWrapper
 import com.softwaremill.bootzooka.service.user.UserService
+import com.typesafe.scalalogging.slf4j.Logging
 
 /**
  * Servlet handling requests related to password recovery.
@@ -13,7 +14,14 @@ class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, 
 
   post("/") {
     val login = (parsedBody \ "login").extractOpt[String].getOrElse("")
-    passwordRecoveryService.sendResetCodeToUser(login)
+
+    userService.checkUserExistenceFor(login, login) match {
+      case Right(e) => JsonWrapper("No user with given login/e-mail found.")
+      case _ => {
+        passwordRecoveryService.sendResetCodeToUser(login)
+        JsonWrapper("success")
+      }
+    }
   }
 
   post("/:code") {
