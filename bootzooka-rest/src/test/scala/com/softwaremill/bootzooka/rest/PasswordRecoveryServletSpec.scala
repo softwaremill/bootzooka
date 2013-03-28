@@ -7,12 +7,14 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.BDDMockito._
 import org.mockito.Matchers
+import com.softwaremill.bootzooka.service.user.UserService
 
 class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
   def onServletWithMocks(testToExecute: (PasswordRecoveryService) => Unit) {
     val recoveryService = mock[PasswordRecoveryService]
-    val servlet = new PasswordRecoveryServlet(recoveryService)
+    val userService = mock[UserService]
+    val servlet = new PasswordRecoveryServlet(recoveryService, userService)
     addServlet(servlet, "/*")
     testToExecute(recoveryService)
   }

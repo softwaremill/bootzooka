@@ -4,11 +4,12 @@ import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import org.apache.commons.lang3.StringUtils
 import org.scalatra.BadRequest
 import com.softwaremill.bootzooka.common.JsonWrapper
+import com.softwaremill.bootzooka.service.user.UserService
 
 /**
  * Servlet handling requests related to password recovery.
  */
-class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService) extends JsonServlet {
+class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, userService: UserService) extends JsonServlet {
 
   post("/") {
     val login = (parsedBody \ "login").extractOpt[String].getOrElse("")
