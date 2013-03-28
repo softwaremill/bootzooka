@@ -14,6 +14,9 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
   def onServletWithMocks(testToExecute: (PasswordRecoveryService) => Unit) {
     val recoveryService = mock[PasswordRecoveryService]
     val userService = mock[UserService]
+    when(userService.checkUserExistenceFor("existing", "existing")) thenReturn Left("User exists")
+    when(userService.checkUserExistenceFor("notexisting", "notexisting")) thenReturn Right()
+
     val servlet = new PasswordRecoveryServlet(recoveryService, userService)
     addServlet(servlet, "/*")
     testToExecute(recoveryService)
@@ -21,9 +24,20 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
   "POST /" should "send e-mail to user" in {
     onServletWithMocks { (recoveryService) =>
-      post("/", mapToJson(Map("login" -> "abc")), defaultJsonHeaders) {
+      post("/", mapToJson(Map("login" -> "existing")), defaultJsonHeaders) {
         status should be (200)
-        verify(recoveryService).sendResetCodeToUser("abc")
+        body should be ("{\"value\":\"success\"}")
+        verify(recoveryService).sendResetCodeToUser("existing")
+      }
+    }
+  }
+
+  "POST /" should "return error message when user not exists" in {
+    onServletWithMocks { (recoveryService) =>
+      post("/", mapToJson(Map("login" -> "notexisting")), defaultJsonHeaders) {
+        status should be (200)
+        verify(recoveryService, never()).sendResetCodeToUser("notexisting")
+        body should be ("{\"value\":\"No user with given login/e-mail found.\"}")
       }
     }
   }
