@@ -171,7 +171,8 @@ object BootzookaBuild extends Build {
 
 
   val lintCustomSettings = lintSettingsFor(Test) ++ inConfig(Test)(Seq(
-    sourceDirectory in jslint <<= (baseDirectory)(_ / "src/main/webapp/app"),
+    sourceDirectory in jslint <<= (baseDirectory)(_ / "src/main/webapp/scripts"),
+    excludeFilter in jslint := "angular-*.js" || "bootstrap-*.js" || "jquery*.js",
     flags in jslint ++= Seq("undef", "vars", "browser"),
     compile in Test <<= (compile in Test) dependsOn (jslint)
   ))
