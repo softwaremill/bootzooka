@@ -11,13 +11,17 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
         $scope.passwordResetRequestForm.login.$dirty = true;
 
         if ($scope.passwordResetRequestForm.$valid) {
-            PasswordRecoveryService.beginResetProcess($scope.login, self.success);
+            PasswordRecoveryService.beginResetProcess($scope.login, self.success, self.failure);
         }
     };
 
     this.success = function () {
         FlashService.set("E-mail with link to reset your password has been sent. Please check your mailbox.");
         $location.path("");
+    };
+
+    this.failure = function (message) {
+        showErrorMessage(message);
     };
 
     $scope.resetPassword = function () {

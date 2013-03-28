@@ -13,9 +13,13 @@ angular.module("smlBootzooka.profile").factory("PasswordRecoveryService", functi
 
     var self = this;
 
-    passwordRecoveryService.beginResetProcess = function (login, onComplete) {
-        self.recoveryResource.resetPassword({login: login}, function () {
-            onComplete();
+    passwordRecoveryService.beginResetProcess = function (login, onComplete, onFailure) {
+        self.recoveryResource.resetPassword({login: login}, function (data) {
+            if (angular.equals(data.value, 'success')) {
+                onComplete();
+            } else {
+                onFailure(data.value);
+            }
         });
     };
 
