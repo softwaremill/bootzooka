@@ -9,7 +9,7 @@ angular.module("smlBootzooka.profile").factory("ProfileService", function ($reso
 
     this.changePasswordResource = $resource("rest/users/changepassword", {}, {
         'changePassword': {method: 'POST'}
-    })
+    });
 
     var self = this;
 

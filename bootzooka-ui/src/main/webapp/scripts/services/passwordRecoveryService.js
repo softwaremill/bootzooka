@@ -28,7 +28,7 @@ angular.module("smlBootzooka.profile").factory("PasswordRecoveryService", functi
             onComplete();
         }, function (error) {
             onError(error);
-        })
+        });
     };
 
     return passwordRecoveryService;

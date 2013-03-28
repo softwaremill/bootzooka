@@ -17,7 +17,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     };
 
     userSessionService.isLogged = function () {
-        return userSessionService.loggedUser != null && $cookies["scentry.auth.default.user"] !== undefined;
+        return userSessionService.loggedUser !== null && $cookies["scentry.auth.default.user"] !== undefined;
     };
 
     userSessionService.isNotLogged = function () {

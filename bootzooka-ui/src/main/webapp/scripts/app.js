@@ -1,4 +1,5 @@
 "use strict";
+
 angular.module('smlBootzooka.directives', []);
 angular.module('smlBootzooka.filters', []);
 angular.module('smlBootzooka.maintenance', ['ngResource']);

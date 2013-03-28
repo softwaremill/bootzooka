@@ -1,4 +1,4 @@
-"user strict";
+"use strict";
 
 angular.module("smlBootzooka.maintenance").factory('UtilService', function ($resource) {
 

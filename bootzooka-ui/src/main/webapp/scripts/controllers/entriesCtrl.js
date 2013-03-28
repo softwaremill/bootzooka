@@ -72,7 +72,7 @@ angular.module('smlBootzooka.entries').controller('EntriesCtrl', function Entrie
         return UserSessionService.isLogged() && entry.author === UserSessionService.loggedUser.login;
     };
 
-    $scope.isLogged = function() {
+    $scope.isLogged = function () {
         return UserSessionService.isLogged();
-    }
+    };
 });

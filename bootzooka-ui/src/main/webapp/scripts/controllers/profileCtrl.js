@@ -1,3 +1,5 @@
+"use strict";
+
 angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, UserSessionService, ProfileService) {
     $scope.login = UserSessionService.loggedUser.login.concat();
     $scope.email = UserSessionService.loggedUser.email.concat();
@@ -18,7 +20,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     };
 
     this.shouldPerformLoginChange = function () {
-        return $scope.profileForm.login.$dirty && $scope.login != UserSessionService.loggedUser.login && $scope.profileForm.login.$valid;
+        return $scope.profileForm.login.$dirty && $scope.login !== UserSessionService.loggedUser.login && $scope.profileForm.login.$valid;
     };
 
     $scope.changeEmail = function () {
@@ -35,7 +37,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     };
 
     this.shouldPerformEmailChange = function () {
-        return $scope.profileForm.email.$dirty && $scope.email != UserSessionService.loggedUser.email && $scope.profileForm.email.$valid;
+        return $scope.profileForm.email.$dirty && $scope.email !== UserSessionService.loggedUser.email && $scope.profileForm.email.$valid;
     };
 
     $scope.currentPassword = undefined;
