@@ -4,25 +4,21 @@ import org.apache.commons.validator.routines.EmailValidator
 
 class RegistrationDataValidator() {
 
-  def isDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {
+  def isDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean =
+    validLogin(trim(loginOpt)) &&
+    validEmail(trim(emailOpt)) &&
+    validPassword(trim(passwordOpt))
 
-    loginOpt match {
-      case Some(login) => if (login.trim.length < RegistrationDataValidator.MinLoginLength) return false
-      case _ => return false
-    }
+  private def trim(s: Option[String]) = s map {_.trim}
 
-    emailOpt match {
-      case Some(email) => if (email.trim.length == 0 || !EmailValidator.getInstance().isValid(email)) return false
-      case _ => return false
-    }
+  private def validLogin(loginOpt: Option[String]) =
+    loginOpt map {_.length >= RegistrationDataValidator.MinLoginLength} getOrElse false
 
-    passwordOpt match {
-      case Some(password) => if (password.trim.length == 0) return false
-      case _ => return false
-    }
+  private def validEmail(emailOpt: Option[String]) =
+    emailOpt filterNot {_.isEmpty} map EmailValidator.getInstance().isValid getOrElse false
 
-    true
-  }
+  private def validPassword(passwordOpt: Option[String]) =
+    passwordOpt map {!_.isEmpty} getOrElse false
 
 }
 
