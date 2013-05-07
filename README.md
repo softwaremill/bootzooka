@@ -4,6 +4,8 @@ Simple showcase project to allow quickly start with development process of moder
 
 Live demo is available on http://bootzooka.softwaremill.com.
 * [Changelog](#changelog)
+    * [Iteration 12](#iteration-12)
+    * [Iteration 11](#iteration-11)
     * [Iteration 10](#iteration-10)
     * [Iteration 9](#iteration-9)
     * [Iteration 8](#iteration-8)
@@ -20,7 +22,8 @@ Live demo is available on http://bootzooka.softwaremill.com.
 * [How to develop](#how-to-develop)
     * [Useful sbt commands](#useful-sbt-commands)
     * [Keep code in shape](#keep-code-in-shape)
-* [How to configure](#how-to-configure)   
+* [How to configure](#how-to-configure)
+* [REST API reference](#rest-api-reference)
 * [License](#license)
 
 Project is divided in few separated modules but basically we have UI which is base on [AngularJS](http://angularjs.org/)
@@ -29,6 +32,9 @@ Backend can be interchanged as there is no dependency between frontend and backe
 
 
 ## Changelog
+
+### Iteration 12
+* REST API documentation exposed by [Swagger](http://swagger.wordnik.com) and browsable with Swagger UI
 
 ### Iteration 11
 * Renamed project to Bootzooka
@@ -156,6 +162,12 @@ All configuration should be stored in _application.conf_ file. Please check _app
 * To have e-mail sender working please provide smtp details (host, port, password, username). For smtp service working on localhost please comment smtpUsername key so EmailSender will know that he should use not secured smtp service.
 
 _application.conf_ file should be placed next to _application.conf.template_
+
+## REST API reference
+
+The REST API documentation exposed by [Swagger](http://swagger.wordnik.com) is available at /api-docs in your running application.
+
+You can also browse the [REST API provided by our live demo](http://bootzooka.softwaremill.com/api-docs).
 
 ## License
 
