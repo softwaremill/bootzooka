@@ -82,7 +82,7 @@ object Dependencies {
   val jodaTime = "joda-time" % "joda-time" % "2.0"
   val jodaConvert = "org.joda" % "joda-convert" % "1.2"
 
-  val swaggerCore = "com.wordnik" % "swagger-core_2.10.0" % "1.2.1-SNAPSHOT"
+  val swaggerCore = "com.wordnik" % "swagger-core_2.10.0" % "1.2.0"
   val scalatraSwagger = "org.scalatra" %% "scalatra-swagger" % "2.2.0"
 
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
