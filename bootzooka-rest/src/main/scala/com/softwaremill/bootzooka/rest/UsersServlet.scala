@@ -5,10 +5,11 @@ import com.softwaremill.bootzooka.common.JsonWrapper
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
 import org.apache.commons.lang3.StringEscapeUtils._
+import org.scalatra.swagger.{Swagger, SwaggerSupport}
 
-class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
+class UsersServlet(val userService: UserService, val swagger: Swagger) extends JsonServletWithAuthentication with UsersServletSwaggerDefinition with CookieSupport {
 
-  post() {
+  post(operation(loginOperation)) {
     val userOpt: Option[UserJson] = authenticate()
     userOpt match {
       case Some(loggedUser) =>
@@ -18,12 +19,12 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     }
   }
 
-  get() {
+  get(operation(userProfileOperation)) {
     haltIfNotAuthenticated()
     user
   }
 
-  get("/logout") {
+  get("/logout", operation(logoutOperation)) {
     if (isAuthenticated) {
       // call logout only when logged in to avoid NPE
       logOut()
@@ -134,6 +135,31 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
       case _ => None
     }
   }
+
+}
+
+object UsersServlet {
+  val MAPPING_PATH = "users"
+}
+
+trait UsersServletSwaggerDefinition extends SwaggerSupport {
+
+  override protected val applicationName = Some(UsersServlet.MAPPING_PATH)
+  protected val applicationDescription: String = "User and session management endpoint"
+
+  val loginOperation = apiOperation[UserJson]("login")
+    .summary("log user in")
+    .parameter(bodyParam[String]("login").description("user login").required)
+    .parameter(bodyParam[String]("password").description("user password").required)
+    .parameter(bodyParam[String]("rememberme").description("whether user session should be remembered").required)
+
+  val userProfileOperation = apiOperation[UserJson]("userProfile")
+    .summary("gets logged in user")
+    .notes("Requires user to be authenticated")
+
+  val logoutOperation = apiOperation[Unit]("userProfile")
+    .summary("logs user out")
+    .notes("Requires user to be authenticated")
 
 }
 

@@ -78,7 +78,7 @@ class EntriesServletWithUserSpec extends BootzookaServletSpec {
     )
   }
 
-  class EntriesServletWithUser(entryService: EntryService, userService: UserService, login: String) extends EntriesServlet(entryService, userService) {
+  class EntriesServletWithUser(entryService: EntryService, userService: UserService, login: String) extends EntriesServlet(entryService, userService, new BootzookaSwagger) {
     override def isAuthenticated(implicit request: javax.servlet.http.HttpServletRequest) = true
     override def user(implicit request: javax.servlet.http.HttpServletRequest) = new UserJson(login, "kowalski@kowalski.net", User.encryptPassword("password", "salt"))
   }

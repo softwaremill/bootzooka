@@ -21,7 +21,7 @@ class UsersServletSpec extends BootzookaServletSpec {
 
     val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService(), new EmailTemplatingEngine))
 
-    servlet = new UsersServlet(userService)
+    servlet = new UsersServlet(userService, new BootzookaSwagger)
     addServlet(servlet, "/*")
 
     testToExecute(userService)

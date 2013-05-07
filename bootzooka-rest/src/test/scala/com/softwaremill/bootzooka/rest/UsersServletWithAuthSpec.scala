@@ -50,7 +50,7 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec {
     )
   }
 
-  class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService) with MockitoSugar {
+  class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService, new BootzookaSwagger) with MockitoSugar {
     override def scentry(implicit request: javax.servlet.http.HttpServletRequest) = mockedScentry
     override def user(implicit request: javax.servlet.http.HttpServletRequest) = new UserJson("Jas Kowalski", "kowalski@kowalski.net", "token")
   }

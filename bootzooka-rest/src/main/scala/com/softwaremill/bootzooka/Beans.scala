@@ -8,6 +8,7 @@ import service.schedulers.{DummyEmailSendingService, ProductionEmailSendingServi
 import service.templates.EmailTemplatingEngine
 import service.user.{RegistrationDataValidator, UserService}
 import java.util.concurrent.Executors
+import com.softwaremill.bootzooka.rest.BootzookaSwagger
 
 trait Beans {
   lazy val scheduler = Executors.newScheduledThreadPool(4)
@@ -31,5 +32,7 @@ trait Beans {
   lazy val entryService = new EntryService(daoFactory.entryDAO, userDao)
 
   lazy val passwordRecoveryService = new PasswordRecoveryService(userDao, daoFactory.codeDAO, emailSendingService, emailTemplatingEngine)
+
+  val swagger = new BootzookaSwagger
 
 }
