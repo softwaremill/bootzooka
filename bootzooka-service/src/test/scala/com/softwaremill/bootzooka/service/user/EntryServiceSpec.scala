@@ -127,4 +127,12 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
       verify(entryDAO).update(validEntryId, "text")
     })
   }
+
+  "loadAuthoredBy" should "delegate to DAO" in {
+    withCleanMocks((entryDAO, entryService) => {
+      entryService.loadAuthoredBy(validUserId)
+
+      verify(entryDAO).loadAuthoredBy(validUserId)
+    })
+  }
 }

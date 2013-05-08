@@ -71,4 +71,8 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO, clock: Clock = new Real
     }
   }
 
+  def loadAuthoredBy(authorId: String): List[Entry] = {
+    entryDAO.loadAuthoredBy(authorId)
+  }
+
 }
