@@ -39,6 +39,10 @@ class MongoEntryDAO extends EntryDAO {
     EntryRecord.where(_.entered after new DateTime(timeInMillis)) count()
   }
 
+  def loadAuthoredBy(authorId: String): List[Entry] = {
+    EntryRecord where (_.authorId eqs new ObjectId(authorId)) orderDesc (_.entered) fetch()
+  }
+
   private object EntryImplicits {
     implicit def fromRecord(record: EntryRecord): Entry = {
       Entry(record.id.get, record.text.get, record.authorId.get, new DateTime(record.entered.get))

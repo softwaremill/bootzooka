@@ -132,4 +132,29 @@ trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
     // Then
     counter should be(0)
   }
+
+  it should "load entries created by given author" in {
+    // Given
+    val authorId = "9" * 24
+    val authorObjectId = new ObjectId(authorId)
+
+    // When
+    entryDAO.add(Entry(new ObjectId("a" * 24), "Message 9", authorObjectId, new DateTime()))
+    val entries = entryDAO.loadAuthoredBy(authorId)
+
+    // Then
+    entries.size should be(2)
+    entries.forall(_.authorId == authorObjectId) should be(true)
+  }
+
+  it should "find no entries for non existing author" in {
+    // Given
+    val nonExistingAuthorId = "5" * 24
+
+    // When
+    val entries = entryDAO.loadAuthoredBy(nonExistingAuthorId)
+
+    // Then
+    entries.size should be(0)
+  }
 }

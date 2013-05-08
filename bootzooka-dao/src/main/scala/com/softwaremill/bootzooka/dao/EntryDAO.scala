@@ -18,4 +18,6 @@ trait EntryDAO {
 
   def countNewerThan(timeInMillis: Long): Long
 
+  def loadAuthoredBy(authorId: String): List[Entry]
+
 }

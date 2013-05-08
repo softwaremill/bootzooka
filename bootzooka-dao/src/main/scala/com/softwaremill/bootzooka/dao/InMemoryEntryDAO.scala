@@ -40,4 +40,8 @@ class InMemoryEntryDAO extends EntryDAO {
     entries.filter(e => e.entered.isAfter(timeInMillis)).size
   }
 
+  def loadAuthoredBy(authorId: String): List[Entry] = {
+    entries.filter(_.authorId  == authorId).sortBy(- _.entered.getMillis)
+  }
+
 }
