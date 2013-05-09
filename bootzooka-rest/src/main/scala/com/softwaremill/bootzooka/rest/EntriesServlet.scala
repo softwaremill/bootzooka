@@ -57,6 +57,10 @@ class EntriesServlet(entryService: EntryService, val userService: UserService, v
     entryService.remove(id)
   }
 
+  get("/author/:id", operation(getAuthoredBy)) {
+    entryService.loadAuthoredBy(params("id"))
+  }
+
 }
 
 trait EntriesSwaggerDefinition extends SwaggerSupport {
@@ -93,6 +97,10 @@ trait EntriesSwaggerDefinition extends SwaggerSupport {
     .notes("Requires user to be authenticated")
     .summary("delete entry with given ID")
     .parameter(pathParam[String]("id").description("ID of entry to delete").optional)
+
+  val getAuthoredBy = apiOperation[EntryJson]("getAuthoredBy")
+    .summary("get all entries created by author with given id")
+    .parameter(pathParam[String]("id").description("ID of the author whose entries to load").required)
 
 }
 

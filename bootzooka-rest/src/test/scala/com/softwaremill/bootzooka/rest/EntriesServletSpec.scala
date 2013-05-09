@@ -19,6 +19,7 @@ class EntriesServletSpec extends BootzookaServletSpec {
     when(entryService.loadAll) thenReturn EntriesWithTimeStamp(List(entryOne))
     when(entryService.load("1")) thenReturn Some(entryOne)
     when(entryService.countNewerThan(10000)) thenReturn 10
+    when(entryService.loadAuthoredBy("1")) thenReturn(List(entryOne))
 
 
     val servlet: EntriesServlet = new EntriesServlet(entryService, userService, new BootzookaSwagger)
@@ -93,6 +94,15 @@ class EntriesServletSpec extends BootzookaServletSpec {
       put("/", "anything") {
         status should be (401)
         verifyZeroInteractions(entryService)
+      }
+    }
+  }
+
+  "GET /author with id" should "return escaped JSON entries" in {
+    onServletWithMocks { (entryService, userService) =>
+      get("/author/1") {
+        body should include ("[{\"id\":\"1\",\"text\":\"&lt;script&gt;alert('hacker')&lt;/script&gt;\",\"author\":\"Jas Kowalski\",\"entered\":\"\"}]")
+        verify(entryService, times(1)).loadAuthoredBy("1")
       }
     }
   }
