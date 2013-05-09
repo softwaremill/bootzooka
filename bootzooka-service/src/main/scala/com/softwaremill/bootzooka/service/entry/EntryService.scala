@@ -71,8 +71,10 @@ class EntryService(entryDAO: EntryDAO, userDAO: UserDAO, clock: Clock = new Real
     }
   }
 
-  def loadAuthoredBy(authorId: String): List[Entry] = {
-    entryDAO.loadAuthoredBy(authorId)
+  def loadAuthoredBy(authorId: String): List[EntryJson] = {
+    val entriesByGivenAuthor = entryDAO.loadAuthoredBy(authorId)
+    val users = userDAO.findForIdentifiers(entriesByGivenAuthor.map(_.authorId))
+    entriesByGivenAuthor.map(entry => mapToEntryJson(entry, findAuthorLogin(entry, users)))
   }
 
 }

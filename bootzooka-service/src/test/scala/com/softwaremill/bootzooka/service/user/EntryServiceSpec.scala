@@ -13,6 +13,8 @@ import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import com.softwaremill.common.util.time.FixtureTimeClock
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.stubbing.Answer
 
 class EntryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
 
@@ -57,10 +59,23 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
     implicit def identifierIntToUser(id: Int): User =
       User(userIdentifier(id), "login" + id, "login" + id, "dummyEmail", "dummyPassword", "dummySalt", "dummyToken");
 
+    implicit def toAnswerWithArguments[T](f: (InvocationOnMock) => T): Answer[T] = new Answer[T] {
+        override def answer(invocation: InvocationOnMock): T = f(invocation)
+    }
+
     when(entryDAOMock.loadAll) thenReturn entries
 
+    when(entryDAOMock.loadAuthoredBy(anyString())) thenAnswer ((invocation: InvocationOnMock) => {
+        val authorId = invocation.getArguments()(0).asInstanceOf[String]
+        val authorObjectId = new ObjectId(authorId)
+        entries.filter(_.authorId == authorObjectId)
+    })
+
     val expectedUserList: List[User] = List(0, 1, 3, 2)
-    when(userDAOMock.findForIdentifiers(entries.map(_.authorId))) thenReturn(expectedUserList)
+    when(userDAOMock.findForIdentifiers(any())) thenAnswer ((invocation: InvocationOnMock) => {
+      val authorIds = invocation.getArguments()(0).asInstanceOf[List[ObjectId]]
+      expectedUserList.filter(user => authorIds.contains(user.id))
+    })
 
     val entryService: EntryService = new EntryService(entryDAOMock, userDAOMock, new FixtureTimeClock(fixtureTime))
     test(entryDAOMock, userDAOMock, entryService)
@@ -128,11 +143,16 @@ class EntryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
     })
   }
 
-  "loadAuthoredBy" should "delegate to DAO" in {
-    withCleanMocks((entryDAO, entryService) => {
-      entryService.loadAuthoredBy(validUserId)
+  "loadAuthoredBy" should "return only entries created by given author" in {
+    withMockedCollection((entryDAO, userDAO, entryService) => {
+      // when
+      val allEntries = entryService.loadAuthoredBy(validUserPrefix + "2")
 
-      verify(entryDAO).loadAuthoredBy(validUserId)
+      // then
+      allEntries should be(List(
+        EntryJson(entryIdentifier(4).toString, validMessage, "login2", fixtureTimeStr),
+        EntryJson(entryIdentifier(5).toString, validMessage, "login2", fixtureTimeStr)
+      ))
     })
   }
 }
