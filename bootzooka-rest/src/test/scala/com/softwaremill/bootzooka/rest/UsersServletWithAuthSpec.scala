@@ -45,14 +45,14 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec {
     onServletWithMocks(authenticated = true, testToExecute = (userService, mock) =>
       get("/") {
         status should be (200)
-        body should be ("{\"login\":\"Jas Kowalski\",\"email\":\"kowalski@kowalski.net\",\"token\":\"token\"}")
+        body should be ("{\"id\":\"" + "1" * 24  + "\",\"login\":\"Jas Kowalski\",\"email\":\"kowalski@kowalski.net\",\"token\":\"token\"}")
       }
     )
   }
 
   class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService, new BootzookaSwagger) with MockitoSugar {
     override def scentry(implicit request: javax.servlet.http.HttpServletRequest) = mockedScentry
-    override def user(implicit request: javax.servlet.http.HttpServletRequest) = new UserJson("Jas Kowalski", "kowalski@kowalski.net", "token")
+    override def user(implicit request: javax.servlet.http.HttpServletRequest) = new UserJson("1" * 24, "Jas Kowalski", "kowalski@kowalski.net", "token")
   }
 }
 
