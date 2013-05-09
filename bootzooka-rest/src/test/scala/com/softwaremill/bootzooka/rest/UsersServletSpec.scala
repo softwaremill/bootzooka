@@ -231,4 +231,20 @@ class UsersServletSpec extends BootzookaServletSpec {
     })
   }
 
+  "GET /all" should "return all users" in {
+    onServletWithMocks(userService => {
+      session {
+        //authenticate to perform change
+        post("/", mapToJson(Map("login" -> "admin", "password" -> "pass")), defaultJsonHeaders) {
+          status should be(200)
+        }
+
+        get("/all") {
+          verify(userService, times(1)).loadAll
+          status should be(200)
+        }
+      }
+    })
+  }
+
 }

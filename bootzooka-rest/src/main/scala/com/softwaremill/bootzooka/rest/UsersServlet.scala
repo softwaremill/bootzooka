@@ -136,6 +136,11 @@ class UsersServlet(val userService: UserService, val swagger: Swagger) extends J
     }
   }
 
+  get("/all", operation(allOperation)) {
+    haltIfNotAuthenticated()
+    userService.loadAll
+  }
+
 }
 
 object UsersServlet {
@@ -161,5 +166,8 @@ trait UsersServletSwaggerDefinition extends SwaggerSupport {
     .summary("logs user out")
     .notes("Requires user to be authenticated")
 
+  val allOperation = apiOperation[List[UserJson]]("all")
+      .summary("gets all users")
+      .notes("Requires user to be authenticated")
 }
 
