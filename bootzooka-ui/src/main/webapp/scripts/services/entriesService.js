@@ -20,6 +20,10 @@ angular.module("smlBootzooka.entries").factory('EntriesService', function ($reso
         get: nonArrayGetWithoutBlockOnAjax
     });
 
+    self.entriesByAuthorResource = $resource('/rest/entries/author/:authorId', { }, {
+        get: {method: 'GET', isArray: true}
+    });
+
     var entriesService = {};
 
     entriesService.loadAll = function (successFunction) {
@@ -53,6 +57,10 @@ angular.module("smlBootzooka.entries").factory('EntriesService', function ($reso
 
     entriesService.countNewEntries = function (timestamp, successFunction) {
         self.newEntriesCounterResource.get({time: timestamp}, successFunction);
+    };
+
+    entriesService.loadAuthoredBy = function (authorId, successFunction) {
+        self.entriesByAuthorResource.get({authorId: authorId}, successFunction);
     };
 
     return entriesService;

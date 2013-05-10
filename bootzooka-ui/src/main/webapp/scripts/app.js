@@ -16,7 +16,9 @@ angular.module('smlBootzooka.profile', ['smlBootzooka.maintenance', 'smlBootzook
 angular.module('smlBootzooka.entries', ['smlBootzooka.session', 'smlBootzooka.filters']).config(function ($routeProvider) {
     $routeProvider.
         when('/', {controller: 'EntriesCtrl', templateUrl: 'views/main.html'}).
-        when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "views/entry.html"});
+        when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "views/entry.html"}).
+        when("/entries/author", {controller: 'EntriesByAuthorsCtrl', templateUrl: "views/entries-by-authors.html"}).
+        when("/entries/author/:authorId", {controller: 'EntriesByAuthorsCtrl', templateUrl: "views/entries-by-authors.html"});
 });
 
 angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);

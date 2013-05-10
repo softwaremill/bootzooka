@@ -11,6 +11,9 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     self.logoutResource = $resource('rest/users/logout', { }, { });
 
+    self.allUsersResource = $resource('/rest/users/all', { }, {
+        get: {method: 'GET', isArray: true}
+    });
 
     var userSessionService = {
         loggedUser: null
@@ -59,6 +62,11 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
             return "";
         }
     };
+
+    userSessionService.loadAll = function (successFunction) {
+        self.allUsersResource.get(null, successFunction);
+    }
+
 
     return userSessionService;
 });
