@@ -10,6 +10,10 @@ angular.module("smlBootzooka.entries").factory('EntriesByAuthorsService', functi
         get: {method: 'GET', isArray: true}
     });
 
+    self.entriesByAuthorResource = $resource('/rest/entries/author/:authorId', { }, {
+        get: {method: 'GET', isArray: true}
+    });
+
     function callIfFunction(callback, parameter) {
         if (angular.isFunction(callback)) {
             callback(parameter);
@@ -27,6 +31,10 @@ angular.module("smlBootzooka.entries").factory('EntriesByAuthorsService', functi
         } else {
             callIfFunction(successFunction, allAuthors);
         }
+    };
+
+    entriesByAuthorsService.loadAuthoredBy = function (authorId, successFunction) {
+        self.entriesByAuthorResource.get({authorId: authorId}, successFunction);
     };
 
     return entriesByAuthorsService;

@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', function EntriesByAuthorsCtrl($scope, $location, $routeParams, EntriesService, EntriesByAuthorsService, UserSessionService) {
+angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', function EntriesByAuthorsCtrl($scope, $location, $routeParams, EntriesByAuthorsService, UserSessionService) {
     $scope.authorId = $routeParams.authorId;
 
     function loadAuthors() {
@@ -13,7 +13,7 @@ angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', functi
 
     function loadEntries() {
         if (!angular.isUndefined($scope.authorId)) {
-            EntriesService.loadAuthoredBy($scope.authorId, function (data) {
+            EntriesByAuthorsService.loadAuthoredBy($scope.authorId, function (data) {
                 $scope.entries = data;
 
                 if (!$scope.noEntries()) {
