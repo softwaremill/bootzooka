@@ -34,7 +34,7 @@ angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', functi
     };
 
     $scope.noEntries = function () {
-        return angular.isUndefined($scope.entries) || $scope.entries.length == 0;
+        return angular.isUndefined($scope.entries) || $scope.entries.length === 0;
     };
 
     $scope.isOwnerOf = function (entry) {
