@@ -29,6 +29,7 @@ EnvJasmine.loadGlobal(EnvJasmine.rootDir + "controllers/passwordRecoveryCtrl.js"
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "controllers/registerCtrl.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "controllers/userSessionCtrl.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "services/entriesService.js");
+EnvJasmine.loadGlobal(EnvJasmine.rootDir + "services/entriesByAuthorsService.js");
 
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "services/passwordRecoveryService.js");
 EnvJasmine.loadGlobal(EnvJasmine.rootDir + "services/registerService.js");

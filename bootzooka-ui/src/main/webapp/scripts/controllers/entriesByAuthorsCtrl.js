@@ -1,10 +1,10 @@
 "use strict";
 
-angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', function EntriesByAuthorsCtrl($scope, $location, $routeParams, EntriesService, UserSessionService) {
+angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', function EntriesByAuthorsCtrl($scope, $location, $routeParams, EntriesService, EntriesByAuthorsService, UserSessionService) {
     $scope.authorId = $routeParams.authorId;
 
     function loadAuthors() {
-        UserSessionService.loadAll(function (data) {
+        EntriesByAuthorsService.getAllAuthors(function (data) {
             $scope.authors = data;
         });
     }
