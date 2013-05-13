@@ -1,0 +1,24 @@
+<div class="row-fluid">
+    <div class="span2">
+        <ul class="nav nav-list">
+            <li class="nav-header">Choose an author</li>
+            <li ng-repeat="author in authors" ng-class="!isCurrentAuthor(author) || 'active'">
+                <a href="" ng-click="showEntriesAuthoredBy(author)">{{author.login}}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="span6 offset1">
+        <div ng-show="authorSelected()">
+            <h2>Entries by {{author}}</h2>
+            <div ng-repeat="entry in entries">
+                <div class="thumbnail">
+                    <p class="entryText" ng-bind-html="entry.text|newlines"></p>
+                    <i><small>Sent on {{entry.entered}}</small></i>
+                </div>
+                <br/>
+            </div>
+            <div ng-show="noEntries()">This user has not posted anything yet.</div>
+        </div>
+        <div ng-show="!authorSelected()">Please select an author</div>
+    </div>
+</div>

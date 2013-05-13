@@ -28,6 +28,7 @@
     <!-- logic -->
     <script type="text/javascript" src="scripts/app.js"></script>
     <script type="text/javascript" src="scripts/controllers/entriesCtrl.js"></script>
+    <script type="text/javascript" src="scripts/controllers/entriesByAuthorsCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/entryEditCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/loginCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/passwordRecoveryCtrl.js"></script>
@@ -76,6 +77,7 @@
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                         <li class="active"><a href="/#/">Home</a></li>
+                        <li><a href="/#/entries/author">Entries by authors</a></li>
                     </ul>
                     <ul class="nav pull-right" ng-controller="UserSessionCtrl">
                         <li ng-show="isNotLogged()"><a id="registerLink" href="#/register">Register</a></li>
