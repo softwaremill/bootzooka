@@ -1,8 +1,6 @@
 "use strict";
 
 angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', function EntriesByAuthorsCtrl($scope, $location, $routeParams, EntriesByAuthorsService, UserSessionService) {
-    $scope.authorId = $routeParams.authorId;
-
     function loadAuthors() {
         EntriesByAuthorsService.getAllAuthors(function (data) {
             $scope.authors = data;
@@ -12,12 +10,14 @@ angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', functi
     loadAuthors();
 
     function loadEntries() {
-        if (!angular.isUndefined($scope.authorId)) {
-            EntriesByAuthorsService.loadAuthoredBy($scope.authorId, function (data) {
-                $scope.entries = data;
+        if (!angular.isUndefined($routeParams.authorId)) {
+            EntriesByAuthorsService.loadAuthoredBy($routeParams.authorId, function (data) {
+                $scope.entries = {
+                    items: data
+                };
 
                 if (!$scope.noEntries()) {
-                    $scope.author = $scope.entries[0].author;
+                    $scope.entries.author = $scope.entries.items[0].author;
                 }
             });
         }
@@ -26,11 +26,11 @@ angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', functi
     loadEntries();
 
     $scope.authorSelected = function () {
-        return !angular.isUndefined($scope.authorId);
+        return !angular.isUndefined($routeParams.authorId);
     };
 
     $scope.isCurrentAuthor = function (author) {
-        return author.id === $scope.authorId;
+        return author.id === $routeParams.authorId;
     };
 
     $scope.showEntriesAuthoredBy = function (author) {
@@ -38,7 +38,8 @@ angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', functi
     };
 
     $scope.noEntries = function () {
-        return angular.isUndefined($scope.entries) || $scope.entries.length === 0;
+        return angular.isUndefined($scope.entries) || angular.isUndefined($scope.entries.items)
+            || $scope.entries.items.length === 0;
     };
 
     $scope.isOwnerOf = function (entry) {

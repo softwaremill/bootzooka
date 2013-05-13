@@ -76,7 +76,7 @@ describe('Entries by authors controller', function () {
         });
 
         it('should have two entries', function () {
-            expect(scope.entries.length).toBe(2);
+            expect(scope.entries.items.length).toBe(2);
         });
 
         it('should have two authors', function () {
@@ -109,7 +109,7 @@ describe('Entries by authors controller', function () {
             }));
 
             it('should mark logged user as owner of all entries', function () {
-                angular.forEach(scope.entries, function (entry) {
+                angular.forEach(scope.entries.items, function (entry) {
                     expect(scope.isOwnerOf(entry)).toBe(true);
                 });
             });

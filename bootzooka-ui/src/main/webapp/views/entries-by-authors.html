@@ -9,8 +9,8 @@
     </div>
     <div class="span6 offset1">
         <div ng-show="authorSelected()">
-            <h2>Entries by {{author}}</h2>
-            <div ng-repeat="entry in entries">
+            <h2>Entries by {{entries.author}}</h2>
+            <div ng-repeat="entry in entries.items">
                 <div class="thumbnail">
                     <p class="entryText" ng-bind-html="entry.text|newlines"></p>
                     <i><small>Sent on {{entry.entered}}</small></i>
