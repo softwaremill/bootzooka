@@ -30,14 +30,17 @@ trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
     for (i <- 1 to 3) {
       entryDAO.add(Entry(new ObjectId(i.toString * 24), "Message " + i, new ObjectId((10 - i).toString * 24), referenceDate.minusDays(i - 1)))
     }
+
+    // one more entry for authorId "9" * 24
+    entryDAO.add(Entry(new ObjectId("b" * 24), "Message 9", new ObjectId("9" * 24), referenceDate.minusDays(4)))
   }
 
   it should "count all entries" in {
-    entryDAO.countItems() should be(3)
+    entryDAO.countItems() should be(4)
   }
 
   it should "load all entries" in {
-    entryDAO.loadAll.size should be(3)
+    entryDAO.loadAll.size should be(4)
   }
 
   it should "load single entry" in {
@@ -95,7 +98,7 @@ trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
     val entries = entryDAO.loadAll
 
     // Then
-    entries should have size (3)
+    entries should have size (4)
     entries(0).entered.isAfter(entries(1).entered) should be(true)
     entries(1).entered.isAfter(entries(2).entered) should be(true)
   }
@@ -139,7 +142,6 @@ trait EntryDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
     val authorObjectId = new ObjectId(authorId)
 
     // When
-    entryDAO.add(Entry(new ObjectId("a" * 24), "Message 9", authorObjectId, new DateTime()))
     val entries = entryDAO.loadAuthoredBy(authorId)
 
     // Then
