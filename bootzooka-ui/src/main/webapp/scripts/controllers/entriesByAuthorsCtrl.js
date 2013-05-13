@@ -29,6 +29,10 @@ angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', functi
         return !angular.isUndefined($scope.authorId);
     };
 
+    $scope.isCurrentAuthor = function (author) {
+        return author.id === $scope.authorId;
+    };
+
     $scope.showEntriesAuthoredBy = function (author) {
         $location.path('/entries/author/' + author.id);
     };

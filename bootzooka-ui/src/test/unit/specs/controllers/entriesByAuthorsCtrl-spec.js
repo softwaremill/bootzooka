@@ -83,6 +83,14 @@ describe('Entries by authors controller', function () {
             expect(scope.authors.length).toBe(2);
         });
 
+        it('should mark author with id=1 as current', function () {
+            expect(scope.isCurrentAuthor({id: 1})).toBe(true);
+        });
+
+        it('should not mark author with id=2 as current', function () {
+            expect(scope.isCurrentAuthor({id: 2})).toBe(false);
+        });
+
         describe('and no logged user', function () {
             it('should never return true for isOwner', function () {
                 angular.forEach(scope.entries, function (entry) {
