@@ -3,15 +3,15 @@
 angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', function EntriesByAuthorsCtrl($scope, $location, $routeParams, EntriesService, UserSessionService) {
     $scope.authorId = $routeParams.authorId;
 
-    $scope.loadAuthors = function () {
+    function loadAuthors() {
         UserSessionService.loadAll(function (data) {
             $scope.authors = data;
         });
-    };
+    }
 
-    $scope.loadAuthors();
+    loadAuthors();
 
-    $scope.loadEntries = function () {
+    function loadEntries() {
         if (!angular.isUndefined($scope.authorId)) {
             EntriesService.loadAuthoredBy($scope.authorId, function (data) {
                 $scope.entries = data;
@@ -21,9 +21,9 @@ angular.module('smlBootzooka.entries').controller('EntriesByAuthorsCtrl', functi
                 }
             });
         }
-    };
+    }
 
-    $scope.loadEntries();
+    loadEntries();
 
     $scope.authorSelected = function () {
         return !angular.isUndefined($scope.authorId);
