@@ -1,13 +1,13 @@
 <div class="row-fluid">
     <div class="span2">
-        <ul class="nav nav-list">
+        <ul id="authors" class="nav nav-list">
             <li class="nav-header">Choose an author</li>
             <li ng-repeat="author in authors" ng-class="!isCurrentAuthor(author) || 'active'">
                 <a href="" ng-click="showEntriesAuthoredBy(author)">{{author.login}}</a>
             </li>
         </ul>
     </div>
-    <div class="span6 offset1">
+    <div id="entries" class="span6 offset1">
         <div ng-show="authorSelected()">
             <h2>Entries by {{entries.author}}</h2>
             <div ng-repeat="entry in entries.items">

@@ -16,6 +16,8 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   final val REGPASS = "regpass"
   final val REGMAIL = "reguser@regmail.pl"
 
+  final val MESSAGE = "Dummy message"
+
   var driver: FirefoxDriver = _
   var emailService: DummyEmailSendingService = _
   var loginPage: LoginPage = _
@@ -27,7 +29,9 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
     startJetty()
     beans = context.getAttribute("bootzooka").asInstanceOf[Beans]
     beans.userService.registerNewUser(REGUSER, REGMAIL, REGPASS)
+    beans.userService.registerNewUser("1" + REGUSER, "1" + REGMAIL, REGPASS)
     emailService = beans.emailSendingService.asInstanceOf[DummyEmailSendingService]
+    beans.entryService.add(REGUSER, MESSAGE)
   }
 
   before {
