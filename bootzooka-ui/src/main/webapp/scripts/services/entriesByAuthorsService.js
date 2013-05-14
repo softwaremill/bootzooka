@@ -14,22 +14,16 @@ angular.module("smlBootzooka.entries").factory('EntriesByAuthorsService', functi
         get: {method: 'GET', isArray: true}
     });
 
-    function callIfFunction(callback, parameter) {
-        if (angular.isFunction(callback)) {
-            callback(parameter);
-        }
-    }
-
     var entriesByAuthorsService = {};
 
     entriesByAuthorsService.getAllAuthors = function (successFunction) {
         if (angular.isUndefined(allAuthors)) {
             self.allUsersResource.get(null, function (data) {
                 allAuthors = data;
-                callIfFunction(successFunction, allAuthors);
+                successFunction(allAuthors)
             });
         } else {
-            callIfFunction(successFunction, allAuthors);
+            successFunction(allAuthors)
         }
     };
 
