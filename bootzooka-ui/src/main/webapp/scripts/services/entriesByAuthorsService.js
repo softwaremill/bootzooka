@@ -2,15 +2,13 @@
 
 angular.module("smlBootzooka.entries").factory('EntriesByAuthorsService', function ($resource) {
 
-    var self = this;
-
     var allAuthors = undefined;
 
-    self.allUsersResource = $resource('/rest/users/all', { }, {
+    var allUsersResource = $resource('/rest/users/all', { }, {
         get: {method: 'GET', isArray: true}
     });
 
-    self.entriesByAuthorResource = $resource('/rest/entries/author/:authorId', { }, {
+    var entriesByAuthorResource = $resource('/rest/entries/author/:authorId', { }, {
         get: {method: 'GET', isArray: true}
     });
 
@@ -18,7 +16,7 @@ angular.module("smlBootzooka.entries").factory('EntriesByAuthorsService', functi
 
     entriesByAuthorsService.getAllAuthors = function (successFunction) {
         if (angular.isUndefined(allAuthors)) {
-            self.allUsersResource.get(null, function (data) {
+            allUsersResource.get(null, function (data) {
                 allAuthors = data;
                 successFunction(allAuthors)
             });
@@ -28,7 +26,7 @@ angular.module("smlBootzooka.entries").factory('EntriesByAuthorsService', functi
     };
 
     entriesByAuthorsService.loadAuthoredBy = function (authorId, successFunction) {
-        self.entriesByAuthorResource.get({authorId: authorId}, successFunction);
+        entriesByAuthorResource.get({authorId: authorId}, successFunction);
     };
 
     return entriesByAuthorsService;
