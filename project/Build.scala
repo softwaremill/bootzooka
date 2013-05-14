@@ -107,7 +107,7 @@ object Dependencies {
 
   val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.0"
 
-  val seleniumVer = "2.29.0"
+  val seleniumVer = "2.32.0"
   val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"
   val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
   val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"

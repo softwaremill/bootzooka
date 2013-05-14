@@ -125,7 +125,7 @@ Alternatively you can run a single test using the test-only task.
 
     > test-only uitest.ScalaRegisterUITest
 
-These tests are written using WebDriver and __you need Firefox 18__ to properly run them.
+These tests are written using WebDriver and __you need Firefox 20__ to properly run them.
 
 ## How to develop
 
