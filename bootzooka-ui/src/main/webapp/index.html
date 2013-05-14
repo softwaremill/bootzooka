@@ -76,9 +76,9 @@
                 </a>
                 <a class="brand" href="#">SML Bootzooka</a>
                 <div class="nav-collapse collapse">
-                    <ul class="nav">
+                    <ul class="nav" ng-controller="UserSessionCtrl">
                         <li class="active"><a href="/#/">Home</a></li>
-                        <li><a href="/#/entries/author">Entries by authors</a></li>
+                        <li ng-show="isLogged()"><a href="/#/entries/author">Entries by authors</a></li>
                     </ul>
                     <ul class="nav pull-right" ng-controller="UserSessionCtrl">
                         <li ng-show="isNotLogged()"><a id="registerLink" href="#/register">Register</a></li>

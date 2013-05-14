@@ -7,6 +7,14 @@ import org.openqa.selenium.By
 
 class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
 
+  test("entries by authors without logged user") {
+    val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
+
+    entriesByAuthorsPage.openWithoutAuthor()
+
+    assertThat(driver.getCurrentUrl).startsWith(loginPage.url)
+  }
+
   test("entries by author with no selected author") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
