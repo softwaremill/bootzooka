@@ -59,7 +59,7 @@ object Dependencies {
   val slf4jVersion = "1.7.2"
   val logBackVersion = "1.0.9"
   val smlCommonVersion = "75"
-  val scalatraVersion = "2.2.0"
+  val scalatraVersion = "2.2.1"
   val rogueVersion = "2.0.0-RC1"
   val scalaLoggingVersion = "1.0.1"
 
@@ -83,7 +83,7 @@ object Dependencies {
   val jodaConvert = "org.joda" % "joda-convert" % "1.2"
 
   val swaggerCore = "com.wordnik" % "swagger-core_2.10.0" % "1.2.0"
-  val scalatraSwagger = "org.scalatra" %% "scalatra-swagger" % "2.2.0"
+  val scalatraSwagger = "org.scalatra" %% "scalatra-swagger" % scalatraVersion
 
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
   val commonsLang = "org.apache.commons" % "commons-lang3" % "3.1"

@@ -7,6 +7,7 @@ import scala.Some
 import com.softwaremill.bootzooka.common.{ Utils, JsonWrapper }
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
+import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
 /**
  * It should be used with each servlet to support RememberMe functionality for whole application
@@ -51,7 +52,7 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
   override protected def configureScentry {
     val authCookieOptions = cookieOptions.copy(path = "/", secure = false, maxAge = Utils.OneWeek, httpOnly = true)
     scentry.store = new CookieAuthStore(self) {
-      override def invalidate() {
+      override def invalidate()(implicit request: HttpServletRequest, response: HttpServletResponse) {
         cookies.update(Scentry.scentryAuthKey, user.token)(authCookieOptions.copy(maxAge = 0))
       }
     }

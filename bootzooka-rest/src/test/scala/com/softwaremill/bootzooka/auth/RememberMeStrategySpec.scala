@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.auth
 
 import org.scalatra.SweetCookies
-import javax.servlet.http.HttpServletResponse
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import com.softwaremill.bootzooka.rest.EntriesServlet
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
@@ -13,7 +13,8 @@ import org.mockito.BDDMockito._
 class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar {
   behavior of "RememberMe"
 
-  val httpResponse = mock[HttpServletResponse]
+  implicit val httpResponse = mock[HttpServletResponse]
+  implicit val httpRequest = mock[HttpServletRequest]
   val app = mock[EntriesServlet]
   val userService = mock[UserService]
   val loggedUser: UserJson = UserJson("1" * 24, "admin", "admin@admin.net", "token")

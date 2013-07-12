@@ -6,6 +6,8 @@ import org.scalatra.auth.Scentry
 import com.softwaremill.bootzooka.service.data.UserJson
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
+import org.mockito.Matchers._
+import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
 class UsersServletWithAuthSpec extends BootzookaServletSpec {
 
@@ -13,7 +15,7 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec {
     val userService = mock[UserService]
 
     val mockedScentry = mock[Scentry[UserJson]]
-    when(mockedScentry.isAuthenticated) thenReturn authenticated
+    when(mockedScentry.isAuthenticated(any[HttpServletRequest],any[HttpServletResponse])) thenReturn authenticated
 
     val servlet: MockUsersServlet = new MockUsersServlet(userService, mockedScentry)
     addServlet(servlet, "/*")
@@ -24,8 +26,8 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec {
   "GET /logout" should "call logout() when user is already authenticated" in {
     onServletWithMocks(authenticated = true, testToExecute = (userService, mock) =>
       get("/logout") {
-        verify(mock, times(2)).isAuthenticated // before() and get('/logout')
-        verify(mock).logout()
+        verify(mock, times(2)).isAuthenticated(any[HttpServletRequest],any[HttpServletResponse]) // before() and get('/logout')
+        verify(mock).logout()(any[HttpServletRequest],any[HttpServletResponse])
         verifyZeroInteractions(userService)
       }
     )
@@ -34,7 +36,7 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec {
   "GET /logout" should "not call logout() when user is not authenticated" in {
     onServletWithMocks(authenticated = false, testToExecute = (userService, mock) =>
       get("/logout") {
-        verify(mock, times(2)).isAuthenticated // before() and get('/logout')
+        verify(mock, times(2)).isAuthenticated(any[HttpServletRequest], any(classOf[HttpServletResponse])) // before() and get('/logout')
         verify(mock, never).logout()
         verifyZeroInteractions(userService)
       }

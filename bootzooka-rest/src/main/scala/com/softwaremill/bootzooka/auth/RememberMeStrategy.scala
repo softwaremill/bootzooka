@@ -5,6 +5,7 @@ import org.scalatra.auth.ScentryStrategy
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
+import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
 class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rememberMe: Boolean, val userService: UserService) extends ScentryStrategy[UserJson] {
 
@@ -12,7 +13,7 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
 
   override def name: String = RememberMe.name
 
-  override def afterAuthenticate(winningStrategy: String, user: UserJson) {
+  override def afterAuthenticate(winningStrategy: String, user: UserJson)(implicit request: HttpServletRequest, response: HttpServletResponse) {
     if (winningStrategy == name || (winningStrategy == UserPassword.name && rememberMe)) {
       val token = user.token
       app.response.addHeader("Set-Cookie",
@@ -20,15 +21,15 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
     }
   }
 
-  override def isValid = {
+  override def isValid(implicit request: HttpServletRequest) = {
     app.cookies.get(CookieKey).flatMap(Some(_)).isDefined
   }
 
-  override def authenticate() = {
+  override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse) = {
     app.cookies.get(CookieKey).flatMap(userService.authenticateWithToken(_))
   }
 
-  override def beforeLogout(user: UserJson) {
+  override def beforeLogout(user: UserJson)(implicit request: HttpServletRequest, response: HttpServletResponse) {
     app.response.addHeader("Set-Cookie",
       Cookie(CookieKey, "")(CookieOptions(path = "/", secure = false, maxAge = 0, httpOnly = true)).toCookieString)
   }
