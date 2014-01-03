@@ -27,7 +27,7 @@ angular.module('smlBootzooka.profile').controller('RegisterCtrl', function Regis
     };
 
     this.registerOk = function () {
-        $location.path("");
+        $location.path("/main");
     };
 
     this.registerFailed = function (message) {

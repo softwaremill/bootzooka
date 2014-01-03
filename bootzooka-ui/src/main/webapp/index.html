@@ -27,16 +27,11 @@
 
     <!-- logic -->
     <script type="text/javascript" src="scripts/app.js"></script>
-    <script type="text/javascript" src="scripts/controllers/entriesCtrl.js"></script>
-    <script type="text/javascript" src="scripts/controllers/entriesByAuthorsCtrl.js"></script>
-    <script type="text/javascript" src="scripts/controllers/entryEditCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/loginCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/passwordRecoveryCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/profileCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/registerCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/userSessionCtrl.js"></script>
-    <script type="text/javascript" src="scripts/services/entriesService.js"></script>
-    <script type="text/javascript" src="scripts/services/entriesByAuthorsService.js"></script>
     <script type="text/javascript" src="scripts/services/flashService.js"></script>
     <script type="text/javascript" src="scripts/services/passwordRecoveryService.js"></script>
     <script type="text/javascript" src="scripts/services/profileService.js"></script>
@@ -45,8 +40,6 @@
     <script type="text/javascript" src="scripts/directives/bsBlur.js"></script>
     <script type="text/javascript" src="scripts/directives/bsRepeatPassword.js"></script>
 
-    <!-- filters -->
-    <script type="text/javascript" src="scripts/filters/newlines.js"></script>
 
 </head>
 <body ng-app="smlBootzooka">
@@ -75,8 +68,7 @@
                 <a class="brand" href="#">SML Bootzooka</a>
                 <div class="nav-collapse collapse">
                     <ul class="nav" ng-controller="UserSessionCtrl">
-                        <li class="active"><a href="/#/">Home</a></li>
-                        <li ng-show="isLogged()"><a href="/#/entries/author">Entries by authors</a></li>
+                        <li class="active"><a href="#/main">Home</a></li>
                     </ul>
                     <ul class="nav pull-right" ng-controller="UserSessionCtrl">
                         <li ng-show="isNotLogged()"><a id="registerLink" href="#/register">Register</a></li>

@@ -10,32 +10,22 @@ angular.module('smlBootzooka.profile', ['smlBootzooka.maintenance', 'smlBootzook
         when("/register", {controller: 'RegisterCtrl', templateUrl: "views/register.html"}).
         when("/recover-lost-password", {controller: 'PasswordRecoveryCtrl', templateUrl: "views/recover-lost-password.html"}).
         when("/password-reset", {controller: "PasswordRecoveryCtrl", templateUrl: "views/password-reset.html"}).
-        when("/profile", {controller: "ProfileCtrl", templateUrl: "views/secured/profile.html"});
-});
-
-angular.module('smlBootzooka.entries', ['smlBootzooka.session', 'smlBootzooka.filters']).config(function ($routeProvider) {
-    $routeProvider.
-        when('/', {controller: 'EntriesCtrl', templateUrl: 'views/main.html'}).
-        when("/entry/:entryId", {controller: 'EntryEditCtrl', templateUrl: "views/entry.html"}).
-        when("/entries/author", {controller: 'EntriesByAuthorsCtrl', templateUrl: "views/secured/entries-by-authors.html"}).
-        when("/entries/author/:authorId", {controller: 'EntriesByAuthorsCtrl', templateUrl: "views/secured/entries-by-authors.html"});
+        when("/profile", {controller: "ProfileCtrl", templateUrl: "views/secured/profile.html", auth: true}).
+        when("/main", {templateUrl: "views/secured/private.html", auth: true}).
+        when("/", {templateUrl: "views/public.html"});
 });
 
 angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);
 
 angular.module(
         'smlBootzooka', [
-            'smlBootzooka.filters',
             'smlBootzooka.profile',
-            'smlBootzooka.entries',
-            'smlBootzooka.maintenance',
             'smlBootzooka.session',
             'smlBootzooka.directives', 'ngSanitize', 'ajaxthrobber']).config(function ($routeProvider) {
         $routeProvider.
-            when("/error404", {controller: 'EntriesCtrl', templateUrl: "views/errorpages/error404.html"}).
-            when("/error500", {controller: 'EntriesCtrl', templateUrl: "views/errorpages/error500.html"}).
-            when("/error", {controller: 'EntriesCtrl', templateUrl: "views/errorpages/error500.html"}).
-            otherwise({redirectTo: '/error404'});
+            when("/error404", {templateUrl: "views/errorpages/error404.html"}).
+            when("/error500", {templateUrl: "views/errorpages/error500.html"}).
+            when("/error", {templateUrl: "views/errorpages/error500.html"});
     })
 
     .config(['$httpProvider', function ($httpProvider) {
@@ -73,8 +63,12 @@ angular.module(
         $httpProvider.responseInterceptors.push(interceptor);
     }])
 
-    .run(function ($rootScope, UserSessionService) {
-        UserSessionService.validate();
+    .run(function ($rootScope, UserSessionService, $location) {
+        $rootScope.$on('$routeChangeStart', function(ev, next, current) {
+            if(next.auth && UserSessionService.isNotLogged()) {
+                $location.path('/login');
+            }
+        });
     })
 
     .run(function ($rootScope, $timeout, FlashService) {
@@ -82,16 +76,6 @@ angular.module(
             var message = FlashService.get();
             if (angular.isDefined(message)) {
                 showInfoMessage(message);
-            }
-        });
-    })
-
-    .run(function ($rootScope, UserSessionService, $location) {
-        $rootScope.$on("$routeChangeStart", function (event, next, current) {
-            if (!UserSessionService.isLogged() && (typeof next.templateUrl !== "undefined") && next.templateUrl.indexOf("/secured/") > -1) {
-                $location.search("page", $location.url()).path("/login");
-            } else if (UserSessionService.isLogged() && next.templateUrl === "partials/login.html") {
-                $location.path("/");
             }
         });
     });

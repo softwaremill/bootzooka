@@ -26,7 +26,7 @@ angular.module('smlBootzooka.profile').controller('LoginCtrl', function LoginCtr
             $location.search("page", null);
             $location.path(optionalRedir);
         } else {
-            $location.path("");
+            $location.path("/main");
         }
     };
 
