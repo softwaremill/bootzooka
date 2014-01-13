@@ -37,7 +37,7 @@ describe('User Session Controller', function () {
 
         it("user should be able to log out", function () {
             // Given
-            $httpBackend.expectGET('rest/users/logout').respond('anything');
+            $httpBackend.expectGET('rest/users/logout').respond(['anything']); // resource#query returns array
             expect(userSessionService.loggedUser).not.toBe(null);
 
             // When

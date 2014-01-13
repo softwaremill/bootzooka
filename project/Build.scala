@@ -193,8 +193,9 @@ object BootzookaBuild extends Build {
       jasmineTestDir <+= sourceDirectory { src => src / "test" / "unit" },
       jasmineConfFile <+= sourceDirectory { src => src / "test" / "unit" / "test.dependencies.js" },
       jasmineRequireJsFile <+= sourceDirectory { src => src / "test" / "lib" / "require" / "require-2.0.6.js" },
-      jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "unit" / "require.conf.js" },
-      (test in Test) <<= (test in Test) dependsOn (jasmine))
+      jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "unit" / "require.conf.js" }
+//      (test in Test) <<= (test in Test) dependsOn (jasmine))
+    )
   ) dependsOn (rest)
 
   lazy val uiTests = Project(

@@ -4,7 +4,7 @@ angular.module('smlBootzooka.directives', []);
 angular.module('smlBootzooka.filters', []);
 angular.module('smlBootzooka.maintenance', ['ngResource']);
 
-angular.module('smlBootzooka.profile', ['smlBootzooka.maintenance', 'smlBootzooka.session', 'smlBootzooka.directives']).config(function ($routeProvider) {
+angular.module('smlBootzooka.profile', ['ngRoute', 'smlBootzooka.maintenance', 'smlBootzooka.session', 'smlBootzooka.directives']).config(function ($routeProvider) {
     $routeProvider.
         when("/login", {controller: 'LoginCtrl', templateUrl: "views/login.html"}).
         when("/register", {controller: 'RegisterCtrl', templateUrl: "views/register.html"}).
@@ -21,7 +21,7 @@ angular.module(
         'smlBootzooka', [
             'smlBootzooka.profile',
             'smlBootzooka.session',
-            'smlBootzooka.directives', 'ngSanitize', 'ajaxthrobber']).config(function ($routeProvider) {
+            'smlBootzooka.directives', 'ngSanitize', 'ngRoute', 'ajaxthrobber']).config(function ($routeProvider) {
         $routeProvider.
             when("/error404", {templateUrl: "views/errorpages/error404.html"}).
             when("/error500", {templateUrl: "views/errorpages/error500.html"}).
