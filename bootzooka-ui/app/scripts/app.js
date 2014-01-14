@@ -26,7 +26,8 @@ angular.module(
         $routeProvider.
             when("/error404", {templateUrl: "views/errorpages/error404.html"}).
             when("/error500", {templateUrl: "views/errorpages/error500.html"}).
-            when("/error", {templateUrl: "views/errorpages/error500.html"});
+            when("/error", {templateUrl: "views/errorpages/error500.html"}).
+            otherwise({redirectTo: "/error404"});
     })
 
     .config(['$httpProvider', function ($httpProvider) {
@@ -66,7 +67,7 @@ angular.module(
 
     .run(function ($rootScope, UserSessionService, $location) {
         $rootScope.$on('$routeChangeStart', function(ev, next, current) {
-            if(next.auth && UserSessionService.isNotLogged()) {
+            if(next && next.auth && UserSessionService.isNotLogged()) {
                 $location.path('/login');
             }
         });
