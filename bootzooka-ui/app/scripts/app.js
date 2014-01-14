@@ -19,7 +19,7 @@ angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);
 
 angular.module(
         'smlBootzooka', [
-            'bootzooka.templates',
+            'smlBootzooka.templates',
             'smlBootzooka.profile',
             'smlBootzooka.session',
             'smlBootzooka.directives', 'ngSanitize', 'ngRoute', 'ajaxthrobber']).config(function ($routeProvider) {

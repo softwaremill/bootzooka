@@ -69,7 +69,7 @@ module.exports = function (grunt) {
                 },
                 src: ['app/views/**/*.html'],
                 dest: 'tmp/scripts/templates.js',
-                module: 'bootzooka.templates'
+                module: 'smlBootzooka.templates'
             }
         },
 
