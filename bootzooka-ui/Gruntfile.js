@@ -131,68 +131,6 @@ module.exports = function (grunt) {
         clean: {
             dist: ['dist', 'tmp'],
             tmp: 'tmp'
-        },
-
-        jshint: {
-            options: {
-                "sub": true,
-                "curly": true,
-                "eqeqeq": true,
-                "eqnull": true,
-                "expr": true,
-                "noarg": true,
-                "node": true,
-                "trailing": true,
-                "undef": true,
-                "unused": true
-            },
-            app: {
-                options: {
-                    "globals": {
-                        codebrag: false,
-                        angular: false,
-                        $: false,
-                        jQuery: false,
-                        Markdown: false,
-                        Handlebars: false,
-                        _: false,
-                        moment: false
-                    }
-
-                },
-                files: {
-                    src: ['app/scripts/**/*.js']
-                }
-            },
-            tests: {
-                options: {
-                    "globals": {
-                        codebrag: false,
-                        angular: false,
-                        $: false,
-                        _: false,
-
-                        // Jasmine stuff
-                        jasmine: false,
-                        expect: false,
-                        spyOn: false,
-                        describe: false,
-                        it: false,
-                        beforeEach: false,
-                        afterEach: false,
-
-                        // Angular mock stuff
-                        inject: false,
-                        module: false
-
-                    }
-
-                },
-                files: {
-                    src: ['test/**/*.js']
-                }
-
-            }
         }
 
     });
@@ -200,7 +138,6 @@ module.exports = function (grunt) {
     require('matchdep').filterDev('grunt-*').forEach(function (dep) {
         grunt.loadNpmTasks(dep);
     });
-
 
     grunt.registerTask('server', function(target) {
         if(target === 'dist') {
@@ -212,13 +149,13 @@ module.exports = function (grunt) {
             'html2js',
             'configureProxies',
             'connect:livereload',
-            'watch'
+        'watch'
         ]);
     });
 
     grunt.registerTask('build', [
         'clean:dist',
-//        'test:teamcity',
+        'test:teamcity',
         'html2js',
         'copy:assets',
         'copy:index',
