@@ -4,29 +4,38 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SML Bootzooka</title>
+
+    <!-- build:css(app) styles/index-all.css -->
     <link href="styles/bootstrap.css" rel="stylesheet">
     <link href="styles/bootstrap-responsive.css" rel="stylesheet">
     <link href="styles/application.css" rel="stylesheet">
-    <link rel="shortcut icon" href="img/favicon.gif" type="image/x-icon">
+    <!-- endbuild -->
+
+    <link rel="shortcut icon" href="assets/img/favicon.gif" type="image/x-icon">
 
     <!-- Workaround for IE to provide console object -->
-    <script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
-    <script type="text/javascript" src="scripts/vendor/jquery-1.8.2-min.js"></script>
-    <script type="text/javascript" src="scripts/vendor/jquery-blockui.min.js"></script>
 
-    <script type="text/javascript" src="scripts/vendor/bootstrap-2.2.2.js"></script>
+    <script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
+
+    <!-- build:js({tmp,app}) scripts/vendor-all.js -->
+    <script type="text/javascript" src="vendor/jquery-1.8.2-min.js"></script>
+    <script type="text/javascript" src="vendor/jquery-blockui.min.js"></script>
+
+    <script type="text/javascript" src="vendor/bootstrap-2.2.2.js"></script>
 
     <!-- angular stuff -->
-    <script type="text/javascript" src="scripts/vendor/angular-1.2.6/angular.js"></script>
-    <script type="text/javascript" src="scripts/vendor/angular-1.2.6/angular-route.js"></script>
-    <script type="text/javascript" src="scripts/vendor/angular-1.2.6/angular-resource.js"></script>
-    <script type="text/javascript" src="scripts/vendor/angular-1.2.6/angular-sanitize.js"></script>
-    <script type="text/javascript" src="scripts/vendor/angular-1.2.6/angular-cookies.js"></script>
+    <script type="text/javascript" src="vendor/angular-1.2.6/angular.js"></script>
+    <script type="text/javascript" src="vendor/angular-1.2.6/angular-route.js"></script>
+    <script type="text/javascript" src="vendor/angular-1.2.6/angular-resource.js"></script>
+    <script type="text/javascript" src="vendor/angular-1.2.6/angular-sanitize.js"></script>
+    <script type="text/javascript" src="vendor/angular-1.2.6/angular-cookies.js"></script>
 
     <!-- effects -->
     <script type="text/javascript" src="scripts/effects/effects.js"></script>
+    <!-- endbuild -->
 
     <!-- logic -->
+    <!-- build:js({tmp,app}) scripts/bootzooka-all.js -->
     <script type="text/javascript" src="scripts/app.js"></script>
     <script type="text/javascript" src="scripts/controllers/loginCtrl.js"></script>
     <script type="text/javascript" src="scripts/controllers/passwordRecoveryCtrl.js"></script>
@@ -40,20 +49,22 @@
     <script type="text/javascript" src="scripts/services/userSessionService.js"></script>
     <script type="text/javascript" src="scripts/directives/bsBlur.js"></script>
     <script type="text/javascript" src="scripts/directives/bsRepeatPassword.js"></script>
+    <script type="text/javascript" src="scripts/templates.js"></script>
+    <!-- endbuild -->
 
 
 </head>
 <body ng-app="smlBootzooka">
 
     <a href="https://github.com/softwaremill/bootzooka">
-        <img style="position: absolute; top: 40px; right: 0; border: 0;" src="img/forkme_orange.png"
+        <img style="position: absolute; top: 40px; right: 0; border: 0;" src="assets/img/forkme_orange.png"
              alt="Fork me on GitHub">
     </a>
 
     <span style="display: none">
         <ajaxthrobber>
             <br/><br/><br/>
-            <h4><img src="img/busy.gif" border="0" id="ajaxthrobber"> Please wait ...</h4>
+            <h4><img src="assets/img/busy.gif" border="0" id="ajaxthrobber"> Please wait ...</h4>
             <br/><br/><br/>
         </ajaxthrobber>
     </span>
