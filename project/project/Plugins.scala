@@ -10,7 +10,8 @@ object Plugins extends Build {
       addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.2.0"),
       addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.0"),
       addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.0.1"),
-      addSbtPlugin("com.github.philcali" % "sbt-jslint" % "0.1.3")))
+      addSbtPlugin("com.github.philcali" % "sbt-jslint" % "0.1.3"),
+      addSbtPlugin("com.earldouglas" % "xsbt-web-plugin" % "0.5.0")))
       .dependsOn(
     // TeamCity reporting, see: https://github.com/guardian/sbt-teamcity-test-reporting-plugin
     uri("git://github.com/guardian/sbt-teamcity-test-reporting-plugin.git#1.2"),

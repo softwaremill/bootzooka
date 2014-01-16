@@ -1,10 +1,8 @@
 import sbt._
 import Keys._
-import com.gu.SbtJasminePlugin._
 import net.virtualvoid.sbt.graph.Plugin._
 import com.typesafe.sbt.SbtScalariform._
-import sbtjslint.Plugin._
-import sbtjslint.Plugin.LintKeys._
+import com.earldouglas.xsbtwebplugin.PluginKeys._
 
 object Resolvers {
   val bootzookaResolvers = Seq(
@@ -135,6 +133,26 @@ object BootzookaBuild extends Build {
   import BuildSettings._
   import com.github.siasia.WebPlugin.webSettings
 
+  private def haltOnCmdResultError(result: Int) {
+    if(result != 0) {
+      throw new Exception("Build failed.")
+    }
+  }
+
+  def updateNpm() = (baseDirectory, streams) map { (bd, s) =>
+    println("Updating NPM dependencies")
+    haltOnCmdResultError(Process("npm install", bd)!)
+  }
+
+  def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
+    val localGruntCommand = "./node_modules/.bin/grunt " + taskName
+    def buildGrunt() = {
+      Process(localGruntCommand, bd / ".." / "bootzooka-ui").!
+    }
+    println("Building with Grunt.js : " + taskName)
+    haltOnCmdResultError(buildGrunt())
+  }
+
   lazy val parent: Project = Project(
     "bootzooka-root",
     file("."),
@@ -169,34 +187,29 @@ object BootzookaBuild extends Build {
   lazy val rest: Project = Project(
     "bootzooka-rest",
     file("bootzooka-rest"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided, smlCommonConfig))
-  ) dependsOn(service, domain, common)
-
-
-  val lintCustomSettings = lintSettingsFor(Test) ++ inConfig(Test)(Seq(
-    sourceDirectory in jslint <<= (baseDirectory)(_ / "src/main/webapp/scripts"),
-    excludeFilter in jslint := "angular-*.js" || "bootstrap-*.js" || "jquery*.js",
-    flags in jslint ++= Seq("undef", "vars", "browser", "plusplus"),
-    compile in Test <<= (compile in Test) dependsOn (jslint)
-  ))
-
-  lazy val ui: Project = Project(
-    "bootzooka-ui",
-    file("bootzooka-ui"),
-    settings = buildSettings ++ jasmineSettings ++ graphSettings ++ webSettings ++ lintCustomSettings ++ Seq(
+    settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(
+      libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided, smlCommonConfig),
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },
-      libraryDependencies ++= Seq(jetty, servletApiProvided),
-      appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "scripts" },
-      appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "scripts" / "vendor" },
-      jasmineTestDir <+= sourceDirectory { src => src / "test" / "unit" },
-      jasmineConfFile <+= sourceDirectory { src => src / "test" / "unit" / "test.dependencies.js" },
-      jasmineRequireJsFile <+= sourceDirectory { src => src / "test" / "lib" / "require" / "require-2.0.6.js" },
-      jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "unit" / "require.conf.js" }
-//      (test in Test) <<= (test in Test) dependsOn (jasmine))
+      // We need to include the whole webapp, hence replacing the resource directory
+      webappResources in Compile <<= baseDirectory {
+        bd => {
+          List(bd.getParentFile() / rest.base.getName / "src" / "main" / "webapp", bd.getParentFile() / ui.base.getName / "dist" / "webapp")
+        }
+      },
+      packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"),
+      libraryDependencies ++= Seq(jetty, servletApiProvided)
     )
-  ) dependsOn (rest)
+  ) dependsOn(service, domain, common)
+
+  lazy val ui = Project(
+    "bootzooka-ui",
+    file("bootzooka-ui"),
+    settings = buildSettings ++ Seq(
+      test in Test <<= (test in Test) dependsOn(updateNpm(), gruntTask("test"))
+    )
+  )
 
   lazy val uiTests = Project(
     "bootzooka-ui-tests",
