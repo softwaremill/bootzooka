@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka
 
 import dao.{MongoFactory, InMemoryFactory}
 import service.config.BootzookaConfiguration
-import service.entry.EntryService
 import service.PasswordRecoveryService
 import service.schedulers.{DummyEmailSendingService, ProductionEmailSendingService}
 import service.templates.EmailTemplatingEngine
@@ -28,8 +27,6 @@ trait Beans {
   lazy val userService = new UserService(userDao, new RegistrationDataValidator(), emailSendingService, emailTemplatingEngine)
 
   lazy val userDao = daoFactory.userDAO
-
-  lazy val entryService = new EntryService(daoFactory.entryDAO, userDao)
 
   lazy val passwordRecoveryService = new PasswordRecoveryService(userDao, daoFactory.codeDAO, emailSendingService, emailTemplatingEngine)
 
