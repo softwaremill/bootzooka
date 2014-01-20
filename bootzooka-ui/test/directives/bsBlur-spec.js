@@ -15,7 +15,7 @@ describe("Blur directive", function () {
         scope.callSpy = 'not called';
         scope.changeLogin = function() {
             scope.callSpy = 'called';
-        }
+        };
         $compile(elm)(scope);
         scope.$digest();
         form = scope.form;

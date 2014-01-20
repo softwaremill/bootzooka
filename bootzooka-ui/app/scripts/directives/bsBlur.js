@@ -5,5 +5,5 @@ angular.module('smlBootzooka.directives').directive('bsBlur', function () {
         element.bind("blur", function () {
             scope.$eval(attrs.bsBlur);
         });
-    }
+    };
 });

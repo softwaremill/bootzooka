@@ -10,11 +10,11 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
         if (self.shouldPerformLoginChange()) {
             ProfileService.changeLogin($scope.login, function () {
                 UserSessionService.loggedUser.login = $scope.login.concat();
-                showInfoMessage("Login changed!");
+                bootzooka.utils.showInfoMessage("Login changed!");
                 $scope.profileForm.login.$dirty = false;
                 $scope.profileForm.login.$pristine = true;
             }, function (error) {
-                showErrorMessage(error.value);
+                bootzooka.utils.showErrorMessage(error.value);
             });
         }
     };
@@ -27,11 +27,11 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
         if (self.shouldPerformEmailChange()) {
             ProfileService.changeEmail($scope.email, function () {
                 UserSessionService.loggedUser.email = $scope.email;
-                showInfoMessage("Email changed!");
+                bootzooka.utils.showInfoMessage("Email changed!");
                 $scope.profileForm.email.$dirty = false;
                 $scope.profileForm.email.$pristine = true;
             }, function (error) {
-                showErrorMessage(error.value);
+                bootzooka.utils.showErrorMessage(error.value);
             });
         }
     };
@@ -50,13 +50,13 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
         $scope.passwordChangeForm.newPasswordRepeated.$dirty = true;
         if ($scope.passwordChangeForm.$valid) {
             ProfileService.changePassword($scope.currentPassword, $scope.newPassword, function () {
-                showInfoMessage("Password changed!");
+                bootzooka.utils.showInfoMessage("Password changed!");
                 $scope.passwordChangeForm.$setPristine();
                 $scope.currentPassword = undefined;
                 $scope.newPassword = undefined;
                 $scope.newPasswordRepeated = undefined;
             }, function (error) {
-                showErrorMessage(error.value);
+                bootzooka.utils.showErrorMessage(error.value);
             });
         }
     };

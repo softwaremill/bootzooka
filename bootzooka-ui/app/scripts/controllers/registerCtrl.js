@@ -31,7 +31,7 @@ angular.module('smlBootzooka.profile').controller('RegisterCtrl', function Regis
     };
 
     this.registerFailed = function (message) {
-        showErrorMessage(message);
+        bootzooka.utils.showErrorMessage(message);
     };
 
 });

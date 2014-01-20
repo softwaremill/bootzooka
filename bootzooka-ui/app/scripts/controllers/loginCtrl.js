@@ -31,6 +31,6 @@ angular.module('smlBootzooka.profile').controller('LoginCtrl', function LoginCtr
     };
 
     this.loginFailed = function () {
-        showErrorMessage("Invalid login and/or password.");
+        bootzooka.utils.showErrorMessage("Invalid login and/or password.");
     };
 });

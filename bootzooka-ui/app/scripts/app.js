@@ -66,7 +66,7 @@ angular.module(
     }])
 
     .run(function ($rootScope, UserSessionService, $location) {
-        $rootScope.$on('$routeChangeStart', function(ev, next, current) {
+        $rootScope.$on('$routeChangeStart', function(ev, next) {
             if(next && next.auth && UserSessionService.isNotLogged()) {
                 $location.path('/login');
             }
@@ -77,7 +77,7 @@ angular.module(
         $rootScope.$on("$routeChangeSuccess", function () {
             var message = FlashService.get();
             if (angular.isDefined(message)) {
-                showInfoMessage(message);
+                bootzooka.utils.showInfoMessage(message);
             }
         });
     });
@@ -134,7 +134,7 @@ angular.module("ajaxthrobber", [])
     .directive("ajaxthrobber", function () {
         return {
             restrict: "E",
-            link: function (scope, element, attrs) {
+            link: function (scope, element) {
                 return scope.$watch("inProgressAjaxCount", function (count) {
                     if (count === 1) {
                         return $.blockUI({

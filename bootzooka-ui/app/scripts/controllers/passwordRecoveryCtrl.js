@@ -21,7 +21,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
     };
 
     this.failure = function (message) {
-        showErrorMessage(message);
+        bootzooka.utils.showErrorMessage(message);
     };
 
     $scope.resetPassword = function () {
@@ -40,7 +40,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
     };
 
     this.onChangeFailure = function (error) {
-        showErrorMessage(error.data.value);
+        bootzooka.utils.showErrorMessage(error.data.value);
         $location.search("code", null);
         $location.path("recover-lost-password");
     };

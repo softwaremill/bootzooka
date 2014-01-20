@@ -138,6 +138,7 @@ module.exports = function (grunt) {
             app: {
                 options: {
                     "globals": {
+                        bootzooka: false,
                         angular: false,
                         $: false,
                         jQuery: false

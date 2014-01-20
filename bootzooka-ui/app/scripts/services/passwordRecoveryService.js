@@ -24,7 +24,7 @@ angular.module("smlBootzooka.profile").factory("PasswordRecoveryService", functi
     };
 
     passwordRecoveryService.changePassword = function (code, password, onComplete, onError) {
-        self.changeResource.changePassword({code: code, password: password}, function (data) {
+        self.changeResource.changePassword({code: code, password: password}, function () {
             onComplete();
         }, function (error) {
             onError(error);
