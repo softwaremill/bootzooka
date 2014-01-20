@@ -66,3 +66,13 @@ html, body, .container, .content {
 }
 
 /* Sticky Footer End */
+
+.centered-block {
+    display: block;
+    text-align: center;
+}
+
+.sml-logo {
+    width: 20em;
+    vertical-align: middle;
+}
