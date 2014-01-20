@@ -1,112 +1,86 @@
 # Bootzooka
 
-Simple showcase project to allow quickly start with development process of modern web based application.
+Simple application scaffolding project to allow quick start of development process for modern web based application. It contains some features (that almost any application needs) out of the box (listed below). They are fully implemented on both server side and in browser client being modern Single Page Application.
 
-Live demo is available on http://bootzooka.softwaremill.com.
-* [Changelog](#changelog)
-    * [Iteration 12](#iteration-12)
-    * [Iteration 11](#iteration-11)
-    * [Iteration 10](#iteration-10)
-    * [Iteration 9](#iteration-9)
-    * [Iteration 8](#iteration-8)
-    * [Iteration 7](#iteration-7)
-    * [Iteration 6](#iteration-6)
-* [Technology stack](#technology-stack)
-    * [Why Scala?](#why-scala)
-    * [Why AngularJS?](#why-angularjs)
-    * [Why Scalatra?](#why-scalatra)
-    * [Why Amazon SQS?](#why-amazon-sqs)
-    * [Why sbt?](#why-sbt)
-* [How to run](#how-to-run)
-* [How to execute tests](#how-to-execute-tests)
-* [How to develop](#how-to-develop)
-    * [Useful sbt commands](#useful-sbt-commands)
-    * [Keep code in shape](#keep-code-in-shape)
-* [How to configure](#how-to-configure)
-* [REST API reference](#rest-api-reference)
-* [License](#license)
+*	Users registration & lost password recovery
+*	Logging in/out & profile management
 
-Project is divided in few separated modules but basically we have UI which is base on [AngularJS](http://angularjs.org/)
-and REST backend based on [Scalatra](http://www.scalatra.org/).
-Backend can be interchanged as there is no dependency between frontend and backend - [spray.io](http://spray.io/) was also an option.
+This may not sound really cool but in fact Bootzooka is really helpful when bootstrapping new project. This is because besides of features mentioned it contains all required setup and automation of build processes for both frontend and backend. You get it out of the box which means significantly less time spent on setting up infrastructure and tools and more time spent on actual coding features in project.
 
+Live demo is available on [http://bootzooka.softwaremill.com](http://bootzooka.softwaremill.com).
 
-## Changelog
-
-### Iteration 12
-* REST API documentation exposed by [Swagger](http://swagger.wordnik.com) and browsable with Swagger UI
-
-### Iteration 11
-* Renamed project to Bootzooka
-* Added TeamCity Reporter for Jasmine Tests
-
-### Iteration 10
-* Switch to Scala 2.10
-* Salat DAOs migrated to Rogue
-* Compatibility fixes for mobile browsers
-* Reorganization of UI project structure
-
-### Iteration 9
-* UI tests reimplemented in Scala
-
-### Iteration 8
-* Possibility to run UI tests
-
-### Iteration 7
-* Changing profile data - login and e-mail
-* Changing password
-
-### Iteration 6
-* Possibility to reset forgotten password
 
 ## Technology stack
 
+Bootzooka's stack consists of the following technologies/tools:
+
+*	Scala (JVM based language)
+*	Scalatra(simple web framework to expose JSON API)
+*	MongoDB (persistence)
+*	Rogue/Lift Record (talk to MongoDB from Scala)
+*	AngularJS + HTML5 (browser part)
+*	SBT & Grunt.js (build tools)
+
 ### Why Scala?
 
-Why not :-)
+At [SoftwareMill](http://softwaremill.com) we have great number of our projects in Scala. It's our default go-to language for server-side.
 
 ### Why AngularJS?
 
-Basically it's the hottest JavaScirpt framework right now, developed and supported by Google.
-It offers complete solution to build dynamic and modern HTML5 based web applications.
-And at last from version 1.x is quite stable :-)
-
-It's also worth to notice that there are plans to natively support DOM templating with the next generation of web browsers
-- thus it can be huge advantage of the AngularJS over other frameworks.
+Basically it's the hottest JavaScirpt framework right now, developed and supported by Google and we use it a lot in [SoftwareMill](http://softwaremill.com). It offers complete solution to build dynamic and modern HTML5 based web applications.
 
 ### Why Scalatra?
 
-It's quite simple and easy to jump into Scalatra for an ordinary Java developer whom used Servlets previously.
-The syntax of the flow directives is straightforward and it was easy to integrate support for JSON into it.
-And it's written in Scala from scratch which seamlessly integrates with other Scala based libraries.
+It's quite simple and easy to jump into Scalatra for an ordinary Java developer whom used Servlets previously. The syntax of the flow directives is straightforward and it was easy to integrate support for JSON into it. And it's written in Scala from scratch which seamlessly integrates with other Scala based libraries.
 
-### Why Amazon SQS?
+### Why SBT?
 
-It is a convenient queueing solution that allows to decuple message storing and reading. And it resides in the cloud, 
-what could be more cool than that? Of course we could use simple queue stored in the MongoDB, but this project is
-not supposed to be boring :)
+The answer can be hard. It is easy to start using [sbt](http://www.scala-sbt.org/), but when things get hard, it's very difficult to find good examples or supporting documents. But at the end it's a dedicated tool for Scala platform and it became de-facto standard in Scala community.
 
-### Why sbt?
+## High-level architeture
 
-The answer can be hard. It is easy to start using [sbt](http://www.scala-sbt.org/), but when things get hard, it's very difficult to find good examples
-or supporting documents. But at the end it's a dedicated tool for Scala platform, so why not to try it :-)
+On the highest level Bootzooka is structured according to how modern web applications are done these days.
+
+Server exposes JSON API which can be consumed by any client you want. In case of Bootzooka this client is typical browser application built with AngularJS. Such approach allows better scaling and independent development of both server and client parts. This separation is mirrored in how Bootzooka projects are structured.
+
+There are several projects (directories) containing server-side code and one for client-side application. They are completely unrelated in terms of code and dependencies. `bootzooka-ui` directory contains browser part (JavaScript, CSS, HTML) and the others are building blocks of server application which contains its entry points in `bootzooka-rest` project.
+
+## Prerequisities
+
+In order to build and develop on Bootzooka foundations you need the following:
+
+*	Java JDK
+*	SBT (although it is also delivered as part of Bootzooka)
+*	Node.js for frontend development automation
 
 ## How to run
 
-To run application, simply clone the source code, enter the directory and type _./run.sh_ or _run.bat_ depends on your OS,
-navigate your web browser to http://localhost:8080/ and start using the application. By default application is using in-memory
-queue and dummy e-mail sender.
+Because (as said before) Bootzooka contains of two separate applications, in development you need to run both separately.
+
+*** NOTE: This is not the case in production by default. When final WAR package is built it composes both client and server parts into one application that can be dropped into any servlet container. ***
+
+#### Server
+To run server part, enter the directory and type `./run.sh` or `run.bat` depends on your OS.
+
+#### Browser client
+To run Bootzooka in browser, go to `bootzooka-ui` project and issue `grunt server` from command line (if you have Grunt installed globally) or `node_modules/.bin/grunt server` if you have it locally.
+
+For details of frontend build and architecture go to [bootzooka-ui project](bootzooka-ui).
+
 
 ## How to execute tests
 
-Because some tests are using MongoDB you should have it installed on your machine. Additionally you should
-let SBT know where MongoDB files are located. To do that please add one line to your ~/.sbt/local.sbt:
+Because some tests are using MongoDB you should have it installed on your machine. Additionally you should let SBT know where MongoDB files are located. To do that please add one line to your ~/.sbt/local.sbt:
 
     SettingKey[File]("mongo-directory") := file("/Users/your_user/apps/mongodb")
 
 with proper path to your MongoDB installation directory.
 
 After that SBT will start MongoDB instance before executing each test class that exetends SpeficationWithMongo trait.
+
+When you issue `test` from SBT, tests for both server-side and client-side components are run. SBT integrates some Grunt commands and executes tests for browser part via Grunt too.
+
+#### UI Tests
 
 It is now also possible to run UI tests. We have added a new project, bootzooka-ui-tests, that contains tests for UI.
 This project is not part of the normal build and hence these tests must be run manually. To do it, simply run sbt in the bootzooka
@@ -129,30 +103,36 @@ These tests are written using WebDriver and __you need Firefox 20__ to properly 
 
 ## How to develop
 
-If you want to start develop new features, you must have sbt version 0.12.1 installed. Enter the same directory as above and type _sbt_
-to start the sbt console. Few plugins are already integrated with t
+### Server
 
-* IDE configuration: we are using the best IDE right now - IntelliJ IDEA - to be able open project with it you must generate project files, you can do that with: _gen-idea_
-* web server: right now Jetty is integrated with the project, you can start it from the sbt console with: _container:start_
+If you want to start develop new features on server side, you must have sbt version 0.12.1 installed. Enter the same directory as above and type `sbt` to start the sbt console. Few plugins are already integrated with Bootzooka:
 
-There are two implementations of storage - in-memory and mongo - you must install MongoDB and start it before starting the application (when started with run.sh/run.bat the in-memory storage is used)
+*	IDE configuration: we are using the best IDE right now - IntelliJ IDEA - to be able open project with it you must generate project files, you can do that with: `gen-idea`
+* 	web server: right now Jetty is integrated with the project, you can start it from the sbt console with: `container:start`
 
-### Useful sbt commands
+There are two implementations of storage - in-memory and mongo - you must install MongoDB and start it before starting the application (when started with `run.sh`/`run.bat` the in-memory storage is used)
 
-* _compile_ - compile the whole project
-* _test_ - run all the tests
-* _project &lt;sub-project-name&gt;_ - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achieved with: _&lt;sub-project-name&gt;/test_
-* _container:start_ - starts the embedded Jetty container
-* _container:reload /_ - reloads application at context /
-* _~;container:start; container:reload /_ - runs container and waits for source code changes to automatically compile changed file and to reload it
-* _scalariform-format_ - execute Scalariform code formatter. More about it below in 'Keep code in shape' section
-* _jslint_ - execute JSLint JavaScript code quality checker. It prints results to the console and writes them in /target/jslint/results.xml
+#### Useful sbt commands
 
-### Keep code in shape
+* `compile` - compile the whole project
+* `test` - run all the tests
+* `project <sub-project-name>` - switch context to given sub-project, then all the commands will be execute only for that sub-project, thus can be also achieved with: `<sub-project-name>/test`
+* `container:start` - starts the embedded Jetty container
+* `container:reload /` - reloads application at context /
+* `~;container:start; container:reload /` - runs container and waits for source code changes to automatically compile changed file and to reload it
+* `scalariform-format` - execute Scalariform code formatter. More about it below in 'Keep code in shape' section
 
-To keep code in shape we are using [Scalariform](https://github.com/mdr/scalariform) code formatter for Scala along with sbt plugin [Sbt-Scalariform](https://github.com/sbt/sbt-scalariform). We have intentionally disabled auto code-formatting during compile or test execution so to run formatter please use _sbt scalariform-format_ command. It checks code against various styling rules and applies all neccessary fixes. 
+#### Keep code in shape
 
-For JavaScript we are using [SBT JSLint Plugin](https://github.com/philcali/sbt-jslint) serving the same purpose. JSLint is executed during test phase.
+To keep code in shape we are using [Scalariform](https://github.com/mdr/scalariform) code formatter for Scala along with sbt plugin [Sbt-Scalariform](https://github.com/sbt/sbt-scalariform). We have intentionally disabled auto code-formatting during compile or test execution so to run formatter please use `sbt scalariform-format` command. It checks code against various styling rules and applies all neccessary fixes.
+
+### Browser client
+
+You need `node.js` and `grunt` to be available. For details please see [bootzooka-ui project](bootzooka-ui). It contains detailed instruction on how to set it up and run.
+
+In general you just run `grunt server` (or `node_modules/.bin/grunt server` - details described in link above) which fires up your default browser and opens Bootzooka main page. This page consumes JSON API exposed by server and it all sums up to complete application. When you run grunt, files in `bootzooka-ui` project is watched and if any of them is changed Grunt does it's work and automatically reloads your browser with changes you've just made.
+
+[bootzooka-ui project README](bootzooka-ui) contains detailed description of tasks available for Grunt such as tests, autotests, livereload, distribution building etc.
 
 ## How to configure
 
@@ -165,9 +145,9 @@ _application.conf_ file should be placed next to _application.conf.template_
 
 ## REST API reference
 
-The REST API documentation exposed by [Swagger](http://swagger.wordnik.com) is available at /api-docs in your running application.
+The JSON API documentation exposed by [Swagger](http://swagger.wordnik.com) is available at /api-docs in your running application.
 
-You can also browse the [REST API provided by our live demo](http://bootzooka.softwaremill.com/api-docs).
+You can also browse the [JSON API provided by our live demo](http://bootzooka.softwaremill.com/api-docs).
 
 ## License
 
