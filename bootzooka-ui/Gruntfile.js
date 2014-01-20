@@ -131,8 +131,50 @@ module.exports = function (grunt) {
         clean: {
             dist: ['dist', 'tmp'],
             tmp: 'tmp'
-        }
+        },
 
+        jshint: {
+            options: grunt.file.readJSON('./.jshintrc'),
+            app: {
+                options: {
+                    "globals": {
+                        angular: false,
+                        $: false,
+                        jQuery: false
+                    }
+
+                },
+                files: {
+                    src: ['app/scripts/**/*.js']
+                }
+            },
+            tests: {
+                options: {
+                    "globals": {
+                        angular: false,
+                        $: false,
+
+                        // Jasmine stuff
+                        jasmine: false,
+                        expect: false,
+                        spyOn: false,
+                        describe: false,
+                        it: false,
+                        beforeEach: false,
+                        afterEach: false,
+
+                        // Angular mock stuff
+                        inject: false,
+                        module: false
+                    }
+
+                },
+                files: {
+                    src: ['test/**/*.js']
+                }
+
+            }
+        }
     });
 
     require('matchdep').filterDev('grunt-*').forEach(function (dep) {
