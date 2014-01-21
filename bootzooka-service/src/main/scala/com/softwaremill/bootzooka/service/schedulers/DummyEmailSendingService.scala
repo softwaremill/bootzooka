@@ -17,7 +17,6 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
       sentEmails ++= emailsToSend
       emailsToSend.clear()
     }
-    logger.info("I should be sending emails now but I am dummy :)")
     for (email <- tempList) {
       logger.info("Dummy send email: " + emailToString(email))
     }
