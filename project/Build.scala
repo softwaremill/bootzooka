@@ -131,7 +131,7 @@ object BootzookaBuild extends Build {
 
   import Dependencies._
   import BuildSettings._
-  import com.github.siasia.WebPlugin.webSettings
+  import com.earldouglas.xsbtwebplugin.WebPlugin.webSettings
 
   private def haltOnCmdResultError(result: Int) {
     if(result != 0) {
