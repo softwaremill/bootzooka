@@ -50,7 +50,7 @@ There are several projects (directories) containing server-side code and one for
 In order to build and develop on Bootzooka foundations you need the following:
 
 *	Java JDK
-*	SBT (although it is also delivered as part of Bootzooka)
+*	SBT
 *	Node.js for frontend development automation
 
 ## How to run
