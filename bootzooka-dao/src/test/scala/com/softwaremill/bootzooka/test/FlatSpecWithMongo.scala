@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.dao
+package com.softwaremill.bootzooka.test
 
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 import net.liftweb.mongodb.{MongoDB, DefaultMongoIdentifier}

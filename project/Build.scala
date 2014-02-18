@@ -96,7 +96,6 @@ object Dependencies {
 
   val javaxMail = "javax.mail" % "mail" % "1.4.5"
 
-  val smlCommonUtil = "com.softwaremill.common" % "softwaremill-util" % smlCommonVersion
   val smlCommonSqs = "com.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
   val smlCommonConfig = "com.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
 
@@ -172,7 +171,7 @@ object BootzookaBuild extends Build {
   lazy val dao: Project = Project(
     "bootzooka-dao",
     file("bootzooka-dao"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= rogue ++ Seq(smlCommonUtil))
+    settings = buildSettings ++ Seq(libraryDependencies ++= rogue)
   ) dependsOn(domain, common)
 
   lazy val service: Project = Project(

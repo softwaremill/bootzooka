@@ -4,12 +4,12 @@ import java.util.concurrent.TimeUnit
 import pages.RegistrationPage
 import org.openqa.selenium.support.PageFactory
 import org.fest.assertions.Assertions
-import com.softwaremill.common.util.RichString
 import com.jayway.awaitility.scala.AwaitilitySupport
 import com.jayway.awaitility.Awaitility._
+import com.softwaremill.bootzooka.common.Utils
 
 class ScalaRegisterUITest extends BootzookaUITest with AwaitilitySupport {
-  final val LOGIN = RichString.generateRandom(5)
+  final val LOGIN = Utils.randomString(5)
   final val EMAIL = LOGIN + "@example.org"
   final val PASSWORD = "test"
 

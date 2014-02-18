@@ -4,6 +4,7 @@ import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.bson.types.ObjectId
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{FlatSpec, BeforeAndAfterAll}
+import com.softwaremill.bootzooka.test.FlatSpecWithMongo
 
 class MongoPasswordResetCodeDAOSpec extends FlatSpecWithMongo with PasswordResetCodeDAOSpec {
   behavior of "MongoPasswordResetCodeDAO"

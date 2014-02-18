@@ -5,6 +5,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 import org.bson.types.ObjectId
 import com.typesafe.scalalogging.slf4j.Logging
+import com.softwaremill.bootzooka.test.FlatSpecWithMongo
 
 class MongoUserDAOSpec extends FlatSpecWithMongo with UserDAOSpec {
   behavior of "MongoUserDAO"

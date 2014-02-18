@@ -5,16 +5,16 @@ import schedulers.EmailSendingService
 import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO}
 import templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.domain.User
-import com.softwaremill.common.util.RichString
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.joda.time.DateTime
 import com.typesafe.scalalogging.slf4j.Logging
+import com.softwaremill.bootzooka.common.Utils
 
-/**
- * .
- */
-class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
-                              emailSendingService: EmailSendingService, emailTemplatingEngine: EmailTemplatingEngine) extends Logging {
+class PasswordRecoveryService(
+  userDao: UserDAO,
+  codeDao: PasswordResetCodeDAO,
+  emailSendingService: EmailSendingService,
+  emailTemplatingEngine: EmailTemplatingEngine) extends Logging {
 
   def sendResetCodeToUser(login: String) {
     logger.debug("Preparing to generate and send reset code to user")
@@ -25,7 +25,7 @@ class PasswordRecoveryService(userDao: UserDAO, codeDao: PasswordResetCodeDAO,
       case Some(user) => {
         logger.debug("User found")
         val user = userOption.get
-        val code = PasswordResetCode(RichString.generateRandom(32), user.id)
+        val code = PasswordResetCode(Utils.randomString(32), user.id)
         storeCode(code)
         sendCode(user, code)
       }

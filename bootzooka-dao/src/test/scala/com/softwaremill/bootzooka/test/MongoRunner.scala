@@ -1,7 +1,6 @@
-package com.softwaremill.bootzooka.dao
+package com.softwaremill.bootzooka.test
 
 import java.io.File
-import com.softwaremill.common.util.io.KillableProcess
 import com.mongodb.ServerAddress
 import java.util.Scanner
 import java.util.regex.Pattern
@@ -13,7 +12,7 @@ class MongoRunner(process: KillableProcess, temporaryDataDir: File, port: Int, p
   def serverAddress() = new ServerAddress("localhost", port)
 
   def stop() {
-    val scanner = processOutputScannerForMessage(process.getProcess, "dbexit: really exiting now")
+    val scanner = processOutputScannerForMessage(process.process, "dbexit: really exiting now")
     process.sendSigInt()
     try {
       scanner.next()
@@ -68,7 +67,7 @@ object MongoRunner extends Logging {
 
     try {
       mongoRunner
-        .processOutputScannerForMessage(killableProcess.getProcess, "waiting for connections on port "+port)
+        .processOutputScannerForMessage(killableProcess.process, "waiting for connections on port "+port)
         .next()
     } catch {
       case element:NoSuchElementException =>

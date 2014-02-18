@@ -5,8 +5,8 @@ import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.schedulers.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
-import com.softwaremill.common.util.RichString
 import java.util.UUID
+import com.softwaremill.bootzooka.common.Utils
 
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
                   emailTemplatingEngine: EmailTemplatingEngine) {
@@ -24,7 +24,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def registerNewUser(login: String, email: String, password: String) {
-    val salt = RichString.generateRandom(16)
+    val salt = Utils.randomString(16)
     val token = UUID.randomUUID().toString
     userDAO.add(User(login, email.toLowerCase, password, salt, token))
     val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
