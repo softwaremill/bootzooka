@@ -143,12 +143,6 @@ All configuration should be stored in _application.conf_ file. Please check _app
 
 _application.conf_ file should be placed next to _application.conf.template_
 
-## REST API reference
-
-The JSON API documentation exposed by [Swagger](http://swagger.wordnik.com) is available at /api-docs in your running application.
-
-You can also browse the [JSON API provided by our live demo](http://bootzooka.softwaremill.com/api-docs).
-
 ## License
 
 Project is licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) which means you can freely use any part of the project.

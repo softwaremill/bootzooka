@@ -7,7 +7,6 @@ import service.schedulers.{DummyEmailSendingService, ProductionEmailSendingServi
 import service.templates.EmailTemplatingEngine
 import service.user.{RegistrationDataValidator, UserService}
 import java.util.concurrent.Executors
-import com.softwaremill.bootzooka.rest.BootzookaSwagger
 import com.typesafe.scalalogging.slf4j.Logging
 
 trait Beans extends Logging {
@@ -36,7 +35,4 @@ trait Beans extends Logging {
   lazy val userDao = daoFactory.userDAO
 
   lazy val passwordRecoveryService = new PasswordRecoveryService(userDao, daoFactory.codeDAO, emailSendingService, emailTemplatingEngine)
-
-  val swagger = new BootzookaSwagger
-
 }

@@ -19,10 +19,8 @@ class ScalatraBootstrap extends LifeCycle with Beans {
 
     scheduler.scheduleAtFixedRate(emailSendingService, 60, 1, TimeUnit.SECONDS)
 
-    context.mount(new UsersServlet(userService, swagger), Prefix + UsersServlet.MAPPING_PATH)
+    context.mount(new UsersServlet(userService), Prefix + UsersServlet.MAPPING_PATH)
     context.mount(new PasswordRecoveryServlet(passwordRecoveryService, userService), Prefix + "passwordrecovery")
-
-    context.mount(new SwaggerApiDoc(swagger), Prefix + "api-docs/*")
 
     context.put("bootzooka", this)
   }
