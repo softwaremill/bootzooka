@@ -24,7 +24,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def registerNewUser(login: String, email: String, password: String) {
-    val salt = Utils.randomString(16)
+    val salt = Utils.randomString(128)
     val token = UUID.randomUUID().toString
     userDAO.add(User(login, email.toLowerCase, password, salt, token))
     val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
