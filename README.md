@@ -136,12 +136,12 @@ In general you just run `grunt server` (or `node_modules/.bin/grunt server` - de
 
 ## How to configure
 
-All configuration should be stored in _application.conf_ file. Please check _application.conf.template_ to see what values are needed.
+Configuration is done through the [Typesafe Config](https://github.com/typesafehub/scalalogging) library.
 
-* To have Amazon SQS running you have to provide AWSAccessKeyId, SecretAccessKey and name of existing queue defined on your AWS account.
-* To have e-mail sender working please provide smtp details (host, port, password, username). For smtp service working on localhost please comment smtpUsername key so EmailSender will know that he should use not secured smtp service.
+Reference configuration is stored in the _reference.conf_ file. You can either modify that file directly or override
+it using system properties (see Typesafe Config's readme on how to do that).
 
-_application.conf_ file should be placed next to _application.conf.template_
+* To have e-mail sender working please provide smtp details (host, port, password, username).
 
 ## License
 

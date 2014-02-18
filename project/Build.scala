@@ -4,16 +4,6 @@ import net.virtualvoid.sbt.graph.Plugin._
 import com.typesafe.sbt.SbtScalariform._
 import com.earldouglas.xsbtwebplugin.PluginKeys._
 
-object Resolvers {
-  val bootzookaResolvers = Seq(
-    "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases/",
-    "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-    "SotwareMill Public Releases" at "https://nexus.softwaremill.com/content/repositories/releases/",
-    "SotwareMill Public Snapshots" at "https://nexus.softwaremill.com/content/repositories/snapshots/",
-    "TorqueBox Releases" at "http://rubygems-proxy.torquebox.org/releases"
-  )
-}
-
 object BuildSettings {
 
   import Resolvers._
@@ -26,7 +16,6 @@ object BuildSettings {
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.10.3",
 
-    resolvers := bootzookaResolvers,
     scalacOptions += "-unchecked",
     classpathTypes ~= (_ + "orbit"),
     libraryDependencies ++= Dependencies.testingDependencies,
@@ -68,6 +57,8 @@ object Dependencies {
 
   val logging = Seq(slf4jApi, logBackClassic, scalaLogging)
 
+  val typesafeConfig = "com.typesafe" % "config" % "1.0.1"
+
   val guava = "com.google.guava" % "guava" % "16.0.1"
   val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "2.0.1"
 
@@ -95,8 +86,6 @@ object Dependencies {
   val testingDependencies = Seq(mockito, scalatest)
 
   val javaxMail = "javax.mail" % "mail" % "1.4.5"
-
-  val smlCommonConfig = "com.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
 
   val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.1"
 
@@ -176,14 +165,14 @@ object BootzookaBuild extends Build {
   lazy val service: Project = Project(
     "bootzooka-service",
     file("bootzooka-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, smlCommonConfig, javaxMail, scalate))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, javaxMail, scalate, typesafeConfig))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
     "bootzooka-rest",
     file("bootzooka-rest"),
     settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(
-      libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided, smlCommonConfig),
+      libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided),
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },

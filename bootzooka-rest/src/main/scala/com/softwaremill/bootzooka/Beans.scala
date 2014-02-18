@@ -1,14 +1,19 @@
 package com.softwaremill.bootzooka
 
 import dao.{MongoFactory, InMemoryFactory}
-import service.config.BootzookaConfiguration
+import com.softwaremill.bootzooka.service.config.{EmailConfig, BootzookaConfig}
 import service.PasswordRecoveryService
 import service.email.{DummyEmailSendingService, ProductionEmailSendingService}
 import service.templates.EmailTemplatingEngine
 import service.user.{RegistrationDataValidator, UserService}
 import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.config.ConfigFactory
 
 trait Beans extends Logging {
+  lazy val config = new BootzookaConfig with EmailConfig {
+    override def rootConfig = ConfigFactory.load()
+  }
+
   lazy val daoFactory = sys.props.get("withInMemory") match {
     case Some(value) => {
       logger.info("Starting with in-memory persistence")
@@ -17,12 +22,11 @@ trait Beans extends Logging {
     case None => new MongoFactory
   }
 
-  lazy val emailScheduler = Option(BootzookaConfiguration.smtpHost) match {
-    case Some(host) => new ProductionEmailSendingService
-    case None => {
-      logger.info("Starting with fake email sending service. No emails will be sent.")
-      new DummyEmailSendingService
-    }
+  lazy val emailScheduler = if (config.emailEnabled) {
+    new ProductionEmailSendingService(config)
+  } else {
+    logger.info("Starting with fake email sending service. No emails will be sent.")
+    new DummyEmailSendingService
   }
 
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
@@ -31,5 +35,6 @@ trait Beans extends Logging {
 
   lazy val userDao = daoFactory.userDAO
 
-  lazy val passwordRecoveryService = new PasswordRecoveryService(userDao, daoFactory.codeDAO, emailScheduler, emailTemplatingEngine)
+  lazy val passwordRecoveryService = new PasswordRecoveryService(userDao, daoFactory.codeDAO, emailScheduler,
+    emailTemplatingEngine, config)
 }

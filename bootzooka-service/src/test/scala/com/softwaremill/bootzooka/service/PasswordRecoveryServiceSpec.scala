@@ -13,6 +13,7 @@ import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.mockito.Matchers._
 import com.softwaremill.bootzooka.service.email.EmailScheduler
+import com.softwaremill.bootzooka.service.config.BootzookaConfig
 
 class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
   val invalidLogin = "user2"
@@ -23,7 +24,11 @@ class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with Mock
     val codeDao = mock[PasswordResetCodeDAO]
     val emailScheduler = mock[EmailScheduler]
     val emailTemplatingEngine = mock[EmailTemplatingEngine]
-    val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailScheduler, emailTemplatingEngine)
+    val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailScheduler, emailTemplatingEngine,
+      new BootzookaConfig {
+        override def rootConfig = null
+        override lazy val bootzookaResetLinkPattern = "%s"
+      })
 
     test(userDao, codeDao, emailScheduler, passwordRecoveryService, emailTemplatingEngine)
   }
