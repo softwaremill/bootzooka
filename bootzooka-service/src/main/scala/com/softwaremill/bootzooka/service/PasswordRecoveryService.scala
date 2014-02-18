@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka.service
 
 import config.BootzookaConfiguration
-import schedulers.EmailSendingService
 import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO}
 import templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.domain.User
@@ -9,11 +8,12 @@ import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.joda.time.DateTime
 import com.typesafe.scalalogging.slf4j.Logging
 import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.service.email.EmailScheduler
 
 class PasswordRecoveryService(
   userDao: UserDAO,
   codeDao: PasswordResetCodeDAO,
-  emailSendingService: EmailSendingService,
+  emailScheduler: EmailScheduler,
   emailTemplatingEngine: EmailTemplatingEngine) extends Logging {
 
   def sendResetCodeToUser(login: String) {
@@ -40,7 +40,7 @@ class PasswordRecoveryService(
 
   private def sendCode(user: User, code: PasswordResetCode) {
     logger.debug("Scheduling e-mail with reset code")
-    emailSendingService.scheduleEmail(user.email, prepareResetEmail(user, code))
+    emailScheduler.scheduleEmail(user.email, prepareResetEmail(user, code))
   }
 
   private def prepareResetEmail(user: User, code: PasswordResetCode) = {

@@ -1,10 +1,11 @@
-package com.softwaremill.bootzooka.service.schedulers
+package com.softwaremill.bootzooka.service.email
 
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
 import collection.mutable.ListBuffer
 import com.softwaremill.common.sqs.util.EmailDescription
+import com.typesafe.scalalogging.slf4j.Logging
 
-class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
+class DummyEmailSendingService extends EmailScheduler with Logging {
 
   private val emailsToSend: ListBuffer[EmailDescription] = ListBuffer()
 
@@ -31,7 +32,7 @@ class DummyEmailSendingService extends EmailSendingService with EmailScheduler {
     this.synchronized {
       emailsToSend += new EmailDescription(address, emailData.content, emailData.subject)
     }
-    logger.debug("Email to " + address + " scheduled")
+    logger.debug(s"Email to $address scheduled.")
   }
 
   def wasEmailSent(address: String, subject: String): Boolean = {

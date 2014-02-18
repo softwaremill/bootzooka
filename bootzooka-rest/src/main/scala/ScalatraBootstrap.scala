@@ -1,5 +1,4 @@
 import com.mongodb.Mongo
-import java.util.concurrent.TimeUnit
 import net.liftweb.mongodb.{DefaultMongoIdentifier, MongoDB}
 import com.softwaremill.bootzooka.Beans
 import com.softwaremill.bootzooka.rest._
@@ -17,17 +16,13 @@ class ScalatraBootstrap extends LifeCycle with Beans {
   override def init(context: ServletContext) {
     MongoDB.defineDb(DefaultMongoIdentifier, new Mongo, "bootzooka")
 
-    scheduler.scheduleAtFixedRate(emailSendingService, 60, 1, TimeUnit.SECONDS)
-
     context.mount(new UsersServlet(userService), Prefix + UsersServlet.MAPPING_PATH)
     context.mount(new PasswordRecoveryServlet(passwordRecoveryService, userService), Prefix + "passwordrecovery")
 
     context.put("bootzooka", this)
   }
 
-
   override def destroy(context: ServletContext) {
-    scheduler.shutdownNow()
-  }
 
+  }
 }

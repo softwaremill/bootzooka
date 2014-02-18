@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.service.user
 import com.softwaremill.bootzooka.dao.UserDAO
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
-import com.softwaremill.bootzooka.service.schedulers.EmailScheduler
+import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import java.util.UUID
 import com.softwaremill.bootzooka.common.Utils

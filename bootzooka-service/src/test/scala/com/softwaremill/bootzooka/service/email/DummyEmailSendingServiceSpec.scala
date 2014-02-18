@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.service.schedulers
+package com.softwaremill.bootzooka.service.email
 
 import org.scalatest.FunSpec
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject

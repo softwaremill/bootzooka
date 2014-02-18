@@ -5,7 +5,7 @@ import com.softwaremill.bootzooka.dao.InMemoryUserDAO
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.BootzookaServletSpec
 import org.json4s.JsonDSL._
-import com.softwaremill.bootzooka.service.schedulers.DummyEmailSendingService
+import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import org.mockito.Matchers._
 import org.mockito.Mockito._

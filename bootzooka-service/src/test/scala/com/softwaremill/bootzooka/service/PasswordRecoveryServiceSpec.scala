@@ -1,6 +1,5 @@
 package com.softwaremill.bootzooka.service
 
-import schedulers.EmailSendingService
 import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO, InMemoryUserDAO}
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import templates.{EmailTemplatingEngine, EmailContentWithSubject}
@@ -13,19 +12,20 @@ import org.scalatest.mock.MockitoSugar
 import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.mockito.Matchers._
+import com.softwaremill.bootzooka.service.email.EmailScheduler
 
 class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
   val invalidLogin = "user2"
   val validLogin = "user"
 
-  def withCleanMocks(test: (UserDAO, PasswordResetCodeDAO, EmailSendingService, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
+  def withCleanMocks(test: (UserDAO, PasswordResetCodeDAO, EmailScheduler, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
     val userDao = prepareUserDaoMock
     val codeDao = mock[PasswordResetCodeDAO]
-    val emailSendingService = mock[EmailSendingService]
+    val emailScheduler = mock[EmailScheduler]
     val emailTemplatingEngine = mock[EmailTemplatingEngine]
-    val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailSendingService, emailTemplatingEngine)
+    val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailScheduler, emailTemplatingEngine)
 
-    test(userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine)
+    test(userDao, codeDao, emailScheduler, passwordRecoveryService, emailTemplatingEngine)
   }
 
   def prepareUserDaoMock = {

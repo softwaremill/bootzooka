@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka.service.user
 
 import com.softwaremill.bootzooka.dao.{InMemoryUserDAO, UserDAO}
 import com.softwaremill.bootzooka.domain.User
-import com.softwaremill.bootzooka.service.schedulers.EmailSendingService
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -10,6 +9,7 @@ import org.scalatest.{BeforeAndAfter, FlatSpec}
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers
+import com.softwaremill.bootzooka.service.email.EmailScheduler
 
 class UserServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar with BeforeAndAfter {
   def prepareUserDAOMock: UserDAO = {
@@ -20,14 +20,14 @@ class UserServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar wit
   }
 
   val registrationDataValidator: RegistrationDataValidator = mock[RegistrationDataValidator]
-  val emailSendingService: EmailSendingService = mock[EmailSendingService]
+  val emailScheduler = mock[EmailScheduler]
   val emailTemplatingEngine = mock[EmailTemplatingEngine]
   var userDAO: UserDAO = _
   var userService: UserService = _
 
   before {
     userDAO = prepareUserDAOMock
-    userService = new UserService(userDAO, registrationDataValidator, emailSendingService, emailTemplatingEngine)
+    userService = new UserService(userDAO, registrationDataValidator, emailScheduler, emailTemplatingEngine)
   }
 
   // this test is silly :\
@@ -89,7 +89,7 @@ class UserServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar wit
     user.login should be ("John")
     user.loginLowerCased should be ("john")
     verify(emailTemplatingEngine).registrationConfirmation(Matchers.eq("John"))
-    verify(emailSendingService)
+    verify(emailScheduler)
       .scheduleEmail(Matchers.eq("newUser@sml.com"), any[EmailContentWithSubject])
   }
 
@@ -102,7 +102,7 @@ class UserServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar wit
       case e: Exception =>
     }
     // Then
-    verify(emailSendingService, never()).scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
+    verify(emailScheduler, never()).scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
   }
 
   "changeEmail" should "change email for specified user" in {

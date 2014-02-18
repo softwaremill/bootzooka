@@ -96,7 +96,6 @@ object Dependencies {
 
   val javaxMail = "javax.mail" % "mail" % "1.4.5"
 
-  val smlCommonSqs = "com.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
   val smlCommonConfig = "com.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
 
   val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.1"
@@ -177,8 +176,7 @@ object BootzookaBuild extends Build {
   lazy val service: Project = Project(
     "bootzooka-service",
     file("bootzooka-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, smlCommonSqs, smlCommonConfig,
-      javaxMail, scalate))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, smlCommonConfig, javaxMail, scalate))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(

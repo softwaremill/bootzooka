@@ -7,7 +7,7 @@ import javax.servlet.ServletContext
 import org.openqa.selenium.firefox.FirefoxDriver
 import java.util.concurrent.TimeUnit
 import com.softwaremill.bootzooka.Beans
-import com.softwaremill.bootzooka.service.schedulers.DummyEmailSendingService
+import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import pages.{MessagesPage, LoginPage}
 import org.openqa.selenium.support.PageFactory
 
@@ -30,8 +30,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
     beans = context.getAttribute("bootzooka").asInstanceOf[Beans]
     beans.userService.registerNewUser(REGUSER, REGMAIL, REGPASS)
     beans.userService.registerNewUser("1" + REGUSER, "1" + REGMAIL, REGPASS)
-    emailService = beans.emailSendingService.asInstanceOf[DummyEmailSendingService]
-    beans.entryService.add(REGUSER, MESSAGE)
+    emailService = beans.emailScheduler.asInstanceOf[DummyEmailSendingService]
   }
 
   before {
@@ -42,7 +41,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   }
 
   after {
-    driver.close
+    driver.close()
     driver = null
   }
 
