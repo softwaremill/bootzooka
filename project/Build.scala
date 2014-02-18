@@ -24,7 +24,7 @@ object BuildSettings {
 
     organization := "com.softwaremill",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.10.0",
+    scalaVersion := "2.10.3",
 
     resolvers := bootzookaResolvers,
     scalacOptions += "-unchecked",
@@ -55,10 +55,10 @@ object BuildSettings {
 object Dependencies {
 
   val slf4jVersion = "1.7.2"
-  val logBackVersion = "1.0.9"
+  val logBackVersion = "1.1.1"
   val smlCommonVersion = "75"
-  val scalatraVersion = "2.2.1"
-  val rogueVersion = "2.0.0-RC1"
+  val scalatraVersion = "2.2.2"
+  val rogueVersion = "2.2.0"
   val scalaLoggingVersion = "1.0.1"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
@@ -68,20 +68,17 @@ object Dependencies {
 
   val logging = Seq(slf4jApi, logBackClassic, scalaLogging)
 
-  val guava = "com.google.guava" % "guava" % "13.0.1"
+  val guava = "com.google.guava" % "guava" % "16.0.1"
   val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "2.0.1"
 
   val scalatra = "org.scalatra" %% "scalatra" % scalatraVersion
   val scalatraScalatest = "org.scalatra" %% "scalatra-scalatest" % scalatraVersion % "test"
   val scalatraJson = "org.scalatra" %% "scalatra-json" % scalatraVersion
-  val json4s = "org.json4s" %% "json4s-jackson" % "3.1.0"
+  val json4s = "org.json4s" %% "json4s-jackson" % "3.2.7"
   val scalatraAuth = "org.scalatra" %% "scalatra-auth" % scalatraVersion  exclude("commons-logging", "commons-logging")
 
-  val jodaTime = "joda-time" % "joda-time" % "2.0"
-  val jodaConvert = "org.joda" % "joda-convert" % "1.2"
-
-  val swaggerCore = "com.wordnik" % "swagger-core_2.10.0" % "1.2.0"
-  val scalatraSwagger = "org.scalatra" %% "scalatra-swagger" % scalatraVersion
+  val jodaTime = "joda-time" % "joda-time" % "2.3"
+  val jodaConvert = "org.joda" % "joda-convert" % "1.6"
 
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
   val commonsLang = "org.apache.commons" % "commons-lang3" % "3.1"
@@ -93,7 +90,7 @@ object Dependencies {
   val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
-  val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, json4s, scalatraAuth, commonsLang, swaggerCore, scalatraSwagger)
+  val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, json4s, scalatraAuth, commonsLang)
 
   val testingDependencies = Seq(mockito, scalatest)
 
@@ -103,9 +100,9 @@ object Dependencies {
   val smlCommonSqs = "com.softwaremill.common" % "softwaremill-sqs" % smlCommonVersion
   val smlCommonConfig = "com.softwaremill.common" % "softwaremill-conf" % smlCommonVersion
 
-  val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.0"
+  val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.1"
 
-  val seleniumVer = "2.32.0"
+  val seleniumVer = "2.39.0"
   val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"
   val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
   val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
@@ -122,9 +119,10 @@ object Dependencies {
   val rogueField = "com.foursquare" %% "rogue-field" % rogueVersion intransitive()
   val rogueCore = "com.foursquare" %% "rogue-core" % rogueVersion intransitive()
   val rogueLift = "com.foursquare" %% "rogue-lift" % rogueVersion intransitive()
-  val liftMongoRecord = "net.liftweb" %% "lift-mongodb-record" % "2.5-M4"
+  val rogueIndex = "com.foursquare" %% "rogue-index" % rogueVersion intransitive()
+  val liftMongoRecord = "net.liftweb" %% "lift-mongodb-record" % "2.5.1"
 
-  val rogue = Seq(rogueCore, rogueField, rogueLift, liftMongoRecord)
+  val rogue = Seq(rogueCore, rogueField, rogueLift, rogueIndex, liftMongoRecord)
 }
 
 object BootzookaBuild extends Build {
