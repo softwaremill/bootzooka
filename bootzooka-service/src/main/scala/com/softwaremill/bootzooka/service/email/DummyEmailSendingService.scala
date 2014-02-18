@@ -2,8 +2,8 @@ package com.softwaremill.bootzooka.service.email
 
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
 import collection.mutable.ListBuffer
-import com.softwaremill.common.sqs.util.EmailDescription
 import com.typesafe.scalalogging.slf4j.Logging
+import com.softwaremill.bootzooka.service.email.sender.EmailDescription
 
 class DummyEmailSendingService extends EmailScheduler with Logging {
 
@@ -25,18 +25,18 @@ class DummyEmailSendingService extends EmailScheduler with Logging {
   }
 
   def emailToString(email: EmailDescription): String = {
-    email.getEmails.mkString + ", " + email.getSubject + ", " + email.getMessage
+    email.emails.mkString + ", " + email.subject + ", " + email.message
   }
 
   def scheduleEmail(address: String, emailData: EmailContentWithSubject) {
     this.synchronized {
-      emailsToSend += new EmailDescription(address, emailData.content, emailData.subject)
+      emailsToSend += new EmailDescription(List(address), emailData.content, emailData.subject)
     }
     logger.debug(s"Email to $address scheduled.")
   }
 
   def wasEmailSent(address: String, subject: String): Boolean = {
-    sentEmails.exists(email => email.getEmails.contains(address) && email.getSubject == subject)
+    sentEmails.exists(email => email.emails.contains(address) && email.subject == subject)
   }
 }
 
