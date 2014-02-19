@@ -172,6 +172,17 @@ object BootzookaBuild extends Build {
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },
+      // We need to include the whole webapp, hence replacing the resource directory
+      webappResources in Compile <<= baseDirectory { bd =>
+        val restResources = bd.getParentFile / rest.base.getName / "src" / "main" / "webapp"
+        val uiResources = bd.getParentFile / ui.base.getName / "dist" / "webapp"
+        // "dist" may not yet exist, as it will be created by grunt later. However, we still need to include it, and
+        // if it doesn't exist, SBT will complain
+        if (!uiResources.exists() && !uiResources.mkdirs()) {
+          error(s"$uiResources directory doesn't exist, and cannot be created!")
+        }
+        List(restResources, uiResources)
+      },
       packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"),
       libraryDependencies ++= Seq(jetty, servletApiProvided)
     )
