@@ -179,7 +179,7 @@ object BootzookaBuild extends Build {
         // "dist" may not yet exist, as it will be created by grunt later. However, we still need to include it, and
         // if it doesn't exist, SBT will complain
         if (!uiResources.exists() && !uiResources.mkdirs()) {
-          error(s"$uiResources directory doesn't exist, and cannot be created!")
+          throw new RuntimeException(s"$uiResources directory doesn't exist, and cannot be created!")
         }
         List(restResources, uiResources)
       },
