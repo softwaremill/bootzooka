@@ -69,8 +69,9 @@ project.
 In order to build and develop on Bootzooka foundations you need the following:
 
 *	Java JDK
-*	SBT
-*	Node.js for frontend development automation
+*	[SBT](http://www.scala-sbt.org/)
+*	Node.js
+*   [MongoDB](http://www.mongodb.org/)
 
 ## How to run
 
