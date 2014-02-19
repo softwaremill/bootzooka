@@ -2,25 +2,13 @@ package com.softwaremill.bootzooka.dao
 
 import com.softwaremill.bootzooka.domain.User
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.{FlatSpec, BeforeAndAfterAll}
+import org.scalatest.BeforeAndAfterAll
 import org.bson.types.ObjectId
 import com.typesafe.scalalogging.slf4j.Logging
 import com.softwaremill.bootzooka.test.FlatSpecWithMongo
 
-class MongoUserDAOSpec extends FlatSpecWithMongo with UserDAOSpec {
+class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with BeforeAndAfterAll with Logging {
   behavior of "MongoUserDAO"
-
-  def createDAO = new MongoUserDAO()
-}
-
-class InMemoryUserDAOSpec extends FlatSpecWithMongo with UserDAOSpec {
-  behavior of "InMemoryUserDAO"
-
-  def createDAO = new InMemoryUserDAO()
-}
-
-trait UserDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll with Logging {
-  def createDAO: UserDAO
 
   val userIdPrefix = "507f1f77bcf86cd79943901"
   var userDAO: UserDAO = null
@@ -28,7 +16,6 @@ trait UserDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll wi
 
   override def beforeAll() {
     super.beforeAll()
-    userDAO = createDAO
 
     for (i <- 1 to 3) {
       val login = "user" + i

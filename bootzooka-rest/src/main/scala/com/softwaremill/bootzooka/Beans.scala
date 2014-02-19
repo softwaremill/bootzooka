@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka
 
-import dao.{MongoFactory, InMemoryFactory}
+import com.softwaremill.bootzooka.dao.{MongoPasswordResetCodeDAO, MongoUserDAO}
 import com.softwaremill.bootzooka.service.config.{EmailConfig, BootzookaConfig}
 import service.PasswordRecoveryService
 import service.email.{DummyEmailSendingService, ProductionEmailSendingService}
@@ -14,13 +14,9 @@ trait Beans extends Logging {
     override def rootConfig = ConfigFactory.load()
   }
 
-  lazy val daoFactory = sys.props.get("withInMemory") match {
-    case Some(value) => {
-      logger.info("Starting with in-memory persistence")
-      new InMemoryFactory
-    }
-    case None => new MongoFactory
-  }
+  lazy val userDao = new MongoUserDAO
+
+  lazy val codeDao = new MongoPasswordResetCodeDAO()
 
   lazy val emailScheduler = if (config.emailEnabled) {
     new ProductionEmailSendingService(config)
@@ -33,8 +29,6 @@ trait Beans extends Logging {
 
   lazy val userService = new UserService(userDao, new RegistrationDataValidator(), emailScheduler, emailTemplatingEngine)
 
-  lazy val userDao = daoFactory.userDAO
-
-  lazy val passwordRecoveryService = new PasswordRecoveryService(userDao, daoFactory.codeDAO, emailScheduler,
+  lazy val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailScheduler,
     emailTemplatingEngine, config)
 }

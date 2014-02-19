@@ -3,30 +3,12 @@ package com.softwaremill.bootzooka.dao
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.bson.types.ObjectId
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 import com.softwaremill.bootzooka.test.FlatSpecWithMongo
 
-class MongoPasswordResetCodeDAOSpec extends FlatSpecWithMongo with PasswordResetCodeDAOSpec {
+class MongoPasswordResetCodeDAOSpec extends FlatSpecWithMongo with ShouldMatchers {
   behavior of "MongoPasswordResetCodeDAO"
 
-  def createDAO = new MongoPasswordResetCodeDAO()
-}
-
-class InMemoryPasswordResetCodeDAOSpec extends FlatSpecWithMongo with PasswordResetCodeDAOSpec {
-  behavior of "InMemoryPasswordResetCodeDAO"
-
-  def createDAO = new InMemoryPasswordResetCodeDAO()
-}
-
-trait PasswordResetCodeDAOSpec extends FlatSpec with ShouldMatchers with BeforeAndAfterAll {
-  def createDAO: PasswordResetCodeDAO
-
-  var dao: PasswordResetCodeDAO = _
-
-  override def beforeAll() {
-    super.beforeAll()
-    dao = createDAO
-  }
+  val dao = new MongoPasswordResetCodeDAO()
 
   it should "store and load code" in {
     // Given

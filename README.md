@@ -138,8 +138,7 @@ directory as above and type `sbt` to start the sbt console. Few plugins are alre
 generate project files, you can do that with: `gen-idea`
 * 	web server: right now Jetty is integrated with the project, you can start it from the sbt console with: `container:start`
 
-There are two implementations of storage - in-memory and mongo - you must install MongoDB and start it before starting
-the application (when started with `run.sh`/`run.bat` the in-memory storage is used)
+You must install MongoDB and start it before starting the application.
 
 #### Useful sbt commands
 

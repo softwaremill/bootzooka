@@ -25,7 +25,6 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   var beans: Beans = _
 
   override def beforeAll() {
-    sys.props.put("withInMemory", "true")
     startJetty()
     beans = context.getAttribute("bootzooka").asInstanceOf[Beans]
     beans.userService.registerNewUser(REGUSER, REGMAIL, REGPASS)
@@ -46,7 +45,6 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   }
 
   override def afterAll() {
-    sys.props.remove("withInMemory")
     stopJetty()
   }
 }

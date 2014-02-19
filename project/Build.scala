@@ -5,9 +5,6 @@ import com.typesafe.sbt.SbtScalariform._
 import com.earldouglas.xsbtwebplugin.PluginKeys._
 
 object BuildSettings {
-
-  import Resolvers._
-
   val mongoDirectory = SettingKey[File]("mongo-directory", "The home directory of MongoDB datastore")
 
   val buildSettings = Defaults.defaultSettings ++ Seq(mongoDirectory := file("")) ++ defaultScalariformSettings ++ Seq(
