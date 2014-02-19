@@ -11,7 +11,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with Before
   behavior of "MongoUserDAO"
 
   val userIdPrefix = "507f1f77bcf86cd79943901"
-  var userDAO: UserDAO = null
+  val userDAO = new MongoUserDAO
   implicit def intSuffixToObjectId(suffix: Int): ObjectId = new ObjectId(userIdPrefix + suffix)
 
   override def beforeAll() {
