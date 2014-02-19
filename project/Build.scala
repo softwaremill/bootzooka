@@ -172,12 +172,6 @@ object BootzookaBuild extends Build {
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },
-      // We need to include the whole webapp, hence replacing the resource directory
-      webappResources in Compile <<= baseDirectory {
-        bd => {
-          List(bd.getParentFile() / rest.base.getName / "src" / "main" / "webapp", bd.getParentFile() / ui.base.getName / "dist" / "webapp")
-        }
-      },
       packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"),
       libraryDependencies ++= Seq(jetty, servletApiProvided)
     )
