@@ -1,17 +1,21 @@
 # Bootzooka
 
-Simple application scaffolding project to allow quick start of development for modern web based application.
-It contains some very basic features, that almost any application needs (listed below). These features are fully
-implemented both on server- and client- side (as a Single Page Application). The implementations can also serve
-as blueprints to create new functionalities.
+Bootzooka is a simple application scaffolding project to allow quick start of development for modern web based
+applications.
 
-*	Users registration
-*   Lost password recovery
+It contains only the very basic features, that almost any application needs (listed below). These features are fully
+implemented both on server- and client- side (as a Single Page Application). The implementations can also serve
+as blueprints for new functionalities.
+
+Current user visible features:
+
+*	User registration
+*   Lost password recovery (via e-mail)
 *	Logging in/out
 *   Profile management
 
 This may not sound "cool", but in fact Bootzooka is really helpful when bootstrapping a new project. This is because
-besides of the features mentioned it contains all the required setup and automation of build processes for both
+besides of the features mentioned it contains the whole required setup and automation of build processes both for
 frontend and backend. You get it out of the box which means significantly less time spent on setting up infrastructure
 and tools and more time spent on actual coding features in project.
 
@@ -30,8 +34,8 @@ Bootzooka's stack consists of the following technologies/tools:
 
 ### Why Scala?
 
-At [Softwaremill](http://softwaremill.com) we have great number of our projects in Scala. It's our default go-to
-language for server-side. Softwaremill is also a [Typesafe](http://typesafe.com/) partner.
+A lot of the projects that we develop at [Softwaremill](http://softwaremill.com) are written in Scala. It's our
+default go-to language for server-side. Softwaremill is also a [Typesafe](http://typesafe.com/) partner.
 
 ### Why AngularJS?
 
@@ -41,26 +45,24 @@ build dynamic and modern HTML5 based web applications.
 
 ### Why Scalatra?
 
-It's quite simple and easy to jump into Scalatra for an ordinary Java developer whom used Servlets previously. The
-syntax of the flow directives is straightforward and it was easy to integrate support for JSON into it. And it's written
-in Scala from scratch which seamlessly integrates with other Scala based libraries.
+It's quite simple and easy to jump into Scalatra both for Java and Scala developers. The syntax of the flow directives
+is straightforward and it was easy to integrate support for JSON into it. And it's written in Scala from scratch, hence
+seamlessly integrates with other Scala based libraries.
 
-### Why SBT?
+### Why SBT and Grunt?
 
-The answer can be hard. It is easy to start using [sbt](http://www.scala-sbt.org/), but when things get hard, it
-can get difficult to find good examples or supporting documents. But at the end it's a dedicated tool for Scala platform
-and it became de-facto standard in Scala community.
+To put it simply, SBT is the build tool of choice for Scala, Grunt - for JavaScript.
 
 ## High-level architeture
 
-On the highest level Bootzooka is structured according to how modern web applications are done these days.
+Bootzooka is structured how modern web applications are done these days.
 
-Server exposes JSON API which can be consumed by any client you want. In case of Bootzooka this client is a typical
-browser application built with AngularJS. Such approach allows better scaling and independent development of both
-server and client parts. This separation is mirrored in how Bootzooka projects are structured.
+The backend server exposes a JSON API which can be consumed by any client you want. In case of Bootzooka this client
+is a single-page browser browser application built with AngularJS. Such approach allows better scaling and independent
+development the server and client parts. This separation is mirrored in how Bootzooka projects are structured.
 
 There are several sub-projects (directories) containing server-side code and one for client-side application. They are
-completely unrelated in terms of code and dependencies. `bootzooka-ui` directory contains browser part (JavaScript,
+completely unrelated in terms of code and dependencies. `bootzooka-ui` directory contains the browser part (JavaScript,
 CSS, HTML) and the others are building blocks of server application which contains its entry points in `bootzooka-rest`
 project.
 
@@ -68,10 +70,10 @@ project.
 
 In order to build and develop on Bootzooka foundations you need the following:
 
-*	Java JDK
-*	[SBT](http://www.scala-sbt.org/)
-*	Node.js
-*   [MongoDB](http://www.mongodb.org/)
+*	Java JDK >= 7
+*	[SBT](http://www.scala-sbt.org/) >= 0.13
+*	Node.js >= 0.10.13
+*   [MongoDB](http://www.mongodb.org/) >= 2.4
 
 ## How to run
 
@@ -83,14 +85,16 @@ server parts in one application that can be dropped into any servlet container.*
 
 #### Server
 
-To run server part, enter the main directory and type `./run.sh` or `run.bat` depending on your OS.
+To run the backend server part, enter the main directory and type `./run-dev-backend.sh` or
+`run-dev-backend.bat` depending on your OS.
 
 #### Browser client
 
-To run Bootzooka in browser, go to `bootzooka-ui` project and issue `grunt server` from command line (if you have Grunt
-installed globally) or `node_modules/.bin/grunt server` if you have it locally.
+To run the frontend server part, enter the main directory and type `./run-dev-frontend.sh`. This should open
+`http://0.0.0.0:9090/` in your browser (frontend listens on port 9090, backend on port 8080; so all REST requests
+ will be proxied to port 8080).
 
-For details of frontend build and architecture go to [bootzooka-ui project](bootzooka-ui).
+For details of frontend build and architecture please refere to the [bootzooka-ui README](bootzooka-ui).
 
 ## How to execute tests
 
@@ -115,7 +119,7 @@ bootzooka project directory, switch to bootzooka-ui-tests project and invoke the
     $ sbt
     [info] Loading project definition from /Users/pbu/Work/bootzooka/project/project
     [info] Loading project definition from /Users/pbu/Work/bootzooka/project
-    [info] Compiling 1 Scala source to /Users/pbu/Work/bootzooka/project/target/scala-2.9.2/sbt-0.12/classes...
+    [info] Compiling 1 Scala source to /Users/pbu/Work/bootzooka/project/target/scala-2.10/sbt-0.13/classes...
     [info] Set current project to bootzooka-root (in build file:/Users/pbu/Work/bootzooka/)
     > project bootzooka-ui-tests
     [info] Set current project to bootzooka-ui-tests (in build file:/Users/pbu/Work/bootzooka/)
@@ -127,48 +131,36 @@ Alternatively you can run a single test using the test-only task.
 
 These tests are written using WebDriver and __you need Firefox 20__ to properly run them.
 
-## How to develop
+## Development tips
 
-### Server
+Generally during development you'll need three processes:
 
-If you want to start developing new features on server side, you must have sbt version 0.13 installed. Enter the same
-directory as above and type `sbt` to start the sbt console. Few plugins are already integrated with Bootzooka:
+* sbt running the backend server (e.g. using `~;container:start; container:reload /`)
+* grunt server which automatically picks up any changes
+* MongoDB
 
-*	IDE configuration: we are using the best IDE right now - IntelliJ IDEA - to be able open project with it you must
-generate project files, you can do that with: `gen-idea`
-* 	web server: right now Jetty is integrated with the project, you can start it from the sbt console with: `container:start`
+### IDE
 
-You must install MongoDB and start it before starting the application.
+We are using the best IDE right now: [IntelliJ IDEA](http://www.jetbrains.com/idea/). To generate an Idea project start
+`sbt` and run `gen-idea`.
 
-#### Useful sbt commands
+### Useful sbt commands
 
 * `compile` - compile the whole project
 * `test` - run all the tests
-* `project <sub-project-name>` - switch context to given sub-project, then all the commands will be execute only for
+* `package` - create a deployable `.war`. The result will be in `bootzooka-rest/target/scala-2.10/bootzooka.war`
+* `project <sub-project-name>` - switch context to the given sub-project, then all the commands will be execute only for
 that sub-project, thus can be also achieved with: `<sub-project-name>/test`
 * `container:start` - starts the embedded Jetty container
 * `container:reload /` - reloads application at context /
 * `~;container:start; container:reload /` - runs container and waits for source code changes to automatically compile
 changed file and to reload it
 
-### Browser client
-
-You need `node.js` and `grunt` to be available. For details please see [bootzooka-ui project](bootzooka-ui). It
-contains detailed instruction on how to set it up and run.
-
-In general you just run `grunt server` (or `node_modules/.bin/grunt server` - details described in link above) which
-fires up your default browser and opens Bootzooka main page. This page consumes JSON API exposed by server and it all
-sums up to complete application. When you run grunt, files in `bootzooka-ui` project is watched and if any of them is
-changed Grunt does it's work and automatically reloads your browser with changes you've just made.
-
-[bootzooka-ui project README](bootzooka-ui) contains detailed description of tasks available for Grunt such as tests,
-autotests, livereload, distribution building etc.
-
-## How to configure
+## Configuration
 
 Configuration is done through the [Typesafe Config](https://github.com/typesafehub/scalalogging) library.
 
-Reference configuration is stored in the _reference.conf_ file. You can either modify that file directly or override
+Reference configuration is stored in the `reference.conf` file. You can either modify that file directly or override
 it using system properties (see Typesafe Config's readme on how to do that).
 
 * To have e-mail sender working please provide smtp details (host, port, password, username).

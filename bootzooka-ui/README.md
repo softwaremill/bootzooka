@@ -1,11 +1,11 @@
 # Bootzooka frontend application
 
-In version 2 Bootzooka got new application structure applied. As its frontend is true Single Page Application build with
-Angular it can be treated as completely separate application, as a client for Bootzooka server.
+Bootzooka's frontend is a true Single Page Application built with Angular. It can be treated as a completely separate
+application or as a client for Bootzooka server.
 
 As a separate application it deserves its own build process handling all the details (linting, testing, minifying etc).
-So starting from version 2 of Bootzooka, its frontend part is almost completely decoupled from server side code. The
-only coupling is on the level of packaging final application (which is described later in this doc).
+Hence the frontend part is almost completely decoupled from server side code. The only coupling is on the level of
+packaging final application (which is described later in this doc).
 
 Thanks to great tools existing in JavaScript ecosystem it is fully automated and easy to configure/extend later on.
 
@@ -27,7 +27,7 @@ It is advised to install Grunt.js globally. In order to do that, please run
 	npm install -g grunt-cli
 
 This will install grunt command globally and make it available. Be sure to have NPM binaries on `PATH`. You may need
-to add '/usr/local/share/npm/bin/' to your PATH if you have NPM installed via Homebrew.
+to add `/usr/local/share/npm/bin/` to your PATH if you have NPM installed via Homebrew.
 Then you can use `grunt` command as described below.
 
 #### Local installation
@@ -76,17 +76,17 @@ Grunt will watch for any change in frontend files (templates, js files, styles) 
 compiled (if necessary) and browser is automatically refreshed to apply changes. No need to refresh it by hand.
 
 **Note: if you have LiveReload extension enabled in you browser, please disable it so that it doesn't interfere with
-build one**
+Grunt's**
 
-In this task all scripts are serverd in non-concatenated and non-minified version from their original locations
+In this task all scripts are served in non-concatenated and non-minified version from their original locations
 (if possible).
 
 `Grunt server:dist` task
 ---
 
 This task is similar to the one above with one difference: it preprocessess all the files in order to create
- distribution (it currently includes concatenation of scripts files), runs tests and serves application from this
- freshly baked distribution version. This server's version doesn't watch for file changes.
+distribution (it currently includes concatenation of scripts files), runs tests and serves application from this
+freshly baked distribution version. This server's version doesn't watch for file changes.
 
 `Grunt build` task
 ---
