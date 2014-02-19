@@ -1,13 +1,12 @@
 import sbt._
 import Keys._
 import net.virtualvoid.sbt.graph.Plugin._
-import com.typesafe.sbt.SbtScalariform._
 import com.earldouglas.xsbtwebplugin.PluginKeys._
 
 object BuildSettings {
   val mongoDirectory = SettingKey[File]("mongo-directory", "The home directory of MongoDB datastore")
 
-  val buildSettings = Defaults.defaultSettings ++ Seq(mongoDirectory := file("")) ++ defaultScalariformSettings ++ Seq(
+  val buildSettings = Defaults.defaultSettings ++ Seq(mongoDirectory := file("")) ++ Seq(
 
     organization := "com.softwaremill",
     version := "0.0.1-SNAPSHOT",

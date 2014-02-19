@@ -150,14 +150,6 @@ that sub-project, thus can be also achieved with: `<sub-project-name>/test`
 * `container:reload /` - reloads application at context /
 * `~;container:start; container:reload /` - runs container and waits for source code changes to automatically compile
 changed file and to reload it
-* `scalariform-format` - execute Scalariform code formatter. More about it below in 'Keep code in shape' section
-
-#### Keep code in shape
-
-To keep code in shape we are using [Scalariform](https://github.com/mdr/scalariform) code formatter for Scala along
-with sbt plugin [Sbt-Scalariform](https://github.com/sbt/sbt-scalariform). We have intentionally disabled auto
-code-formatting during compile or test execution so to run formatter please use `sbt scalariform-format` command.
-It checks code against various styling rules and applies all neccessary fixes.
 
 ### Browser client
 
