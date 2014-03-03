@@ -39,12 +39,12 @@ object BuildSettings {
 
 object Dependencies {
 
-  val slf4jVersion = "1.7.2"
+  val slf4jVersion = "1.7.6"
   val logBackVersion = "1.1.1"
   val smlCommonVersion = "75"
   val scalatraVersion = "2.2.2"
   val rogueVersion = "2.2.0"
-  val scalaLoggingVersion = "1.0.1"
+  val scalaLoggingVersion = "1.1.0"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
   val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -53,10 +53,10 @@ object Dependencies {
 
   val logging = Seq(slf4jApi, logBackClassic, scalaLogging)
 
-  val typesafeConfig = "com.typesafe" % "config" % "1.0.1"
+  val typesafeConfig = "com.typesafe" % "config" % "1.2.0"
 
   val guava = "com.google.guava" % "guava" % "16.0.1"
-  val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "2.0.1"
+  val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "2.0.3"
 
   val scalatra = "org.scalatra" %% "scalatra" % scalatraVersion
   val scalatraScalatest = "org.scalatra" %% "scalatra-scalatest" % scalatraVersion % "test"
@@ -68,7 +68,7 @@ object Dependencies {
   val jodaConvert = "org.joda" % "joda-convert" % "1.6"
 
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
-  val commonsLang = "org.apache.commons" % "commons-lang3" % "3.1"
+  val commonsLang = "org.apache.commons" % "commons-lang3" % "3.2.1"
 
   val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container"
   val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "test"
@@ -81,7 +81,7 @@ object Dependencies {
 
   val testingDependencies = Seq(mockito, scalatest)
 
-  val javaxMail = "javax.mail" % "mail" % "1.4.5"
+  val javaxMail = "javax.mail" % "mail" % "1.4.7"
 
   val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.1"
 
