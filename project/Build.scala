@@ -2,6 +2,9 @@ import sbt._
 import Keys._
 import net.virtualvoid.sbt.graph.Plugin._
 import com.earldouglas.xsbtwebplugin.PluginKeys._
+import sbt.ScalaVersion
+import sbtassembly.Plugin._
+import AssemblyKeys._
 
 object BuildSettings {
   val mongoDirectory = SettingKey[File]("mongo-directory", "The home directory of MongoDB datastore")
@@ -45,6 +48,7 @@ object Dependencies {
   val scalatraVersion = "2.2.2"
   val rogueVersion = "2.2.0"
   val scalaLoggingVersion = "1.1.0"
+  val jettyVersion = "8.1.7.v20120910"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
   val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -70,8 +74,9 @@ object Dependencies {
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
   val commonsLang = "org.apache.commons" % "commons-lang3" % "3.2.1"
 
-  val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container"
-  val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "test"
+  val jetty = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion
+  val jettyContainer = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "container"
+  val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "test"
 
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
   val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
@@ -138,7 +143,7 @@ object BootzookaBuild extends Build {
     "bootzooka-root",
     file("."),
     settings = buildSettings
-  ) aggregate(common, domain, dao, service, rest, ui)
+  ) aggregate(common, domain, dao, service, rest, ui, dist)
 
   lazy val common: Project = Project(
     "bootzooka-common",
@@ -184,7 +189,7 @@ object BootzookaBuild extends Build {
         List(restResources, uiResources)
       },
       packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"),
-      libraryDependencies ++= Seq(jetty, servletApiProvided)
+      libraryDependencies ++= Seq(jettyContainer, servletApiProvided)
     )
   ) dependsOn(service, domain, common)
 
@@ -196,13 +201,24 @@ object BootzookaBuild extends Build {
     )
   )
 
+  lazy val dist = Project(
+    "bootzooka-dist",
+    file("bootzooka-dist"),
+    settings = buildSettings ++ assemblySettings ++ Seq(
+      libraryDependencies ++= Seq(jetty),
+      mainClass in assembly := Some("com.softwaremill.bootzooka.Bootzooka"),
+      // We need to include the whole webapp, hence replacing the resource directory
+      unmanagedResourceDirectories in Compile <<= baseDirectory { bd => {
+        List(bd.getParentFile / rest.base.getName / "src" / "main", bd.getParentFile / ui.base.getName / "dist")
+      } }
+    )
+  ) dependsOn (ui, rest)
+
   lazy val uiTests = Project(
     "bootzooka-ui-tests",
     file("bootzooka-ui-tests"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= selenium ++ Seq(awaitility, jettyTest, servletApiProvided)
     )
-
-  ) dependsOn (rest)
-
+  ) dependsOn (dist)
 }

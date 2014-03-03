@@ -6,7 +6,7 @@ import org.eclipse.jetty.webapp.WebAppContext
 import javax.servlet.ServletContext
 import org.openqa.selenium.firefox.FirefoxDriver
 import java.util.concurrent.TimeUnit
-import com.softwaremill.bootzooka.Beans
+import com.softwaremill.bootzooka.{EmbeddedJetty, Beans}
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import pages.{MessagesPage, LoginPage}
 import org.openqa.selenium.support.PageFactory
@@ -46,29 +46,5 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
 
   override def afterAll() {
     stopJetty()
-  }
-}
-
-trait EmbeddedJetty {
-  protected var jetty: Server = null
-  protected var context: ServletContext = null
-
-  def startJetty() {
-    jetty = new Server(8080)
-    jetty setHandler prepareContext
-    jetty.start()
-  }
-
-  private def prepareContext() = {
-    val context = new WebAppContext()
-    context setContextPath "/"
-    context setResourceBase "bootzooka-ui/src/main/webapp"
-    this.context = context.getServletContext
-    context
-  }
-
-
-  def stopJetty() {
-    jetty.stop()
   }
 }
