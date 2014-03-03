@@ -75,7 +75,7 @@ In order to build and develop on Bootzooka foundations you need the following:
 *	Node.js >= 0.10.13
 *   [MongoDB](http://www.mongodb.org/) >= 2.4
 
-## How to run
+## How to run (development)
 
 Because (as said before) Bootzooka consists of two separate applications, in development you need to run both
 separately.
@@ -95,6 +95,21 @@ To run the frontend server part, enter the main directory and type `./run-dev-fr
  will be proxied to port 8080).
 
 For details of frontend build and architecture please refere to the [bootzooka-ui README](bootzooka-ui).
+
+## How to run (production)
+
+### Fat jar
+
+To build an executable jar, simply run `bootzooka-dist/assembly` (that is, the `assembly` task in the `bootzooka-dist`
+subproject). This will create a fat-jar with all the code, processed javascript, css and html. You can run the jar
+simply by running java:
+
+    java -jar bootzooka-dist/target/scala-2.10/bootzooka-dist-assembly-0.0.1-SNAPSHOT.jar
+
+### Deployable .war
+
+To build a `.war`, run `bootzooka-rest/package`. The war will be located in `bootzooka-rest/target/scala-2.10/bootzooka.war`.
+You can drop it in any servlet container (Tomcat/Jetty/JBoss/etc.)
 
 ## How to execute tests
 
@@ -148,13 +163,11 @@ We are using the best IDE right now: [IntelliJ IDEA](http://www.jetbrains.com/id
 
 * `compile` - compile the whole project
 * `test` - run all the tests
-* `package` - create a deployable `.war`. The result will be in `bootzooka-rest/target/scala-2.10/bootzooka.war`
 * `project <sub-project-name>` - switch context to the given sub-project, then all the commands will be execute only for
-that sub-project, thus can be also achieved with: `<sub-project-name>/test`
-* `container:start` - starts the embedded Jetty container
-* `container:reload /` - reloads application at context /
-* `~;container:start; container:reload /` - runs container and waits for source code changes to automatically compile
-changed file and to reload it
+that sub-project, this can be also achieved with e.g.: `<sub-project-name>/test`
+* `container:start` - starts the embedded Jetty container (backend)
+* `~;container:start; container:reload /` - runs container (backend) and waits for source code changes to automatically
+compile changed file and to reload it
 
 ## Configuration
 
