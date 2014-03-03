@@ -26,4 +26,14 @@ class EmailTemplatingEngineSpec extends FlatSpec with ShouldMatchers {
     email.subject should be ("subject")
     email.content should be ("Content\nsecond line")
   }
+
+  it should "generate the registration confirmation email" in {
+    // when
+    val email = engine.registrationConfirmation("adamw")
+
+    // then
+    email.subject should be ("SoftwareMill Bootzooka - registration confirmation for user adamw")
+    email.content should include ("Dear adamw,")
+    email.content should include ("Regards,")
+  }
 }

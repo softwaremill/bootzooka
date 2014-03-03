@@ -1,22 +1,27 @@
 package com.softwaremill.bootzooka.service.templates
 
-import org.fusesource.scalate._
-import java.io.File
+import com.google.common.io.Resources
+import java.nio.charset.Charset
 
 class EmailTemplatingEngine {
-
-  val TemplatesDirectory = "com/softwaremill/bootzooka/service/templates/"
-
-  val scalateEngine = new TemplateEngine(List(new File(TemplatesDirectory)), "production")
-
   def registrationConfirmation(userName: String): EmailContentWithSubject = {
-
     val template = prepareEmailTemplate("registrationConfirmation", Map("userName" -> userName))
-    splitToContentAndSubject(template)
+    addSignature(splitToContentAndSubject(template))
+  }
+
+  def passwordReset(userName:String, resetLink:String) = {
+    val template = prepareEmailTemplate("resetPassword", Map("userName" -> userName, "resetLink" -> resetLink))
+    addSignature(splitToContentAndSubject(template))
   }
 
   private def prepareEmailTemplate(templateNameWithoutExtension: String, params: Map[String, Object]): String = {
-    scalateEngine.layout(TemplatesDirectory + templateNameWithoutExtension + ".mustache", params)
+    val rawTemplate = Resources.toString(
+      Resources.getResource(this.getClass, s"/templates/email/$templateNameWithoutExtension.txt"),
+      Charset.forName("UTF-8"))
+
+    params.foldLeft(rawTemplate) { case (template, (param, paramValue)) =>
+      template.replaceAll(s"\\{\\{$param\\}\\}", paramValue.toString)
+    }
   }
 
   private[templates] def splitToContentAndSubject(template: String): EmailContentWithSubject = {
@@ -27,9 +32,9 @@ class EmailTemplatingEngine {
     EmailContentWithSubject(emailLines.tail.mkString("\n"), emailLines.head)
   }
 
-  def passwordReset(userName:String, resetLink:String) = {
-    val template = prepareEmailTemplate("resetPassword", Map("userName" -> userName, "resetLink" -> resetLink))
-    splitToContentAndSubject(template)
-  }
+  private lazy val signature = prepareEmailTemplate("emailSignature", Map())
 
+  private def addSignature(email: EmailContentWithSubject): EmailContentWithSubject = {
+    email.copy(content = s"${email.content}\n$signature")
+  }
 }

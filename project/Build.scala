@@ -88,8 +88,6 @@ object Dependencies {
 
   val javaxMail = "javax.mail" % "mail" % "1.4.7"
 
-  val scalate = "org.fusesource.scalate" %% "scalate-core" % "1.6.1"
-
   val seleniumVer = "2.39.0"
   val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"
   val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
@@ -166,7 +164,7 @@ object BootzookaBuild extends Build {
   lazy val service: Project = Project(
     "bootzooka-service",
     file("bootzooka-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, javaxMail, scalate, typesafeConfig))
+    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, javaxMail, typesafeConfig))
   ) dependsOn(domain, dao, common)
 
   lazy val rest: Project = Project(
