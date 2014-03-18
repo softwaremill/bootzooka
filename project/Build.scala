@@ -100,7 +100,7 @@ object Dependencies {
   // As provided implies test, so is enough here.
   val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
 
-  val bson = "com.mongodb" % "bson" % "2.7.1" % "provided"
+  val bson = "org.mongodb" % "bson" % "2.7.1" % "provided"
 
   val rogueField = "com.foursquare" %% "rogue-field" % rogueVersion intransitive()
   val rogueCore = "com.foursquare" %% "rogue-core" % rogueVersion intransitive()
