@@ -114,7 +114,7 @@ You can drop it in any servlet container (Tomcat/Jetty/JBoss/etc.)
 ## How to execute tests
 
 Because some tests are using MongoDB you should have it installed on your machine. Additionally you should let SBT know
-where MongoDB files are located. To do that please add one line to your ~/.sbt/local.sbt:
+where MongoDB files are located. To do that please add one line to your ~/.sbt/0.13/local.sbt:
 
     SettingKey[File]("mongo-directory") := file("/Users/your_user/apps/mongodb")
 
