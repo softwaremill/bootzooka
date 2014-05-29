@@ -5,15 +5,15 @@ module.exports = function(config) {
     var files = [];
 
     [
-        'jquery-1.8.2-min.js',
-        'jquery-blockui.min.js',
-        'bootstrap-2.2.2.js',
-        'angular-1.2.6/angular.js',
-        'angular-1.2.6/angular-resource.js',
-        'angular-1.2.6/angular-route.js',
-        'angular-1.2.6/angular-cookies.js',
-        'angular-1.2.6/angular-sanitize.js',
-        'angular-1.2.6/angular-mocks.js'
+        'jquery.min.js',
+        'jquery-blockui.js',
+        'bootstrap.js',
+        'angular.js',
+        'angular-resource.js',
+        'angular-route.js',
+        'angular-cookies.js',
+        'angular-sanitize.js',
+        'angular-mocks.js'
     ].forEach(function(file) {
         files.push('app/vendor/' + file);
     });
@@ -40,6 +40,7 @@ module.exports = function(config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-        browsers: ['PhantomJS']
+        browsers: ['Chrome']
+//        browsers: ['PhantomJS']
     });
 };

@@ -24,9 +24,12 @@
     "grunt-contrib-stylus": "0.8.0",
     "grunt-html2js": "0.1.7",
     "grunt-contrib-jshint": "0.8.0",
-    "grunt-cli": "0.1.9",
     "grunt-preprocess": "3.0.1",
     "karma-teamcity-reporter": "0.1.0",
-    "karma-osx-reporter": "0.0.3"
+    "karma-osx-reporter": "0.0.3",
+    "grunt-bowercopy": "1.0.0"
+  },
+  "peerDependencies": {
+    "grunt-cli": "0.1.9"
   }
 }

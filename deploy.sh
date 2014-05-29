@@ -1,4 +1,4 @@
-!/bin/sh
+#!/bin/sh
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # Script used to deploy project on demo server  #
