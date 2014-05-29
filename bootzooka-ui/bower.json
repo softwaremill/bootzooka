@@ -1,0 +1,14 @@
+{
+  "name": "bootzooka-ui-deps",
+  "dependencies": {
+    "angular": "~1.2.6",
+    "angular-cookies": "~1.2.6",
+    "angular-mocks": "~1.2.6",
+    "angular-resource": "~1.2.6",
+    "angular-route": "~1.2.6",
+    "angular-sanitize": "~1.2.6",
+    "jquery": "~1.8.2",
+    "blockui": "v2.65",
+    "bootstrap": "~2.3.2"
+  }
+}

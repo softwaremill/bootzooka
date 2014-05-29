@@ -1,4 +1,4 @@
-"user strict";
+"use strict";
 
 describe("Profile Controller", function () {
     beforeEach(module('smlBootzooka.profile'));
