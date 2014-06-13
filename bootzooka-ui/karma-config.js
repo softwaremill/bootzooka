@@ -5,17 +5,17 @@ module.exports = function(config) {
     var files = [];
 
     [
-        'jquery.min.js',
-        'jquery-blockui.js',
-        'bootstrap.js',
-        'angular.js',
-        'angular-resource.js',
-        'angular-route.js',
-        'angular-cookies.js',
-        'angular-sanitize.js',
-        'angular-mocks.js'
+        'bower_files/jquery/jquery.min.js',
+        'bower_files/blockui/jquery.blockUI.js',
+        'bower_files/bootstrap/docs/assets/js/bootstrap.js',
+        'bower_files/angular/angular.js',
+        'bower_files/angular-resource/angular-resource.js',
+        'bower_files/angular-route/angular-route.js',
+        'bower_files/angular-cookies/angular-cookies.js',
+        'bower_files/angular-sanitize/angular-sanitize.js',
+        'bower_files/angular-mocks/angular-mocks.js'
     ].forEach(function(file) {
-        files.push('app/vendor/' + file);
+        files.push('app/'+file);
     });
 
     files.push('app/scripts/*.js');
@@ -40,7 +40,6 @@ module.exports = function(config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-        browsers: ['Chrome']
-//        browsers: ['PhantomJS']
+        browsers: ['PhantomJS']
     });
 };

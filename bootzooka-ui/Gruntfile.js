@@ -178,27 +178,10 @@ module.exports = function (grunt) {
         },
       bowercopy: {
         options: {
-          clean: true
         },
         libs: {
           options: {
-            destPrefix: 'app/vendor/'
-          },
-          files: {
-            'jquery.min.js': 'jquery/jquery.min.js',
-            'jquery-blockui.js': 'blockui/jquery.blockUI.js',
-            'bootstrap.js': 'bootstrap/docs/assets/js/bootstrap.js',
-            'angular.js': 'angular/angular.js',
-            'angular-cookies.js': 'angular-cookies/angular-cookies.js',
-            'angular-mocks.js': 'angular-mocks/angular-mocks.js',
-            'angular-resource.js': 'angular-resource/angular-resource.js',
-            'angular-route.js': 'angular-route/angular-route.js',
-            'angular-sanitize.js': 'angular-sanitize/angular-sanitize.js'
-          }
-        },
-        glob: {
-          files: {
-            'app/styles': 'bootstrap/docs/assets/css/bootstra*.css'
+            destPrefix: ''
           }
         }
       }
@@ -214,24 +197,25 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
-            'clean:tmp',
-            'html2js',
-            'configureProxies',
-            'connect:livereload',
-        'watch'
+          'clean:tmp',
+          'bowercopy',
+          'html2js',
+          'configureProxies',
+          'connect:livereload',
+          'watch'
         ]);
     });
 
     grunt.registerTask('build', [
-        'clean:dist',
-        'bowercopy',
-        'test:teamcity',
-        'html2js',
-        'copy:assets',
-        'copy:index',
-        'useminPrepare',
-        'concat',
-        'usemin'
+      'clean:dist',
+      'bowercopy',
+      'test:teamcity',
+      'html2js',
+      'copy:assets',
+      'copy:index',
+      'useminPrepare',
+      'concat',
+      'usemin'
     ]);
 
     grunt.registerTask('test', function(target) {
