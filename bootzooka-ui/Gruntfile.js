@@ -221,6 +221,7 @@ module.exports = function (grunt) {
     grunt.registerTask('test', function(target) {
         var tasks = [
             'clean:tmp',
+            'bowercopy',
             'html2js'
         ];
         if(target === 'teamcity') {
@@ -233,6 +234,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('autotest', [
         'clean:tmp',
+        'bowercopy',
         'html2js',
         'karma:autotest'
     ]);
