@@ -80,7 +80,7 @@ object MongoRunner extends Logging {
 
   def mongoExecutable = List(mongoDirectory, "bin", "mongod").mkString(File.separator)
 
-  def pidFile = List(mongoDirectory,"mongo.scalatest.pid").mkString(File.separator)
+  def pidFile = List("~","mongo.scalatest.pid").mkString(File.separator)
 
   def mongoDirectory = {
     val mongoDir = System.getProperty("mongo.directory")
