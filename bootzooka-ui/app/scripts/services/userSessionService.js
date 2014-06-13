@@ -35,7 +35,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     userSessionService.logout = function (successFunction) {
         self.logoutResource.query(null, function (data) {
             userSessionService.loggedUser = null;
-            $cookies["scentry.auth.default.user"] = undefined;
+            delete $cookies["scentry.auth.default.user"];
             if (typeof successFunction === "function") {
                 successFunction(data);
             }
