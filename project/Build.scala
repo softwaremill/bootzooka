@@ -7,9 +7,8 @@ import sbtassembly.Plugin._
 import AssemblyKeys._
 
 object BuildSettings {
-  val mongoDirectory = SettingKey[File]("mongo-directory", "The home directory of MongoDB datastore")
 
-  val buildSettings = Defaults.defaultSettings ++ Seq(mongoDirectory := file("")) ++ Seq(
+  val buildSettings = Defaults.defaultSettings ++ Seq(
 
     organization := "com.softwaremill",
     version := "0.0.1-SNAPSHOT",
@@ -21,21 +20,7 @@ object BuildSettings {
     libraryDependencies ++= Dependencies.logging,
     libraryDependencies ++= Seq(Dependencies.guava, Dependencies.googleJsr305),
 
-    parallelExecution := false, // We are starting mongo in tests.
-
-    testOptions in Test <+= mongoDirectory map {
-      md: File => Tests.Setup {
-        () =>
-          val mongoFile = new File(md.getAbsolutePath + "/bin/mongod")
-          val mongoFileWin = new File(mongoFile.getAbsolutePath + ".exe")
-          if (mongoFile.exists || mongoFileWin.exists) {
-            System.setProperty("mongo.directory", md.getAbsolutePath)
-          } else {
-            throw new RuntimeException(
-              "Trying to launch with MongoDB but unable to find it in 'mongo.directory' (%s). Please check your ~/.sbt/local.sbt file.".format(mongoFile.getAbsolutePath))
-          }
-      }
-    }
+    parallelExecution := true
   )
 
 }
@@ -93,6 +78,9 @@ object Dependencies {
   val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
   val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
   val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.3.5" % "test"
+  val fakeMongo = "com.github.fakemongo" % "fongo" % "1.5.1" % "test"
+  //lift-mongodb-record depends on older mongo-java-driver, but for fakeMongo we need newer
+  val mongoJava = "org.mongodb" % "mongo-java-driver" % "2.12.2" % "test"
 
   val selenium = Seq(seleniumJava, seleniumFirefox, fest)
 
@@ -158,7 +146,7 @@ object BootzookaBuild extends Build {
   lazy val dao: Project = Project(
     "bootzooka-dao",
     file("bootzooka-dao"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= rogue)
+    settings = buildSettings ++ Seq(libraryDependencies ++= (rogue ++ Seq(mongoJava, fakeMongo)))
   ) dependsOn(domain, common)
 
   lazy val service: Project = Project(

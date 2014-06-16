@@ -2,29 +2,18 @@ package com.softwaremill.bootzooka.test
 
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 import net.liftweb.mongodb.{MongoDB, DefaultMongoIdentifier}
-import com.mongodb.Mongo
+import com.github.fakemongo.Fongo
 
 trait FlatSpecWithMongo extends FlatSpec with BeforeAndAfterAll {
-  val mongoPort = 24567
 
-  protected var mongoRunner: MongoRunner = null
+  val fongo = new Fongo("mongo test server 1")
 
   override protected def beforeAll() {
     super.beforeAll()
     startMongo()
   }
 
-  override protected def afterAll() {
-    stopMongo()
-    super.afterAll()
-  }
-
   def startMongo() {
-    mongoRunner = MongoRunner.run(mongoPort, verbose = true)
-    MongoDB.defineDb(DefaultMongoIdentifier, new Mongo("localhost", mongoPort), "bootzooka_test")
-  }
-
-  def stopMongo() {
-    mongoRunner.stop()
+    MongoDB.defineDb(DefaultMongoIdentifier, fongo.getMongo, "bootzooka_test")
   }
 }

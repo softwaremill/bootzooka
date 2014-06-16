@@ -73,7 +73,6 @@ In order to build and develop on Bootzooka foundations you need the following:
 *	Java JDK >= 7
 *	[SBT](http://www.scala-sbt.org/) >= 0.13
 *	Node.js >= 0.10.13
-*   [MongoDB](http://www.mongodb.org/) >= 2.4
 
 ## How to run (development)
 
@@ -113,14 +112,8 @@ You can drop it in any servlet container (Tomcat/Jetty/JBoss/etc.)
 
 ## How to execute tests
 
-Because some tests are using MongoDB you should have it installed on your machine. Additionally you should let SBT know
-where MongoDB files are located. To do that please add one line to your ~/.sbt/0.13/local.sbt:
-
-    SettingKey[File]("mongo-directory") := file("/Users/your_user/apps/mongodb")
-
-with proper path to your MongoDB installation directory.
-
-After that SBT will start MongoDB instance before executing each test class that extends `FlatSpecWithMongo` trait.
+Tests are using [Fakemongo](https://github.com/fakemongo/fongo) to mock out MongoDB. You don't need to have MongoDB installed on your machine. 
+Check out easy setup of Fakemongo in `FlatSpecWithMongo` trait.
 
 When you issue `test` from SBT, tests for both server-side and client-side components are run. SBT integrates some Grunt
 commands and executes tests for browser part via Grunt too.
