@@ -27,7 +27,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with Before
   }
 
   it should "load all users" in {
-    userDAO.loadAll should have size (3)
+    userDAO.loadAll should have size 3
   }
 
   it should "count all users" in {
@@ -126,7 +126,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with Before
 
   it should "find users by identifiers" in {
     // Given
-    val ids: List[ObjectId] = List(1, 2, 2);
+    val ids: List[ObjectId] = List(1, 2, 2)
 
     // When
     val users = userDAO.findForIdentifiers(ids)
@@ -144,7 +144,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with Before
 
     // Then
     userOpt match {
-      case Some(u) => u.login should be (login.toLowerCase())
+      case Some(u) => u.login should be (login.toLowerCase)
       case _ => fail("User option should be defined")
     }
   }
@@ -158,7 +158,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with Before
 
     // Then
     userOpt match {
-      case Some(u) => u.login should be (login.toLowerCase())
+      case Some(u) => u.login should be (login.toLowerCase)
       case _ => fail("User option should be defined")
     }
   }
@@ -172,7 +172,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with Before
 
     // Then
     userOpt match {
-      case Some(u) => u.login should be (login.toLowerCase())
+      case Some(u) => u.login should be (login.toLowerCase)
       case _ => fail("User option should be defined")
     }
   }
@@ -186,7 +186,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with Before
 
     // Then
     userOpt match {
-      case Some(u) => u.email should be (email.toLowerCase())
+      case Some(u) => u.email should be (email.toLowerCase)
       case _ => fail("User option should be defined")
     }
   }
@@ -200,7 +200,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with Before
 
     // Then
     userOpt match {
-      case Some(u) => u.email should be (email.toLowerCase())
+      case Some(u) => u.email should be (email.toLowerCase)
       case _ => fail("User option should be defined")
     }
   }

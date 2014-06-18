@@ -27,7 +27,7 @@ class MongoUserDAO extends UserDAO {
   }
 
   override def findForIdentifiers(ids: List[ObjectId]): List[User] =
-    UserRecord findAllByList(ids)
+    UserRecord findAllByList ids
 
   def load(userId: String): Option[User] = {
     UserRecord where (_.id eqs new ObjectId(userId)) get()
@@ -68,11 +68,11 @@ class MongoUserDAO extends UserDAO {
     }
 
     implicit def fromRecords(users: List[UserRecord]): List[User] = {
-      users.map(fromRecord(_))
+      users map fromRecord _
     }
 
     implicit def fromOptionalRecord(userOpt: Option[UserRecord]): Option[User] = {
-      userOpt.map(fromRecord(_))
+      userOpt map fromRecord _
     }
 
     implicit def toRecord(user: User): UserRecord = {
@@ -106,6 +106,6 @@ private class UserRecord extends MongoRecord[UserRecord] with ObjectIdPk[UserRec
 
 }
 
-private object  UserRecord extends UserRecord with MongoMetaRecord[UserRecord] {
+private object UserRecord extends UserRecord with MongoMetaRecord[UserRecord] {
   override def collectionName: String = "users"
 }
