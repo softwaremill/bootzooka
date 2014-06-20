@@ -20,7 +20,7 @@ object BuildSettings {
     libraryDependencies ++= Dependencies.logging,
     libraryDependencies ++= Seq(Dependencies.guava, Dependencies.googleJsr305),
 
-    parallelExecution := true
+    parallelExecution := false
   )
 
 }
