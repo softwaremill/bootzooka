@@ -1,15 +1,15 @@
 package uitest
 
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
-import org.eclipse.jetty.server.Server
-import org.eclipse.jetty.webapp.WebAppContext
-import javax.servlet.ServletContext
-import org.openqa.selenium.firefox.FirefoxDriver
 import java.util.concurrent.TimeUnit
-import com.softwaremill.bootzooka.{EmbeddedJetty, Beans}
+
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
-import pages.{MessagesPage, LoginPage}
+import com.softwaremill.bootzooka.{Beans, EmbeddedJetty, EmbeddedJettyConfig}
+import com.typesafe.config.ConfigFactory
+import org.eclipse.jetty.webapp.WebAppContext
+import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
+import uitest.pages.{LoginPage, MessagesPage}
 
 class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
   final val REGUSER = "reguser"
@@ -24,11 +24,22 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   var messagesPage: MessagesPage = _
   var beans: Beans = _
 
+  override protected def setResourceBase(context: WebAppContext): Unit = {
+    val webappDirInsideJar = context.getClass.getClassLoader.getResource("webapp").toExternalForm
+    context.setWar(webappDirInsideJar)
+  }
+
+  val embeddedJettyConfig = new EmbeddedJettyConfig {
+    def rootConfig = ConfigFactory.load()
+  }
+
   override def beforeAll() {
     startJetty()
     beans = context.getAttribute("bootzooka").asInstanceOf[Beans]
-    beans.userService.registerNewUser(REGUSER, REGMAIL, REGPASS)
-    beans.userService.registerNewUser("1" + REGUSER, "1" + REGMAIL, REGPASS)
+    if (beans.userService.count() == 0) {
+      beans.userService.registerNewUser(REGUSER, REGMAIL, REGPASS)
+      beans.userService.registerNewUser("1" + REGUSER, "1" + REGMAIL, REGPASS)
+    }
     emailService = beans.emailScheduler.asInstanceOf[DummyEmailSendingService]
   }
 

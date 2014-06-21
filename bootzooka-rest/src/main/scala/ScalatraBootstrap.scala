@@ -15,11 +15,10 @@ class ScalatraBootstrap extends LifeCycle with Beans {
 
   override def init(context: ServletContext) {
     MongoDB.defineDb(DefaultMongoIdentifier, new Mongo, "bootzooka")
-
     context.mount(new UsersServlet(userService), Prefix + UsersServlet.MAPPING_PATH)
     context.mount(new PasswordRecoveryServlet(passwordRecoveryService, userService), Prefix + "passwordrecovery")
 
-    context.put("bootzooka", this)
+    context.setAttribute("bootzooka", this)
   }
 
   override def destroy(context: ServletContext) {

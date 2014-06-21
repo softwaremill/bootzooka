@@ -1,13 +1,13 @@
 package com.softwaremill.bootzooka
 
 import com.softwaremill.bootzooka.dao.{MongoPasswordResetCodeDAO, MongoUserDAO}
-import com.softwaremill.bootzooka.service.config.{EmailConfig, BootzookaConfig}
-import service.PasswordRecoveryService
-import service.email.{DummyEmailSendingService, ProductionEmailSendingService}
-import service.templates.EmailTemplatingEngine
-import service.user.{RegistrationDataValidator, UserService}
-import com.typesafe.scalalogging.slf4j.Logging
+import com.softwaremill.bootzooka.service.PasswordRecoveryService
+import com.softwaremill.bootzooka.service.config.{BootzookaConfig, EmailConfig}
+import com.softwaremill.bootzooka.service.email.{DummyEmailSendingService, ProductionEmailSendingService}
+import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
+import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
 import com.typesafe.config.ConfigFactory
+import com.typesafe.scalalogging.slf4j.Logging
 
 trait Beans extends Logging {
   lazy val config = new BootzookaConfig with EmailConfig {
@@ -27,8 +27,16 @@ trait Beans extends Logging {
 
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
 
-  lazy val userService = new UserService(userDao, new RegistrationDataValidator(), emailScheduler, emailTemplatingEngine)
+  lazy val userService = new UserService(
+    userDao,
+    new RegistrationDataValidator(),
+    emailScheduler,
+    emailTemplatingEngine)
 
-  lazy val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailScheduler,
-    emailTemplatingEngine, config)
+  lazy val passwordRecoveryService = new PasswordRecoveryService(
+    userDao,
+    codeDao,
+    emailScheduler,
+    emailTemplatingEngine,
+    config)
 }

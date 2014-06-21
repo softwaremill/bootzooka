@@ -73,7 +73,7 @@ object Dependencies {
 
   val javaxMail = "javax.mail" % "mail" % "1.4.7"
 
-  val seleniumVer = "2.39.0"
+  val seleniumVer = "2.42.2"
   val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"
   val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
   val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
