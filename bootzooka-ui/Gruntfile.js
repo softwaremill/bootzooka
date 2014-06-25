@@ -49,7 +49,7 @@ module.exports = function (grunt) {
                             proxyRequests,
                             liveReload,
                             connect.static('tmp'),
-                            connect.static('app'),
+                            connect.static('app')
                         ];
                     }
                 }
@@ -183,13 +183,9 @@ module.exports = function (grunt) {
 
             }
         },
-      bowercopy: {
-        options: {
-        },
-        libs: {
-          options: {
-            destPrefix: ''
-          }
+      bowerInstall: {
+        target: {
+          src: ['app/index.html']
         }
       }
     });
@@ -205,7 +201,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
           'clean:tmp',
-          'bowercopy',
+          'bowerInstall',
           'html2js',
           'configureProxies',
           'connect:livereload',
@@ -215,7 +211,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
       'clean:dist',
-      'bowercopy',
+      'bowerInstall',
       'test:teamcity',
       'html2js',
       'copy:assets',
@@ -228,7 +224,7 @@ module.exports = function (grunt) {
     grunt.registerTask('test', function(target) {
         var tasks = [
             'clean:tmp',
-            'bowercopy',
+            'bowerInstall',
             'html2js'
         ];
         if(target === 'teamcity') {
@@ -241,7 +237,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('autotest', [
         'clean:tmp',
-        'bowercopy',
+        'bowerInstall',
         'html2js',
         'karma:autotest'
     ]);

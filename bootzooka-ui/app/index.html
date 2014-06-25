@@ -6,8 +6,10 @@
     <title>SML Bootzooka</title>
 
     <!-- build:css(app) styles/index-all.css -->
-    <link href="bower_files/bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
-    <link href="bower_files/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_files/bootstrap/docs/assets/css/bootstrap.css" />
+    <!-- endbower -->
+    <link rel="stylesheet" href="../bower_files/bootstrap/docs/assets/css/bootstrap-responsive.css" />
     <link href="common/styles/application.css" rel="stylesheet">
     <!-- endbuild -->
 
@@ -18,18 +20,16 @@
     <script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
 
     <!-- build:js({tmp,app}) scripts/vendor-all.js -->
-    <script type="text/javascript" src="bower_files/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="bower_files/blockui/jquery.blockUI.js"></script>
-
-    <script type="text/javascript" src="bower_files/bootstrap/docs/assets/js/bootstrap.js"></script>
-
-    <!-- angular stuff -->
-    <script type="text/javascript" src="bower_files/angular/angular.js"></script>
-    <script type="text/javascript" src="bower_files/angular-route/angular-route.js"></script>
-    <script type="text/javascript" src="bower_files/angular-resource/angular-resource.js"></script>
-    <script type="text/javascript" src="bower_files/angular-sanitize/angular-sanitize.js"></script>
-    <script type="text/javascript" src="bower_files/angular-cookies/angular-cookies.js"></script>
-
+    <!-- bower:js -->
+    <script src="bower_files/jquery/jquery.js"></script>
+    <script src="bower_files/angular/angular.js"></script>
+    <script src="bower_files/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_files/angular-mocks/angular-mocks.js"></script>
+    <script src="bower_files/angular-resource/angular-resource.js"></script>
+    <script src="bower_files/angular-route/angular-route.js"></script>
+    <script src="bower_files/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_files/bootstrap/docs/assets/js/bootstrap.js"></script>
+    <!-- endbower -->
     <!-- effects -->
     <script type="text/javascript" src="common/effects.js"></script>
     <!-- endbuild -->
