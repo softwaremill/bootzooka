@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 
         watch: {
             templates: {
-                files: ['app/views/**/*.html'],
+                files: ['app/**/*.html'],
                 tasks: ['html2js']
             },
             livereload: {
@@ -19,10 +19,17 @@ module.exports = function (grunt) {
                     }
                 },
                 files: [
-                    'app/scripts/**/*.js',
-                    'app/styles/**/*.css',
+                    'app/common/*.js',
+                    'app/common/**/*.js',
+                    'app/login/*.js',
+                    'app/password/*.js',
+                    'app/profile/*.js',
+                    'app/register/*.js',
+                    'app/session/*.js',
+                    'app/common/styles/*.css',
                     'tmp/scripts/**/*.js',
-                    'app/*.html'
+                    'app/*.html',
+                    'app/**/*.html'
                 ]
             }
         },
@@ -67,7 +74,7 @@ module.exports = function (grunt) {
                 options: {
                     base: 'app'
                 },
-                src: ['app/views/**/*.html'],
+                src: ['app/**/*.html', 'app/common/**/*.html'],
                 dest: 'tmp/scripts/templates.js',
                 module: 'smlBootzooka.templates'
             }
@@ -146,7 +153,7 @@ module.exports = function (grunt) {
 
                 },
                 files: {
-                    src: ['app/scripts/**/*.js']
+                    src: ['app/**/*.js']
                 }
             },
             tests: {

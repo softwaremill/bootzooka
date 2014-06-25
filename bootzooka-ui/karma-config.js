@@ -18,7 +18,14 @@ module.exports = function(config) {
         files.push('app/'+file);
     });
 
-    files.push('app/scripts/*.js');
+    files.push('app/app.js');
+    files.push('app/common/*.js');
+    files.push('app/common/**/*.js');
+    files.push('app/login/*.js');
+    files.push('app/password/*.js');
+    files.push('app/profile/*.js');
+    files.push('app/register/*.js');
+    files.push('app/session/*.js');
     files.push('app/scripts/**/*.js');
     files.push('tmp/scripts/**/*.js');
     files.push('test/**/*.js');

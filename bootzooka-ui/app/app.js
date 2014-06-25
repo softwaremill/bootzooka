@@ -6,13 +6,13 @@ angular.module('smlBootzooka.maintenance', ['ngResource']);
 
 angular.module('smlBootzooka.profile', ['ngRoute', 'smlBootzooka.maintenance', 'smlBootzooka.session', 'smlBootzooka.directives']).config(function ($routeProvider) {
     $routeProvider.
-        when("/login", {controller: 'LoginCtrl', templateUrl: "views/login.html"}).
-        when("/register", {controller: 'RegisterCtrl', templateUrl: "views/register.html"}).
-        when("/recover-lost-password", {controller: 'PasswordRecoveryCtrl', templateUrl: "views/recover-lost-password.html"}).
-        when("/password-reset", {controller: "PasswordRecoveryCtrl", templateUrl: "views/password-reset.html"}).
-        when("/profile", {controller: "ProfileCtrl", templateUrl: "views/secured/profile.html", auth: true}).
-        when("/main", {templateUrl: "views/secured/private.html", auth: true}).
-        when("/", {templateUrl: "views/public.html"});
+        when("/login", {controller: 'LoginCtrl', templateUrl: "login/login.html"}).
+        when("/register", {controller: 'RegisterCtrl', templateUrl: "register/register.html"}).
+        when("/recover-lost-password", {controller: 'PasswordRecoveryCtrl', templateUrl: "password/recover-lost-password.html"}).
+        when("/password-reset", {controller: "PasswordRecoveryCtrl", templateUrl: "password/password-reset.html"}).
+        when("/profile", {controller: "ProfileCtrl", templateUrl: "profile/profile.html", auth: true}).
+        when("/main", {templateUrl: "common/private.html", auth: true}).
+        when("/", {templateUrl: "common/public.html"});
 });
 
 angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);
