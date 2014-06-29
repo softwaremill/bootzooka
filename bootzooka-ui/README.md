@@ -15,16 +15,18 @@ Installing Node.js
 To work with `bootzooka-ui` you need to have `node.js` installed in version 0.10.13 or newer. Make sure you have both
 `node` and `npm` commands available on `PATH`.
 
-Installing Grunt.js
+Installing Grunt.js and Bower
 ---
 
 Bootzoka frontend project uses `nodejs` based build tool called [Grunt.js](http://gruntjs.com) to automate build stuff.
 
 #### Global installation
 
-It is advised to install Grunt.js globally. In order to do that, please run
+It is advised to install Grunt.js and Bower globally. In order to do that, please run
 
 	npm install -g grunt-cli
+	
+	npm install -g bower
 
 This will install grunt command globally and make it available. Be sure to have NPM binaries on `PATH`. You may need
 to add `/usr/local/share/npm/bin/` to your PATH if you have NPM installed via Homebrew.
@@ -44,6 +46,11 @@ First run
 If this is your first attempt to run `bootzooka-ui`, please go to `bootzooka-ui` project and run
 
 	npm install
+
+and
+
+	bower install
+
 
 This will install all required dependencies for this project. If all is well you can start your development version
 of frontend by issuing `grunt server` from command line. It should boot up your browser and point you

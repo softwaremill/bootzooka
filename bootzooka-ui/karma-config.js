@@ -15,18 +15,12 @@ module.exports = function(config) {
         'bower_files/angular-sanitize/angular-sanitize.js',
         'bower_files/angular-mocks/angular-mocks.js'
     ].forEach(function(file) {
-        files.push('app/'+file);
+        files.push(file);
     });
 
     files.push('app/app.js');
-    files.push('app/common/*.js');
-    files.push('app/common/**/*.js');
-    files.push('app/login/*.js');
-    files.push('app/password/*.js');
-    files.push('app/profile/*.js');
-    files.push('app/register/*.js');
-    files.push('app/session/*.js');
-    files.push('app/scripts/**/*.js');
+    files.push('app/**/*.js');
+    files.push('app/**/**/*.js');
     files.push('tmp/scripts/**/*.js');
     files.push('test/**/*.js');
 

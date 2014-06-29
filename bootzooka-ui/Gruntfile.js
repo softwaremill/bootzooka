@@ -19,13 +19,8 @@ module.exports = function (grunt) {
                     }
                 },
                 files: [
-                    'app/common/*.js',
-                    'app/common/**/*.js',
-                    'app/login/*.js',
-                    'app/password/*.js',
-                    'app/profile/*.js',
-                    'app/register/*.js',
-                    'app/session/*.js',
+                    'app/**/*.js',
+                    'app/**/**/*.js',
                     'app/common/styles/*.css',
                     'tmp/scripts/**/*.js',
                     'app/*.html',
@@ -49,6 +44,7 @@ module.exports = function (grunt) {
                             proxyRequests,
                             liveReload,
                             connect.static('tmp'),
+                            connect().use('/bower_files', connect.static('./bower_files')),
                             connect.static('app')
                         ];
                     }
