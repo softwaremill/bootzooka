@@ -1,81 +1,23 @@
-<div class="row">
-    <div class="offset3 span7">
-        <form name="profileForm" class="form-horizontal" onsubmit="return false;">
-            <fieldset>
-                <legend>Profile</legend>
-                <div class="control-group">
-                    <label class="control-label" for="login">Login</label>
+<form class="form-bootzooka" role="form" name="profileForm" onsubmit="return false;" novalidate>
+    <h2 class="form-bootzooka-heading">Profile</h2>
+    <input type="text" name="login" class="form-control" placeholder="Login" ng-model="login" bs-blur="changeLogin()" ng-minlength="3" required autofocus>
+    <span class="text-error" ng-show="profileForm.login.$error.required">Login is required</span>
+    <span class="text-error" ng-show="profileForm.login.$error.minlength">At least three characters!</span>
 
-                    <div class="controls">
-                        <input type="text" id="login" name="login" ng-model="login" bs-blur="changeLogin()"
-                               ng-minlength="3" required>
-                            <span class="text-error"
-                                  ng-show="profileForm.login.$error.required">Login is required</span>
-                        <span class="text-error"
-                              ng-show="profileForm.login.$error.minlength">At least three characters!</span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="email">E-Mail</label>
+    <input type="email" name="email" class="form-control" placeholder="E-mail address" ng-model="email" bs-blur="changeEmail()" required>
+    <span class="text-error" ng-show="registerForm.email.$dirty && registerForm.email.$error.required">E-mail is required</span>
+    <span class="text-error" ng-show="registerForm.email.$error.email">It's not a valid email!</span>
+</form>
 
-                    <div class="controls">
-                        <input type="email" id="email" name="email" ng-model="email" bs-blur="changeEmail()"
-                               required>
-                            <span class="text-error"
-                                  ng-show="profileForm.email.$error.required">E-mail is required</span>
-                            <span class="text-error"
-                                  ng-show="profileForm.email.$error.email">It's not a valid email!</span>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
-    </div>
+<form class="form-bootzooka" role="form" name="passwordChangeForm" ng-submit="changePassword()" novalidate>
+    <input type="password" name="currentPassword" class="form-control" placeholder="Current password" ng-model="currentPassword" required>
+    <span class="text-error" ng-show="passwordChangeForm.currentPassword.$dirty && passwordChangeForm.currentPassword.$error.required">Current password is required</span>
 
-    <div class="offset3 span7">
-        <form name="passwordChangeForm" class="form-horizontal" ng-submit="changePassword()" novalidate>
-            <fieldset>
-                <legend>Password</legend>
-            </fieldset>
-            <div class="control-group">
-                <label class="control-label" for="currentPassword">Current password</label>
+    <input type="password" name="newPassword" class="form-control" placeholder="New password" ng-model="newPassword" required>
+    <span class="text-error" ng-show="passwordChangeForm.newPassword.$dirty && passwordChangeForm.newPassword.$error.required">New password is required</span>
 
-                <div class="controls">
-                    <input type="password" id="currentPassword" name="currentPassword" ng-model="currentPassword"
-                           required>
-                    <span class="text-error"
-                          ng-show="passwordChangeForm.currentPassword.$dirty && passwordChangeForm.currentPassword.$error.required">Current password is required</span>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="newPassword">New password</label>
-
-                <div class="controls">
-                    <input type="password" id="newPassword" name="newPassword" ng-model="newPassword" required>
-                    <span class="text-error"
-                          ng-show="passwordChangeForm.newPassword.$dirty && passwordChangeForm.newPassword.$error.required">New password is required</span>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="newPasswordRepeated">Repeat new password</label>
-
-                <div class="controls">
-                    <input type="password" id="newPasswordRepeated" name="newPasswordRepeated"
-                           ng-model="newPasswordRepeated" bs-repeat-password="newPassword" required>
-                    <span class="text-error"
-                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.required">Repeat password</span>
-                    <span class="text-error"
-                          ng-show="passwordChangeForm.newPasswordRepeated.$dirty && !passwordChangeForm.newPasswordRepeated.$error.required && passwordChangeForm.newPasswordRepeated.$error.repeat">Passwords don't match</span>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <div class="controls">
-                    <button type="submit" class="btn">Change password</button>
-                </div>
-            </div>
-        </form>
-    </div>
-
-</div>
+    <input type="password" name="newPasswordRepeated" class="form-control" placeholder="Repeat new password" ng-model="newPasswordRepeated" bs-repeat-password="newPassword" required>
+    <span class="text-error" ng-show="passwordChangeForm.newPasswordRepeated.$dirty && passwordChangeForm.newPasswordRepeated.$error.required">Repeat password</span>
+    <span class="text-error" ng-show="passwordChangeForm.newPasswordRepeated.$dirty && !passwordChangeForm.newPasswordRepeated.$error.required && passwordChangeForm.newPasswordRepeated.$error.repeat">Passwords don't match</span>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Change password</button>
+</form>

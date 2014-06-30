@@ -1,32 +1,16 @@
-
-<div class="row">
-    <div class="span6 offset3">
-        <div class="row">
-            <form class="form-horizontal" name="loginForm" novalidate>
-                <div class="control-group">
-                    <label class="control-label" for="login">Login/e-mail</label>
-                    <div class="controls">
-                        <input type="text" name="login" id="login" placeholder="Login/e-mail" ng-model="user.login" required>
-                        <span class="text-error" ng-show="loginForm.login.$dirty && loginForm.login.$error.required">Login is required</span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="password">Password</label>
-                    <div class="controls">
-                        <input type="password" name="password" id="password" placeholder="Password" ng-model="user.password" required>
-                        <span class="text-error" ng-show="loginForm.password.$dirty && loginForm.password.$error.required">Password is required</span>
-                        <span class="help-block"><a href="#/recover-lost-password">Forgotten password?</a></span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <label class="checkbox">
-                            <input type="checkbox" ng-model="user.rememberme"> Remember me
-                        </label>
-                        <button type="submit" class="btn" ng-click="login()" >Login</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<form class="form-bootzooka" role="form" name="loginForm" novalidate>
+    <h2 class="form-bootzooka-heading">Please sign in</h2>
+    <input type="text" name="login" class="form-control" placeholder="Login/Email address"
+           ng-model="user.login" required>
+    <span class="text-error" ng-show="loginForm.login.$dirty && loginForm.login.$error.required">Login is required</span>
+    <input type="password" name="password" class="form-control bottom" placeholder="Password"
+           ng-model="user.password" required>
+    <span class="text-error"
+          ng-show="loginForm.password.$dirty && loginForm.password.$error.required">Password is required</span>
+    <span class="help-block"><a href="#/recover-lost-password">Forgotten password?</a></span>
+    <label class="checkbox">
+        <input type="checkbox" value="remember-me" ng-model="user.rememberme"> Remember me
+    </label>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()">Sign in
+    </button>
+</form>

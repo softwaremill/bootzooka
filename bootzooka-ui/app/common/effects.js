@@ -4,6 +4,8 @@
 
     utils.showInfoMessage = function(text) {
         $('#info-message').html(text);
+        $('.alert-info').fadeOut(0);
+        $('.alert-info').removeClass('hide');
         $('.alert-info').fadeIn(600);
         setTimeout(function () {
             $('.alert-info').fadeOut(1200);
@@ -12,9 +14,11 @@
 
     utils.showErrorMessage = function(text) {
         $('#error-message').html(text);
-        $('.alert-error').fadeIn(600);
+        $('.alert-danger').fadeOut(0);
+        $('.alert-danger').removeClass('hide');
+        $('.alert-danger').fadeIn(600);
         setTimeout(function () {
-            $('.alert-error').fadeOut(1200);
+            $('.alert-danger').fadeOut(1200);
         }, 4000);
     };
 
