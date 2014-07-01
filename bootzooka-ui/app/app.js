@@ -24,9 +24,9 @@ angular.module(
             'smlBootzooka.session',
             'smlBootzooka.directives', 'ngSanitize', 'ngRoute', 'ajaxthrobber']).config(function ($routeProvider) {
         $routeProvider.
-            when("/error404", {templateUrl: "views/errorpages/error404.html"}).
-            when("/error500", {templateUrl: "views/errorpages/error500.html"}).
-            when("/error", {templateUrl: "views/errorpages/error500.html"}).
+            when("/error404", {templateUrl: "common/errorpages/error404.html"}).
+            when("/error500", {templateUrl: "common/errorpages/error500.html"}).
+            when("/error", {templateUrl: "common/errorpages/error500.html"}).
             otherwise({redirectTo: "/error404"});
     })
 
