@@ -181,7 +181,8 @@ module.exports = function (grunt) {
         },
       bowerInstall: {
         target: {
-          src: ['app/index.html']
+          src: ['app/index.html'],
+          exclude: ['bower_files/angular-mocks/angular-mocks.js']
         }
       }
     });

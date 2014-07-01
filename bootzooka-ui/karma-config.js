@@ -5,9 +5,9 @@ module.exports = function(config) {
     var files = [];
 
     [
-        'bower_files/jquery/jquery.min.js',
+        'bower_files/jquery/dist/jquery.js',
         'bower_files/blockui/jquery.blockUI.js',
-        'bower_files/bootstrap/docs/assets/js/bootstrap.js',
+        'bower_files/bootstrap/dist/js/bootstrap.js',
         'bower_files/angular/angular.js',
         'bower_files/angular-resource/angular-resource.js',
         'bower_files/angular-route/angular-route.js',
