@@ -13,7 +13,7 @@ angular.module('smlBootzooka.profile').controller('LoginCtrl', function LoginCtr
         // set dirty to show error messages on empty fields when submit is clicked
         $scope.loginForm.login.$dirty = true;
         $scope.loginForm.password.$dirty = true;
-      console.log($scope.user);
+
       if ($scope.loginForm.$invalid === false) {
             UserSessionService.login($scope.user, self.loginOk, self.loginFailed);
         }
