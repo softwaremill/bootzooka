@@ -84,12 +84,12 @@ server parts in one application that can be dropped into any servlet container.*
 
 #### Server
 
-To run the backend server part, enter the main directory and type `./run-dev-backend.sh` or
-`run-dev-backend.bat` depending on your OS.
+To run the backend server part, enter the main directory and type `./backend-start.sh` or
+`backend-start.bat` depending on your OS.
 
 #### Browser client
 
-To run the frontend server part, enter the main directory and type `./run-dev-frontend.sh`. This should open
+To run the frontend server part, enter the main directory and type `./frontend-start.sh`. This should open
 `http://0.0.0.0:9090/` in your browser (frontend listens on port 9090, backend on port 8080; so all REST requests
  will be proxied to port 8080).
 
