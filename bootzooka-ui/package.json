@@ -32,5 +32,8 @@
   },
   "peerDependencies": {
     "grunt-cli": "0.1.9"
+  },
+  "scripts": {
+      "postinstall": "node_modules/.bin/bower install"
   }
 }
