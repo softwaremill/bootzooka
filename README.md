@@ -10,9 +10,9 @@ as blueprints for new functionalities.
 Current user visible features:
 
 *	User registration
-*   Lost password recovery (via e-mail)
+* Lost password recovery (via e-mail)
 *	Logging in/out
-*   Profile management
+* Profile management
 
 This may not sound "cool", but in fact Bootzooka is really helpful when bootstrapping a new project. This is because
 besides of the features mentioned it contains the whole required setup and automation of build processes both for
@@ -73,6 +73,7 @@ In order to build and develop on Bootzooka foundations you need the following:
 *	Java JDK >= 7
 *	[SBT](http://www.scala-sbt.org/) >= 0.13
 *	Node.js >= 0.10.13
+* MongoDB
 
 ## How to run (development)
 
@@ -86,6 +87,8 @@ server parts in one application that can be dropped into any servlet container.*
 
 To run the backend server part, enter the main directory and type `./backend-start.sh` or
 `backend-start.bat` depending on your OS.
+
+You will also need a *running* Mongo instance on the default port (the port can be customized in the configuration).
 
 #### Browser client
 
