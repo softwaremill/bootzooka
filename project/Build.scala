@@ -111,7 +111,7 @@ object BootzookaBuild extends Build {
     }
   }
 
-  def updateNpm() = (baseDirectory, streams) map { (bd, s) =>
+  val updateNpm = baseDirectory map { bd =>
     println("Updating NPM dependencies")
     haltOnCmdResultError(Process("npm install", bd)!)
   }
@@ -123,7 +123,7 @@ object BootzookaBuild extends Build {
     }
     println("Building with Grunt.js : " + taskName)
     haltOnCmdResultError(buildGrunt())
-  }
+  } dependsOn updateNpm
 
   lazy val parent: Project = Project(
     "bootzooka-root",
@@ -183,7 +183,7 @@ object BootzookaBuild extends Build {
     "bootzooka-ui",
     file("bootzooka-ui"),
     settings = buildSettings ++ Seq(
-      test in Test <<= (test in Test) dependsOn(updateNpm(), gruntTask("test"))
+      test in Test <<= (test in Test) dependsOn(gruntTask("test"))
     )
   )
 
