@@ -7,7 +7,7 @@ import org.openqa.selenium.By
 
 class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
 
-  test("entries by authors without logged user") {
+  ignore("entries by authors without logged user") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
     entriesByAuthorsPage.openWithoutAuthor()
@@ -15,7 +15,7 @@ class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
     assertThat(driver.getCurrentUrl).startsWith(loginPage.url)
   }
 
-  test("entries by author with no selected author") {
+  ignore("entries by author with no selected author") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
     loginPage.openLoginPage()
@@ -27,7 +27,7 @@ class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
     assertThat(entriesByAuthorsPage.isSelectAnAuthorMessageDisplayed).isTrue()
   }
 
-  test("entries by author with selected author with entries") {
+  ignore("entries by author with selected author with entries") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
     loginPage.openLoginPage()
@@ -42,7 +42,7 @@ class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
     assertThat(entriesByAuthorsPage.entries.findElements(By.cssSelector("p.entryText")).get(0).getText).isEqualTo(MESSAGE)
   }
 
-  test("entries by author with selected author with no entries") {
+  ignore("entries by author with selected author with no entries") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
     loginPage.openLoginPage()

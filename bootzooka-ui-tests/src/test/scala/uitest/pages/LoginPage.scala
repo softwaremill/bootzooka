@@ -9,10 +9,10 @@ class LoginPage(driver: WebDriver) {
   private val sc: SeleniumCommands = new SeleniumCommands(driver)
   val url = sc.URL + "login"
 
-  @FindBy(css = "#login")
+  @FindBy(name = "login")
   val loginField: WebElement = null
 
-  @FindBy(css = "#password")
+  @FindBy(name = "password")
   val passwordField: WebElement = null
 
   @FindBy(css = "button[type=submit]")

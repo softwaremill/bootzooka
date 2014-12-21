@@ -9,16 +9,16 @@ class RegistrationPage(driver: WebDriver) {
   private val sc: SeleniumCommands = new SeleniumCommands(driver)
   val url = sc.URL + "register"
 
-  @FindBy(css = "#login")
+  @FindBy(name = "login")
   val loginField: WebElement = null
 
-  @FindBy(css = "#email")
+  @FindBy(name = "email")
   val emailField: WebElement = null
 
-  @FindBy(css = "#password")
+  @FindBy(name = "password")
   val passwordField: WebElement = null
 
-  @FindBy(css = "#repeatPassword")
+  @FindBy(name = "repeatPassword")
   val repeatPassField: WebElement = null
 
   @FindBy(css = "button[type=submit]")

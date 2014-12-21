@@ -7,7 +7,7 @@ class ScalaSendMessageUITest extends BootzookaUITest {
   final val MSG_TEXT = Utils.randomString(20)
 
 
-  test("send message") {
+  ignore("send message") {
     loginPage.openLoginPage()
     loginPage.login(REGUSER, REGPASS)
 
