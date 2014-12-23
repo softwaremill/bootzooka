@@ -129,25 +129,20 @@ object BootzookaBuild extends Build {
     "bootzooka-root",
     file("."),
     settings = buildSettings
-  ) aggregate(backend, dao, service, rest, ui, dist)
+  ) aggregate(backend, service, rest, ui, dist)
 
   lazy val backend: Project = Project(
   "bootzooka-backend",
   file("bootzooka-backend"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= (Seq(bson) ++ jodaDependencies))
+    settings = buildSettings ++ Seq(libraryDependencies ++= (rogue ++ Seq(bson) ++ jodaDependencies)
+      ++ Seq(mongoJava, fakeMongo))
   )
-
-  lazy val dao: Project = Project(
-    "bootzooka-dao",
-    file("bootzooka-dao"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= (rogue ++ Seq(mongoJava, fakeMongo)))
-  ) dependsOn(backend)
 
   lazy val service: Project = Project(
     "bootzooka-service",
     file("bootzooka-service"),
     settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, javaxMail, typesafeConfig))
-  ) dependsOn(dao, backend)
+  ) dependsOn(backend)
 
   lazy val rest: Project = Project(
     "bootzooka-rest",
