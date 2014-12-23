@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.common
 
-import Utils._
-import org.scalatest.matchers.ShouldMatchers
+import com.softwaremill.bootzooka.common.Utils._
 import org.scalatest.FlatSpec
+import org.scalatest.matchers.ShouldMatchers
 
 class UtilsSpec extends FlatSpec with ShouldMatchers {
   behavior of "checkbox()"

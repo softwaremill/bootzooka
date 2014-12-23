@@ -129,11 +129,11 @@ object BootzookaBuild extends Build {
     "bootzooka-root",
     file("."),
     settings = buildSettings
-  ) aggregate(common, domain, dao, service, rest, ui, dist)
+  ) aggregate(backend, domain, dao, service, rest, ui, dist)
 
-  lazy val common: Project = Project(
-    "bootzooka-common",
-    file("bootzooka-common"),
+  lazy val backend: Project = Project(
+  "bootzooka-backend",
+  file("bootzooka-backend"),
     settings = buildSettings ++ Seq(libraryDependencies ++= jodaDependencies)
   )
 
@@ -141,19 +141,19 @@ object BootzookaBuild extends Build {
     "bootzooka-domain",
     file("bootzooka-domain"),
     settings = buildSettings ++ Seq(libraryDependencies += bson)
-  ) dependsOn (common)
+  ) dependsOn (backend)
 
   lazy val dao: Project = Project(
     "bootzooka-dao",
     file("bootzooka-dao"),
     settings = buildSettings ++ Seq(libraryDependencies ++= (rogue ++ Seq(mongoJava, fakeMongo)))
-  ) dependsOn(domain, common)
+  ) dependsOn(domain, backend)
 
   lazy val service: Project = Project(
     "bootzooka-service",
     file("bootzooka-service"),
     settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, javaxMail, typesafeConfig))
-  ) dependsOn(domain, dao, common)
+  ) dependsOn(domain, dao, backend)
 
   lazy val rest: Project = Project(
     "bootzooka-rest",
@@ -177,7 +177,7 @@ object BootzookaBuild extends Build {
       packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"),
       libraryDependencies ++= Seq(jettyContainer, servletApiProvided)
     )
-  ) dependsOn(service, domain, common)
+  ) dependsOn(service, domain, backend)
 
   lazy val ui = Project(
     "bootzooka-ui",
