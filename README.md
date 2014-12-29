@@ -174,6 +174,10 @@ it using system properties (see Typesafe Config's readme on how to do that).
 
 * To have e-mail sender working please provide smtp details (host, port, password, username).
 
+## Changelog
+
+[changelog](CHANGELOG.md)
+
 ## License
 
 Project is licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) which means you can
