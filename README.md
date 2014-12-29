@@ -63,8 +63,8 @@ development the server and client parts. This separation is mirrored in how Boot
 
 There are several sub-projects (directories) containing server-side code and one for client-side application. They are
 completely unrelated in terms of code and dependencies. `bootzooka-ui` directory contains the browser part (JavaScript,
-CSS, HTML) and the others are building blocks of server application which contains its entry points in `bootzooka-rest`
-project.
+CSS, HTML) and `bootzooka-backend` contains the backend application. Additionaly, `bootzooka-dist` is an utility module
+for building a "fat jar" distribution.
 
 ## Prerequisities
 
@@ -93,7 +93,7 @@ You will also need a *running* Mongo instance on the default port (the port can 
 #### Browser client
 
 To run the frontend server part, enter the main directory and type `./frontend-start.sh`. This should open
-`http://0.0.0.0:9090/` in your browser (frontend listens on port 9090, backend on port 8080; so all REST requests
+`http://0.0.0.0:9090/` in your browser (frontend listens on port 9090, backend on port 8080; so all HTTP requests
  will be proxied to port 8080).
 
 For details of frontend build and architecture please refere to the [bootzooka-ui README](bootzooka-ui).
@@ -110,7 +110,7 @@ simply by running java:
 
 ### Deployable .war
 
-To build a `.war`, run `bootzooka-rest/package`. The war will be located in `bootzooka-rest/target/scala-2.10/bootzooka.war`.
+To build a `.war`, run `bootzooka-backend/package`. The war will be located in `bootzooka-backend/target/scala-2.10/bootzooka.war`.
 You can drop it in any servlet container (Tomcat/Jetty/JBoss/etc.)
 
 ## How to execute tests

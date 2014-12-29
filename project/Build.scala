@@ -101,8 +101,8 @@ object Dependencies {
 
 object BootzookaBuild extends Build {
 
-  import Dependencies._
   import BuildSettings._
+  import Dependencies._
   import com.earldouglas.xsbtwebplugin.WebPlugin.webSettings
 
   private def haltOnCmdResultError(result: Int) {
@@ -113,7 +113,7 @@ object BootzookaBuild extends Build {
 
   val updateNpm = baseDirectory map { bd =>
     println("Updating NPM dependencies")
-    haltOnCmdResultError(Process("npm install", bd)!)
+    haltOnCmdResultError(Process("npm install", bd / ".." / "bootzooka-ui")!)
   }
 
   def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
@@ -129,32 +129,22 @@ object BootzookaBuild extends Build {
     "bootzooka-root",
     file("."),
     settings = buildSettings
-  ) aggregate(backend, service, rest, ui, dist)
+  ) aggregate(backend, ui, dist)
 
   lazy val backend: Project = Project(
   "bootzooka-backend",
   file("bootzooka-backend"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= (rogue ++ Seq(bson) ++ jodaDependencies)
-      ++ Seq(mongoJava, fakeMongo))
-  )
-
-  lazy val service: Project = Project(
-    "bootzooka-service",
-    file("bootzooka-service"),
-    settings = buildSettings ++ Seq(libraryDependencies ++= Seq(commonsValidator, javaxMail, typesafeConfig))
-  ) dependsOn(backend)
-
-  lazy val rest: Project = Project(
-    "bootzooka-rest",
-    file("bootzooka-rest"),
-    settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(
-      libraryDependencies ++= scalatraStack ++ jodaDependencies ++ Seq(servletApiProvided),
+    settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(libraryDependencies ++= (Seq(bson) ++ jodaDependencies
+      ++ rogue ++ Seq(mongoJava, fakeMongo, jettyContainer)
+          ++ Seq(commonsValidator, javaxMail, typesafeConfig, servletApiProvided)
+          ++ scalatraStack))
+    ++ Seq(
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },
       // We need to include the whole webapp, hence replacing the resource directory
       webappResources in Compile <<= baseDirectory { bd =>
-        val restResources = bd.getParentFile / rest.base.getName / "src" / "main" / "webapp"
+        val restResources = bd.getParentFile / backend.base.getName / "src" / "main" / "webapp"
         val uiResources = bd.getParentFile / ui.base.getName / "dist" / "webapp"
         // "dist" may not yet exist, as it will be created by grunt later. However, we still need to include it, and
         // if it doesn't exist, SBT will complain
@@ -163,10 +153,8 @@ object BootzookaBuild extends Build {
         }
         List(restResources, uiResources)
       },
-      packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"),
-      libraryDependencies ++= Seq(jettyContainer, servletApiProvided)
-    )
-  ) dependsOn(service, backend)
+      packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build")
+    ))
 
   lazy val ui = Project(
     "bootzooka-ui",
@@ -184,10 +172,10 @@ object BootzookaBuild extends Build {
       mainClass in assembly := Some("com.softwaremill.bootzooka.Bootzooka"),
       // We need to include the whole webapp, hence replacing the resource directory
       unmanagedResourceDirectories in Compile <<= baseDirectory { bd => {
-        List(bd.getParentFile / rest.base.getName / "src" / "main", bd.getParentFile / ui.base.getName / "dist")
+        List(bd.getParentFile / backend.base.getName / "src" / "main", bd.getParentFile / ui.base.getName / "dist")
       } }
     )
-  ) dependsOn (ui, rest)
+  ) dependsOn (ui, backend)
 
   lazy val uiTests = Project(
     "bootzooka-ui-tests",

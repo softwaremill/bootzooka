@@ -1,9 +1,10 @@
+import javax.servlet.ServletContext
+
 import com.mongodb.Mongo
-import net.liftweb.mongodb.{DefaultMongoIdentifier, MongoDB}
 import com.softwaremill.bootzooka.Beans
 import com.softwaremill.bootzooka.rest._
-import org.scalatra._
-import javax.servlet.ServletContext
+import net.liftweb.mongodb.{DefaultMongoIdentifier, MongoDB}
+import org.scalatra.LifeCycle
 
 /**
  * This is the ScalatraBootstrap bootstrap file. You can use it to mount servlets or
