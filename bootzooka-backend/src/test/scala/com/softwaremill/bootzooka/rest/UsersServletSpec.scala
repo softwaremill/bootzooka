@@ -110,7 +110,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         patch("/", mapToJson(Map("email" -> "admin2@sml.com")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
           status should be (403)
-          opt must be (Some("E-mail used by another user"))
+          opt should be (Some("E-mail used by another user"))
         }
       }
     })
@@ -159,7 +159,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         patch("/", mapToJson(Map("login" -> "admin2")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
           status should be (403)
-          opt must be (Some("Login is already taken"))
+          opt should be (Some("Login is already taken"))
         }
       }
     })
@@ -191,7 +191,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         post("/changepassword", mapToJson(Map("currentPassword" -> "passwrong", "newPassword" -> "newPass")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
           status should be (403)
-          opt must be (Some("Current password is invalid"))
+          opt should be (Some("Current password is invalid"))
         }
       }
     })
@@ -208,7 +208,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         post("/changepassword", mapToJson(Map("newPassword" -> "pass")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
           status should be (403)
-          opt must be (Some("Parameter currentPassword is missing"))
+          opt should be (Some("Parameter currentPassword is missing"))
         }
       }
     })
@@ -225,7 +225,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         post("/changepassword", mapToJson(Map("currentPassword" -> "pass")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
           status should be (403)
-          opt must be (Some("Parameter newPassword is missing"))
+          opt should be (Some("Parameter newPassword is missing"))
         }
       }
     })

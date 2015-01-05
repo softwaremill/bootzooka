@@ -31,8 +31,8 @@ class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar {
     val user: Option[UserJson] = strategy.authenticate()
 
     // Then
-    user must not be (None)
-    user.get.login must be ("admin")
+    user should not be (None)
+    user.get.login should be ("admin")
   }
 
   it should "not authenticate user with invalid cookie" in {
@@ -43,6 +43,6 @@ class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar {
     val user: Option[UserJson] = strategy.authenticate()
 
     // Then
-    user must be (null)
+    user should be (null)
   }
 }
