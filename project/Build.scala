@@ -181,6 +181,8 @@ object BootzookaBuild extends Build {
     file("bootzooka-ui-tests"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= selenium ++ Seq(awaitility, jettyTest, servletApiProvided)
+    ) ++ Seq(
+      test in Test <<= (test in Test) dependsOn (Keys.`package` in Compile in backend)
     )
   ) dependsOn (dist)
 }
