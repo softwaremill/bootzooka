@@ -5,11 +5,11 @@ angular.module("smlBootzooka.profile").factory("PasswordRecoveryService", functi
 
     this.recoveryResource = $resource("rest/passwordrecovery", {}, {
         'resetPassword': {method: "POST"}
-    });
+    }, {});
 
     this.changeResource = $resource("rest/passwordrecovery/:code", {code: "@code"}, {
         'changePassword': {method: "POST"}
-    });
+    }, {});
 
     var self = this;
 

@@ -6,18 +6,15 @@ angular.module('smlBootzooka.directives').directive('bsRepeatPassword', function
         link: function (scope, elem, attrs, ctrl) {
             var otherInput = elem.inheritedData("$formController")[attrs.bsRepeatPassword];
 
-            ctrl.$parsers.push(function (value) {
-                if (value === otherInput.$viewValue) {
-                    ctrl.$setValidity("repeat", true);
+            function requireToHaveSameValueAs(input) {
+                return function (value) {
+                    ctrl.$setValidity("repeat", value === input.$viewValue);
                     return value;
-                }
-                ctrl.$setValidity("repeat", false);
-            });
+                };
+            }
 
-            otherInput.$parsers.push(function (value) {
-                ctrl.$setValidity("repeat", value === ctrl.$viewValue);
-                return value;
-            });
+            ctrl.$parsers.push(requireToHaveSameValueAs(otherInput));
+            otherInput.$parsers.push(requireToHaveSameValueAs(ctrl));
         }
     };
 });

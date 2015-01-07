@@ -7,9 +7,9 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     self.userResource = $resource('rest/users/', { }, {
         login: {method: 'POST'},
         valid: {method: 'GET'}
-    });
+    }, { });
 
-    self.logoutResource = $resource('rest/users/logout', { }, { });
+    self.logoutResource = $resource('rest/users/logout', { }, { }, { });
 
     var userSessionService = {
         loggedUser: null

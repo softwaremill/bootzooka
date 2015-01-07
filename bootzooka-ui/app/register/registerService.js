@@ -3,7 +3,7 @@
 angular.module("smlBootzooka.profile").factory('RegisterService', function ($resource, FlashService) {
 
     var self = this;
-    self.registerResource = $resource('rest/users/register');
+    self.registerResource = $resource('rest/users/register', null, null, {});
 
     var registerService = {};
 

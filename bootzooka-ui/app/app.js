@@ -57,12 +57,13 @@ angular.module(
                 return $q.reject(response);
             }
 
-            return function (promise) {
-                return promise.then(success, error);
+            return {
+                response : success,
+                responseError : error
             };
 
         }];
-        $httpProvider.responseInterceptors.push(interceptor);
+        $httpProvider.interceptors.push(interceptor);
     }])
 
     .run(function ($rootScope, UserSessionService, $location) {
@@ -95,15 +96,11 @@ angular.module("ajaxthrobber", [])
             };
 
             wasPageBlocked = function (responseConfig) {
-                var nonBlocking;
+                var nonBlocking = false;
                 if (typeof responseConfig === "object" && typeof responseConfig.headers === "object") {
                     nonBlocking = responseConfig.headers.dontBlockPageOnAjax;
                 }
-                if (nonBlocking) {
-                    return !nonBlocking;
-                } else {
-                    return true;
-                }
+                return !nonBlocking;
             };
             success = function (response) {
                 stopAjax(response.config);
@@ -113,11 +110,12 @@ angular.module("ajaxthrobber", [])
                 stopAjax(response.config);
                 return $q.reject(response);
             };
-            return function (promise) {
-                return promise.then(success, error);
+            return {
+                response : success,
+                responseError : error
             };
         }];
-        return $httpProvider.responseInterceptors.push(stopAjaxInterceptor);
+        return $httpProvider.interceptors.push(stopAjaxInterceptor);
     }])
     .run(["$rootScope", "$http", function ($rootScope, $http) {
         var startAjaxTransformer;

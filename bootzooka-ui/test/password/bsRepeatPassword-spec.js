@@ -59,15 +59,28 @@ describe("Repeat password directive", function () {
         expect(form.repeatPassword.$valid).toBe(false);
     });
 
-    it('should set model to valid after emptying and fixing matching input', function () {
-        // when
+    it('should set model to valid after setting consistent values', function () {
         form.repeatPassword.$setViewValue('pass123');
+        expect(form.password.$valid).toBe(true);
+        expect(form.repeatPassword.$valid).toBe(false);
+
         form.password.$setViewValue('pass123');
+        expect(form.password.$valid).toBe(true);
+        expect(form.repeatPassword.$valid).toBe(true);
+
         form.password.$setViewValue('');
+        expect(form.password.$valid).toBe(true);
+        expect(form.repeatPassword.$valid).toBe(false);
+
         form.repeatPassword.$setViewValue('');
+        expect(form.password.$valid).toBe(true);
+        expect(form.repeatPassword.$valid).toBe(true);
+
         form.repeatPassword.$setViewValue('pass123');
+        expect(form.password.$valid).toBe(true);
+        expect(form.repeatPassword.$valid).toBe(false);
+
         form.password.$setViewValue('pass123');
-        // then
         expect(form.password.$valid).toBe(true);
         expect(form.repeatPassword.$valid).toBe(true);
     });

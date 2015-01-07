@@ -5,11 +5,11 @@ angular.module("smlBootzooka.profile").factory("ProfileService", function ($reso
         'changeLogin': {method: 'PATCH'},
         'changeEmail': {method: 'PATCH'},
         'changePassword': {method: 'PATCH'}
-    });
+    }, {});
 
     this.changePasswordResource = $resource("rest/users/changepassword", {}, {
         'changePassword': {method: 'POST'}
-    });
+    }, {});
 
     var self = this;
 
