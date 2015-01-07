@@ -30,8 +30,8 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
 
   def userService: UserService
 
-  override protected def registerAuthStrategies {
-    scentry.register(RememberMe.name, app => new RememberMeStrategy(app.asInstanceOf[ScalatraBase with CookieSupport], rememberMe, userService))
+  override protected def registerAuthStrategies() {
+    scentry.register(RememberMe.name, app => new RememberMeStrategy(app.asInstanceOf[ScalatraBase], rememberMe, userService))
     scentry.register(UserPassword.name, app => new UserPasswordStrategy(app, login, password, userService))
   }
 
@@ -49,7 +49,7 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
     case usr: UserJson => usr.login
   }
 
-  override protected def configureScentry {
+  override protected def configureScentry() {
     val authCookieOptions = cookieOptions.copy(path = "/", secure = false, maxAge = Utils.OneWeek, httpOnly = true)
     scentry.store = new CookieAuthStore(self) {
       override def invalidate()(implicit request: HttpServletRequest, response: HttpServletResponse) {

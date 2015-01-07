@@ -1,13 +1,13 @@
 package com.softwaremill.bootzooka.auth
 
-import org.scalatra.{ CookieOptions, Cookie, CookieSupport, ScalatraBase }
+import org.scalatra.{ CookieOptions, Cookie, ScalatraBase }
 import org.scalatra.auth.ScentryStrategy
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
-class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rememberMe: Boolean, val userService: UserService) extends ScentryStrategy[UserJson] {
+class RememberMeStrategy(protected val app: ScalatraBase, rememberMe: Boolean, val userService: UserService) extends ScentryStrategy[UserJson] {
 
   private val CookieKey = "rememberMe"
 
@@ -26,7 +26,7 @@ class RememberMeStrategy(protected val app: ScalatraBase with CookieSupport, rem
   }
 
   override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse) = {
-    app.cookies.get(CookieKey).flatMap(userService.authenticateWithToken(_))
+    app.cookies.get(CookieKey).flatMap(userService.authenticateWithToken)
   }
 
   override def beforeLogout(user: UserJson)(implicit request: HttpServletRequest, response: HttpServletResponse) {

@@ -6,7 +6,7 @@ import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
 import org.apache.commons.lang3.StringEscapeUtils._
 
-class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication with CookieSupport {
+class UsersServlet(val userService: UserService) extends JsonServletWithAuthentication {
 
   post() {
     val userOpt: Option[UserJson] = authenticate()
