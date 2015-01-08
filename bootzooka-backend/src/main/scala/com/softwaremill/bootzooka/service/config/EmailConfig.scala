@@ -15,5 +15,5 @@ trait EmailConfig {
   lazy val emailFrom = emailConfig.getString("from")
   lazy val emailEncoding = emailConfig.getString("encoding")
   lazy val emailSslConnection = emailConfig.getBoolean("ssl-connection")
-  lazy val emailVerifySSLCertificate = emailConfig.getBoolean("email.verify-ssl-certificate")
+  lazy val emailVerifySSLCertificate = emailConfig.getBoolean("verify-ssl-certificate")
 }
