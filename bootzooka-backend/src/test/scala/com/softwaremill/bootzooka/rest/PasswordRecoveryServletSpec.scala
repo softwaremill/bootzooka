@@ -15,7 +15,7 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
     val recoveryService = mock[PasswordRecoveryService]
     val userService = mock[UserService]
     when(userService.checkUserExistenceFor("existing", "existing")) thenReturn Left("User exists")
-    when(userService.checkUserExistenceFor("notexisting", "notexisting")) thenReturn Right()
+    when(userService.checkUserExistenceFor("notexisting", "notexisting")) thenReturn Right(())
 
     val servlet = new PasswordRecoveryServlet(recoveryService, userService)
     addServlet(servlet, "/*")

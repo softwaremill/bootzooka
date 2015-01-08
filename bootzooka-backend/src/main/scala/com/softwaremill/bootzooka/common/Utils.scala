@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.common
 
 import org.joda.time.DateTime
-import org.joda.time.format.{ DateTimeFormatter, DateTimeFormat }
+import org.joda.time.format.DateTimeFormat
 import java.util.Random
 
 object Utils {

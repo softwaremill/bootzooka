@@ -8,6 +8,8 @@ import org.joda.time.DateTime
 import com.foursquare.rogue.LiftRogue._
 import java.util.Locale
 
+import scala.language.implicitConversions
+
 trait PasswordResetCodeDAO {
 
   def store(code: PasswordResetCode)
@@ -42,7 +44,7 @@ class MongoPasswordResetCodeDAO extends PasswordResetCodeDAO {
   import PasswordResetCodeImplicits._
 
   def store(code: PasswordResetCode) {
-    code.save
+    code.save(safe = false)
   }
 
   def load(code: String): Option[PasswordResetCode] = {

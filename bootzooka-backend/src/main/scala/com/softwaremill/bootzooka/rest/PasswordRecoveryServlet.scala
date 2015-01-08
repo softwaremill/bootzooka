@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import org.apache.commons.lang3.StringUtils
-import org.scalatra.BadRequest
 import com.softwaremill.bootzooka.common.JsonWrapper
 import com.softwaremill.bootzooka.service.user.UserService
 

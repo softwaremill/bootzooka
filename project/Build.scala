@@ -14,7 +14,7 @@ object BuildSettings {
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.11.4",
 
-    scalacOptions += "-unchecked",
+    scalacOptions ++= Seq("-unchecked", "-deprecation"),
     classpathTypes ~= (_ + "orbit"),
     libraryDependencies ++= Dependencies.testingDependencies,
     libraryDependencies ++= Dependencies.logging,

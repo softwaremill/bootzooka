@@ -6,6 +6,8 @@ import net.liftweb.mongodb.record.field.ObjectIdPk
 import com.foursquare.rogue.LiftRogue._
 import org.bson.types.ObjectId
 
+import scala.language.implicitConversions
+
 class MongoUserDAO extends UserDAO {
 
   import UserImplicits._
@@ -19,7 +21,7 @@ class MongoUserDAO extends UserDAO {
   }
 
   protected def internalAddUser(user: User) {
-    user.save
+    user.save(safe = false)
   }
 
   def remove(userId: String) {

@@ -11,8 +11,10 @@ class InMemoryUserDAO extends UserDAO {
     users
   }
 
-  override def findForIdentifiers(ids: List[ObjectId]): List[User] =
-    ids.distinct.map(id => users.find(user => user.id == id.toString).get);
+  override def findForIdentifiers(ids: List[ObjectId]): List[User] = {
+    val uniqueIds = ids.toSet
+    users.filter(user => uniqueIds.contains(user.id))
+  }
 
   def countItems(): Long = {
     users.size
@@ -23,14 +25,13 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def remove(userId: String) {
-    load(userId) match {
-      case Some(user) => users = users.diff(List(user))
-      case _ =>
+    load(userId) foreach { user =>
+      users = users.diff(List(user))
     }
   }
 
   def load(userId: String): Option[User] = {
-    users.find(user => user.id == userId)
+    users.find(user => user.id == new ObjectId(userId))
   }
 
   def findByEmail(email: String): Option[User] = {
@@ -42,10 +43,7 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def findByLoginOrEmail(loginOrEmail: String): Option[User] = {
-    findByEmail(loginOrEmail) match {
-      case Some(user) => Option(user)
-      case _ => findByLowerCasedLogin(loginOrEmail)
-    }
+    findByEmail(loginOrEmail) orElse findByLowerCasedLogin(loginOrEmail)
   }
 
   def findByToken(token: String): Option[User] = {
@@ -53,27 +51,20 @@ class InMemoryUserDAO extends UserDAO {
   }
 
   def changePassword(userId: String, password: String) {
-    load(userId) match {
-      case Some(u) => users = users.updated(users.indexOf(u), u.copy(password = password))
-      case None =>
+    load(userId) foreach { user =>
+      users = users.updated(users.indexOf(user), user.copy(password = password))
     }
   }
 
   def changeLogin(currentLogin: String, newLogin: String) {
-    findByLowerCasedLogin(currentLogin) match {
-      case Some(user) => {
-        users = users.updated(users.indexOf(user), user.copy(login = newLogin, loginLowerCased = newLogin.toLowerCase))
-      }
-      case _ =>
+    findByLowerCasedLogin(currentLogin) foreach { user =>
+      users = users.updated(users.indexOf(user), user.copy(login = newLogin, loginLowerCased = newLogin.toLowerCase))
     }
   }
 
   def changeEmail(currentEmail: String, newEmail: String) {
-    findByEmail(currentEmail) match {
-      case Some(user) => {
-        users = users.updated(users.indexOf(user), user.copy(email = newEmail))
-      }
-      case _ =>
+    findByEmail(currentEmail) foreach { user =>
+      users = users.updated(users.indexOf(user), user.copy(email = newEmail))
     }
   }
 }

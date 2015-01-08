@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka.dao
 
 import com.softwaremill.bootzooka.domain.User
-import java.util.UUID
 import org.bson.types.ObjectId
 
 trait UserDAO {

@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.auth
 import org.scalatra._
 import org.scalatra.auth.ScentryAuthStore.CookieAuthStore
 import org.scalatra.auth.{ Scentry, ScentryConfig, ScentrySupport }
-import scala.Some
 import com.softwaremill.bootzooka.common.{ Utils, JsonWrapper }
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson

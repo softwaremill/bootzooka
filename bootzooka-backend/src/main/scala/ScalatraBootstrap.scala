@@ -1,9 +1,10 @@
 import javax.servlet.ServletContext
 
-import com.mongodb.Mongo
+import com.mongodb.{MongoClient, Mongo}
 import com.softwaremill.bootzooka.Beans
 import com.softwaremill.bootzooka.rest._
-import net.liftweb.mongodb.{DefaultMongoIdentifier, MongoDB}
+import net.liftweb.mongodb.MongoDB
+import net.liftweb.util.DefaultConnectionIdentifier
 import org.scalatra.LifeCycle
 
 /**
@@ -15,7 +16,7 @@ class ScalatraBootstrap extends LifeCycle with Beans {
   val Prefix = "/rest/"
 
   override def init(context: ServletContext) {
-    MongoDB.defineDb(DefaultMongoIdentifier, new Mongo, "bootzooka")
+    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, "bootzooka")
     context.mount(new UsersServlet(userService), Prefix + UsersServlet.MAPPING_PATH)
     context.mount(new PasswordRecoveryServlet(passwordRecoveryService, userService), Prefix + "passwordrecovery")
 
