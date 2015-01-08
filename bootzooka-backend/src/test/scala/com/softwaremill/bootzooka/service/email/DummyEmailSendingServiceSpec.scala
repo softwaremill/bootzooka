@@ -1,10 +1,9 @@
 package com.softwaremill.bootzooka.service.email
 
-import org.scalatest.FunSpec
+import org.scalatest.{Matchers, FunSpec}
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
-import org.scalatest.matchers.ShouldMatchers
 
-class DummyEmailSendingServiceSpec extends FunSpec with ShouldMatchers {
+class DummyEmailSendingServiceSpec extends FunSpec with Matchers {
   describe("Dummy email sending service") {
     it("send scheduled email") {
       val service = new DummyEmailSendingService

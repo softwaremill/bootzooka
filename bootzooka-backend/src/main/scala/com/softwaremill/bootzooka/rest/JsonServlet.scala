@@ -8,9 +8,9 @@ import org.apache.commons.lang3.StringEscapeUtils._
 import org.json4s.{ DefaultFormats, Formats }
 import javax.servlet.http.HttpServletResponse
 import java.util.Date
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
-class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with Logging {
+class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with LazyLogging {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 

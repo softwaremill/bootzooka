@@ -5,13 +5,13 @@ import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import org.scalatest
 import org.scalatest.{BeforeAndAfter, FlatSpec}
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 
-class UserServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar with BeforeAndAfter {
+class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with BeforeAndAfter {
   def prepareUserDAOMock: UserDAO = {
     val dao = new InMemoryUserDAO
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))

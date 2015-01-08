@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service.email.sender
 
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 import java.io.{ByteArrayOutputStream, ByteArrayInputStream}
 import java.util.{Date, Properties}
 import javax.activation.{DataHandler, DataSource}
@@ -11,7 +11,7 @@ import javax.mail.{Address, Transport, Session, Message}
  * Copied from softwaremill-common:
  * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
  */
-object EmailSender extends Logging {
+object EmailSender extends LazyLogging {
   
   def send(smtpHost: String,
            smtpPort: String,

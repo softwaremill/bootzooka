@@ -7,9 +7,9 @@ import com.softwaremill.bootzooka.service.email.{DummyEmailSendingService, Produ
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
 import com.typesafe.config.ConfigFactory
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
-trait Beans extends Logging {
+trait Beans extends LazyLogging {
   lazy val config = new BootzookaConfig with EmailConfig {
     override def rootConfig = ConfigFactory.load()
   }

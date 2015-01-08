@@ -2,10 +2,10 @@ package com.softwaremill.bootzooka.dao
 
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.bson.types.ObjectId
-import org.scalatest.matchers.ShouldMatchers
 import com.softwaremill.bootzooka.test.FlatSpecWithMongo
+import org.scalatest.Matchers
 
-class MongoPasswordResetCodeDAOSpec extends FlatSpecWithMongo with ShouldMatchers {
+class MongoPasswordResetCodeDAOSpec extends FlatSpecWithMongo with Matchers {
   behavior of "MongoPasswordResetCodeDAO"
 
   val dao = new MongoPasswordResetCodeDAO()

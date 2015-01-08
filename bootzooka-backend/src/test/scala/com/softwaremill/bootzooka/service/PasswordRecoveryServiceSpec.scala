@@ -2,11 +2,11 @@ package com.softwaremill.bootzooka.service
 
 import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO, InMemoryUserDAO}
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
+import org.scalatest
 import templates.{EmailTemplatingEngine, EmailContentWithSubject}
 import org.mockito.Matchers
 import org.bson.types.ObjectId
 import org.joda.time.DateTime
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
 import org.scalatest.mock.MockitoSugar
 import org.mockito.BDDMockito._
@@ -15,7 +15,7 @@ import org.mockito.Matchers._
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.config.BootzookaConfig
 
-class PasswordRecoveryServiceSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
+class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar {
   val invalidLogin = "user2"
   val validLogin = "user"
 

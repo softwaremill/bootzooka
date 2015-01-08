@@ -4,10 +4,10 @@ import com.softwaremill.bootzooka.domain.User
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.BeforeAndAfterAll
 import org.bson.types.ObjectId
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 import com.softwaremill.bootzooka.test.FlatSpecWithMongo
 
-class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with BeforeAndAfterAll with Logging {
+class MongoUserDAOSpec extends FlatSpecWithMongo with ShouldMatchers with BeforeAndAfterAll with LazyLogging {
   behavior of "MongoUserDAO"
 
   val userIdPrefix = "507f1f77bcf86cd79943901"

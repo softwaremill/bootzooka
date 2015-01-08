@@ -6,7 +6,7 @@ import templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.joda.time.DateTime
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 
@@ -15,7 +15,7 @@ class PasswordRecoveryService(
   codeDao: PasswordResetCodeDAO,
   emailScheduler: EmailScheduler,
   emailTemplatingEngine: EmailTemplatingEngine,
-  config: BootzookaConfig) extends Logging {
+  config: BootzookaConfig) extends LazyLogging {
 
   def sendResetCodeToUser(login: String) {
     logger.debug("Preparing to generate and send reset code to user")

@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils
 import org.scalatra.BadRequest
 import com.softwaremill.bootzooka.common.JsonWrapper
 import com.softwaremill.bootzooka.service.user.UserService
-import com.typesafe.scalalogging.slf4j.Logging
 
 /**
  * Servlet handling requests related to password recovery.

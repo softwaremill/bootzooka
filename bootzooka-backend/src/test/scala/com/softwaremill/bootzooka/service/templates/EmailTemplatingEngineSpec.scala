@@ -1,9 +1,8 @@
 package com.softwaremill.bootzooka.service.templates
 
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.FlatSpec
+import org.scalatest.{Matchers, FlatSpec}
 
-class EmailTemplatingEngineSpec extends FlatSpec with ShouldMatchers {
+class EmailTemplatingEngineSpec extends FlatSpec with Matchers {
   behavior of "splitToContentAndSubject"
 
   val engine = new EmailTemplatingEngine

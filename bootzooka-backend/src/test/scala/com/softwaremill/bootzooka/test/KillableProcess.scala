@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka.test
 
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
 /**
  * @param shellCommand Command to run the process.
  * @param processGrepStrings Strings which will be used when grepping the process list to determine the process's pid.
  */
-class KillableProcess(shellCommand: String, processGrepStrings: String*) extends Logging {
+class KillableProcess(shellCommand: String, processGrepStrings: String*) extends LazyLogging {
   var process: Process = _
 
   def start(): Process = {

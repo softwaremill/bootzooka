@@ -2,10 +2,10 @@ package com.softwaremill.bootzooka.service.email
 
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
 import collection.mutable.ListBuffer
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 import com.softwaremill.bootzooka.service.email.sender.EmailDescription
 
-class DummyEmailSendingService extends EmailScheduler with Logging {
+class DummyEmailSendingService extends EmailScheduler with LazyLogging {
 
   private val emailsToSend: ListBuffer[EmailDescription] = ListBuffer()
 

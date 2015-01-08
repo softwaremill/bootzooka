@@ -8,11 +8,11 @@ import AssemblyKeys._
 
 object BuildSettings {
 
-  val buildSettings = Defaults.defaultSettings ++ Seq(
+  val buildSettings = Seq(
 
     organization := "com.softwaremill",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.10.4",
+    scalaVersion := "2.11.4",
 
     scalacOptions += "-unchecked",
     classpathTypes ~= (_ + "orbit"),
@@ -27,18 +27,17 @@ object BuildSettings {
 
 object Dependencies {
 
-  val slf4jVersion = "1.7.8"
+  val slf4jVersion = "1.7.9"
   val logBackVersion = "1.1.2"
-  val smlCommonVersion = "75"
+  val smlCommonVersion = "80"
   val scalatraVersion = "2.3.0"
   val rogueVersion = "2.4.0"
-  val scalaLoggingVersion = "1.1.0"
+  val scalaLoggingVersion = "2.1.2"
   val jettyVersion = "9.3.0.M1"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
   val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
-//  val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % slf4jVersion
-  val scalaLogging = "com.typesafe" %% "scalalogging-slf4j" % scalaLoggingVersion
+  val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging-slf4j" % scalaLoggingVersion
 
   val logging = Seq(slf4jApi, logBackClassic, scalaLogging)
 
@@ -63,22 +62,22 @@ object Dependencies {
   val jettyContainer = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "container"
   val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "test"
 
-  val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
-  val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+  val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
+  val scalatest = "org.scalatest" %% "scalatest" % "2.2.3" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
   val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, json4s, scalatraAuth, commonsLang)
 
   val testingDependencies = Seq(mockito, scalatest)
 
-  val javaxMail = "javax.mail" % "mail" % "1.4.7"
+  val javaxMail = "javax.mail" % "javax.mail-api" % "1.5.2"
 
   val seleniumVer = "2.44.0"
   val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"
   val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
   val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
-  val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.3.5" % "test"
-  val fakeMongo = "com.github.fakemongo" % "fongo" % "1.5.8" % "test"
+  val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.6.3" % "test"
+  val fakeMongo = "com.github.fakemongo" % "fongo" % "1.5.9" % "test"
   val mongoJava = "org.mongodb" % "mongo-java-driver" % "2.12.4"
 
   val selenium = Seq(seleniumJava, seleniumFirefox, fest)
@@ -93,7 +92,7 @@ object Dependencies {
   val rogueCore = "com.foursquare" %% "rogue-core" % rogueVersion intransitive()
   val rogueLift = "com.foursquare" %% "rogue-lift" % rogueVersion intransitive()
   val rogueIndex = "com.foursquare" %% "rogue-index" % rogueVersion intransitive()
-  val liftMongoRecord = "net.liftweb" %% "lift-mongodb-record" % "2.5.1" exclude("org.mongodb","mongo-java-driver")
+  val liftMongoRecord = "net.liftweb" %% "lift-mongodb-record" % "2.6-M4" exclude("org.mongodb","mongo-java-driver")
 
   val rogue = Seq(rogueCore, rogueField, rogueLift, rogueIndex, liftMongoRecord)
 }

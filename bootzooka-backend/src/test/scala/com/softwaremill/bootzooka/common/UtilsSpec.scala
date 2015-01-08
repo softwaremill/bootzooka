@@ -1,10 +1,10 @@
 package com.softwaremill.bootzooka.common
 
 import com.softwaremill.bootzooka.common.Utils._
-import org.scalatest.FlatSpec
+import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.matchers.ShouldMatchers
 
-class UtilsSpec extends FlatSpec with ShouldMatchers {
+class UtilsSpec extends FlatSpec with Matchers {
   behavior of "checkbox()"
 
   it should "convert 'true' to boolean true" in {

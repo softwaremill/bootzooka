@@ -3,14 +3,14 @@ package com.softwaremill.bootzooka.rest
 import java.io.Writer
 import org.json4s.JsonAST.{JString, JObject, JField}
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.mockito.Matchers
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest
 import org.scalatest.FlatSpec
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
+import org.mockito.Matchers
 import org.mockito.Matchers._
 
-class JsonServletSpec extends FlatSpec with ShouldMatchers with MockitoSugar {
+class JsonServletSpec extends FlatSpec with scalatest.Matchers with MockitoSugar {
   "writeJson" should "use escaped data" in {
     // Given
     val servlet = new JsonServletWithMockedMapper()
