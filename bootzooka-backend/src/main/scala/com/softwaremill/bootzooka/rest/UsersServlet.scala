@@ -14,7 +14,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
       case Some(loggedUser) =>
         loggedUser
       case _ =>
-        halt(401, "Invalid login and/or password")
+        halt(401, JsonWrapper("Invalid login and/or password"))
     }
   }
 
@@ -89,7 +89,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
 
     messageOpt match {
       case Some(message) => halt(403, JsonWrapper(message))
-      case None => Ok
+      case None => Ok()
     }
   }
 
@@ -124,7 +124,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
 
     messageOpt match {
       case Some(message) => halt(403, JsonWrapper(message))
-      case None => Ok
+      case None => Ok()
     }
   }
 
