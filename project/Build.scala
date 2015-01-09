@@ -32,7 +32,7 @@ object Dependencies {
   val scalatraVersion = "2.3.0"
   val rogueVersion = "2.4.0"
   val scalaLoggingVersion = "2.1.2"
-  val jettyVersion = "9.3.0.M1"
+  val jettyVersion = "9.2.6.v20141205"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
   val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
