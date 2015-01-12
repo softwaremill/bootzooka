@@ -10,7 +10,7 @@ module.exports = function(config) {
         'bower_files/bootstrap/dist/js/bootstrap.js',
         'bower_files/angular/angular.js',
         'bower_files/angular-resource/angular-resource.js',
-        'bower_files/angular-route/angular-route.js',
+        'bower_files/angular-ui-router/release/angular-ui-router.js',
         'bower_files/angular-cookies/angular-cookies.js',
         'bower_files/angular-sanitize/angular-sanitize.js',
         'bower_files/angular-mocks/angular-mocks.js'

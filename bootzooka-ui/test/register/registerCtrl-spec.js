@@ -11,7 +11,7 @@ describe("Register Controller", function () {
 
     var scope, $httpBackend, ctrl;
 
-    beforeEach(inject(function (_$httpBackend_, $rootScope, $routeParams, $controller) {
+    beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
         $httpBackend = _$httpBackend_;
 
         scope = $rootScope.$new();

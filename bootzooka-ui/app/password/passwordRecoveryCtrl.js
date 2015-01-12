@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $location, $routeParams) {
+angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $state, $stateParams) {
     var self = this;
 
     $scope.login = '';
@@ -17,7 +17,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
 
     this.success = function () {
         FlashService.set("E-mail with link to reset your password has been sent. Please check your mailbox.");
-        $location.path("");
+        $state.go('home');
     };
 
     this.failure = function (message) {
@@ -29,19 +29,17 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
         $scope.changePasswordForm.repeatPassword.$dirty = true;
 
         if ($scope.changePasswordForm.$valid && !$scope.changePasswordForm.repeatPassword.$error.repeat) {
-            PasswordRecoveryService.changePassword($routeParams.code, $scope.password, self.onChangeSuccess, self.onChangeFailure);
+            PasswordRecoveryService.changePassword($stateParams.code, $scope.password, self.onChangeSuccess, self.onChangeFailure);
         }
     };
 
     this.onChangeSuccess = function () {
         FlashService.set("Your password has been changed");
-        $location.search("code", null);
-        $location.path("");
+        $state.go('home');
     };
 
     this.onChangeFailure = function (error) {
         bootzooka.utils.showErrorMessage(error.data.value);
-        $location.search("code", null);
-        $location.path("recover-lost-password");
+        $state.go('recover-lost-password');
     };
 });

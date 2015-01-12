@@ -26,6 +26,7 @@
     <script src="../bower_files/angular-resource/angular-resource.js"></script>
     <script src="../bower_files/angular-route/angular-route.js"></script>
     <script src="../bower_files/angular-sanitize/angular-sanitize.js"></script>
+    <script src="../bower_files/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="../bower_files/bootstrap/dist/js/bootstrap.js"></script>
     <!-- endbower -->
     <script src="../bower_files/blockui/jquery.blockUI.js"></script>
@@ -79,16 +80,16 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#/">SML Bootzooka</a>
+                <a class="navbar-brand" ui-sref="home">SML Bootzooka</a>
             </div>
             <div class="collapse navbar-collapse">
                            <ul class="nav navbar-nav" ng-controller="UserSessionCtrl">
-                               <li class="active"><a href="#/main">Home</a></li>
+                               <li class="active"><a ui-sref="main">Home</a></li>
                            </ul>
                 <ul class="nav navbar-nav navbar-right" ng-controller="UserSessionCtrl">
-                    <li ng-show="isNotLogged()"><a id="registerLink" href="#/register" class="navbar-link">Register</a></li>
-                    <li ng-show="isNotLogged()"><a id="loginLink" href="#/login" class="navbar-link">Login</a></li>
-                    <li ng-show="isLogged()"><a id="profileLink" href="#/profile" class="navbar-link">Logged in as {{getLoggedUserName()}}</a></li>
+                    <li ng-show="isNotLogged()"><a id="registerLink" ui-sref="register" class="navbar-link">Register</a></li>
+                    <li ng-show="isNotLogged()"><a id="loginLink" ui-sref="login" class="navbar-link">Login</a></li>
+                    <li ng-show="isLogged()"><a id="profileLink" ui-sref="profile" class="navbar-link">Logged in as {{getLoggedUserName()}}</a></li>
                     <li ng-show="isLogged()"><a id="logoutLink" href ng-click="logout();" class="navbar-link">Logout</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
@@ -110,7 +111,7 @@
             </div>
         </div>
 
-        <div ng-view></div>
+        <div ui-view></div>
     </div>
     <div class="footer">
         <div class="container">
