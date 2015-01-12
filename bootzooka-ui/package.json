@@ -28,12 +28,13 @@
     "grunt-preprocess": "3.0.1",
     "karma-teamcity-reporter": "0.1.0",
     "karma-osx-reporter": "0.0.3",
-    "grunt-bower-install": "1.6.0"
+    "grunt-bower-install": "1.6.0",
+    "phantomjs": "1.9.8"
   },
   "peerDependencies": {
     "grunt-cli": "0.1.9"
   },
   "scripts": {
-      "postinstall": "node_modules/.bin/bower install"
+    "postinstall": "node_modules/.bin/bower install"
   }
 }
