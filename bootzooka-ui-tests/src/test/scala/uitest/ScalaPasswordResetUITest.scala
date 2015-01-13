@@ -1,11 +1,10 @@
 package uitest
 
-import com.softwaremill.bootzooka.domain.{User, PasswordResetCode}
-import org.bson.types.ObjectId
+import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.fest.assertions.Assertions
 import org.openqa.selenium.By
 
-import scala.util.{Success, Try}
+import scala.util.Success
 
 class ScalaPasswordResetUITest extends BootzookaUITest {
 
@@ -14,9 +13,7 @@ class ScalaPasswordResetUITest extends BootzookaUITest {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    Try {
-      beans.userService.registerNewUser("someUser", "some-user@example.com", "somePass")
-    } match {
+    registerUserIfNotExists("someUser", "some-user@example.com", "somePass") match {
       case Success(_) =>
         beans.userDao.findByLoginOrEmail("someUser").foreach { user =>
           val passResetCode = PasswordResetCode(validCode, user.id)
@@ -29,7 +26,7 @@ class ScalaPasswordResetUITest extends BootzookaUITest {
   override def afterAll(): Unit = {
     super.afterAll()
     beans.codeDao.load(validCode).foreach(beans.codeDao.delete)
-    beans.userDao.findByLoginOrEmail("someUser").foreach(u => beans.userDao.remove(u.id.toString))
+    removeUsers("someUser")
   }
 
   test("password-reset should reset password") {

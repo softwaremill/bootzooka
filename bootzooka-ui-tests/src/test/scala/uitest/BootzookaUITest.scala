@@ -2,7 +2,6 @@ package uitest
 
 import java.util.concurrent.TimeUnit
 
-import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.{Beans, EmbeddedJetty, EmbeddedJettyConfig}
 import com.typesafe.config.ConfigFactory
@@ -10,7 +9,9 @@ import org.eclipse.jetty.webapp.WebAppContext
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
-import uitest.pages.{PasswordResetPage, LoginPage, MessagesPage}
+import uitest.pages.{LoginPage, MessagesPage, PasswordResetPage}
+
+import scala.util.Try
 
 class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
   final val REGUSER = "reguser"
@@ -38,11 +39,27 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   override def beforeAll() {
     startJetty()
     beans = context.getAttribute("bootzooka").asInstanceOf[Beans]
-    if (beans.userService.count() == 0) {
-      beans.userService.registerNewUser(REGUSER, REGMAIL, REGPASS)
-      beans.userService.registerNewUser("1" + REGUSER, "1" + REGMAIL, REGPASS)
-    }
+    registerUserIfNotExists(REGUSER, REGMAIL, REGPASS)
+    registerUserIfNotExists("1" + REGUSER, "1" + REGMAIL, REGPASS)
     emailService = beans.emailScheduler.asInstanceOf[DummyEmailSendingService]
+  }
+
+  /**
+   * Register a new user if doesn't exist.
+   *
+   * @param login
+   * @param pass
+   * @param email
+   * @return boolean value (wrapped within scala.util.Try) indicating
+   *         if new user was created or an existing user was found
+   */
+  protected def registerUserIfNotExists(login: String, email: String, pass: String): Try[Boolean] = Try {
+    val userService = beans.userService
+    if (userService.findByLogin(login).isEmpty) {
+      userService.registerNewUser(login, email, pass)
+      true
+    }
+    false
   }
 
   before {
@@ -58,7 +75,17 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
     driver = null
   }
 
+  protected def removeUsers(logins: String*): Unit = {
+    for {
+      login <- logins
+      user <- beans.userDao.findByLoginOrEmail("someUser")
+    } {
+      beans.userDao.remove(user.id.toString)
+    }
+  }
+
   override def afterAll() {
+    removeUsers(REGUSER, "1" + REGUSER)
     stopJetty()
   }
 }
