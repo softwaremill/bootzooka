@@ -23,7 +23,14 @@ angular.module("smlBootzooka.profile").factory("PasswordRecoveryService", functi
         });
     };
 
+    function asResourceResponse(response) {
+        return { data : response };
+    }
+
     passwordRecoveryService.changePassword = function (code, password, onComplete, onError) {
+        if (!code) {
+            return onError(asResourceResponse({value: "Wrong or malformed password recovery code."}));
+        }
         self.changeResource.changePassword({code: code, password: password}, function () {
             onComplete();
         }, function (error) {

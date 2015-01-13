@@ -13,7 +13,10 @@ class MessagesPage(driver: WebDriver) {
   val logoutLink: WebElement = null
 
   @FindBy(css = ".alert-info")
-  val alert: WebElement = null
+  val infoAlert: WebElement = null
+
+  @FindBy(css = ".alert-danger")
+  val errorAlert: WebElement = null
 
   @FindBy(css = "textarea")
   val messageField: WebElement = null
@@ -34,16 +37,21 @@ class MessagesPage(driver: WebDriver) {
 
   def isUserLogged(user: String): Boolean = {
     sc.waitForElementVisible(By.linkText("Logged in as " + user))
-    return true
+    true
   }
 
   def isUMessageDisplayed(message: String): Boolean = {
     sc.waitForElementVisible(By.xpath("//p[text()='" + message + "']"))
-    return true
+    true
   }
 
-  def getInfoText(): String = {
+  def getInfoText: String = {
     sc.waitForElementVisible(By.cssSelector("#info-message"))
-    return alert.getText()
+    infoAlert.getText
+  }
+
+  def getErrorText: String = {
+    sc.waitForElementVisible(By.cssSelector("#error-message"))
+    errorAlert.getText
   }
 }

@@ -2,6 +2,7 @@ package uitest
 
 import java.util.concurrent.TimeUnit
 
+import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.{Beans, EmbeddedJetty, EmbeddedJettyConfig}
 import com.typesafe.config.ConfigFactory
@@ -9,7 +10,7 @@ import org.eclipse.jetty.webapp.WebAppContext
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
-import uitest.pages.{LoginPage, MessagesPage}
+import uitest.pages.{PasswordResetPage, LoginPage, MessagesPage}
 
 class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
   final val REGUSER = "reguser"
@@ -22,6 +23,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   var emailService: DummyEmailSendingService = _
   var loginPage: LoginPage = _
   var messagesPage: MessagesPage = _
+  var passwordRestPage: PasswordResetPage = _
   var beans: Beans = _
 
   override protected def setResourceBase(context: WebAppContext): Unit = {
@@ -48,6 +50,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
     driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
     loginPage = PageFactory.initElements(driver, classOf[LoginPage])
     messagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
+    passwordRestPage = PageFactory.initElements(driver, classOf[PasswordResetPage])
   }
 
   after {
