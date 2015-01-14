@@ -13,7 +13,8 @@ module.exports = function(config) {
         'bower_files/angular-ui-router/release/angular-ui-router.js',
         'bower_files/angular-cookies/angular-cookies.js',
         'bower_files/angular-sanitize/angular-sanitize.js',
-        'bower_files/angular-mocks/angular-mocks.js'
+        'bower_files/angular-mocks/angular-mocks.js',
+        'bower_files/underscore/underscore.js'
     ].forEach(function(file) {
         files.push(file);
     });
