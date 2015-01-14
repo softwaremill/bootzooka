@@ -3,8 +3,9 @@
 angular.module('smlBootzooka.directives', []);
 angular.module('smlBootzooka.filters', []);
 angular.module('smlBootzooka.maintenance', ['ngResource']);
+angular.module('smlBootzooka.notifications', []);
 
-angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.maintenance', 'smlBootzooka.session', 'smlBootzooka.directives'])
+angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.maintenance', 'smlBootzooka.session', 'smlBootzooka.directives', 'smlBootzooka.notifications'])
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.when('', '/');
 
@@ -60,7 +61,8 @@ angular.module(
             'smlBootzooka.templates',
             'smlBootzooka.profile',
             'smlBootzooka.session',
-            'smlBootzooka.directives', 'ngSanitize', 'ui.router', 'ajaxthrobber'])
+            'smlBootzooka.directives',
+            'smlBootzooka.notifications', 'ngSanitize', 'ui.router', 'ajaxthrobber'])
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/error404');
 
@@ -138,12 +140,10 @@ angular.module(
             }
         });
     })
-    .run(function ($rootScope, $timeout, FlashService) {
+    .run(function ($rootScope, $timeout, FlashService, NotificationsService) {
         $rootScope.$on("$stateChangeSuccess", function () {
             var message = FlashService.get();
-            if (angular.isDefined(message)) {
-                bootzooka.utils.showInfoMessage(message);
-            }
+            NotificationsService.showInfo(message);
         });
     });
 

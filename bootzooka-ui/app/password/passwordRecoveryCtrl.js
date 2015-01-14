@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $state, $stateParams) {
+angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $state, $stateParams, NotificationsService) {
     var self = this;
 
     $scope.login = '';
@@ -21,7 +21,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
     };
 
     this.failure = function (message) {
-        bootzooka.utils.showErrorMessage(message);
+        NotificationsService.showError(message);
     };
 
     $scope.resetPassword = function () {
@@ -39,7 +39,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
     };
 
     this.onChangeFailure = function (error) {
-        bootzooka.utils.showErrorMessage(error.data.value);
+        NotificationsService.showError(error.data.value);
         $state.go('recover-lost-password');
     };
 });

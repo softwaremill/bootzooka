@@ -28,10 +28,9 @@
     <script src="../bower_files/angular-sanitize/angular-sanitize.js"></script>
     <script src="../bower_files/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="../bower_files/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../bower_files/underscore/underscore.js"></script>
     <!-- endbower -->
     <script src="../bower_files/blockui/jquery.blockUI.js"></script>
-    <!-- effects -->
-    <script type="text/javascript" src="common/effects.js"></script>
     <!-- endbuild -->
 
     <!-- logic -->
@@ -49,6 +48,9 @@
     <script type="text/javascript" src="password/passwordRecoveryCtrl.js"></script>
     <script type="text/javascript" src="password/passwordRecoveryService.js"></script>
     <script type="text/javascript" src="password/bsRepeatPassword.js"></script>
+    <script type="text/javascript" src="notifications/notificationsService.js"></script>
+    <script type="text/javascript" src="notifications/bsNotificationsContainer.js"></script>
+    <script type="text/javascript" src="notifications/bsNotificationEntry.js"></script>
     <script type="text/javascript" src="scripts/templates.js"></script>
     <!-- endbuild -->
 
@@ -98,17 +100,7 @@
 
     <div class="container">
 
-        <div class="col-md-6 col-md-offset-2 feedback-container">
-            <div class="alert alert-info alert-dismissible hide" role="alert">
-                <button type="button" class="close" data-dismiss="alert"><span
-                        aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <strong>Info! </strong><span id="info-message"></span>
-            </div>
-            <div class="alert alert-danger alert-dismissible hide" role="alert">
-                <button type="button" class="close" data-dismiss="alert"><span
-                        aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <strong>Error! </strong><span id="error-message"></span>
-            </div>
+        <div class="col-md-6 col-md-offset-2 feedback-container" bs-notifications-container>
         </div>
 
         <div ui-view></div>

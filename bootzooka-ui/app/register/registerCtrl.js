@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootzooka.profile').controller('RegisterCtrl', function RegisterCtrl($scope, RegisterService, $location) {
+angular.module('smlBootzooka.profile').controller('RegisterCtrl', function RegisterCtrl($scope, RegisterService, $location, NotificationsService) {
 
     var self = this;
 
@@ -22,16 +22,11 @@ angular.module('smlBootzooka.profile').controller('RegisterCtrl', function Regis
             jsonUser.email = $scope.user.email;
             jsonUser.password = $scope.user.password;
 
-            RegisterService.register(jsonUser, self.registerOk, self.registerFailed);
+            RegisterService.register(jsonUser, self.registerOk, NotificationsService.showError);
         }
     };
 
     this.registerOk = function () {
         $location.path("/main");
     };
-
-    this.registerFailed = function (message) {
-        bootzooka.utils.showErrorMessage(message);
-    };
-
 });

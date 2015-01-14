@@ -1,6 +1,7 @@
 "use strict";
 
-angular.module('smlBootzooka.profile').controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $stateParams) {
+angular.module('smlBootzooka.profile')
+    .controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $stateParams, NotificationsService) {
 
     var self = this;
 
@@ -31,6 +32,6 @@ angular.module('smlBootzooka.profile').controller('LoginCtrl', function LoginCtr
     };
 
     this.loginFailed = function () {
-        bootzooka.utils.showErrorMessage("Invalid login and/or password.");
+        NotificationsService.showError("Invalid login and/or password.");
     };
 });

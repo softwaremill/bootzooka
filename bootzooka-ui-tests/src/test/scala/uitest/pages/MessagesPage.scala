@@ -46,12 +46,12 @@ class MessagesPage(driver: WebDriver) {
   }
 
   def getInfoText: String = {
-    sc.waitForElementVisible(By.cssSelector("#info-message"))
+    sc.waitForElementVisible(By.cssSelector(".alert-info"))
     infoAlert.getText
   }
 
   def getErrorText: String = {
-    sc.waitForElementVisible(By.cssSelector("#error-message"))
+    sc.waitForElementVisible(By.cssSelector(".alert-danger"))
     errorAlert.getText
   }
 }

@@ -1,21 +1,23 @@
 "use strict";
 
-angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, UserSessionService, ProfileService) {
+angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, UserSessionService, ProfileService, NotificationsService) {
     $scope.login = UserSessionService.loggedUser.login.concat();
     $scope.email = UserSessionService.loggedUser.email.concat();
 
     var self = this;
 
+    function showError(error) {
+        NotificationsService.showError(error.value);
+    }
+
     $scope.changeLogin = function () {
         if (self.shouldPerformLoginChange()) {
             ProfileService.changeLogin($scope.login, function () {
                 UserSessionService.loggedUser.login = $scope.login.concat();
-                bootzooka.utils.showInfoMessage("Login changed!");
+                NotificationsService.showSuccess("Login changed!");
                 $scope.profileForm.login.$dirty = false;
                 $scope.profileForm.login.$pristine = true;
-            }, function (error) {
-                bootzooka.utils.showErrorMessage(error.value);
-            });
+            }, showError);
         }
     };
 
@@ -27,12 +29,10 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
         if (self.shouldPerformEmailChange()) {
             ProfileService.changeEmail($scope.email, function () {
                 UserSessionService.loggedUser.email = $scope.email;
-                bootzooka.utils.showInfoMessage("Email changed!");
+                NotificationsService.showSuccess("Email changed!");
                 $scope.profileForm.email.$dirty = false;
                 $scope.profileForm.email.$pristine = true;
-            }, function (error) {
-                bootzooka.utils.showErrorMessage(error.value);
-            });
+            }, showError);
         }
     };
 
@@ -50,14 +50,12 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
         $scope.passwordChangeForm.newPasswordRepeated.$dirty = true;
         if ($scope.passwordChangeForm.$valid) {
             ProfileService.changePassword($scope.currentPassword, $scope.newPassword, function () {
-                bootzooka.utils.showInfoMessage("Password changed!");
+                NotificationsService.showSuccess("Password changed!");
                 $scope.passwordChangeForm.$setPristine();
                 $scope.currentPassword = undefined;
                 $scope.newPassword = undefined;
                 $scope.newPasswordRepeated = undefined;
-            }, function (error) {
-                bootzooka.utils.showErrorMessage(error.value);
-            });
+            }, showError);
         }
     };
 });
