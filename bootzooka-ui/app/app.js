@@ -62,7 +62,7 @@ angular.module(
             'smlBootzooka.profile',
             'smlBootzooka.session',
             'smlBootzooka.directives',
-            'smlBootzooka.notifications', 'ngSanitize', 'ui.router', 'ajaxthrobber'])
+            'smlBootzooka.notifications', 'ngSanitize', 'ui.router'])
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/error404');
 
@@ -145,67 +145,4 @@ angular.module(
             var message = FlashService.get();
             NotificationsService.showInfo(message);
         });
-    });
-
-angular.module("ajaxthrobber", [])
-    .config(["$httpProvider", function ($httpProvider) {
-        var stopAjaxInterceptor;
-        stopAjaxInterceptor = ["$rootScope", "$q", function ($rootScope, $q) {
-            var error, stopAjax, success, wasPageBlocked;
-
-            stopAjax = function (responseConfig) {
-                if (wasPageBlocked(responseConfig)) {
-                    return $rootScope.inProgressAjaxCount--;
-                }
-            };
-
-            wasPageBlocked = function (responseConfig) {
-                var nonBlocking = false;
-                if (typeof responseConfig === "object" && typeof responseConfig.headers === "object") {
-                    nonBlocking = responseConfig.headers.dontBlockPageOnAjax;
-                }
-                return !nonBlocking;
-            };
-            success = function (response) {
-                stopAjax(response.config);
-                return response;
-            };
-            error = function (response) {
-                stopAjax(response.config);
-                return $q.reject(response);
-            };
-            return {
-                response : success,
-                responseError : error
-            };
-        }];
-        return $httpProvider.interceptors.push(stopAjaxInterceptor);
-    }])
-    .run(["$rootScope", "$http", function ($rootScope, $http) {
-        var startAjaxTransformer;
-        startAjaxTransformer = function (data, headersGetter) {
-
-            if (!headersGetter().dontBlockPageOnAjax) {
-                $rootScope.inProgressAjaxCount++;
-            }
-            return data;
-        };
-        $rootScope.inProgressAjaxCount = 0;
-        return $http.defaults.transformRequest.push(startAjaxTransformer);
-    }])
-    .directive("ajaxthrobber", function () {
-        return {
-            restrict: "E",
-            link: function (scope, element) {
-                return scope.$watch("inProgressAjaxCount", function (count) {
-                    if (count === 1) {
-                        return $.blockUI({
-                            message: element
-                        });
-                    } else if (count === 0) {
-                        return $.unblockUI();
-                    }
-                });
-            }
-        };
     });

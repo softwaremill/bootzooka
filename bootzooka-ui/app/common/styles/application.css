@@ -108,3 +108,13 @@ code {
     vertical-align: middle;
 }
 
+#loading-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 20px;
+}
+
+#loading-indicator img {
+    border: 0;
+    margin-right: 10px;
+}

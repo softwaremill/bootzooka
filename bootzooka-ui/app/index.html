@@ -30,13 +30,13 @@
     <script src="../bower_files/bootstrap/dist/js/bootstrap.js"></script>
     <script src="../bower_files/underscore/underscore.js"></script>
     <!-- endbower -->
-    <script src="../bower_files/blockui/jquery.blockUI.js"></script>
     <!-- endbuild -->
 
     <!-- logic -->
     <!-- build:js({tmp,app}) scripts/bootzooka-all.js -->
     <script type="text/javascript" src="app.js"></script>
     <script type="text/javascript" src="common/services/flashService.js"></script>
+    <script type="text/javascript" src="common/directives/bsHttpRequestTracker.js"></script>
     <script type="text/javascript" src="login/loginCtrl.js"></script>
     <script type="text/javascript" src="profile/profileCtrl.js"></script>
     <script type="text/javascript" src="profile/profileService.js"></script>
@@ -62,16 +62,6 @@
         <img style="position: absolute; top: 40px; right: 0; border: 0;" src="assets/img/forkme_orange.png"
              alt="Fork me on GitHub">
     </a>
-
-    <span style="display: none">
-        <ajaxthrobber>
-            <br/><br/><br/>
-            <h4><img src="assets/img/busy.gif" border="0" id="ajaxthrobber"> Please wait ...</h4>
-            <br/><br/><br/>
-        </ajaxthrobber>
-    </span>
-
-
 
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -113,6 +103,9 @@
         </div>
     </div>
 
+    <div id="loading-indicator" class="alert alert-info" role="alert" bs-http-request-tracker>
+        <span><img src="assets/img/busy.gif" border="0">Loading ...</span>
+    </div>
 
 </body>
 </html>

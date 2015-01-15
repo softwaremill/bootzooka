@@ -17,7 +17,7 @@ class SeleniumCommands(driver: WebDriver) {
     .pollingEvery(100, TimeUnit.MILLISECONDS)
 
   def waitForFinishLoading() {
-    waitForElementInvisible(By.cssSelector("#ajaxthrobber"))
+    waitForElementInvisible(By.cssSelector("#loading-indicator"))
   }
 
   def waitForElementClickable(locator: By) {
