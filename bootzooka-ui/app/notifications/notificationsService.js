@@ -1,8 +1,8 @@
 "use strict";
 
 angular.module('smlBootzooka.notifications')
-    .service('NotificationsService', function () {
-        var self = this;
+    .factory('NotificationsService', function () {
+        var messages = [];
 
         function checkPreconditions(title, content) {
             return angular.isDefined(content) || angular.isDefined(title);
@@ -13,7 +13,7 @@ angular.module('smlBootzooka.notifications')
                 if (!checkPreconditions(content, title)) {
                     return;
                 }
-                self.messages.push({
+                messages.push({
                     type: type || 'info',
                     title: title,
                     content: content
@@ -21,22 +21,20 @@ angular.module('smlBootzooka.notifications')
             };
         }
 
-        this.messages = [];
-
-        this.showInfo = show('info');
-
-        this.showError = show('danger');
-
-        this.showSuccess = show('success');
-
-        this.showWarning = show('warning');
-
-        this.show = show;
-
-        this.dismiss = function (message) {
-            var index = this.messages.indexOf(message);
+        function dismiss(message) {
+            var index = messages.indexOf(message);
             if (index >= 0) {
-                this.messages.splice(index, 1);
+                messages.splice(index, 1);
             }
+        }
+
+        return {
+            messages: messages,
+            dismiss: dismiss,
+            show: show,
+            showInfo: show('info'),
+            showError: show('danger'),
+            showSuccess: show('success'),
+            showWarning: show('warning')
         };
     });
