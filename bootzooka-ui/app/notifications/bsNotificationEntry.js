@@ -28,7 +28,12 @@ angular.module('smlBootzooka.directives')
                     element.fadeIn(300);
                 });
 
+                // enforce scope destroy after message is closed by the user.
                 element.on('$destroy', function () {
+                    scope.$destroy();
+                });
+
+                scope.$on('$destroy', function () {
                     $timeout.cancel(alertFadeOutPromise);
                     bsNotificationsContainerCtrl.remove(scope.message);
                 });
