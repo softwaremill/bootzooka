@@ -24,12 +24,12 @@ class RegistrationPage(driver: WebDriver) {
   @FindBy(css = "button[type=submit]")
   val registerButton: WebElement = null
 
-  def register(login: String, email: String, password: String) {
+  def register(login: String, email: String, password: String, repeatedPassword: Option[String] = None) {
     openRegistrationPage()
     loginField.sendKeys(login)
     emailField.sendKeys(email)
     passwordField.sendKeys(password)
-    repeatPassField.sendKeys(password)
+    repeatPassField.sendKeys(repeatedPassword.getOrElse(password))
     registerButton.click()
     sc.waitForFinishLoading()
   }

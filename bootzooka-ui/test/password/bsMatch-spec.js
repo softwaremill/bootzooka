@@ -1,6 +1,6 @@
 'use strict';
 
-describe("Repeat password directive", function () {
+describe("Match directive", function () {
 
     var scope, form, elm;
 
@@ -10,8 +10,8 @@ describe("Repeat password directive", function () {
         elm = angular.element(
             '<form name="registerForm" novalidate>' +
                 '<input type="password" name="password" ng-model="model.password1">' +
-                '<input type="password" name="repeatPassword" ng-model="model.password2" bs-repeat-password="password">' +
-                '</form>');
+                '<input type="password" name="repeatPassword" ng-model="model.password2" bs-match="model.password1">' +
+            '</form>');
         scope = $rootScope;
         scope.model = { password1: null, password2: null};
         $compile(elm)(scope);

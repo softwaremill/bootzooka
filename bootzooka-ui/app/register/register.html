@@ -8,8 +8,8 @@
     <span class="text-error" ng-show="registerForm.email.$error.email">It's not a valid email!</span>
     <input type="password" name="password" class="form-control" placeholder="Password" ng-model="user.password" required>
     <span class="text-error" ng-show="registerForm.password.$dirty && registerForm.password.$error.required">Password is required</span>
-    <input type="password" name="repeatPassword" class="form-control" placeholder="Repeat password" ng-model="user.repeatPassword" bs-repeat-password="password" required>
+    <input type="password" name="repeatPassword" class="form-control" placeholder="Repeat password" ng-model="user.repeatPassword" bs-match="user.password" required>
     <span class="text-error" ng-show="registerForm.repeatPassword.$dirty && registerForm.repeatPassword.$error.required">Repeat password</span>
-    <span class="text-error" ng-show="registerForm.repeatPassword.$dirty && !registerForm.repeatPassword.$error.required && registerForm.repeatPassword.$error.repeat">Passwords don't match!</span>
+    <span class="text-error" ng-show="registerForm.repeatPassword.$dirty && !registerForm.repeatPassword.$error.required && registerForm.repeatPassword.$error.match">Passwords don't match!</span>
     <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="register()">Register</button>
 </form>

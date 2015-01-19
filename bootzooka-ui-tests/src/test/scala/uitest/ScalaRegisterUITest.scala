@@ -11,7 +11,9 @@ class ScalaRegisterUITest extends BootzookaUITest with AwaitilitySupport {
   final val EMAIL = LOGIN + "@example.org"
   final val PASSWORD = "test"
 
-  test("register") {
+  final val EMAIL_SUBJECT = s"SoftwareMill Bootzooka - registration confirmation for user $LOGIN"
+
+  test("register new user and send an email") {
     //given
     val registrationPage: RegistrationPage = PageFactory.initElements(driver, classOf[RegistrationPage])
 
@@ -21,6 +23,21 @@ class ScalaRegisterUITest extends BootzookaUITest with AwaitilitySupport {
 
     //then
     Assertions.assertThat(messagesPage.getInfoText).contains("User registered successfully")
-    emailService.wasEmailSent(EMAIL, "SoftwareMill Bootzooka - registration confirmation for user " + LOGIN)
+    Assertions.assertThat(emailService.wasEmailSent(EMAIL, EMAIL_SUBJECT))
   }
+
+  test("register - fail due to not matching passwords") {
+    //given
+    val registrationPage: RegistrationPage = PageFactory.initElements(driver, classOf[RegistrationPage])
+
+    // when
+    registrationPage.register(LOGIN, EMAIL, PASSWORD, Some(PASSWORD + "FooBarBaz"))
+    emailService.run()
+
+    //then
+    Assertions.assertThat(messagesPage.isUMessageDisplayed("Passwords don't match!"))
+    Assertions.assertThat(!emailService.wasEmailSent(EMAIL, EMAIL_SUBJECT))
+  }
+
+
 }

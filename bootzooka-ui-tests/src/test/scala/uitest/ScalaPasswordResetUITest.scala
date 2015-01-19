@@ -53,8 +53,7 @@ class ScalaPasswordResetUITest extends BootzookaUITest {
   test("password-reset should do nothing if password & its repetition differ") {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "notMatching", sc => {
-      sc.waitForElementVisible(By.cssSelector(".password-repeat-error"))
-      Assertions.assertThat(true)
+      Assertions.assertThat(messagesPage.isUMessageDisplayed("Passwords don't match!"))
     })
   }
 

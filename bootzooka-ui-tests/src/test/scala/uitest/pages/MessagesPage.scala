@@ -41,7 +41,8 @@ class MessagesPage(driver: WebDriver) {
   }
 
   def isUMessageDisplayed(message: String): Boolean = {
-    sc.waitForElementVisible(By.xpath("//p[text()='" + message + "']"))
+    val escapedMessage = message.replace("\"", "\\\"")
+    sc.waitForElementVisible(By.xpath(s"""//span[contains(., "$escapedMessage")]"""))
     true
   }
 
