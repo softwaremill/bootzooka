@@ -1,4 +1,4 @@
-angular.module('smlBootzooka.directives')
+angular.module('smlBootzooka.common.directives')
 
 /**
  * Makes element with this directive visible when there are http requests pending

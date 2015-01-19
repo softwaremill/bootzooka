@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("smlBootzooka.maintenance").factory("FlashService", function () {
+angular.module("smlBootzooka.common.services").factory("FlashService", function () {
 
     var queue = [];
 

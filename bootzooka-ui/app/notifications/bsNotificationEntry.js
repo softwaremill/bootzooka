@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootzooka.directives')
+angular.module('smlBootzooka.notifications')
     .directive('bsNotificationEntry', function ($timeout) {
 
         function setUpElementAttributes(element, typeOrUndefined) {

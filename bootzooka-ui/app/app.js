@@ -1,11 +1,12 @@
 "use strict";
 
-angular.module('smlBootzooka.directives', []);
-angular.module('smlBootzooka.filters', []);
-angular.module('smlBootzooka.maintenance', ['ngResource']);
+angular.module('smlBootzooka.common.directives', []);
+angular.module('smlBootzooka.common.filters', []);
+angular.module('smlBootzooka.common.services', []);
+angular.module('smlBootzooka.common', ['smlBootzooka.common.filters', 'smlBootzooka.common.directives', 'smlBootzooka.common.services']);
 angular.module('smlBootzooka.notifications', []);
 
-angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.maintenance', 'smlBootzooka.session', 'smlBootzooka.directives', 'smlBootzooka.notifications'])
+angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'smlBootzooka.common', 'smlBootzooka.notifications'])
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.when('', '/');
 
@@ -13,7 +14,7 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.maintenance',
             .state('login', {
                 url: '/login',
                 controller: 'LoginCtrl',
-                templateUrl: "login/login.html",
+                templateUrl: "profile/login/login.html",
                 params: {
                     page: null
                 }
@@ -21,25 +22,44 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.maintenance',
             .state('register', {
                 url: '/register',
                 controller: 'RegisterCtrl',
-                templateUrl: "register/register.html"
+                templateUrl: "profile/register/register.html"
             })
             .state('recover-lost-password', {
                 url: '/recover-lost-password',
                 controller: 'PasswordRecoveryCtrl',
-                templateUrl: "password/recover-lost-password.html"
+                templateUrl: "profile/password/recover-lost-password.html"
             })
             .state('password-reset', {
                 url: '/password-reset?code',
                 controller: "PasswordRecoveryCtrl",
-                templateUrl: "password/password-reset.html"
+                templateUrl: "profile/password/password-reset.html"
             })
             .state('profile', {
                 url: '/profile',
                 controller: "ProfileCtrl",
-                templateUrl: "profile/profile.html",
+                templateUrl: "profile/profile/profile.html",
                 data: {
                     auth: true
                 }
+            });
+    });
+
+angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);
+
+angular.module(
+        'smlBootzooka', [
+            'smlBootzooka.templates',
+            'smlBootzooka.profile',
+            'smlBootzooka.session',
+            'smlBootzooka.common',
+            'smlBootzooka.notifications', 'ngSanitize', 'ui.router'])
+    .config(function ($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.otherwise('/error404');
+
+        $stateProvider
+            .state('error404', {
+                url: '/error404',
+                templateUrl: 'common/errorpages/error404.html'
             })
             .state('main', {
                 url: '/main',
@@ -51,26 +71,6 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.maintenance',
             .state('home', {
                 url: '/',
                 templateUrl: "common/public.html"
-            });
-    });
-
-angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);
-
-angular.module(
-        'smlBootzooka', [
-            'smlBootzooka.templates',
-            'smlBootzooka.profile',
-            'smlBootzooka.session',
-            'smlBootzooka.directives',
-            'smlBootzooka.filters',
-            'smlBootzooka.notifications', 'ngSanitize', 'ui.router'])
-    .config(function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/error404');
-
-        $stateProvider
-            .state('error404', {
-                url: '/error404',
-                templateUrl: 'common/errorpages/error404.html'
             });
     })
     .config(['$httpProvider', function ($httpProvider) {

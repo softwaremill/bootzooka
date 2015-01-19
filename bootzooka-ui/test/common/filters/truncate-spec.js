@@ -4,7 +4,7 @@ describe("Truncate filter", function () {
 
     var loremIpsum = "Lorem ipsum dolor sit amet";
 
-    beforeEach(module('smlBootzooka.filters'));
+    beforeEach(module('smlBootzooka.common.filters'));
 
     it('should truncate string', inject(function (truncateFilter) {
         expect(truncateFilter(loremIpsum)).toBe("Lorem i...");

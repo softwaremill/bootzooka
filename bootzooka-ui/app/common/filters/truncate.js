@@ -1,4 +1,4 @@
-angular.module("smlBootzooka.filters")
+angular.module("smlBootzooka.common.filters")
 
     .filter('truncate', function () {
         return function (text, length, end) {

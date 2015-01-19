@@ -2,7 +2,7 @@
 
 describe("Date & Time filters:", function () {
 
-    beforeEach(module('smlBootzooka.filters'));
+    beforeEach(module('smlBootzooka.common.filters'));
 
     describe("relative date filter", function () {
         it('should convert JS date object to relative date string', inject(function (relativeDateFilter) {
