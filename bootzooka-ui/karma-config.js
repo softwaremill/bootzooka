@@ -14,7 +14,8 @@ module.exports = function(config) {
         'bower_files/angular-cookies/angular-cookies.js',
         'bower_files/angular-sanitize/angular-sanitize.js',
         'bower_files/angular-mocks/angular-mocks.js',
-        'bower_files/underscore/underscore.js'
+        'bower_files/underscore/underscore.js',
+        'bower_files/moment/moment.js'
     ].forEach(function(file) {
         files.push(file);
     });

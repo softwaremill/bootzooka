@@ -62,6 +62,7 @@ angular.module(
             'smlBootzooka.profile',
             'smlBootzooka.session',
             'smlBootzooka.directives',
+            'smlBootzooka.filters',
             'smlBootzooka.notifications', 'ngSanitize', 'ui.router'])
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/error404');
