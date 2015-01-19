@@ -78,12 +78,12 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
 
   def haltIfNotAuthenticated() {
     if (isAuthenticated == false) {
-      halt(401, "User not logged in")
+      halt(401, JsonWrapper("User not logged in"))
     }
   }
 
   def haltWithForbiddenIf(f: Boolean) {
-    if (f) halt(403, "Action forbidden")
+    if (f) halt(403, JsonWrapper("Action forbidden"))
   }
 
 }

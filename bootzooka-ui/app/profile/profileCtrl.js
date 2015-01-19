@@ -7,7 +7,9 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     var self = this;
 
     function showError(error) {
-        NotificationsService.showError(error.value);
+        if (angular.isDefined(error) && angular.isDefined(error.value)) {
+            NotificationsService.showError(error.value);
+        }
     }
 
     $scope.changeLogin = function () {

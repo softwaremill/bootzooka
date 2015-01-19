@@ -70,18 +70,10 @@ angular.module(
             .state('error404', {
                 url: '/error404',
                 templateUrl: 'common/errorpages/error404.html'
-            })
-            .state('error500', {
-                url: '/error500',
-                templateUrl: 'common/errorpages/error500.html'
-            })
-            .state('error', {
-                url: '/error',
-                templateUrl: 'common/errorpages/error500.html'
             });
     })
     .config(['$httpProvider', function ($httpProvider) {
-        var interceptor = ['$q', 'FlashService', '$injector', function ($q, FlashService, $injector) {
+        var interceptor = ['$q', 'FlashService', '$injector', 'NotificationsService', function ($q, FlashService, $injector, NotificationsService) {
 
             function redirectToState(stateName) {
                 // Because $httpProvider is a factory for $http which is used by $state we can't inject it directly
@@ -111,10 +103,8 @@ angular.module(
                     // do nothing, user is trying to modify data without privileges
                 } else if (response.status === 404) {
                     redirectToState('error404');
-                } else if (response.status === 500) {
-                    redirectToState('error500');
                 } else {
-                    redirectToState('error');
+                    NotificationsService.showError('Something went wrong..', 'Unexpected error');
                 }
                 return $q.reject(response);
             }
