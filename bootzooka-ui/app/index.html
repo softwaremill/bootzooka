@@ -52,8 +52,9 @@
     <script type="text/javascript" src="profile/password/passwordRecoveryCtrl.js"></script>
     <script type="text/javascript" src="profile/password/passwordRecoveryService.js"></script>
     <script type="text/javascript" src="notifications/notificationsService.js"></script>
-    <script type="text/javascript" src="notifications/bsNotificationsContainer.js"></script>
+    <script type="text/javascript" src="notifications/bsNotifications.js"></script>
     <script type="text/javascript" src="notifications/bsNotificationEntry.js"></script>
+    <script type="text/javascript" src="notifications/mainNotificationsCtrl.js"></script>
     <script type="text/javascript" src="scripts/templates.js"></script>
     <!-- endbuild -->
 
@@ -93,7 +94,8 @@
 
     <div class="container">
 
-        <div class="col-md-6 col-md-offset-2 feedback-container" bs-notifications-container>
+        <div class="col-md-6 col-md-offset-2 feedback-container" ng-controller="MainNotificationsCtrl">
+            <bs-notifications notifications-source="notificationsService"></bs-notifications>
         </div>
 
         <div ui-view></div>

@@ -12,10 +12,9 @@ angular.module('smlBootzooka.notifications')
         }
 
         return {
-            require: '^bsNotificationsContainer',
             restrict: 'A',
             templateUrl: 'notifications/notificationEntry.html',
-            link: function (scope, element, attributes, bsNotificationsContainerCtrl) {
+            link: function (scope, element) {
                 var alertFadeOutPromise = $timeout(function () {
                     element.fadeOut(2000, function () {
                         element.remove();
@@ -35,7 +34,7 @@ angular.module('smlBootzooka.notifications')
 
                 scope.$on('$destroy', function () {
                     $timeout.cancel(alertFadeOutPromise);
-                    bsNotificationsContainerCtrl.remove(scope.message);
+                    scope.notificationsSource.dismiss(scope.message);
                 });
             }
         };
