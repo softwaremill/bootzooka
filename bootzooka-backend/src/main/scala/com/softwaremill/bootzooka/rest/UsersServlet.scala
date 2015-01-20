@@ -31,48 +31,37 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   }
 
   post("/register") {
-    var messageOpt: Option[String] = None
-
-    if (userService.isUserDataValid((parsedBody \ "login").extractOpt[String], (parsedBody \ "email").extractOpt[String],
-      (parsedBody \ "password").extractOpt[String]) == false) {
-      messageOpt = Some("Wrong user data!")
+    if (!userService.isUserDataValid(loginOpt, emailOpt, passwordOpt)) {
+      halt(400, JsonWrapper("Wrong user data!"))
     } else {
-      val userLogin = parsedBody \ "login" extractOrElse ("")
-      val userEmail = parsedBody \ "email" extractOrElse ("")
-
-      userService.checkUserExistenceFor(userLogin, userEmail) match {
-        case Left(error) => messageOpt = Some(error)
+      userService.checkUserExistenceFor(login, email) match {
+        case Left(error) => halt(409, JsonWrapper(error))
         case _ =>
       }
     }
 
-    messageOpt match {
-      case Some(message) => {
-        JsonWrapper(message)
-      }
-      case _ => {
-        userService.registerNewUser(escapeHtml4((parsedBody \ "login").extract[String]),
-          (parsedBody \ "email").extract[String], (parsedBody \ "password").extract[String])
-        JsonWrapper("success")
-      }
-    }
+    userService.registerNewUser(escapeHtml4(login), email, password)
+
+    JsonWrapper("success")
   }
 
-  override def login: String = {
-    (parsedBody \ "login").extractOpt[String].getOrElse("")
-  }
+  private def valueOrEmptyString(maybeString: Option[String]) = maybeString.getOrElse("")
 
-  override def password: String = {
-    (parsedBody \ "password").extractOpt[String].getOrElse("")
-  }
+  private def loginOpt: Option[String] = (parsedBody \ "login").extractOpt[String]
+
+  override def login: String = valueOrEmptyString(loginOpt)
+
+  private def passwordOpt: Option[String] = (parsedBody \ "password").extractOpt[String]
+
+  override def password: String = valueOrEmptyString(passwordOpt)
 
   override def rememberMe: Boolean = {
     (parsedBody \ "rememberme").extractOpt[Boolean].getOrElse(false)
   }
 
-  def email: String = {
-    (parsedBody \ "email").extractOpt[String].getOrElse("")
-  }
+  private def emailOpt: Option[String] = (parsedBody \ "email").extractOpt[String]
+
+  def email: String = valueOrEmptyString(emailOpt)
 
   patch("/") {
     haltIfNotAuthenticated()

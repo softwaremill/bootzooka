@@ -38,14 +38,50 @@ class UsersServletSpec extends BootzookaServletSpec {
     }
   }
 
-  "POST / with invalid data" should "return error message" in {
+  "POST /register with invalid data" should "return 400 with an error message" in {
     onServletWithMocks {
       (userService) =>
         post("/register", defaultJsonHeaders) {
           val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
           option should be(Some("Wrong user data!"))
-          status should be (200)
+          status should be(400)
         }
+    }
+  }
+
+  "POST /register with an existing login" should "return 409 with an error message" in {
+    onServletWithMocks {
+      (userService) => {
+        val newUserWithExistingLogin = mapToJson(Map(
+          "login" -> "Admin",
+          "email" -> "newUser@sml.com",
+          "password" -> "secret"
+        ))
+
+        post("/register", newUserWithExistingLogin, defaultJsonHeaders) {
+          val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
+          option should be(Some("Login already in use!"))
+          status should be(409)
+        }
+      }
+    }
+  }
+
+  "POST /register with an existing email" should "return 409 with an error message" in {
+    onServletWithMocks {
+      (userService) => {
+        val newUserWithExistingEmail = mapToJson(Map(
+          "login" -> "newUser",
+          "email" -> "admin@sml.com",
+          "password" -> "secret"
+        ))
+
+        post("/register", newUserWithExistingEmail, defaultJsonHeaders) {
+          val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
+          option should be(Some("E-mail already in use!"))
+          status should be(409)
+        }
+      }
     }
   }
 
