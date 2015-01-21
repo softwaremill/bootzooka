@@ -8,7 +8,7 @@ angular.module('smlBootzooka.profile')
     $scope.user = {};
     $scope.user.login = '';
     $scope.user.password = '';
-    $scope.user.rememberme = false;
+    $scope.user.rememberMe = false;
 
     $scope.login = function () {
         // set dirty to show error messages on empty fields when submit is clicked

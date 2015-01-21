@@ -56,7 +56,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   override def password: String = valueOrEmptyString(passwordOpt)
 
   override def rememberMe: Boolean = {
-    (parsedBody \ "rememberme").extractOpt[Boolean].getOrElse(false)
+    (parsedBody \ "rememberMe").extractOpt[Boolean].getOrElse(false)
   }
 
   private def emailOpt: Option[String] = (parsedBody \ "email").extractOpt[String]
