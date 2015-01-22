@@ -11,10 +11,8 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
   post() {
     val userOpt: Option[UserJson] = authenticate()
     userOpt match {
-      case Some(loggedUser) =>
-        loggedUser
-      case _ =>
-        halt(401, StringJsonWrapper("Invalid login and/or password"))
+      case Some(loggedUser) => loggedUser
+      case _ => haltWithUnauthorized("Invalid login and/or password")
     }
   }
 
@@ -28,21 +26,22 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
       // call logout only when logged in to avoid NPE
       logOut()
     }
+    NoContent()
   }
 
   post("/register") {
     if (!userService.isUserDataValid(loginOpt, emailOpt, passwordOpt)) {
-      halt(400, StringJsonWrapper("Wrong user data!"))
+      haltWithBadRequest("Wrong user data!")
     } else {
       userService.checkUserExistenceFor(login, email) match {
-        case Left(error) => halt(409, StringJsonWrapper(error))
+        case Left(error) => haltWithConflict(error)
         case _ =>
       }
     }
 
     userService.registerNewUser(escapeHtml4(login), email, password)
 
-    StringJsonWrapper("success")
+    Created(StringJsonWrapper("success"))
   }
 
   private def valueOrEmptyString(maybeString: Option[String]) = maybeString.getOrElse("")
@@ -77,11 +76,11 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     }
 
     messageOpt match {
-      case Some(message) => halt(403, StringJsonWrapper(message))
-      case None => Ok()
+      case Some(message) => haltWithConflict(message)
+      case None => NoContent()
     }
   }
-
+  
   private def changeLogin(): Option[String] = {
     logger.debug(s"Updating login: ${user.login} -> ${login}")
     userService.changeLogin(user.login, login) match {
@@ -102,18 +101,16 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     haltIfNotAuthenticated()
     val currentPassword = (parsedBody \ "currentPassword").extractOpt[String].getOrElse("")
     val newPassword = (parsedBody \ "newPassword").extractOpt[String].getOrElse("")
-    var messageOpt: Option[String] = None
+
     if (currentPassword.isEmpty) {
-      messageOpt = Some("Parameter currentPassword is missing")
+      haltWithBadRequest("Parameter currentPassword is missing")
     } else if (newPassword.isEmpty) {
-      messageOpt = Some("Parameter newPassword is missing")
-    } else {
-      messageOpt = changePassword(currentPassword, newPassword)
+      haltWithBadRequest("Parameter newPassword is missing")
     }
 
-    messageOpt match {
-      case Some(message) => halt(403, StringJsonWrapper(message))
-      case None => Ok()
+    changePassword(currentPassword, newPassword) match {
+      case Some(message) => haltWithForbidden(message)
+      case None => NoContent()
     }
   }
 

@@ -35,7 +35,7 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
   "POST /" should "return error message when user not exists" in {
     onServletWithMocks { (recoveryService) =>
       post("/", mapToJson(Map("login" -> "notexisting")), defaultJsonHeaders) {
-        status should be (200)
+        status should be (404)
         verify(recoveryService, never()).sendResetCodeToUser("notexisting")
         body should be ("{\"value\":\"No user with given login/e-mail found.\"}")
       }
@@ -45,7 +45,7 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
   "POST /123 with password" should "change it" in {
     onServletWithMocks { (recoveryService) =>
       post("/123", mapToJson(Map("password" -> "validPassword")), defaultJsonHeaders) {
-        status should be (200)
+        status should be (204)
         verify(recoveryService).performPasswordReset("123", "validPassword")
       }
     }

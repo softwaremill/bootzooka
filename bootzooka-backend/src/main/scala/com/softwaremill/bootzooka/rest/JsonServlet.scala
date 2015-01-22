@@ -1,16 +1,16 @@
 package com.softwaremill.bootzooka.rest
 
-import org.scalatra._
-import org.scalatra.json.{ JValueResult, JacksonJsonSupport }
-import org.json4s._
 import java.io.Writer
-import org.apache.commons.lang3.StringEscapeUtils._
-import org.json4s.{ DefaultFormats, Formats }
-import javax.servlet.http.HttpServletResponse
 import java.util.Date
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import javax.servlet.http.HttpServletResponse
 
-class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with LazyLogging {
+import com.typesafe.scalalogging.slf4j.LazyLogging
+import org.apache.commons.lang3.StringEscapeUtils._
+import org.json4s.{DefaultFormats, Formats, _}
+import org.scalatra._
+import org.scalatra.json.{JValueResult, JacksonJsonSupport}
+
+class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with LazyLogging with Halting {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 

@@ -33,7 +33,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         post("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),
           defaultJsonHeaders) {
           verify(userService).registerNewUser("newUser", "newUser@sml.com", "secret")
-          status should be (200)
+          status should be (201)
         }
     }
   }
@@ -120,7 +120,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         }
 
         patch("/", mapToJson(Map("email" -> email)), defaultJsonHeaders) {
-          status should be (200)
+          status should be (204)
           verify(userService).changeEmail(anyString, Matchers.eq(email))
         }
       }
@@ -145,7 +145,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         }
         patch("/", mapToJson(Map("email" -> "admin2@sml.com")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
-          status should be (403)
+          status should be (409)
           opt should be (Some("E-mail used by another user"))
         }
       }
@@ -178,7 +178,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         }
 
         patch("/", mapToJson(Map("login" -> login)), defaultJsonHeaders) {
-          status should be (200)
+          status should be (204)
           verify(userService).changeLogin(anyString, Matchers.eq(login))
         }
       }
@@ -194,7 +194,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         }
         patch("/", mapToJson(Map("login" -> "admin2")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
-          status should be (403)
+          status should be (409)
           opt should be (Some("Login is already taken"))
         }
       }
@@ -210,7 +210,7 @@ class UsersServletSpec extends BootzookaServletSpec {
         }
 
         post("/changepassword", mapToJson(Map("currentPassword" -> "pass", "newPassword" -> "newPass")), defaultJsonHeaders) {
-          status should be (200)
+          status should be (204)
         }
       }
     })
@@ -243,7 +243,7 @@ class UsersServletSpec extends BootzookaServletSpec {
 
         post("/changepassword", mapToJson(Map("newPassword" -> "pass")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
-          status should be (403)
+          status should be (400)
           opt should be (Some("Parameter currentPassword is missing"))
         }
       }
@@ -260,7 +260,7 @@ class UsersServletSpec extends BootzookaServletSpec {
 
         post("/changepassword", mapToJson(Map("currentPassword" -> "pass")), defaultJsonHeaders) {
           val opt = (stringToJson(body) \ "value").extractOpt[String]
-          status should be (403)
+          status should be (400)
           opt should be (Some("Parameter newPassword is missing"))
         }
       }

@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.auth
 
+import com.softwaremill.bootzooka.rest.Halting
 import org.scalatra._
 import org.scalatra.auth.ScentryAuthStore.CookieAuthStore
 import org.scalatra.auth.{ Scentry, ScentryConfig, ScentrySupport }
@@ -13,7 +14,7 @@ import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
  */
 trait RememberMeSupport extends AuthenticationSupport {
 
-  self: ScalatraBase =>
+  self: ScalatraBase with Halting =>
 
   before() {
     if (!isAuthenticated) {
@@ -25,7 +26,7 @@ trait RememberMeSupport extends AuthenticationSupport {
 
 trait AuthenticationSupport extends ScentrySupport[UserJson] {
 
-  self: ScalatraBase =>
+  self: ScalatraBase with Halting =>
 
   def userService: UserService
 
@@ -78,12 +79,7 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
 
   def haltIfNotAuthenticated() {
     if (isAuthenticated == false) {
-      halt(401, StringJsonWrapper("User not logged in"))
+      haltWithUnauthorized("User not logged in")
     }
   }
-
-  def haltWithForbiddenIf(f: Boolean) {
-    if (f) halt(403, StringJsonWrapper("Action forbidden"))
-  }
-
 }
