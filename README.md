@@ -27,8 +27,9 @@ Bootzooka's stack consists of the following technologies/tools:
 
 *	Scala (JVM based language)
 *	Scalatra (simple web framework to expose JSON API)
-*	MongoDB (persistence)
-*	Rogue/Lift Record (talk to MongoDB from Scala)
+*	H2 DB (persistence)
+*	Slick (query SQL database using strictly typed DSL)
+*   Flyway (easy schema evolution)
 *	AngularJS + HTML5 (browser part)
 *	SBT & Grunt.js (build tools)
 
@@ -73,7 +74,6 @@ In order to build and develop on Bootzooka foundations you need the following:
 *	Java JDK >= 7
 *	[SBT](http://www.scala-sbt.org/) >= 0.13
 *	Node.js >= 0.10.13
-* MongoDB
 
 ## How to run (development)
 
@@ -87,8 +87,6 @@ server parts in one application that can be dropped into any servlet container.*
 
 To run the backend server part, enter the main directory and type `./backend-start.sh` or
 `backend-start.bat` depending on your OS.
-
-You will also need a *running* Mongo instance on the default port (the port can be customized in the configuration).
 
 #### Browser client
 
@@ -106,17 +104,17 @@ To build an executable jar, simply run `bootzooka-dist/assembly` (that is, the `
 subproject). This will create a fat-jar with all the code, processed javascript, css and html. You can run the jar
 simply by running java:
 
-    java -jar bootzooka-dist/target/scala-2.10/bootzooka-dist-assembly-0.0.1-SNAPSHOT.jar
+    java -jar bootzooka-dist/target/scala-2.11/bootzooka-dist-assembly-0.0.1-SNAPSHOT.jar
 
 ### Deployable .war
 
-To build a `.war`, run `bootzooka-backend/package`. The war will be located in `bootzooka-backend/target/scala-2.10/bootzooka.war`.
+To build a `.war`, run `bootzooka-backend/package`. The war will be located in `bootzooka-backend/target/scala-2.11/bootzooka.war`.
 You can drop it in any servlet container (Tomcat/Jetty/JBoss/etc.)
 
 ## How to execute tests
 
-Tests are using [Fakemongo](https://github.com/fakemongo/fongo) to mock out MongoDB. You don't need to have MongoDB installed on your machine. 
-Check out easy setup of Fakemongo in `FlatSpecWithMongo` trait.
+Because tests are using in-memory [H2 database](http://www.h2database.com/html/main.html) you don't need to have any database running on your machine.
+Check out easy setup of in-memory database in `FlatSpecWithSQL` trait.
 
 When you issue `test` from SBT, tests for both server-side and client-side components are run. SBT integrates some Grunt
 commands and executes tests for browser part via Grunt too.
@@ -130,7 +128,7 @@ bootzooka project directory, switch to bootzooka-ui-tests project and invoke the
     $ sbt
     [info] Loading project definition from /Users/pbu/Work/bootzooka/project/project
     [info] Loading project definition from /Users/pbu/Work/bootzooka/project
-    [info] Compiling 1 Scala source to /Users/pbu/Work/bootzooka/project/target/scala-2.10/sbt-0.13/classes...
+    [info] Compiling 1 Scala source to /Users/pbu/Work/bootzooka/project/target/scala-2.11/sbt-0.13/classes...
     [info] Set current project to bootzooka-root (in build file:/Users/pbu/Work/bootzooka/)
     > project bootzooka-ui-tests
     [info] Set current project to bootzooka-ui-tests (in build file:/Users/pbu/Work/bootzooka/)
@@ -144,11 +142,10 @@ These tests are written using WebDriver and __you need Firefox 20__ to properly 
 
 ## Development tips
 
-Generally during development you'll need three processes:
+Generally during development you'll need two processes:
 
 * sbt running the backend server (e.g. using `~;container:start; container:reload /`)
 * grunt server which automatically picks up any changes
-* MongoDB
 
 ### IDE
 
@@ -164,6 +161,11 @@ that sub-project, this can be also achieved with e.g.: `<sub-project-name>/test`
 * `container:start` - starts the embedded Jetty container (backend)
 * `~;container:start; container:reload /` - runs container (backend) and waits for source code changes to automatically
 compile changed file and to reload it
+
+### Database schema evolution
+
+With Flyway, all you need to do is to put DDL script within bootzooka-backend/src/main/resources/db/migration/ directory.
+You have to obey the following [naming convention](http://flywaydb.org/documentation/migration/sql.html): `V#__your_arbitrary_description.sql` where `#` stands for *unique* version of your schema.
 
 ## Configuration
 

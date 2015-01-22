@@ -1,6 +1,7 @@
 package com.softwaremill.bootzooka
 
-import com.softwaremill.bootzooka.dao.{MongoPasswordResetCodeDAO, MongoUserDAO}
+import com.softwaremill.bootzooka.dao.sql.SQLDatabase
+import com.softwaremill.bootzooka.dao.{DAOs, DaoConfig}
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.config.{BootzookaConfig, EmailConfig}
 import com.softwaremill.bootzooka.service.email.{DummyEmailSendingService, ProductionEmailSendingService}
@@ -9,14 +10,12 @@ import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserS
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
-trait Beans extends LazyLogging {
-  lazy val config = new BootzookaConfig with EmailConfig {
+trait Beans extends LazyLogging with DAOs {
+  lazy val config = new BootzookaConfig with EmailConfig with DaoConfig {
     override def rootConfig = ConfigFactory.load()
   }
 
-  lazy val userDao = new MongoUserDAO
-
-  lazy val codeDao = new MongoPasswordResetCodeDAO()
+  override lazy val sqlDatabase = SQLDatabase.createEmbedded(config)
 
   lazy val emailScheduler = if (config.emailEnabled) {
     new ProductionEmailSendingService(config)

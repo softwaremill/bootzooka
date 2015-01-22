@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.BootzookaServletSpec
-import com.softwaremill.bootzooka.dao.InMemoryUserDAO
+import com.softwaremill.bootzooka.dao.user.InMemoryUserDAO
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine

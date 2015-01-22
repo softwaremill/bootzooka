@@ -1,23 +1,27 @@
 package com.softwaremill.bootzooka.service
 
-import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO, InMemoryUserDAO}
+import java.util.UUID
+
+import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDAO
+import com.softwaremill.bootzooka.dao.user.{InMemoryUserDAO, UserDAO}
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
-import org.scalatest
-import templates.{EmailTemplatingEngine, EmailContentWithSubject}
-import org.mockito.Matchers
-import org.bson.types.ObjectId
+import com.softwaremill.bootzooka.service.config.BootzookaConfig
+import com.softwaremill.bootzooka.service.email.EmailScheduler
+import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import org.joda.time.DateTime
+import org.mockito.BDDMockito._
+import org.mockito.Matchers
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest
 import org.scalatest.FlatSpec
 import org.scalatest.mock.MockitoSugar
-import org.mockito.BDDMockito._
-import org.mockito.Mockito._
-import org.mockito.Matchers._
-import com.softwaremill.bootzooka.service.email.EmailScheduler
-import com.softwaremill.bootzooka.service.config.BootzookaConfig
 
 class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar {
   val invalidLogin = "user2"
   val validLogin = "user"
+
+  def generateRandomId = UUID.randomUUID()
 
   def withCleanMocks(test: (UserDAO, PasswordResetCodeDAO, EmailScheduler, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
     val userDao = prepareUserDaoMock
@@ -80,18 +84,16 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       //Given
       val code = "validCode"
       val login = "login"
-      val userId = "id"
       val password = "password"
       val salt = "salt"
-      val mockUserId = mock[ObjectId]
+      val userId = generateRandomId
       val mockCode = mock[PasswordResetCode]
       val mockUser = mock[User]
 
-      given(mockUserId.toString) willReturn userId
-      given(mockCode.userId) willReturn mockUserId
+      given(mockCode.userId) willReturn userId
       given(mockCode.validTo) willReturn new DateTime().plusHours(1)
 
-      given(mockUser.id) willReturn  mockUserId
+      given(mockUser.id) willReturn userId
       given(mockUser.login) willReturn login
       given(mockUser.salt) willReturn "salt"
 
@@ -125,7 +127,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       //Then
       assert(result.isLeft)
       verify(codeDao).delete(mockCode)
-      verify(userDao, never()).changePassword(anyString, anyString)
+      verify(userDao, never()).changePassword(any[UUID], anyString)
     })
   }
 }

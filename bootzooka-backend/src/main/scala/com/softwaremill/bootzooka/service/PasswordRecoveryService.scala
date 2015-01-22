@@ -1,14 +1,14 @@
 package com.softwaremill.bootzooka.service
 
-import config.BootzookaConfig
-import com.softwaremill.bootzooka.dao.{PasswordResetCodeDAO, UserDAO}
-import templates.EmailTemplatingEngine
-import com.softwaremill.bootzooka.domain.User
-import com.softwaremill.bootzooka.domain.PasswordResetCode
-import org.joda.time.DateTime
-import com.typesafe.scalalogging.slf4j.LazyLogging
 import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDAO
+import com.softwaremill.bootzooka.dao.user.UserDAO
+import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
+import com.softwaremill.bootzooka.service.config.BootzookaConfig
 import com.softwaremill.bootzooka.service.email.EmailScheduler
+import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
+import com.typesafe.scalalogging.slf4j.LazyLogging
+import org.joda.time.DateTime
 
 class PasswordRecoveryService(
   userDao: UserDAO,
@@ -25,12 +25,11 @@ class PasswordRecoveryService(
     userOption match {
       case Some(user) => {
         logger.debug("User found")
-        val user = userOption.get
         val code = PasswordResetCode(Utils.randomString(32), user.id)
         storeCode(code)
         sendCode(user, code)
       }
-      case None => logger.debug("User not found")
+      case _ => logger.debug("User not found")
     }
   }
 
@@ -71,8 +70,8 @@ class PasswordRecoveryService(
   }
 
   private def changePassword(code: PasswordResetCode, newPassword: String) {
-    userDao.load(code.userId.toString) match {
-      case Some(u) => userDao.changePassword(u.id.toString, User.encryptPassword(newPassword, u.salt))
+    userDao.load(code.userId) match {
+      case Some(u) => userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt))
       case None => logger.debug("User does not exist")
     }
   }

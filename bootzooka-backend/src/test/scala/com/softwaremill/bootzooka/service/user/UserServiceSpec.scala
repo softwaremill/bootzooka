@@ -1,15 +1,15 @@
 package com.softwaremill.bootzooka.service.user
 
-import com.softwaremill.bootzooka.dao.{InMemoryUserDAO, UserDAO}
+import com.softwaremill.bootzooka.dao.user.{InMemoryUserDAO, UserDAO}
 import com.softwaremill.bootzooka.domain.User
+import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
+import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest
-import org.scalatest.{BeforeAndAfter, FlatSpec}
 import org.scalatest.mock.MockitoSugar
-import org.mockito.Matchers
-import com.softwaremill.bootzooka.service.email.EmailScheduler
+import org.scalatest.{BeforeAndAfter, FlatSpec}
 
 class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with BeforeAndAfter {
   def prepareUserDAOMock: UserDAO = {
@@ -143,9 +143,10 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
     val newPassword = "newPass"
 
     // When
-    userService.changePassword(user.token, currentPassword, newPassword) should be ('right)
+    val changePassResult = userService.changePassword(user.token, currentPassword, newPassword)
 
     // Then
+    changePassResult should be ('right)
     userDAO.findByLowerCasedLogin("admin") match {
       case Some(cu) => cu.password should be (User.encryptPassword(newPassword, cu.salt))
       case None => fail("Something bad happened, maybe mocked DAO is broken?")

@@ -2,7 +2,6 @@ package uitest
 
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.fest.assertions.Assertions
-import org.openqa.selenium.By
 
 import scala.util.Success
 
@@ -24,9 +23,9 @@ class ScalaPasswordResetUITest extends BootzookaUITest {
   }
 
   override def afterAll(): Unit = {
-    super.afterAll()
     beans.codeDao.load(validCode).foreach(beans.codeDao.delete)
     removeUsers("someUser")
+    super.afterAll()
   }
 
   test("password-reset should reset password") {

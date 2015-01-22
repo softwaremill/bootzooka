@@ -80,7 +80,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
       login <- logins
       user <- beans.userDao.findByLoginOrEmail("someUser")
     } {
-      beans.userDao.remove(user.id.toString)
+      beans.userDao.remove(user.id)
     }
   }
 

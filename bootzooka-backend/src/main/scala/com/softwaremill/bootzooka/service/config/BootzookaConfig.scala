@@ -1,8 +1,9 @@
 package com.softwaremill.bootzooka.service.config
 
+import com.softwaremill.bootzooka.common.config.ConfigWithDefault
 import com.typesafe.config.Config
 
-trait BootzookaConfig extends BaseConfig {
+trait BootzookaConfig extends ConfigWithDefault {
   def rootConfig: Config
 
   private lazy val bootzookaConfig = rootConfig.getConfig("bootzooka")

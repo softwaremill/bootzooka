@@ -1,11 +1,9 @@
+import java.util.Locale
 import javax.servlet.ServletContext
 
-import com.mongodb.MongoClient
 import com.softwaremill.bootzooka.Beans
 import com.softwaremill.bootzooka.rest._
 import com.softwaremill.bootzooka.rest.swagger.{BootzookaSwagger, SwaggerServlet}
-import net.liftweb.mongodb.MongoDB
-import net.liftweb.util.DefaultConnectionIdentifier
 import org.scalatra.{LifeCycle, ScalatraServlet}
 
 /**
@@ -18,7 +16,9 @@ class ScalatraBootstrap extends LifeCycle with Beans {
   implicit val swagger = new BootzookaSwagger
 
   override def init(context: ServletContext) {
-    MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, "bootzooka")
+    Locale.setDefault(Locale.US) // set default locale to prevent Scalatra from sending cookie expiration date in polish format :)
+
+    sqlDatabase.updateSchema()
 
     def mountServlet(servlet: ScalatraServlet with Mappable) {
       servlet match {
@@ -35,6 +35,6 @@ class ScalatraBootstrap extends LifeCycle with Beans {
   }
 
   override def destroy(context: ServletContext) {
-
+    sqlDatabase.close()
   }
 }

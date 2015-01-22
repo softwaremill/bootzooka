@@ -1,30 +1,32 @@
-package com.softwaremill.bootzooka.dao
+package com.softwaremill.bootzooka.dao.user
+
+import java.util.UUID
 
 import com.softwaremill.bootzooka.domain.User
-import org.scalatest
-import org.scalatest.BeforeAndAfterAll
-import org.bson.types.ObjectId
+import com.softwaremill.bootzooka.test.{ClearSQLDataAfterEach, FlatSpecWithSQL}
 import com.typesafe.scalalogging.slf4j.LazyLogging
-import com.softwaremill.bootzooka.test.FlatSpecWithMongo
+import org.scalatest.BeforeAndAfterEach
 
 import scala.language.implicitConversions
 
-class MongoUserDAOSpec extends FlatSpecWithMongo with scalatest.Matchers with BeforeAndAfterAll with LazyLogging {
-  behavior of "MongoUserDAO"
+class SQLUserDAOSpec extends FlatSpecWithSQL with BeforeAndAfterEach with ClearSQLDataAfterEach with LazyLogging {
+  behavior of "SQLUserDAO"
 
-  val userIdPrefix = "507f1f77bcf86cd79943901"
-  val userDAO = new MongoUserDAO
-  implicit def intSuffixToObjectId(suffix: Int): ObjectId = new ObjectId(userIdPrefix + suffix)
+  val userDAO = new SQLUserDAO(sqlDatabase)
 
-  override def beforeAll() {
-    super.beforeAll()
+  def generateRandomId = UUID.randomUUID()
 
-    for (i <- 1 to 3) {
+  lazy val randomIds: List[UUID] = List.fill(3)(generateRandomId)
+
+  override def beforeEach() {
+    super.beforeEach()
+
+    for (i <- 1 to randomIds.size) {
       val login = "user" + i
       val password = "pass" + i
       val salt = "salt" + i
       val token = "token" + i
-      userDAO.add(User(i, login, login.toLowerCase, i + "email@sml.com", password, salt, token))
+      userDAO.add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt, token))
     }
   }
 
@@ -55,6 +57,8 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with scalatest.Matchers with Be
     val login = "newuser"
     val email = "anotherEmaill@sml.com"
 
+    userDAO.add(User(login, "somePrefix" + email, "somePass", "someSalt", "someToken"))
+
     // When & then
     intercept[Exception] {
       userDAO.add(User(login, email, "pass", "salt", "token"))
@@ -66,6 +70,8 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with scalatest.Matchers with Be
     val login = "anotherUser"
     val email = "newemail@sml.com"
 
+    userDAO.add(User("somePrefixed" + login, email, "somePass", "someSalt", "someToken"))
+
     // When
     intercept[Exception] {
       userDAO.add(User(login, email, "pass", "salt", "token"))
@@ -75,12 +81,13 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with scalatest.Matchers with Be
   it should "remove user" in {
     // Given
     val numberOfUsersBefore = userDAO.countItems()
-    val userOpt: Option[User] = userDAO.findByLoginOrEmail("newuser")
+    val userOpt: Option[User] = userDAO.findByLoginOrEmail("user1")
 
     // When
-    userOpt.foreach(u => userDAO.remove(u.id.toString))
+    userOpt.foreach(u => userDAO.remove(u.id))
 
     // Then
+    userOpt should not be None
     (userDAO.countItems() - numberOfUsersBefore) should be (-1)
   }
 
@@ -128,13 +135,13 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with scalatest.Matchers with Be
 
   it should "find users by identifiers" in {
     // Given
-    val ids: List[ObjectId] = List(1, 2, 2)
+    val ids = Set(randomIds(0), randomIds(1), randomIds(1))
 
     // When
     val users = userDAO.findForIdentifiers(ids)
 
     // Then
-    users.map(user => user.login) should be(List("user1", "user2"))
+    users.map(user => user.login) should contain theSameElementsAs List("user1", "user2")
   }
 
   it should "find by uppercased login" in {
@@ -225,7 +232,7 @@ class MongoUserDAOSpec extends FlatSpecWithMongo with scalatest.Matchers with Be
     val login = "user1"
     val password = User.encryptPassword("pass11", "salt1")
     val user = userDAO.findByLoginOrEmail(login).get
-    userDAO.changePassword(user.id.toString, password)
+    userDAO.changePassword(user.id, password)
     val postModifyUserOpt = userDAO.findByLoginOrEmail(login)
     val u = postModifyUserOpt.get
     u should be (user.copy(password = password))

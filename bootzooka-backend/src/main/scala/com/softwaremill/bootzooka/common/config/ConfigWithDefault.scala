@@ -1,10 +1,11 @@
-package com.softwaremill.bootzooka.service.config
+package com.softwaremill.bootzooka.common.config
 
 import java.util.concurrent.TimeUnit
 
 import com.typesafe.config.Config
 
-trait BaseConfig {
+trait ConfigWithDefault {
+
   def rootConfig: Config
 
   def getBoolean(path: String, default: Boolean) = ifHasPath(path, default) {_.getBoolean(path)}
@@ -25,4 +26,5 @@ trait BaseConfig {
       default
     }
   }
+
 }

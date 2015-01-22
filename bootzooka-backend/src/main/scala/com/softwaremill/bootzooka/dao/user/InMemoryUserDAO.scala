@@ -1,7 +1,6 @@
-package com.softwaremill.bootzooka.dao
+package com.softwaremill.bootzooka.dao.user
 
 import com.softwaremill.bootzooka.domain.User
-import org.bson.types.ObjectId
 
 class InMemoryUserDAO extends UserDAO {
 
@@ -11,8 +10,7 @@ class InMemoryUserDAO extends UserDAO {
     users
   }
 
-  override def findForIdentifiers(ids: List[ObjectId]): List[User] = {
-    val uniqueIds = ids.toSet
+  override def findForIdentifiers(uniqueIds: Set[UserId]): List[User] = {
     users.filter(user => uniqueIds.contains(user.id))
   }
 
@@ -24,14 +22,14 @@ class InMemoryUserDAO extends UserDAO {
     users ::= user
   }
 
-  def remove(userId: String) {
+  def remove(userId: UserId) {
     load(userId) foreach { user =>
       users = users.diff(List(user))
     }
   }
 
-  def load(userId: String): Option[User] = {
-    users.find(user => user.id == new ObjectId(userId))
+  def load(userId: UserId): Option[User] = {
+    users.find(_.id == userId)
   }
 
   def findByEmail(email: String): Option[User] = {
@@ -50,7 +48,7 @@ class InMemoryUserDAO extends UserDAO {
     users.find(user => user.token == token)
   }
 
-  def changePassword(userId: String, password: String) {
+  def changePassword(userId: UserId, password: String) {
     load(userId) foreach { user =>
       users = users.updated(users.indexOf(user), user.copy(password = password))
     }

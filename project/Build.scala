@@ -78,24 +78,19 @@ object Dependencies {
   val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
   val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
   val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.6.3" % "test"
-  val fakeMongo = "com.github.fakemongo" % "fongo" % "1.5.9" % "test"
-  val mongoJava = "org.mongodb" % "mongo-java-driver" % "2.12.4"
+
+  private val slick = "com.typesafe.slick" %% "slick" % "2.1.0"
+  private val h2 = "com.h2database" % "h2" % "1.3.176"
+  private val c3p0 = "com.mchange" % "c3p0" % "0.9.5"
+  private val flyway = "org.flywaydb" % "flyway-core" % "3.1"
+
+  val slickOnH2 = Seq(slick, h2, c3p0, flyway)
 
   val selenium = Seq(seleniumJava, seleniumFirefox, fest)
 
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
   val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
-
-  val bson = "org.mongodb" % "bson" % "2.12.4" % "provided"
-
-  val rogueField = "com.foursquare" %% "rogue-field" % rogueVersion intransitive()
-  val rogueCore = "com.foursquare" %% "rogue-core" % rogueVersion intransitive()
-  val rogueLift = "com.foursquare" %% "rogue-lift" % rogueVersion intransitive()
-  val rogueIndex = "com.foursquare" %% "rogue-index" % rogueVersion intransitive()
-  val liftMongoRecord = "net.liftweb" %% "lift-mongodb-record" % "2.6-M4" exclude("org.mongodb","mongo-java-driver")
-
-  val rogue = Seq(rogueCore, rogueField, rogueLift, rogueIndex, liftMongoRecord)
 }
 
 object BootzookaBuild extends Build {
@@ -131,13 +126,12 @@ object BootzookaBuild extends Build {
   ) aggregate(backend, ui, dist)
 
   lazy val backend: Project = Project(
-  "bootzooka-backend",
-  file("bootzooka-backend"),
-    settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(libraryDependencies ++= (Seq(bson) ++ jodaDependencies
-      ++ rogue ++ Seq(mongoJava, fakeMongo, jettyContainer)
-          ++ Seq(commonsValidator, javaxMail, typesafeConfig, servletApiProvided)
-          ++ scalatraStack))
-    ++ Seq(
+    "bootzooka-backend",
+    file("bootzooka-backend"),
+    settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(
+      libraryDependencies ++= jodaDependencies ++ Seq(jettyContainer) ++ slickOnH2 ++
+        Seq(commonsValidator, javaxMail, typesafeConfig, servletApiProvided) ++ scalatraStack)
+      ++ Seq(
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
       },

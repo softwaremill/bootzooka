@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service.user
 
-import com.softwaremill.bootzooka.dao.UserDAO
+import com.softwaremill.bootzooka.dao.user.UserDAO
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.email.EmailScheduler
@@ -11,7 +11,7 @@ import com.softwaremill.bootzooka.common.Utils
 class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
                   emailTemplatingEngine: EmailTemplatingEngine) {
 
-  def load(userId: String) = {
+  def load(userId: userDAO.UserId) = {
     UserJson(userDAO.load(userId))
   }
 
@@ -87,7 +87,7 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   def changePassword(userToken: String, currentPassword: String, newPassword: String): Either[String, Unit] = {
     userDAO.findByToken(userToken) match {
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
-        Right(userDAO.changePassword(u.id.toString, User.encryptPassword(newPassword, u.salt)))
+        Right(userDAO.changePassword(u.id, User.encryptPassword(newPassword, u.salt)))
       } else {
         Left("Current password is invalid")
       }
