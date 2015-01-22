@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.rest
 
 import org.scalatra._
-import com.softwaremill.bootzooka.common.JsonWrapper
+import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
 import org.apache.commons.lang3.StringEscapeUtils._
@@ -14,7 +14,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
       case Some(loggedUser) =>
         loggedUser
       case _ =>
-        halt(401, JsonWrapper("Invalid login and/or password"))
+        halt(401, StringJsonWrapper("Invalid login and/or password"))
     }
   }
 
@@ -32,17 +32,17 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
 
   post("/register") {
     if (!userService.isUserDataValid(loginOpt, emailOpt, passwordOpt)) {
-      halt(400, JsonWrapper("Wrong user data!"))
+      halt(400, StringJsonWrapper("Wrong user data!"))
     } else {
       userService.checkUserExistenceFor(login, email) match {
-        case Left(error) => halt(409, JsonWrapper(error))
+        case Left(error) => halt(409, StringJsonWrapper(error))
         case _ =>
       }
     }
 
     userService.registerNewUser(escapeHtml4(login), email, password)
 
-    JsonWrapper("success")
+    StringJsonWrapper("success")
   }
 
   private def valueOrEmptyString(maybeString: Option[String]) = maybeString.getOrElse("")
@@ -77,7 +77,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     }
 
     messageOpt match {
-      case Some(message) => halt(403, JsonWrapper(message))
+      case Some(message) => halt(403, StringJsonWrapper(message))
       case None => Ok()
     }
   }
@@ -112,7 +112,7 @@ class UsersServlet(val userService: UserService) extends JsonServletWithAuthenti
     }
 
     messageOpt match {
-      case Some(message) => halt(403, JsonWrapper(message))
+      case Some(message) => halt(403, StringJsonWrapper(message))
       case None => Ok()
     }
   }

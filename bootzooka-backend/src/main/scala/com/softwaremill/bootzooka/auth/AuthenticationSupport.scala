@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.auth
 import org.scalatra._
 import org.scalatra.auth.ScentryAuthStore.CookieAuthStore
 import org.scalatra.auth.{ Scentry, ScentryConfig, ScentrySupport }
-import com.softwaremill.bootzooka.common.{ Utils, JsonWrapper }
+import com.softwaremill.bootzooka.common.{ Utils, StringJsonWrapper }
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
@@ -56,7 +56,7 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
       }
     }
     scentry.unauthenticated {
-      Unauthorized(JsonWrapper("Unauthenticated"))
+      Unauthorized(StringJsonWrapper("Unauthenticated"))
     }
   }
 
@@ -78,12 +78,12 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
 
   def haltIfNotAuthenticated() {
     if (isAuthenticated == false) {
-      halt(401, JsonWrapper("User not logged in"))
+      halt(401, StringJsonWrapper("User not logged in"))
     }
   }
 
   def haltWithForbiddenIf(f: Boolean) {
-    if (f) halt(403, JsonWrapper("Action forbidden"))
+    if (f) halt(403, StringJsonWrapper("Action forbidden"))
   }
 
 }
