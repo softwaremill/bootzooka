@@ -33,6 +33,7 @@ object Dependencies {
   val rogueVersion = "2.4.0"
   val scalaLoggingVersion = "2.1.2"
   val jettyVersion = "9.2.6.v20141205"
+  val json4sVersion = "3.2.10" // the latest version that works with Swagger, see https://github.com/scalatra/scalatra/issues/446
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
   val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -48,7 +49,9 @@ object Dependencies {
   val scalatra = "org.scalatra" %% "scalatra" % scalatraVersion
   val scalatraScalatest = "org.scalatra" %% "scalatra-scalatest" % scalatraVersion % "test"
   val scalatraJson = "org.scalatra" %% "scalatra-json" % scalatraVersion
-  val json4s = "org.json4s" %% "json4s-jackson" % "3.2.11"
+  val scalatraSwagger = "org.scalatra" %% "scalatra-swagger" % scalatraVersion
+  val json4sNative = "org.json4s"   %% "json4s-native" % json4sVersion
+  val json4sJackson = "org.json4s" %% "json4s-jackson" % json4sVersion
   val scalatraAuth = "org.scalatra" %% "scalatra-auth" % scalatraVersion  exclude("commons-logging", "commons-logging")
 
   val jodaTime = "joda-time" % "joda-time" % "2.6"
@@ -65,7 +68,7 @@ object Dependencies {
   val scalatest = "org.scalatest" %% "scalatest" % "2.2.3" % "test"
 
   val jodaDependencies = Seq(jodaTime, jodaConvert)
-  val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, json4s, scalatraAuth, commonsLang)
+  val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, scalatraSwagger, json4sNative, json4sJackson, scalatraAuth, commonsLang)
 
   val testingDependencies = Seq(mockito, scalatest)
 

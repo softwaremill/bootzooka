@@ -17,7 +17,7 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
     when(userService.checkUserExistenceFor("existing", "existing")) thenReturn Left("User exists")
     when(userService.checkUserExistenceFor("notexisting", "notexisting")) thenReturn Right(())
 
-    val servlet = new PasswordRecoveryServlet(recoveryService, userService)
+    val servlet = new PasswordRecoveryServlet(recoveryService, userService)(null)
     addServlet(servlet, "/*")
     testToExecute(recoveryService)
   }

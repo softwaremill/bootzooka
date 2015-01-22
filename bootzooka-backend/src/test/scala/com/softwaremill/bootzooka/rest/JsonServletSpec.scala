@@ -44,5 +44,7 @@ class JsonServletSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
   class JsonServletWithMockedMapper extends JsonServlet {
     val mockedMapper = mock[ObjectMapper]
     override def mapper = mockedMapper
+
+    override def mappingPath: String = ???
   }
 }

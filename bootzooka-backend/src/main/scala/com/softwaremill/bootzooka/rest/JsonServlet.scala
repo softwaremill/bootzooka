@@ -9,8 +9,24 @@ import org.apache.commons.lang3.StringEscapeUtils._
 import org.json4s.{DefaultFormats, Formats, _}
 import org.scalatra._
 import org.scalatra.json.{JValueResult, JacksonJsonSupport}
+import org.scalatra.swagger.SwaggerSupport
 
-class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with LazyLogging with Halting {
+trait Mappable {
+
+  val Prefix = "/rest/"
+
+  def fullMappingPath = Prefix + mappingPath
+
+  def mappingPath: String
+}
+
+trait SwaggerMappable {
+  self: Mappable with SwaggerSupport =>
+
+  def name = Prefix.tail + mappingPath
+}
+
+abstract class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with LazyLogging with Halting with Mappable {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 

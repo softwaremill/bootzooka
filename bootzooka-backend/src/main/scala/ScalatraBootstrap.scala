@@ -1,11 +1,12 @@
 import javax.servlet.ServletContext
 
-import com.mongodb.{MongoClient, Mongo}
+import com.mongodb.MongoClient
 import com.softwaremill.bootzooka.Beans
 import com.softwaremill.bootzooka.rest._
+import com.softwaremill.bootzooka.rest.swagger.{BootzookaSwagger, SwaggerServlet}
 import net.liftweb.mongodb.MongoDB
 import net.liftweb.util.DefaultConnectionIdentifier
-import org.scalatra.LifeCycle
+import org.scalatra.{LifeCycle, ScalatraServlet}
 
 /**
  * This is the ScalatraBootstrap bootstrap file. You can use it to mount servlets or
@@ -13,12 +14,22 @@ import org.scalatra.LifeCycle
  * run at application start (e.g. database configurations), and init params.
  */
 class ScalatraBootstrap extends LifeCycle with Beans {
-  val Prefix = "/rest/"
+
+  implicit val swagger = new BootzookaSwagger
 
   override def init(context: ServletContext) {
     MongoDB.defineDb(DefaultConnectionIdentifier, new MongoClient, "bootzooka")
-    context.mount(new UsersServlet(userService), Prefix + UsersServlet.MAPPING_PATH)
-    context.mount(new PasswordRecoveryServlet(passwordRecoveryService, userService), Prefix + "passwordrecovery")
+
+    def mountServlet(servlet: ScalatraServlet with Mappable) {
+      servlet match {
+        case s: SwaggerMappable => context.mount(s, s.fullMappingPath, s.name)
+        case _ => context.mount(servlet, servlet.fullMappingPath)
+      }
+    }
+
+    mountServlet(new UsersServlet(userService))
+    mountServlet(new PasswordRecoveryServlet(passwordRecoveryService, userService))
+    mountServlet(new SwaggerServlet)
 
     context.setAttribute("bootzooka", this)
   }
