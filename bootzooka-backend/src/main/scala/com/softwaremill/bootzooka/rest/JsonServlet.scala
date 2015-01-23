@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
-import org.scalatra.json.{JValueResult, JacksonJsonSupport}
+import org.scalatra.json.{JValueResult, NativeJsonSupport}
 import org.scalatra.swagger.SwaggerSupport
 
 trait Mappable {
@@ -24,7 +24,7 @@ trait SwaggerMappable {
   def name = Prefix.tail + mappingPath
 }
 
-abstract class JsonServlet extends ScalatraServlet with JacksonJsonSupport with JValueResult with LazyLogging with Halting with Mappable {
+abstract class JsonServlet extends ScalatraServlet with NativeJsonSupport with JValueResult with LazyLogging with Halting with Mappable {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 

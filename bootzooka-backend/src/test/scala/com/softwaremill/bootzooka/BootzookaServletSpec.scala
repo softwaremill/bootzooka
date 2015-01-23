@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka
 
 import com.softwaremill.bootzooka.rest.swagger.BootzookaSwagger
 import org.json4s.JsonDSL._
-import org.json4s.jackson.JsonMethods._
+import org.json4s.native.JsonMethods._
 import org.json4s.JsonAST.JValue
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.test.scalatest.ScalatraFlatSpec
@@ -34,7 +34,7 @@ trait BootzookaServletSpec extends ScalatraFlatSpec with MockitoSugar {
   }
 
   def mapToJson[T <% JValue](map: Map[String, T]): Array[Byte] = {
-    compact(map2jvalue(map)).getBytes("UTF-8")
+    mapToStringifiedJson(map).getBytes("UTF-8")
   }
 
   def stringToJson(string: String): JValue = {
@@ -42,6 +42,6 @@ trait BootzookaServletSpec extends ScalatraFlatSpec with MockitoSugar {
   }
 
   def mapToStringifiedJson[T <% JValue](map: Map[String, T]): String = {
-    compact(map2jvalue(map))
+    compact(render(map2jvalue(map)))
   }
 }
