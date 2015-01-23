@@ -1,13 +1,13 @@
 package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.BootzookaServletSpec
-import org.json4s.JsonDSL._
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
-import org.mockito.Matchers._
-import org.mockito.Mockito._
+import com.softwaremill.bootzooka.service.user.UserService
+import org.json4s.JsonDSL._
 import org.mockito.BDDMockito._
 import org.mockito.Matchers
-import com.softwaremill.bootzooka.service.user.UserService
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 
 class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
@@ -17,7 +17,7 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
     when(userService.checkUserExistenceFor("existing", "existing")) thenReturn Left("User exists")
     when(userService.checkUserExistenceFor("notexisting", "notexisting")) thenReturn Right(())
 
-    val servlet = new PasswordRecoveryServlet(recoveryService, userService)(null)
+    val servlet = new PasswordRecoveryServlet(recoveryService, userService)
     addServlet(servlet, "/*")
     testToExecute(recoveryService)
   }

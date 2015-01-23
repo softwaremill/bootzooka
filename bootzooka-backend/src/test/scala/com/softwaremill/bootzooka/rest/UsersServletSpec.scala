@@ -1,15 +1,15 @@
 package com.softwaremill.bootzooka.rest
 
-import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
+import com.softwaremill.bootzooka.BootzookaServletSpec
 import com.softwaremill.bootzooka.dao.InMemoryUserDAO
 import com.softwaremill.bootzooka.domain.User
-import com.softwaremill.bootzooka.BootzookaServletSpec
-import org.json4s.JsonDSL._
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
+import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
+import org.json4s.JsonDSL._
+import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.mockito.Matchers
 
 class UsersServletSpec extends BootzookaServletSpec {
   var servlet: UsersServlet = _
@@ -21,7 +21,7 @@ class UsersServletSpec extends BootzookaServletSpec {
 
     val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService(), new EmailTemplatingEngine))
 
-    servlet = new UsersServlet(userService)(null)
+    servlet = new UsersServlet(userService)
     addServlet(servlet, "/*")
 
     testToExecute(userService)

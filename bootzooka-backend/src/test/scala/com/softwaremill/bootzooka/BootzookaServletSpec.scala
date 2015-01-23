@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka
 
+import com.softwaremill.bootzooka.rest.swagger.BootzookaSwagger
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.JsonAST.JValue
@@ -12,6 +13,7 @@ trait BootzookaServletSpec extends ScalatraFlatSpec with MockitoSugar {
 
   implicit val httpRequest = mock[HttpServletRequest]
   implicit val httpResponse = mock[HttpServletResponse]
+  implicit val swagger = new BootzookaSwagger
 
   val defaultJsonHeaders = Map("Content-Type" -> "application/json;charset=UTF-8")
 

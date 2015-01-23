@@ -1,13 +1,14 @@
 package com.softwaremill.bootzooka.rest
 
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
+
 import com.softwaremill.bootzooka.BootzookaServletSpec
-import com.softwaremill.bootzooka.service.user.UserService
-import org.scalatra.auth.Scentry
 import com.softwaremill.bootzooka.service.data.UserJson
-import org.scalatest.mock.MockitoSugar
-import org.mockito.Mockito._
+import com.softwaremill.bootzooka.service.user.UserService
 import org.mockito.Matchers._
-import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
+import org.mockito.Mockito._
+import org.scalatest.mock.MockitoSugar
+import org.scalatra.auth.Scentry
 
 class UsersServletWithAuthSpec extends BootzookaServletSpec {
 
@@ -52,7 +53,7 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec {
     )
   }
 
-  class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService)(null) with MockitoSugar {
+  class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService) with MockitoSugar {
     override def scentry(implicit request: javax.servlet.http.HttpServletRequest) = mockedScentry
     override def user(implicit request: javax.servlet.http.HttpServletRequest) = new UserJson("1" * 24, "Jas Kowalski", "kowalski@kowalski.net", "token")
   }
