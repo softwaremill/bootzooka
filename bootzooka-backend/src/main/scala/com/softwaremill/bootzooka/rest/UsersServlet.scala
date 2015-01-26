@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringEscapeUtils._
 import org.scalatra.swagger.{StringResponseMessage, SwaggerSupport, Swagger}
 
 class UsersServlet(val userService: UserService)(override implicit val swagger: Swagger)
-  extends JsonServletWithAuthentication with SwaggerMappable with UsersServletApiDocs {
+  extends JsonServletWithAuthentication with SwaggerMappable with UsersServlet.ApiDocs {
 
   override def mappingPath = UsersServlet.MappingPath
 
@@ -133,84 +133,88 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
 
 object UsersServlet {
   val MappingPath = "users"
+
+  // only enclosing object's companions have access to this trait
+  protected trait ApiDocs extends SwaggerSupport {
+    self: UsersServlet =>
+
+    override protected val applicationDescription = "User management and authentication"
+
+    protected val authenticate = (
+      apiOperation[UserJson]("authenticate")
+        summary "Authenticate user"
+        parameter bodyParam[AuthenticationCommand]("body").description("Authentication data").required
+        responseMessages(
+          StringResponseMessage(200, "OK"),
+          StringResponseMessage(401, "Invalid login and/or password")
+        )
+      )
+
+    protected val getAuthenticatedUser = (
+      apiOperation[UserJson]("getAuthenticatedUser")
+        summary "Get authenticated user"
+        responseMessages(
+          StringResponseMessage(200, "OK"),
+          StringResponseMessage(401, "User not logged in")
+        )
+      )
+
+    protected val logout = (
+      apiOperation[Unit]("logout")
+        summary "Log out authenticated user"
+        responseMessage StringResponseMessage(204, "OK")
+      )
+
+    protected val register = (
+      apiOperation[StringJsonWrapper]("register")
+        summary "Register new user"
+        parameter bodyParam[RegistrationCommand]("body").description("Registration data").required
+        responseMessages(
+          StringResponseMessage(201, "Created"),
+          StringResponseMessage(400, "Wrong user data"),
+          StringResponseMessage(409, "Login or e-mail already exists")
+        )
+      )
+
+    protected val update = (
+      apiOperation[Unit]("update")
+        summary "Update user profile"
+        parameter bodyParam[UserUpdateCommand]("body").description("Fields to update")
+        responseMessages(
+          StringResponseMessage(204, "OK"),
+          StringResponseMessage(401, "User not logged in"),
+          StringResponseMessage(409, "Login or e-mail already exists")
+        )
+      )
+
+    protected val changePassword = (
+      apiOperation[Unit]("changePassword")
+        summary "Change password"
+        parameter bodyParam[PasswordChangeCommand]("body").description("Current and new password").required
+        responseMessages(
+          StringResponseMessage(204, "OK"),
+          StringResponseMessage(400, "Current or new password is missing"),
+          StringResponseMessage(401, "User not logged in"),
+          StringResponseMessage(403, "Current password is invalid")
+        )
+      )
+
+    protected val getAll = (
+      apiOperation[List[UserJson]]("getAll")
+        summary "Get all users"
+        responseMessages(
+          StringResponseMessage(200, "OK"),
+          StringResponseMessage(401, "User not logged in")
+        )
+      )
+  }
+
+  private[this] case class AuthenticationCommand(login: String, password: String, rememberMe: Boolean)
+
+  private[this] case class RegistrationCommand(login: String, email: String, password: String)
+
+  private[this] case class UserUpdateCommand(login: String, email: String)
+
+  private[this] case class PasswordChangeCommand(currentPassword: String, newPassword: String)
+
 }
-
-trait UsersServletApiDocs extends SwaggerSupport {
-  self: UsersServlet =>
-  
-  override protected val applicationDescription = "User management and authentication"
-
-  val authenticate = (
-    apiOperation[UserJson]("authenticate")
-      summary "Authenticate user"
-      parameter bodyParam[AuthenticationCommand]("body").description("Authentication data").required
-      responseMessages(
-        StringResponseMessage(200, "OK"),
-        StringResponseMessage(401, "Invalid login and/or password")
-      )
-    )
-
-  val getAuthenticatedUser = (
-    apiOperation[UserJson]("getAuthenticatedUser")
-      summary "Get authenticated user"
-      responseMessages(
-        StringResponseMessage(200, "OK"),
-        StringResponseMessage(401, "User not logged in")
-      )
-    )
-
-  val logout = (
-    apiOperation[Unit]("logout")
-      summary "Log out authenticated user"
-      responseMessage StringResponseMessage(204, "OK")
-    )
-
-  val register = (
-    apiOperation[StringJsonWrapper]("register")
-      summary "Register new user"
-      parameter bodyParam[RegistrationCommand]("body").description("Registration data").required
-      responseMessages(
-        StringResponseMessage(201, "Created"),
-        StringResponseMessage(400, "Wrong user data"),
-        StringResponseMessage(409, "Login or e-mail already exists")
-      )
-    )
-
-  val update = (
-    apiOperation[Unit]("update")
-      summary "Update user profile"
-      parameter bodyParam[UserUpdateCommand]("body").description("Fields to update")
-      responseMessages(
-        StringResponseMessage(204, "OK"),
-        StringResponseMessage(409, "Login or e-mail already exists")
-      )
-    )
-
-  val changePassword = (
-    apiOperation[Unit]("changePassword")
-      summary "Change password"
-      parameter bodyParam[PasswordChangeCommand]("body").description("Current and new password").required
-      responseMessages(
-        StringResponseMessage(204, "OK"),
-        StringResponseMessage(400, "Current or new password is missing"),
-        StringResponseMessage(403, "Current password is invalid")
-      )
-    )
-
-  val getAll = (
-    apiOperation[List[UserJson]]("getAll")
-      summary "Get all users"
-      responseMessages(
-        StringResponseMessage(200, "OK"),
-        StringResponseMessage(401, "User not logged in")
-      )
-    )
-}
-
-case class AuthenticationCommand(login: String, password: String, rememberMe: Boolean)
-
-case class RegistrationCommand(login: String, email: String, password: String)
-
-case class UserUpdateCommand(login: String, email: String)
-
-case class PasswordChangeCommand(currentPassword: String, newPassword: String)
