@@ -16,9 +16,7 @@ object BuildSettings {
 
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     classpathTypes ~= (_ + "orbit"),
-    libraryDependencies ++= Dependencies.testingDependencies,
-    libraryDependencies ++= Dependencies.logging,
-    libraryDependencies ++= Seq(Dependencies.guava, Dependencies.googleJsr305),
+    libraryDependencies ++= Dependencies.commonDependencies,
 
     parallelExecution := false
   )
@@ -27,34 +25,20 @@ object BuildSettings {
 
 object Dependencies {
 
-  val slf4jVersion = "1.7.9"
-  val logBackVersion = "1.1.2"
-  val scalatraVersion = "2.3.0"
-  val rogueVersion = "2.4.0"
-  val scalaLoggingVersion = "2.1.2"
-  val jettyVersion = "9.2.6.v20141205"
-  val json4sVersion = "3.2.10" // the latest version that works with Swagger, see https://github.com/scalatra/scalatra/issues/446
+  private val slf4jVersion = "1.7.9"
+  private val logBackVersion = "1.1.2"
+  private val scalatraVersion = "2.3.0"
+  private val scalaLoggingVersion = "2.1.2"
+  private val jettyVersion = "9.2.6.v20141205"
+  private val json4sVersion = "3.2.10" // the latest version that works with Swagger, see https://github.com/scalatra/scalatra/issues/446
+  private val seleniumVersion = "2.44.0"
 
-  val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
-  val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
-  val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging-slf4j" % scalaLoggingVersion
-
-  val logging = Seq(slf4jApi, logBackClassic, scalaLogging)
+  private val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
+  private val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
+  private val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging-slf4j" % scalaLoggingVersion
+  lazy val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
   val typesafeConfig = "com.typesafe" % "config" % "1.2.1"
-
-  val guava = "com.google.guava" % "guava" % "18.0"
-  val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "3.0.0"
-
-  val scalatra = "org.scalatra" %% "scalatra" % scalatraVersion
-  val scalatraScalatest = "org.scalatra" %% "scalatra-scalatest" % scalatraVersion % "test"
-  val scalatraJson = "org.scalatra" %% "scalatra-json" % scalatraVersion
-  val scalatraSwagger = "org.scalatra" %% "scalatra-swagger" % scalatraVersion
-  val json4s = "org.json4s"   %% "json4s-native" % json4sVersion
-  val scalatraAuth = "org.scalatra" %% "scalatra-auth" % scalatraVersion  exclude("commons-logging", "commons-logging")
-
-  val jodaTime = "joda-time" % "joda-time" % "2.6"
-  val jodaConvert = "org.joda" % "joda-convert" % "1.7"
 
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
   val commonsLang = "org.apache.commons" % "commons-lang3" % "3.3.2"
@@ -63,34 +47,44 @@ object Dependencies {
   val jettyContainer = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "container"
   val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "test"
 
-  val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
-  val scalatest = "org.scalatest" %% "scalatest" % "2.2.3" % "test"
+  private val jodaTime = "joda-time" % "joda-time" % "2.6"
+  private val jodaConvert = "org.joda" % "joda-convert" % "1.7"
+  lazy val jodaDependencies = Seq(jodaTime, jodaConvert)
 
-  val jodaDependencies = Seq(jodaTime, jodaConvert)
-  val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, scalatraSwagger, json4s, scalatraAuth, commonsLang)
+  private val guava = "com.google.guava" % "guava" % "18.0"
+  private val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "3.0.0"
+  lazy val commonDependencies = unitTestingStack ++ loggingStack ++ Seq(guava, googleJsr305)
 
-  val testingDependencies = Seq(mockito, scalatest)
+  private val scalatra = "org.scalatra" %% "scalatra" % scalatraVersion
+  private val scalatraScalatest = "org.scalatra" %% "scalatra-scalatest" % scalatraVersion % "test"
+  private val scalatraJson = "org.scalatra" %% "scalatra-json" % scalatraVersion
+  private val scalatraSwagger = "org.scalatra" %% "scalatra-swagger" % scalatraVersion
+  private val json4s = "org.json4s"   %% "json4s-native" % json4sVersion
+  private val scalatraAuth = "org.scalatra" %% "scalatra-auth" % scalatraVersion  exclude("commons-logging", "commons-logging")
+  lazy val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, scalatraSwagger, json4s, scalatraAuth, commonsLang)
 
   val javaxMail = "javax.mail" % "javax.mail-api" % "1.5.2"
 
-  val seleniumVer = "2.44.0"
-  val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVer % "test"
-  val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVer % "test"
-  val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
   val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.6.3" % "test"
 
   private val slick = "com.typesafe.slick" %% "slick" % "2.1.0"
   private val h2 = "com.h2database" % "h2" % "1.3.176"
   private val c3p0 = "com.mchange" % "c3p0" % "0.9.5"
   private val flyway = "org.flywaydb" % "flyway-core" % "3.1"
+  lazy val slickOnH2Stack = Seq(slick, h2, c3p0, flyway)
 
-  val slickOnH2 = Seq(slick, h2, c3p0, flyway)
+  private val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
+  private val scalatest = "org.scalatest" %% "scalatest" % "2.2.3" % "test"
+  lazy val unitTestingStack = Seq(mockito, scalatest)
 
-  val selenium = Seq(seleniumJava, seleniumFirefox, fest)
+  private val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
+  private val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVersion % "test"
+  private val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
+  lazy val seleniumStack = Seq(seleniumJava, seleniumFirefox, fest)
 
   // If the scope is provided;test, as in scalatra examples then gen-idea generates the incorrect scope (test).
   // As provided implies test, so is enough here.
-  val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts (Artifact("javax.servlet", "jar", "jar"))
+  lazy val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts Artifact("javax.servlet", "jar", "jar")
 }
 
 object BootzookaBuild extends Build {
@@ -129,8 +123,8 @@ object BootzookaBuild extends Build {
     "bootzooka-backend",
     file("bootzooka-backend"),
     settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(
-      libraryDependencies ++= jodaDependencies ++ Seq(jettyContainer) ++ slickOnH2 ++
-        Seq(commonsValidator, javaxMail, typesafeConfig, servletApiProvided) ++ scalatraStack)
+      libraryDependencies ++= jodaDependencies ++ slickOnH2Stack ++ scalatraStack ++
+        Seq(jettyContainer, commonsValidator, javaxMail, typesafeConfig, servletApiProvided))
       ++ Seq(
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
@@ -153,7 +147,7 @@ object BootzookaBuild extends Build {
     "bootzooka-ui",
     file("bootzooka-ui"),
     settings = buildSettings ++ Seq(
-      test in Test <<= (test in Test) dependsOn(gruntTask("test"))
+      test in Test <<= (test in Test) dependsOn gruntTask("test")
     )
   )
 
@@ -161,7 +155,7 @@ object BootzookaBuild extends Build {
     "bootzooka-dist",
     file("bootzooka-dist"),
     settings = buildSettings ++ assemblySettings ++ Seq(
-      libraryDependencies ++= Seq(jetty),
+      libraryDependencies += jetty,
       mainClass in assembly := Some("com.softwaremill.bootzooka.Bootzooka"),
       // We need to include the whole webapp, hence replacing the resource directory
       unmanagedResourceDirectories in Compile <<= baseDirectory { bd => {
@@ -174,9 +168,9 @@ object BootzookaBuild extends Build {
     "bootzooka-ui-tests",
     file("bootzooka-ui-tests"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= selenium ++ Seq(awaitility, jettyTest, servletApiProvided)
+      libraryDependencies ++= seleniumStack ++ Seq(awaitility, jettyTest, servletApiProvided)
     ) ++ Seq(
       test in Test <<= (test in Test) dependsOn (Keys.`package` in Compile in backend)
     )
-  ) dependsOn (dist)
+  ) dependsOn dist
 }
