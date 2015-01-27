@@ -11,6 +11,8 @@ import org.mockito.Mockito._
 
 class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
+  import com.softwaremill.bootzooka.rest.swagger.BootzookaSwagger.Implicits._
+
   def onServletWithMocks(testToExecute: (PasswordRecoveryService) => Unit) {
     val recoveryService = mock[PasswordRecoveryService]
     val userService = mock[UserService]

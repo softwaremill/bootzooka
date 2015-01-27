@@ -3,7 +3,7 @@ import javax.servlet.ServletContext
 
 import com.softwaremill.bootzooka.Beans
 import com.softwaremill.bootzooka.rest._
-import com.softwaremill.bootzooka.rest.swagger.{BootzookaSwagger, SwaggerServlet}
+import com.softwaremill.bootzooka.rest.swagger.SwaggerServlet
 import org.scalatra.{LifeCycle, ScalatraServlet}
 
 /**
@@ -13,7 +13,7 @@ import org.scalatra.{LifeCycle, ScalatraServlet}
  */
 class ScalatraBootstrap extends LifeCycle with Beans {
 
-  implicit val swagger = new BootzookaSwagger
+  import com.softwaremill.bootzooka.rest.swagger.BootzookaSwagger.Implicits._
 
   override def init(context: ServletContext) {
     Locale.setDefault(Locale.US) // set default locale to prevent Scalatra from sending cookie expiration date in polish format :)

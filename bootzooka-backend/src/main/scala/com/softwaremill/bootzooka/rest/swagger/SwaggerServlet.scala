@@ -20,6 +20,11 @@ object BootzookaSwagger {
     "Apache License, Version 2.0",
     "http://www.apache.org/licenses/LICENSE-2.0.html"
   )
+
+  object Implicits {
+
+    implicit val swagger: Swagger = new BootzookaSwagger
+  }
 }
 
 class BootzookaSwagger extends Swagger(Swagger.SpecVersion, "1.0.0", BootzookaSwagger.Info)
