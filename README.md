@@ -32,6 +32,7 @@ Bootzooka's stack consists of the following technologies/tools:
 *   Flyway (easy schema evolution)
 *	AngularJS + HTML5 (browser part)
 *	SBT & Grunt.js (build tools)
+*   Swagger - for interactive API docs
 
 ### Why Scala?
 
@@ -175,6 +176,10 @@ Reference configuration is stored in the `reference.conf` file. You can either m
 it using system properties (see Typesafe Config's readme on how to do that).
 
 * To have e-mail sender working please provide smtp details (host, port, password, username).
+
+## Interactive API docs
+
+The interactive API docs (i.e. Swagger UI) are available at `<Bootzooka URL>/api-docs`. The raw JSON produced by Swagger lives at `<Bootzooka URL>/rest/api-docs`.
 
 ## Changelog
 
