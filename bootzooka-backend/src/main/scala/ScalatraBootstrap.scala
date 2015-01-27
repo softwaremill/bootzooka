@@ -13,8 +13,6 @@ import org.scalatra.{LifeCycle, ScalatraServlet}
  */
 class ScalatraBootstrap extends LifeCycle with Beans {
 
-  import com.softwaremill.bootzooka.rest.swagger.BootzookaSwagger.Implicits._
-
   override def init(context: ServletContext) {
     Locale.setDefault(Locale.US) // set default locale to prevent Scalatra from sending cookie expiration date in polish format :)
 

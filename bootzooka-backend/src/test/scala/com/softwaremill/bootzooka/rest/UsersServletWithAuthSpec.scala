@@ -12,8 +12,6 @@ import org.scalatra.auth.Scentry
 
 class UsersServletWithAuthSpec extends BootzookaServletSpec {
 
-  import com.softwaremill.bootzooka.rest.swagger.BootzookaSwagger.Implicits._
-
   def onServletWithMocks(authenticated: Boolean, testToExecute: (UserService, Scentry[UserJson]) => Unit) {
     val userService = mock[UserService]
 

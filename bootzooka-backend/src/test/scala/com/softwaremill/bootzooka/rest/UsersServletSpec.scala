@@ -14,8 +14,6 @@ import org.mockito.Mockito._
 class UsersServletSpec extends BootzookaServletSpec {
   var servlet: UsersServlet = _
 
-  import com.softwaremill.bootzooka.rest.swagger.BootzookaSwagger.Implicits._
-
   def onServletWithMocks(testToExecute: (UserService) => Unit) = {
     val dao = new InMemoryUserDao
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
