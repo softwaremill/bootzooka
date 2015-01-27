@@ -2,12 +2,12 @@ package com.softwaremill.bootzooka.dao.user
 
 import java.util.UUID
 
-import com.softwaremill.bootzooka.dao.sql.SQLDatabase
+import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.domain.User
 
-trait SQLUserSchema {
+trait SqlUserSchema {
 
-  protected val database: SQLDatabase
+  protected val database: SqlDatabase
 
   import database._
   import database.driver.simple._

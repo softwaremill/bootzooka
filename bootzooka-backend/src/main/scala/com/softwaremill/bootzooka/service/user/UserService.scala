@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service.user
 
-import com.softwaremill.bootzooka.dao.user.UserDAO
+import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.email.EmailScheduler
@@ -8,31 +8,31 @@ import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import java.util.UUID
 import com.softwaremill.bootzooka.common.Utils
 
-class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
+class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
                   emailTemplatingEngine: EmailTemplatingEngine) {
 
-  def load(userId: userDAO.UserId) = {
-    UserJson(userDAO.load(userId))
+  def load(userId: userDao.UserId) = {
+    UserJson(userDao.load(userId))
   }
 
   def loadAll = {
-    UserJson(userDAO.loadAll)
+    UserJson(userDao.loadAll)
   }
 
   def count(): Long = {
-    userDAO.countItems()
+    userDao.countItems()
   }
 
   def registerNewUser(login: String, email: String, password: String) {
     val salt = Utils.randomString(128)
     val token = UUID.randomUUID().toString
-    userDAO.add(User(login, email.toLowerCase, password, salt, token))
+    userDao.add(User(login, email.toLowerCase, password, salt, token))
     val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
     emailScheduler.scheduleEmail(email, confirmationEmail)
   }
 
   def authenticate(login: String, nonEncryptedPassword: String): Option[UserJson] = {
-    val userOpt: Option[User] = userDAO.findByLoginOrEmail(login)
+    val userOpt: Option[User] = userDao.findByLoginOrEmail(login)
     userOpt match {
       case Some(u) => {
         if (User.passwordsMatch(nonEncryptedPassword, u)) {
@@ -46,15 +46,15 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   }
 
   def authenticateWithToken(token: String): Option[UserJson] = {
-    UserJson(userDAO.findByToken(token))
+    UserJson(userDao.findByToken(token))
   }
 
   def findByLogin(login: String): Option[UserJson] = {
-    UserJson(userDAO.findByLowerCasedLogin(login))
+    UserJson(userDao.findByLowerCasedLogin(login))
   }
 
   def findByEmail(email: String): Option[UserJson] = {
-    UserJson(userDAO.findByEmail(email.toLowerCase))
+    UserJson(userDao.findByEmail(email.toLowerCase))
   }
 
   def isUserDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {
@@ -73,21 +73,21 @@ class UserService(userDAO: UserDAO, registrationDataValidator: RegistrationDataV
   def changeLogin(currentLogin: String, newLogin: String): Either[String, Unit] = {
     findByLogin(newLogin) match {
       case Some(u) => Left("Login is already taken")
-      case None => Right(userDAO.changeLogin(currentLogin, newLogin))
+      case None => Right(userDao.changeLogin(currentLogin, newLogin))
     }
   }
 
   def changeEmail(currentEmail: String, newEmail: String): Either[String, Unit] = {
     findByEmail(newEmail) match {
       case Some(u) => Left("E-mail used by another user")
-      case None => Right(userDAO.changeEmail(currentEmail, newEmail))
+      case None => Right(userDao.changeEmail(currentEmail, newEmail))
     }
   }
 
   def changePassword(userToken: String, currentPassword: String, newPassword: String): Either[String, Unit] = {
-    userDAO.findByToken(userToken) match {
+    userDao.findByToken(userToken) match {
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
-        Right(userDAO.changePassword(u.id, User.encryptPassword(newPassword, u.salt)))
+        Right(userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)))
       } else {
         Left("Current password is invalid")
       }

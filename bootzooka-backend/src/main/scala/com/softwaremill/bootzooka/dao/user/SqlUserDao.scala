@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.dao.user
 
-import com.softwaremill.bootzooka.dao.sql.SQLDatabase
+import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.domain.User
 
-class SQLUserDAO(protected val database: SQLDatabase) extends UserDAO with SQLUserSchema {
+class SqlUserDao(protected val database: SqlDatabase) extends UserDao with SqlUserSchema {
 
   import database._
   import database.driver.simple._

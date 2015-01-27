@@ -3,12 +3,12 @@ package com.softwaremill.bootzooka.dao.passwordResetCode
 import java.util.UUID
 
 import com.softwaremill.bootzooka.domain.PasswordResetCode
-import com.softwaremill.bootzooka.test.{ClearSQLDataAfterEach, FlatSpecWithSQL}
+import com.softwaremill.bootzooka.test.{ClearSqlDataAfterEach, FlatSpecWithSql}
 
-class SQLPasswordResetCodeDAOSpec extends FlatSpecWithSQL with ClearSQLDataAfterEach {
-  behavior of "MongoPasswordResetCodeDAO"
+class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfterEach {
+  behavior of "MongoPasswordResetCodeDao"
 
-  val dao = new SQLPasswordResetCodeDAO(sqlDatabase)
+  val dao = new SqlPasswordResetCodeDao(sqlDatabase)
 
   def generateRandomId = UUID.randomUUID()
 

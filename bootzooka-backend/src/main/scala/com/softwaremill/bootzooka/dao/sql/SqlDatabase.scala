@@ -13,7 +13,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import scala.slick.driver.JdbcProfile
 import scala.slick.jdbc.JdbcBackend._
 
-case class SQLDatabase(
+case class SqlDatabase(
   db: scala.slick.jdbc.JdbcBackend.Database,
   driver: JdbcProfile,
   ds: DataSource) {
@@ -41,7 +41,7 @@ case class SQLDatabase(
   }
 }
 
-object SQLDatabase extends LazyLogging {
+object SqlDatabase extends LazyLogging {
 
   def connectionString(config: DaoConfig): String = {
     val fullPath = new File(config.embeddedDataDir, "bootzooka").getCanonicalPath
@@ -50,14 +50,14 @@ object SQLDatabase extends LazyLogging {
     s"jdbc:h2:file:$fullPath"
   }
 
-  def createEmbedded(config: DaoConfig): SQLDatabase = {
+  def createEmbedded(config: DaoConfig): SqlDatabase = {
     createEmbedded(connectionString(config))
   }
 
-  def createEmbedded(connectionString: String): SQLDatabase = {
+  def createEmbedded(connectionString: String): SqlDatabase = {
     val ds = createConnectionPool(connectionString)
     val db = Database.forDataSource(ds)
-    SQLDatabase(db, scala.slick.driver.H2Driver, ds)
+    SqlDatabase(db, scala.slick.driver.H2Driver, ds)
   }
 
   private def createConnectionPool(connectionString: String) = {

@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.service
 
 import com.softwaremill.bootzooka.common.Utils
-import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDAO
-import com.softwaremill.bootzooka.dao.user.UserDAO
+import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDao
+import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.BootzookaConfig
 import com.softwaremill.bootzooka.service.email.EmailScheduler
@@ -11,8 +11,8 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 import org.joda.time.DateTime
 
 class PasswordRecoveryService(
-  userDao: UserDAO,
-  codeDao: PasswordResetCodeDAO,
+  userDao: UserDao,
+  codeDao: PasswordResetCodeDao,
   emailScheduler: EmailScheduler,
   emailTemplatingEngine: EmailTemplatingEngine,
   config: BootzookaConfig) extends LazyLogging {
@@ -29,7 +29,7 @@ class PasswordRecoveryService(
         storeCode(code)
         sendCode(user, code)
       }
-      case _ => logger.debug("User not found")
+      case None => logger.debug("User not found")
     }
   }
 

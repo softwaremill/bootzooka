@@ -2,8 +2,8 @@ package com.softwaremill.bootzooka.test
 
 import org.scalatest.BeforeAndAfterEach
 
-trait ClearSQLDataAfterEach extends BeforeAndAfterEach {
-  this: FlatSpecWithSQL =>
+trait ClearSqlDataAfterEach extends BeforeAndAfterEach {
+  this: FlatSpecWithSql =>
 
   override protected def afterEach() {
     try {

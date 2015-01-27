@@ -1,15 +1,15 @@
 package com.softwaremill.bootzooka.test
 
-import com.softwaremill.bootzooka.dao.sql.SQLDatabase
+import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import org.scalatest._
 
 import scala.slick.jdbc.StaticQuery
 
-trait FlatSpecWithSQL extends FlatSpec with BeforeAndAfterAll with Matchers {
+trait FlatSpecWithSql extends FlatSpec with BeforeAndAfterAll with Matchers {
 
   private val connectionString = "jdbc:h2:mem:bootzooka_test" + this.getClass.getSimpleName + ";DB_CLOSE_DELAY=-1"
 
-  val sqlDatabase = SQLDatabase.createEmbedded(connectionString)
+  val sqlDatabase = SqlDatabase.createEmbedded(connectionString)
 
   override protected def beforeAll() {
     super.beforeAll()

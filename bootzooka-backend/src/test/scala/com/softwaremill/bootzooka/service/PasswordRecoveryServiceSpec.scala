@@ -2,8 +2,8 @@ package com.softwaremill.bootzooka.service
 
 import java.util.UUID
 
-import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDAO
-import com.softwaremill.bootzooka.dao.user.{InMemoryUserDAO, UserDAO}
+import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDao
+import com.softwaremill.bootzooka.dao.user.{InMemoryUserDao, UserDao}
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.BootzookaConfig
 import com.softwaremill.bootzooka.service.email.EmailScheduler
@@ -23,9 +23,9 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
 
   def generateRandomId = UUID.randomUUID()
 
-  def withCleanMocks(test: (UserDAO, PasswordResetCodeDAO, EmailScheduler, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
+  def withCleanMocks(test: (UserDao, PasswordResetCodeDao, EmailScheduler, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
     val userDao = prepareUserDaoMock
-    val codeDao = mock[PasswordResetCodeDAO]
+    val codeDao = mock[PasswordResetCodeDao]
     val emailScheduler = mock[EmailScheduler]
     val emailTemplatingEngine = mock[EmailTemplatingEngine]
     val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailScheduler, emailTemplatingEngine,
@@ -38,7 +38,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
   }
 
   def prepareUserDaoMock = {
-    val userDao = mock[InMemoryUserDAO]
+    val userDao = mock[InMemoryUserDao]
     when (userDao.findByLoginOrEmail(validLogin)) thenReturn Some(User(validLogin, "user@sml.pl", "pass", "salt", "token"))
     when (userDao.findByLoginOrEmail(invalidLogin)) thenReturn None
     userDao

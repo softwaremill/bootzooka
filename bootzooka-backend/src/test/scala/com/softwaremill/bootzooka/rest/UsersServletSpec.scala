@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.BootzookaServletSpec
-import com.softwaremill.bootzooka.dao.user.InMemoryUserDAO
+import com.softwaremill.bootzooka.dao.user.InMemoryUserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
@@ -17,7 +17,7 @@ class UsersServletSpec extends BootzookaServletSpec {
   import com.softwaremill.bootzooka.rest.swagger.BootzookaSwagger.Implicits._
 
   def onServletWithMocks(testToExecute: (UserService) => Unit) = {
-    val dao = new InMemoryUserDAO
+    val dao = new InMemoryUserDao
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
     dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
 

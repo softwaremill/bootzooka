@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.dao.user
 
 import com.softwaremill.bootzooka.domain.User
 
-class InMemoryUserDAO extends UserDAO {
+class InMemoryUserDao extends UserDao {
 
   var users = List[User]()
 

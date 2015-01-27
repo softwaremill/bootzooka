@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.softwaremill.bootzooka.domain.User
 
-trait UserDAO {
+trait UserDao {
 
   type UserId = UUID
 

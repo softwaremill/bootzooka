@@ -9,5 +9,5 @@ object H2ShellConsole extends App {
   }
 
   println("Note: when selecting from tables, enclose the table name in \" \".")
-  new org.h2.tools.Shell().runTool("-url", SQLDatabase.connectionString(config))
+  new org.h2.tools.Shell().runTool("-url", SqlDatabase.connectionString(config))
 }

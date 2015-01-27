@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.domain.PasswordResetCode
 
 import scala.language.implicitConversions
 
-trait PasswordResetCodeDAO {
+trait PasswordResetCodeDao {
 
   def store(code: PasswordResetCode): Unit
 

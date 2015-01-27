@@ -2,13 +2,13 @@ package com.softwaremill.bootzooka.dao.passwordResetCode
 
 import java.util.UUID
 
-import com.softwaremill.bootzooka.dao.sql.SQLDatabase
+import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.joda.time.DateTime
 
-trait SQLPasswordResetCodeSchema {
+trait SqlPasswordResetCodeSchema {
 
-  protected val database: SQLDatabase
+  protected val database: SqlDatabase
 
   import database._
   import database.driver.simple._

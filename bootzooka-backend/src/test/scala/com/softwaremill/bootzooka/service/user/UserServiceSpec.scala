@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service.user
 
-import com.softwaremill.bootzooka.dao.user.{InMemoryUserDAO, UserDAO}
+import com.softwaremill.bootzooka.dao.user.{InMemoryUserDao, UserDao}
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
@@ -12,8 +12,8 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 
 class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with BeforeAndAfter {
-  def prepareUserDAOMock: UserDAO = {
-    val dao = new InMemoryUserDAO
+  def prepareUserDaoMock: UserDao = {
+    val dao = new InMemoryUserDao
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
     dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
     dao
@@ -22,12 +22,12 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
   val registrationDataValidator: RegistrationDataValidator = mock[RegistrationDataValidator]
   val emailScheduler = mock[EmailScheduler]
   val emailTemplatingEngine = mock[EmailTemplatingEngine]
-  var userDAO: UserDAO = _
+  var userDao: UserDao = _
   var userService: UserService = _
 
   before {
-    userDAO = prepareUserDAOMock
-    userService = new UserService(userDAO, registrationDataValidator, emailScheduler, emailTemplatingEngine)
+    userDao = prepareUserDaoMock
+    userService = new UserService(userDao, registrationDataValidator, emailScheduler, emailTemplatingEngine)
   }
 
   // this test is silly :\
@@ -82,7 +82,7 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
     userService.registerNewUser("John", "newUser@sml.com", "password")
 
     // Then
-    val userOpt: Option[User] = userDAO.findByLowerCasedLogin("John")
+    val userOpt: Option[User] = userDao.findByLowerCasedLogin("John")
     userOpt.isDefined should be (true)
     val user = userOpt.get
 
@@ -106,11 +106,11 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
   }
 
   "changeEmail" should "change email for specified user" in {
-    val user = userDAO.findByLowerCasedLogin("admin")
+    val user = userDao.findByLowerCasedLogin("admin")
     val userEmail = user.get.email
     val newEmail = "new@email.com"
     userService.changeEmail(userEmail, newEmail) should be ('right)
-    userDAO.findByEmail(newEmail) match {
+    userDao.findByEmail(newEmail) match {
       case Some(cu) =>
       case None => fail("User not found. Maybe e-mail wasn't really changed?")
     }
@@ -121,11 +121,11 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
   }
 
   "changeLogin" should "change login for specified user" in {
-    val user = userDAO.findByLowerCasedLogin("admin")
+    val user = userDao.findByLowerCasedLogin("admin")
     val userLogin = user.get.login
     val newLogin = "newadmin"
     userService.changeLogin(userLogin, newLogin) should be ('right)
-    userDAO.findByLowerCasedLogin(newLogin) match {
+    userDao.findByLowerCasedLogin(newLogin) match {
       case Some(cu) =>
       case None => fail("User not found. Maybe login wasn't really changed?")
     }
@@ -138,7 +138,7 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
 
   "changePassword" should "change password if current is correct and new is present" in {
     // Given
-    val user = userDAO.findByLowerCasedLogin("admin").get
+    val user = userDao.findByLowerCasedLogin("admin").get
     val currentPassword = "pass"
     val newPassword = "newPass"
 
@@ -147,15 +147,15 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
 
     // Then
     changePassResult should be ('right)
-    userDAO.findByLowerCasedLogin("admin") match {
+    userDao.findByLowerCasedLogin("admin") match {
       case Some(cu) => cu.password should be (User.encryptPassword(newPassword, cu.salt))
-      case None => fail("Something bad happened, maybe mocked DAO is broken?")
+      case None => fail("Something bad happened, maybe mocked Dao is broken?")
     }
   }
 
   "changePassword" should "not change password if current is incorrect" in {
     // Given
-    val user = userDAO.findByLowerCasedLogin("admin").get
+    val user = userDao.findByLowerCasedLogin("admin").get
 
     // When, Then
     userService.changePassword(user.token, "someillegalpass", "newpass") should be ('left)
