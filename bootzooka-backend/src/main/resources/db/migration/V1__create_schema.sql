@@ -13,10 +13,10 @@ CREATE TABLE "users"(
 ALTER TABLE "users" ADD CONSTRAINT "users_id" PRIMARY KEY("id");
 
 -- PASSWORD RESET CODES
-CREATE TABLE "passwordResetCodes"(
+CREATE TABLE "password_reset_codes"(
   "id" UUID NOT NULL,
   "code" VARCHAR NOT NULL,
   "user_id" UUID NOT NULL,
   "valid_to" TIMESTAMP NOT NULL
 );
-ALTER TABLE "passwordResetCodes" ADD CONSTRAINT "passwordResetCodes_id" PRIMARY KEY("id");
+ALTER TABLE "password_reset_codes" ADD CONSTRAINT "password_reset_codes_id" PRIMARY KEY("id");

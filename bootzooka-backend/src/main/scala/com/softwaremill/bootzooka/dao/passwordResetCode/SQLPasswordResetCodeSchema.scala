@@ -15,7 +15,7 @@ trait SQLPasswordResetCodeSchema {
 
   protected val passwordResetCodes = TableQuery[PasswordResetCodes]
 
-  protected class PasswordResetCodes(tag: Tag) extends Table[PasswordResetCode](tag, "passwordResetCodes") {
+  protected class PasswordResetCodes(tag: Tag) extends Table[PasswordResetCode](tag, "password_reset_codes") {
     def id = column[UUID]("id", O.PrimaryKey)
 
     def code = column[String]("code")
