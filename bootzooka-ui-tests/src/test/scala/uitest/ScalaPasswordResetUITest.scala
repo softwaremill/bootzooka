@@ -15,7 +15,7 @@ class ScalaPasswordResetUITest extends BootzookaUITest {
     registerUserIfNotExists("someUser", "some-user@example.com", "somePass") match {
       case Success(_) =>
         beans.userDao.findByLoginOrEmail("someUser").foreach { user =>
-          val passResetCode = PasswordResetCode(validCode, user.id)
+          val passResetCode = PasswordResetCode(validCode, user)
           beans.codeDao.store(passResetCode)
         }
       case _ =>

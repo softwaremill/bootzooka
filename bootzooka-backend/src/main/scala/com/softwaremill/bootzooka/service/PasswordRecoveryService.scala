@@ -25,9 +25,9 @@ class PasswordRecoveryService(
     userOption match {
       case Some(user) => {
         logger.debug("User found")
-        val code = PasswordResetCode(Utils.randomString(32), user.id)
+        val code = PasswordResetCode(Utils.randomString(32), user)
         storeCode(code)
-        sendCode(user, code)
+        sendCode(code)
       }
       case None => logger.debug("User not found")
     }
@@ -38,9 +38,9 @@ class PasswordRecoveryService(
     codeDao.store(code)
   }
 
-  private def sendCode(user: User, code: PasswordResetCode) {
+  private def sendCode(code: PasswordResetCode) {
     logger.debug("Scheduling e-mail with reset code")
-    emailScheduler.scheduleEmail(user.email, prepareResetEmail(user, code))
+    emailScheduler.scheduleEmail(code.user.email, prepareResetEmail(code.user, code))
   }
 
   private def prepareResetEmail(user: User, code: PasswordResetCode) = {
@@ -70,10 +70,7 @@ class PasswordRecoveryService(
   }
 
   private def changePassword(code: PasswordResetCode, newPassword: String) {
-    userDao.load(code.userId) match {
-      case Some(u) => userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt))
-      case None => logger.debug("User does not exist")
-    }
+    userDao.changePassword(code.user.id, User.encryptPassword(newPassword, code.user.salt))
   }
 
   private def invalidateResetCode(code: PasswordResetCode) {

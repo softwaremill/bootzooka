@@ -86,19 +86,10 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       val login = "login"
       val password = "password"
       val salt = "salt"
-      val userId = generateRandomId
-      val mockCode = mock[PasswordResetCode]
-      val mockUser = mock[User]
+      val user = User(login, s"$login@example.com", password, salt, "someRandomToken")
+      val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().plusHours(1))
 
-      given(mockCode.userId) willReturn userId
-      given(mockCode.validTo) willReturn new DateTime().plusHours(1)
-
-      given(mockUser.id) willReturn userId
-      given(mockUser.login) willReturn login
-      given(mockUser.salt) willReturn "salt"
-
-      given(codeDao.load(code)) willReturn (Some(mockCode))
-      given(userDao.load(userId)) willReturn (Some(mockUser))
+      given(codeDao.load(code)) willReturn Some(resetCode)
 
       //When
       val result = passwordRecoveryService.performPasswordReset(code, password)
@@ -107,8 +98,32 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       assert(result.isRight)
       assert(result.right.get)
       verify(codeDao).load(code)
-      verify(userDao).changePassword(Matchers.eq(userId), Matchers.eq(User.encryptPassword(password, salt)))
-      verify(codeDao).delete(mockCode)
+      verify(userDao).changePassword(Matchers.eq(user.id), Matchers.eq(User.encryptPassword(password, salt)))
+      verify(codeDao).delete(resetCode)
+    })
+  }
+
+  "sendResetCodeToUser" should "do nothing but delete expired code" in {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+      //Given
+      val code = "validCode"
+      val login = "login"
+      val password = "password"
+      val salt = "salt"
+      val user = User(login, s"$login@example.com", password, salt, "someRandomToken")
+      val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().minusHours(1))
+
+      given(codeDao.load(code)) willReturn Some(resetCode)
+
+      //When
+      val result = passwordRecoveryService.performPasswordReset(code, password)
+
+      //Then
+      assert(result.isLeft)
+      assert(result.left.get == "Your reset code is invalid. Please try again.")
+      verify(codeDao).load(code)
+      verify(userDao, never).changePassword(Matchers.eq(user.id), Matchers.eq(User.encryptPassword(password, salt)))
+      verify(codeDao).delete(resetCode)
     })
   }
 
