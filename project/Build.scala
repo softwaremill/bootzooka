@@ -38,6 +38,8 @@ object Dependencies {
   private val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging-slf4j" % scalaLoggingVersion
   lazy val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
+  val bugsnag = "com.bugsnag" % "bugsnag" % "1.2.8"
+
   val typesafeConfig = "com.typesafe" % "config" % "1.2.1"
 
   val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
@@ -124,7 +126,7 @@ object BootzookaBuild extends Build {
     file("bootzooka-backend"),
     settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(
       libraryDependencies ++= jodaDependencies ++ slickOnH2Stack ++ scalatraStack ++
-        Seq(jettyContainer, commonsValidator, javaxMail, typesafeConfig, servletApiProvided))
+        Seq(jettyContainer, commonsValidator, javaxMail, typesafeConfig, servletApiProvided, bugsnag))
       ++ Seq(
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi

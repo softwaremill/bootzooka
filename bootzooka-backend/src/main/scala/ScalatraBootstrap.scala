@@ -2,6 +2,8 @@ import java.util.Locale
 import javax.servlet.ServletContext
 
 import com.softwaremill.bootzooka.Beans
+import com.softwaremill.bootzooka.common.logging.ErrorReportingLogAppender
+import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.rest._
 import com.softwaremill.bootzooka.rest.swagger.SwaggerServlet
 import org.scalatra.{LifeCycle, ScalatraServlet}
@@ -15,6 +17,9 @@ class ScalatraBootstrap extends LifeCycle with Beans {
 
   override def init(context: ServletContext) {
     Locale.setDefault(Locale.US) // set default locale to prevent Scalatra from sending cookie expiration date in polish format :)
+
+    // Initialize error reporting client.
+    ErrorReportingLogAppender(config, errorReporter).init()
 
     sqlDatabase.updateSchema()
 

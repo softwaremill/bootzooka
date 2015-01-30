@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka
 
+import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.dao.{Daos, DaoConfig}
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
@@ -38,4 +39,7 @@ trait Beans extends LazyLogging with Daos {
     emailScheduler,
     emailTemplatingEngine,
     config)
+
+  lazy val errorReporter = BugsnagErrorReporter(config)
+
 }
