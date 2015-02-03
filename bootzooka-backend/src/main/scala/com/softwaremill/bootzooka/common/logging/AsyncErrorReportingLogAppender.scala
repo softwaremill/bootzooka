@@ -3,23 +3,23 @@ package com.softwaremill.bootzooka.common.logging
 import java.util.concurrent.Executors
 
 import ch.qos.logback.classic.spi.{ILoggingEvent, ThrowableProxy}
-import ch.qos.logback.classic.{Level, LoggerContext}
+import ch.qos.logback.classic.{Level, Logger, LoggerContext}
 import ch.qos.logback.core.AppenderBase
 import ch.qos.logback.core.filter.Filter
-import ch.qos.logback.core.spi.{AppenderAttachable, FilterReply}
+import ch.qos.logback.core.spi.FilterReply
 import com.softwaremill.bootzooka.common.config.ConfigWithDefault
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
- * SLF4J Logger Appender that asynchronously forwards all error messages to given ErrorReporter.
+ * Logback Logger Appender that asynchronously forwards all error messages to given ErrorReporter.
  *
  * @param reporter wrapper for particular concrete error reporting service
  */
-class ErrorReportingLogAppender(reporter: ErrorReporter)(implicit ec: ExecutionContext) extends AppenderBase[ILoggingEvent] {
+class AsyncErrorReportingLogAppender(reporter: ErrorReporter)(implicit ec: ExecutionContext) extends AppenderBase[ILoggingEvent] {
 
-  private val onlyErrorsFilter: Filter[ILoggingEvent] = new Filter[ILoggingEvent] {
+  private val errorOrGreaterLevelFilter: Filter[ILoggingEvent] = new Filter[ILoggingEvent] {
     override def decide(event: ILoggingEvent): FilterReply =
       if (event.getLevel.isGreaterOrEqual(Level.ERROR))
         FilterReply.ACCEPT
@@ -31,24 +31,20 @@ class ErrorReportingLogAppender(reporter: ErrorReporter)(implicit ec: ExecutionC
    * Initialize and register this appender in all available Loggers.
    */
   def init(): Unit = {
-    addFilter(onlyErrorsFilter)
+    addFilter(errorOrGreaterLevelFilter)
     start()
-    registerAsAppenderFor(Logger.ROOT_LOGGER_NAME)
+    registerAsAppenderForAllLoggers()
   }
 
-  private def registerAsAppenderFor(loggerName: String): Unit = {
-    getAvailableLoggers.foreach { logger =>
-      logger.asInstanceOf[AppenderAttachable[ILoggingEvent]].addAppender(this)
-    }
-  }
+  private def registerAsAppenderForAllLoggers(): Unit =
+    getAvailableLoggers.foreach(_.addAppender(this))
 
   private def getAvailableLoggers: Set[Logger] = {
-    val defaultRootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
     LoggerFactory.getILoggerFactory match {
       case c: LoggerContext =>
-        import scala.collection.JavaConversions._
-        c.getLoggerList.toSet + defaultRootLogger
-      case _ => Set(defaultRootLogger)
+        import scala.collection.JavaConverters._
+        c.getLoggerList.asScala.toSet
+      case _ => Set.empty[Logger]
     }
   }
 
@@ -72,14 +68,14 @@ class ErrorReportingLogAppender(reporter: ErrorReporter)(implicit ec: ExecutionC
 
 }
 
-object ErrorReportingLogAppender {
+object AsyncErrorReportingLogAppender {
 
-  def apply(config: ConfigWithDefault, reporter: ErrorReporter): ErrorReportingLogAppender = {
+  def apply(config: ConfigWithDefault, reporter: ErrorReporter): AsyncErrorReportingLogAppender = {
     val ec = {
       val poolSize = config.getInt("errorReporting.thread-pool-size", 10)
       ExecutionContext.fromExecutor(Executors.newFixedThreadPool(poolSize))
     }
-    new ErrorReportingLogAppender(reporter)(ec)
+    new AsyncErrorReportingLogAppender(reporter)(ec)
   }
 
 }
