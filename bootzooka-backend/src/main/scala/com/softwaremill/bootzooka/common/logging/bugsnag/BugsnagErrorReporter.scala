@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.common.logging.bugsnag
 import ch.qos.logback.classic.spi.ILoggingEvent
 import com.bugsnag.{MetaData, Client}
 import com.softwaremill.bootzooka.common.config.ConfigWithDefault
-import com.softwaremill.bootzooka.common.logging.{DummyErrorReporter, ErrorReportingLogAppender, ErrorReporter}
+import com.softwaremill.bootzooka.common.logging.{DummyErrorReporter, AsyncErrorReportingLogAppender, ErrorReporter}
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
@@ -37,6 +37,9 @@ object BugsnagErrorReporter extends LazyLogging {
     config.getOptionalString(configApiKeyPath)
       .filterNot(_.isEmpty)
       .map(new BugsnagErrorReporter(_))
-      .getOrElse(DummyErrorReporter)
+      .getOrElse {
+        logger.info("Missing or invalid Bugsnag API Key - falling back to DummyErrorReporter.")
+        DummyErrorReporter
+      }
 
 }
