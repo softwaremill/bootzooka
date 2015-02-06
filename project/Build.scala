@@ -1,3 +1,6 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+
 import sbt._
 import Keys._
 import net.virtualvoid.sbt.graph.Plugin._
@@ -5,6 +8,7 @@ import com.earldouglas.xsbtwebplugin.PluginKeys._
 import sbt.ScalaVersion
 import sbtassembly.Plugin._
 import AssemblyKeys._
+import sbtbuildinfo.Plugin._
 
 object BuildSettings {
 
@@ -143,7 +147,16 @@ object BootzookaBuild extends Build {
         List(restResources, uiResources)
       },
       packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build")
-    ))
+    ) ++ buildInfoSettings ++ Seq(
+      sourceGenerators in Compile <+= buildInfo,
+      buildInfoPackage := "com.softwaremill.bootzooka.version",
+      buildInfoObject := "BootzookaBuildInfo",
+      buildInfoKeys := Seq[BuildInfoKey](
+        BuildInfoKey.action("buildDate")(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date())),
+        BuildInfoKey.action("buildSha")((Process("git rev-parse HEAD") !!).stripLineEnd)
+      )
+    )
+  )
 
   lazy val ui = Project(
     "bootzooka-ui",
