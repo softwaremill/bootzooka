@@ -9,7 +9,7 @@ import org.eclipse.jetty.webapp.WebAppContext
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
-import uitest.pages.{LoginPage, MessagesPage, PasswordResetPage}
+import uitest.pages.{MainPage, LoginPage, MessagesPage, PasswordResetPage}
 
 import scala.util.Try
 
@@ -25,6 +25,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   var loginPage: LoginPage = _
   var messagesPage: MessagesPage = _
   var passwordRestPage: PasswordResetPage = _
+  var mainPage: MainPage = _
   var beans: Beans = _
 
   override protected def setResourceBase(context: WebAppContext): Unit = {
@@ -68,6 +69,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
     loginPage = PageFactory.initElements(driver, classOf[LoginPage])
     messagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
     passwordRestPage = PageFactory.initElements(driver, classOf[PasswordResetPage])
+    mainPage = PageFactory.initElements(driver, classOf[MainPage])
   }
 
   after {

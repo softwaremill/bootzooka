@@ -5,6 +5,7 @@ angular.module('smlBootzooka.common.filters', []);
 angular.module('smlBootzooka.common.services', []);
 angular.module('smlBootzooka.common', ['smlBootzooka.common.filters', 'smlBootzooka.common.directives', 'smlBootzooka.common.services']);
 angular.module('smlBootzooka.notifications', []);
+angular.module('smlBootzooka.version', []);
 
 angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'smlBootzooka.common', 'smlBootzooka.notifications'])
     .config(function ($stateProvider, $urlRouterProvider) {
@@ -52,7 +53,8 @@ angular.module(
             'smlBootzooka.profile',
             'smlBootzooka.session',
             'smlBootzooka.common',
-            'smlBootzooka.notifications', 'ngSanitize', 'ui.router'])
+            'smlBootzooka.notifications',
+            'smlBootzooka.version', 'ngSanitize', 'ui.router'])
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/error404');
 

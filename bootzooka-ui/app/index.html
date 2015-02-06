@@ -55,6 +55,9 @@
     <script type="text/javascript" src="notifications/bsNotifications.js"></script>
     <script type="text/javascript" src="notifications/bsNotificationEntry.js"></script>
     <script type="text/javascript" src="notifications/mainNotificationsCtrl.js"></script>
+    <script type="text/javascript" src="version/version.js"></script>
+    <script type="text/javascript" src="version/versionCtrl.js"></script>
+    <script type="text/javascript" src="version/versionService.js"></script>
     <script type="text/javascript" src="scripts/templates.js"></script>
     <!-- endbuild -->
 
@@ -104,7 +107,11 @@
         <div class="container">
             <p class="text-muted">Bootzooka - application scaffolding by <a
                     href="http://SoftwareMill.com">SoftwareMill</a>, sources available on <a
-                    href="https://github.com/softwaremill/bootzooka">GitHub</a></p>
+                    href="https://github.com/softwaremill/bootzooka">GitHub</a>
+                <span class="pull-right" ng-controller="VersionCtrl">
+                    <small>Build {{buildSha}}, {{buildDate}}</small>
+                </span>
+            </p>
         </div>
     </div>
 
