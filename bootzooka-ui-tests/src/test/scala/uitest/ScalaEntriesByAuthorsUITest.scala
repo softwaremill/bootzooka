@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
 
-  ignore("entries by authors without logged user") {
+  test("entries by authors without logged user") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
     entriesByAuthorsPage.openWithoutAuthor()
@@ -17,7 +17,7 @@ class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
     assertThat(driver.getCurrentUrl).startsWith(loginPage.url)
   }
 
-  ignore("entries by author with no selected author") {
+  test("entries by author with no selected author") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
     loginPage.openLoginPage()
@@ -29,7 +29,7 @@ class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
     assertThat(entriesByAuthorsPage.isSelectAnAuthorMessageDisplayed).isTrue()
   }
 
-  ignore("entries by author with selected author with entries") {
+  test("entries by author with selected author with entries") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
     loginPage.openLoginPage()
@@ -44,7 +44,7 @@ class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
     assertThat(entriesByAuthorsPage.entries.findElements(By.cssSelector("p.entryText")).get(0).getText).isEqualTo(MESSAGE)
   }
 
-  ignore("entries by author with selected author with no entries") {
+  test("entries by author with selected author with no entries") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
 
     loginPage.openLoginPage()
