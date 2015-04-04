@@ -3,7 +3,6 @@ import javax.servlet.ServletContext
 
 import com.softwaremill.bootzooka.Beans
 import com.softwaremill.bootzooka.common.logging.AsyncErrorReportingLogAppender
-import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.rest._
 import com.softwaremill.bootzooka.rest.swagger.SwaggerServlet
 import org.scalatra.{LifeCycle, ScalatraServlet}
