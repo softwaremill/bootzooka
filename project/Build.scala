@@ -3,7 +3,6 @@ import java.util.Date
 
 import sbt._
 import Keys._
-import net.virtualvoid.sbt.graph.Plugin._
 import com.earldouglas.xsbtwebplugin.PluginKeys._
 import sbt.ScalaVersion
 import sbtassembly.Plugin._
@@ -128,7 +127,7 @@ object BootzookaBuild extends Build {
   lazy val backend: Project = Project(
     "bootzooka-backend",
     file("bootzooka-backend"),
-    settings = buildSettings ++ graphSettings ++ webSettings ++ Seq(
+    settings = buildSettings ++ webSettings ++ Seq(
       libraryDependencies ++= jodaDependencies ++ slickOnH2Stack ++ scalatraStack ++
         Seq(jettyContainer, commonsValidator, javaxMail, typesafeConfig, servletApiProvided, bugsnag))
       ++ Seq(
