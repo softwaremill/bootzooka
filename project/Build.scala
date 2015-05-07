@@ -30,10 +30,10 @@ object Dependencies {
 
   private val slf4jVersion = "1.7.9"
   private val logBackVersion = "1.1.2"
-  private val scalatraVersion = "2.3.0"
+  private val scalatraVersion = "2.3.1"
   private val scalaLoggingVersion = "2.1.2"
   private val jettyVersion = "9.2.6.v20141205"
-  private val json4sVersion = "3.2.10" // the latest version that works with Swagger, see https://github.com/scalatra/scalatra/issues/446
+  private val json4sVersion = "3.2.11"
   private val seleniumVersion = "2.44.0"
 
   private val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
