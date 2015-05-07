@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service.email.sender
 
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import java.io.{ByteArrayOutputStream, ByteArrayInputStream}
 import java.util.{Date, Properties}
 import javax.activation.{DataHandler, DataSource}

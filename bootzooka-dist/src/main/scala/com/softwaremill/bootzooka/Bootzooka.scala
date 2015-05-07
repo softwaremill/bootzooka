@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka
 
 import com.typesafe.config.ConfigFactory
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import org.eclipse.jetty.webapp.WebAppContext
 
 object Bootzooka extends App with EmbeddedJetty with LazyLogging {

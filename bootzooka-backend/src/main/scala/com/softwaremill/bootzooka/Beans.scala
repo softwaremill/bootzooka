@@ -9,7 +9,7 @@ import com.softwaremill.bootzooka.service.email.{DummyEmailSendingService, Produ
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
 import com.typesafe.config.ConfigFactory
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 
 trait Beans extends LazyLogging with Daos {
   lazy val config = new BootzookaConfig with EmailConfig with DaoConfig {

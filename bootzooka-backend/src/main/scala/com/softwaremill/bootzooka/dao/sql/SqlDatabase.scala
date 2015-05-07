@@ -6,7 +6,7 @@ import javax.sql.DataSource
 
 import com.mchange.v2.c3p0.{ComboPooledDataSource, DataSources}
 import com.softwaremill.bootzooka.dao.DaoConfig
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import org.flywaydb.core.Flyway
 import org.joda.time.{DateTime, DateTimeZone}
 

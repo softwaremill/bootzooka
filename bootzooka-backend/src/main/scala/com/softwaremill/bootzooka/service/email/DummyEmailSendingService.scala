@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.service.email
 
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
 import collection.mutable.ListBuffer
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import com.softwaremill.bootzooka.service.email.sender.EmailDescription
 
 class DummyEmailSendingService extends EmailScheduler with LazyLogging {

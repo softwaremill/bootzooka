@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.service.email
 
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.softwaremill.bootzooka.service.email.sender.{EmailSender, EmailDescription}

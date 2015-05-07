@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.test.{ClearSqlDataAfterEach, FlatSpecWithSql}
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import org.scalatest.BeforeAndAfterEach
 
 import scala.language.implicitConversions

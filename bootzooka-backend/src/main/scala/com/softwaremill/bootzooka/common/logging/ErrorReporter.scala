@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.common.logging
 
 import ch.qos.logback.classic.spi.ILoggingEvent
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 
 /**
  * Wrapper for concrete error reporting service's API.

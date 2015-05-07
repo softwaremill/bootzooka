@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.test
 
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 
 /**
  * @param shellCommand Command to run the process.

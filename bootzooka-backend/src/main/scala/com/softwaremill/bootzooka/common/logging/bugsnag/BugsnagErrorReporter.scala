@@ -5,7 +5,7 @@ import com.bugsnag.{MetaData, Client}
 import com.softwaremill.bootzooka.common.config.ConfigWithDefault
 import com.softwaremill.bootzooka.common.logging.{DummyErrorReporter, AsyncErrorReportingLogAppender, ErrorReporter}
 import com.typesafe.config.Config
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 
 /**
  * Simple wrapper for Bugsnag's Client API

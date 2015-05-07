@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.rest
 import java.util.Date
 import javax.servlet.http.HttpServletResponse
 
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
 import org.scalatra.json.{JValueResult, NativeJsonSupport}
