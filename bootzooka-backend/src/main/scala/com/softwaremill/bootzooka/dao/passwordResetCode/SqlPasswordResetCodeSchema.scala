@@ -26,9 +26,9 @@ trait SqlPasswordResetCodeSchema {
 
   protected class PasswordResetCodes(tag: Tag) extends Table[SqlPasswordResetCode](tag, "password_reset_codes") {
     def id        = column[UUID]("id", O.PrimaryKey)
-    def code      = column[String]("code", O.NotNull)
-    def userId    = column[UUID]("user_id", O.NotNull)
-    def validTo   = column[DateTime]("valid_to", O.NotNull)
+    def code      = column[String]("code")
+    def userId    = column[UUID]("user_id")
+    def validTo   = column[DateTime]("valid_to")
 
     def *         = (id, code, userId, validTo) <> (SqlPasswordResetCode.tupled, SqlPasswordResetCode.unapply)
 

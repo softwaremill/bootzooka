@@ -11,12 +11,16 @@ import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserS
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
 
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
+
 trait Beans extends LazyLogging with Daos {
   lazy val config = new BootzookaConfig with EmailConfig with DaoConfig {
     override def rootConfig = ConfigFactory.load()
   }
 
   override lazy val sqlDatabase = SqlDatabase.createEmbedded(config)
+  override implicit val daoEc: ExecutionContext = global
 
   lazy val emailScheduler = if (config.emailEnabled) {
     new ProductionEmailSendingService(config)

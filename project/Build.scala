@@ -72,7 +72,7 @@ object Dependencies {
 
   val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.6.3" % "test"
 
-  private val slick = "com.typesafe.slick" %% "slick" % "2.1.0"
+  private val slick = "com.typesafe.slick" %% "slick" % "3.0.0"
   private val h2 = "com.h2database" % "h2" % "1.3.176"
   private val c3p0 = "com.mchange" % "c3p0" % "0.9.5"
   private val flyway = "org.flywaydb" % "flyway-core" % "3.1"

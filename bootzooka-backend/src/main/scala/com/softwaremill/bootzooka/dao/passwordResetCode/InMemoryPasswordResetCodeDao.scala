@@ -2,7 +2,9 @@ package com.softwaremill.bootzooka.dao.passwordResetCode
 
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 
-class InMemoryPasswordResetCodeDao extends PasswordResetCodeDao {
+import scala.concurrent.{ExecutionContext, Future}
+
+class InMemoryPasswordResetCodeDao(implicit ec: ExecutionContext) extends PasswordResetCodeDao {
 
   private var codes = List[PasswordResetCode]()
 
@@ -10,7 +12,7 @@ class InMemoryPasswordResetCodeDao extends PasswordResetCodeDao {
     codes ::= code
   }
 
-  def load(code: String): Option[PasswordResetCode] = codes.find(_.code == code)
+  override def load(code: String) = Future { codes.find(_.code == code) }
 
   def delete(code: PasswordResetCode) {
     val index = codes.indexOf(code)

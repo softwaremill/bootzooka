@@ -4,14 +4,16 @@ import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import org.apache.commons.lang3.StringUtils
 import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.service.user.UserService
-import org.scalatra.NoContent
+import org.scalatra.{AsyncResult, FutureSupport, NoContent}
 import org.scalatra.swagger.{StringResponseMessage, SwaggerSupport, Swagger}
+import scala.concurrent.ExecutionContext
 
 /**
  * Servlet handling requests related to password recovery.
  */
-class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, userService: UserService)(override implicit val swagger: Swagger)
-  extends JsonServlet with SwaggerMappable with PasswordRecoveryServlet.ApiDocs {
+class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, userService: UserService)
+                             (override implicit val swagger: Swagger, implicit val executor: ExecutionContext)
+  extends JsonServlet with SwaggerMappable with PasswordRecoveryServlet.ApiDocs with FutureSupport {
 
   override def mappingPath = PasswordRecoveryServlet.MappingPath
 
@@ -30,14 +32,17 @@ class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, 
     val code = params("code")
     val password = (parsedBody \ "password").extractOpt[String].getOrElse("")
     if (!StringUtils.isBlank(password)) {
-      passwordRecoveryService.performPasswordReset(code, password) match {
-        case Left(e) => haltWithForbidden(e)
-        case _ => NoContent()
+      new AsyncResult {
+        val is = passwordRecoveryService.performPasswordReset(code, password).map {
+          case Left(e) => haltWithForbidden(e)
+          case _ => NoContent()
+        }
       }
     } else {
       haltWithBadRequest("missingpassword")
     }
   }
+
 }
 
 object PasswordRecoveryServlet {
