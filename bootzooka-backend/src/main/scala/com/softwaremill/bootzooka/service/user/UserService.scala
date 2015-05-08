@@ -8,84 +8,73 @@ import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import java.util.UUID
 import com.softwaremill.bootzooka.common.Utils
 
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Success, Try}
+
 class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
-                  emailTemplatingEngine: EmailTemplatingEngine) {
+                  emailTemplatingEngine: EmailTemplatingEngine)(implicit ec: ExecutionContext) {
 
   def load(userId: userDao.UserId) = {
-    UserJson(userDao.load(userId))
+    userDao.load(userId).map(toUserJson)
   }
 
-  def loadAll = {
-    UserJson(userDao.loadAll)
-  }
+  def loadAll = userDao.loadAll().map(users => users.map(UserJson(_)))
 
-  def count(): Long = {
-    userDao.countItems()
-  }
-
-  def registerNewUser(login: String, email: String, password: String) {
+  def registerNewUser(login: String, email: String, password: String): Future[Unit] = {
     val salt = Utils.randomString(128)
     val token = UUID.randomUUID().toString
-    userDao.add(User(login, email.toLowerCase, password, salt, token))
-    val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
-    emailScheduler.scheduleEmail(email, confirmationEmail)
+    userDao.add(User(login, email.toLowerCase, password, salt, token)).map (_ => {
+      val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
+      emailScheduler.scheduleEmail(email, confirmationEmail)
+    })
   }
 
-  def authenticate(login: String, nonEncryptedPassword: String): Option[UserJson] = {
-    val userOpt: Option[User] = userDao.findByLoginOrEmail(login)
-    userOpt match {
-      case Some(u) => {
-        if (User.passwordsMatch(nonEncryptedPassword, u)) {
-          UserJson(userOpt)
-        } else {
-          None
-        }
-      }
-      case _ => None
-    }
+  def authenticate(login: String, nonEncryptedPassword: String): Future[Option[UserJson]] = {
+    userDao.findByLoginOrEmail(login).map(userOpt =>
+      toUserJson(userOpt.filter(u => User.passwordsMatch(nonEncryptedPassword, u))))
   }
 
-  def authenticateWithToken(token: String): Option[UserJson] = {
-    UserJson(userDao.findByToken(token))
-  }
+  def authenticateWithToken(token: String): Future[Option[UserJson]] = userDao.findByToken(token).map(toUserJson)
 
-  def findByLogin(login: String): Option[UserJson] = {
-    UserJson(userDao.findByLowerCasedLogin(login))
-  }
+  def findByLogin(login: String): Future[Option[UserJson]] = userDao.findByLowerCasedLogin(login).map(toUserJson)
 
-  def findByEmail(email: String): Option[UserJson] = {
-    UserJson(userDao.findByEmail(email.toLowerCase))
-  }
+  def findByEmail(email: String): Future[Option[UserJson]] = userDao.findByEmail(email.toLowerCase).map(toUserJson)
+
+  private def toUserJson(userOpt: Option[User]) = userOpt.map(UserJson(_))
 
   def isUserDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {
     registrationDataValidator.isDataValid(loginOpt, emailOpt, passwordOpt)
   }
 
-  def checkUserExistenceFor(userLogin: String, userEmail: String): Either[String, Unit] = {
-    var messageEither: Either[String, Unit] = Right(None)
+  def checkUserExistenceFor(userLogin: String, userEmail: String): Future[Either[String, Unit]] = {
+    val existingLoginFuture = findByLogin(userLogin)
+    val existingEmailFuture = findByEmail(userEmail)
 
-    findByLogin(userLogin) foreach (_ => messageEither = Left("Login already in use!"))
-    findByEmail(userEmail) foreach (_ => messageEither = Left("E-mail already in use!"))
-
-    messageEither
+    for {
+      existingLoginOpt <- existingLoginFuture
+      existingEmailOpt <- existingEmailFuture
+    } yield {
+      existingLoginOpt.map(_ => Left("Login already in use!")).orElse(
+        existingEmailOpt.map(_ => Left("E-mail already in use!"))).getOrElse(Right((): Unit))
+    }
   }
 
-  def changeLogin(currentLogin: String, newLogin: String): Either[String, Unit] = {
-    findByLogin(newLogin) match {
+  def changeLogin(currentLogin: String, newLogin: String): Future[Either[String, Unit]] = {
+    findByLogin(newLogin).map {
       case Some(u) => Left("Login is already taken")
       case None => Right(userDao.changeLogin(currentLogin, newLogin))
     }
   }
 
-  def changeEmail(currentEmail: String, newEmail: String): Either[String, Unit] = {
-    findByEmail(newEmail) match {
+  def changeEmail(currentEmail: String, newEmail: String): Future[Either[String, Unit]] = {
+    findByEmail(newEmail).map {
       case Some(u) => Left("E-mail used by another user")
       case None => Right(userDao.changeEmail(currentEmail, newEmail))
     }
   }
 
-  def changePassword(userToken: String, currentPassword: String, newPassword: String): Either[String, Unit] = {
-    userDao.findByToken(userToken) match {
+  def changePassword(userToken: String, currentPassword: String, newPassword: String): Future[Either[String, Unit]] = {
+    userDao.findByToken(userToken).map {
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
         Right(userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)))
       } else {

@@ -7,6 +7,10 @@ import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.language.postfixOps
+
 class RememberMeStrategy(protected val app: ScalatraBase, rememberMe: Boolean, val userService: UserService) extends ScentryStrategy[UserJson] {
 
   private val CookieKey = "rememberMe"
@@ -26,7 +30,12 @@ class RememberMeStrategy(protected val app: ScalatraBase, rememberMe: Boolean, v
   }
 
   override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse) = {
-    app.cookies.get(CookieKey).flatMap(userService.authenticateWithToken)
+    app.cookies.get(CookieKey).flatMap(
+      cookie => {
+        val userFut = userService.authenticateWithToken(cookie)
+        Await.result(userFut, 1 second)
+      }
+    )
   }
 
   override def beforeLogout(user: UserJson)(implicit request: HttpServletRequest, response: HttpServletResponse) {

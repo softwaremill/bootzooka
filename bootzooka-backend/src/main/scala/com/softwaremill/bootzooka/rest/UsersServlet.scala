@@ -7,10 +7,13 @@ import com.softwaremill.bootzooka.service.data.UserJson
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.scalatra.swagger.{StringResponseMessage, SwaggerSupport, Swagger}
 
-class UsersServlet(val userService: UserService)(override implicit val swagger: Swagger)
-  extends JsonServletWithAuthentication with SwaggerMappable with UsersServlet.ApiDocs {
+import scala.concurrent.{Future, ExecutionContext}
+
+class UsersServlet(val userService: UserService)(override implicit val swagger: Swagger, ec: ExecutionContext)
+  extends JsonServletWithAuthentication with SwaggerMappable with UsersServlet.ApiDocs with FutureSupport {
 
   override def mappingPath = UsersServlet.MappingPath
+  override protected implicit def executor = ec
 
   post("/", operation(authenticate)) {
     val userOpt: Option[UserJson] = authenticate()
@@ -37,15 +40,16 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
     if (!userService.isUserDataValid(loginOpt, emailOpt, passwordOpt)) {
       haltWithBadRequest("Wrong user data!")
     } else {
-      userService.checkUserExistenceFor(login, email) match {
-        case Left(error) => haltWithConflict(error)
-        case _ =>
+      new AsyncResult {
+        val is = userService.checkUserExistenceFor(login, email).map {
+          case Left(error) => haltWithConflict(error)
+          case _ =>
+            userService.registerNewUser(escapeHtml4(login), email, password)
+            Created(StringJsonWrapper("success"))
+        }
       }
     }
 
-    userService.registerNewUser(escapeHtml4(login), email, password)
-
-    Created(StringJsonWrapper("success"))
   }
 
   private def valueOrEmptyString(maybeString: Option[String]) = maybeString.getOrElse("")
@@ -71,31 +75,31 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
     logger.debug("Updating user profile")
     var messageOpt: Option[String] = None
 
-    if (!login.isEmpty) {
-      messageOpt = changeLogin()
-    }
-
-    if (!email.isEmpty) {
-      messageOpt = changeEmail()
-    }
-
-    messageOpt match {
-      case Some(message) => haltWithConflict(message)
-      case None => NoContent()
-    }
+//    if (!login.isEmpty) {
+//      messageOpt = changeLogin()
+//    }
+//
+//    if (!email.isEmpty) {
+//      messageOpt = changeEmail()
+//    }
+//
+//    messageOpt match {
+//      case Some(message) => haltWithConflict(message)
+//      case None => NoContent()
+//    }
   }
   
-  private def changeLogin(): Option[String] = {
+  private def changeLogin(): Future[Option[String]] = {
     logger.debug(s"Updating login: ${user.login} -> ${login}")
-    userService.changeLogin(user.login, login) match {
+    userService.changeLogin(user.login, login).map {
       case Left(error) => Some(error)
       case _ => None
     }
   }
 
-  private def changeEmail(): Option[String] = {
+  private def changeEmail(): Future[Option[String]] = {
     logger.debug(s"Updating email: ${user.email} -> ${email}")
-    userService.changeEmail(user.email, email.toLowerCase) match {
+    userService.changeEmail(user.email, email.toLowerCase).map {
       case Left(error) => Some(error)
       case _ => None
     }
@@ -112,14 +116,14 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
       haltWithBadRequest("Parameter newPassword is missing")
     }
 
-    changePassword(currentPassword, newPassword) match {
+    changePassword(currentPassword, newPassword).map {
       case Some(message) => haltWithForbidden(message)
       case None => NoContent()
     }
   }
 
-  def changePassword(currentPassword: String, newPassword: String): Option[String] = {
-    userService.changePassword(user.token, currentPassword, newPassword) match {
+  def changePassword(currentPassword: String, newPassword: String): Future[Option[String]] = {
+    userService.changePassword(user.token, currentPassword, newPassword).map {
       case Left(error) => Some(error)
       case _ => None
     }

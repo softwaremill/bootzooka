@@ -20,7 +20,7 @@ class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, 
   post("/", operation(requestPasswordReset)) {
     val login = (parsedBody \ "login").extractOpt[String].getOrElse("")
 
-    userService.checkUserExistenceFor(login, login) match {
+    userService.checkUserExistenceFor(login, login).map {
       case Right(_) => haltWithNotFound("No user with given login/e-mail found.")
       case _ =>
         passwordRecoveryService.sendResetCodeToUser(login)

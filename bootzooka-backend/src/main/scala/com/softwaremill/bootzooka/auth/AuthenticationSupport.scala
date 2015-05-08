@@ -9,6 +9,10 @@ import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.language.postfixOps
+
 /**
  * It should be used with each servlet to support RememberMe functionality for whole application
  */
@@ -31,18 +35,19 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
   def userService: UserService
 
   override protected def registerAuthStrategies() {
-    scentry.register(RememberMe.name, app => new RememberMeStrategy(app.asInstanceOf[ScalatraBase], rememberMe, userService))
+    scentry.register(RememberMe.name, app => new RememberMeStrategy(app, rememberMe, userService))
     scentry.register(UserPassword.name, app => new UserPasswordStrategy(app, login, password, userService))
   }
 
   protected def fromSession = {
-    case id: String => {
-      val userOpt: Option[UserJson] = userService.findByLogin(id)
+    case id: String =>
+      val userFut = userService.findByLogin(id)
+      // We have to block here since Scalatra does not talk well to async API
+      val userOpt: Option[UserJson] = Await.result(userFut, 1 second)
       userOpt match {
         case Some(u) => u
         case _ => null
       }
-    }
   }
 
   protected def toSession = {
