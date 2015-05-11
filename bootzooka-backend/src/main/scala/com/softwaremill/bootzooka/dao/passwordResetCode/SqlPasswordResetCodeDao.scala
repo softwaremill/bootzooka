@@ -13,8 +13,8 @@ class SqlPasswordResetCodeDao(protected val database: SqlDatabase)(implicit ec: 
   import database._
   import database.driver.api._
 
-  override def store(code: PasswordResetCode): Unit = {
-    db.run(passwordResetCodes += SqlPasswordResetCode(code))
+  override def store(code: PasswordResetCode): Future[Unit] = {
+    db.run(passwordResetCodes += SqlPasswordResetCode(code)).map(_ => (): Unit)
   }
 
   override def load(code: String): Future[Option[PasswordResetCode]] = findFirstMatching(_.code === code)
@@ -28,6 +28,6 @@ class SqlPasswordResetCodeDao(protected val database: SqlDatabase)(implicit ec: 
         case (rc: SqlPasswordResetCode, u: User) => PasswordResetCode(rc.id, rc.code, u, rc.validTo)}))
   }
 
-  override def delete(code: PasswordResetCode): Unit =
-    db.run(passwordResetCodes.filter(_.id === code.id).delete)
+  override def delete(code: PasswordResetCode): Future[Unit] =
+    db.run(passwordResetCodes.filter(_.id === code.id).delete).map(_ => (): Unit)
 }
