@@ -9,6 +9,7 @@ import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class PasswordRecoveryService(
@@ -18,28 +19,29 @@ class PasswordRecoveryService(
   emailTemplatingEngine: EmailTemplatingEngine,
   config: BootzookaConfig)(implicit ec: ExecutionContext) extends LazyLogging {
 
-  def sendResetCodeToUser(login: String) {
+  def sendResetCodeToUser(login: String): Future[Unit] = {
     logger.debug("Preparing to generate and send reset code to user")
     logger.debug("Searching for user")
-    val userOption = userDao.findByLoginOrEmail(login)
-
-    userOption match {
-      case Some(user) => {
+    val userFut = userDao.findByLoginOrEmail(login)
+    userFut.flatMap {
+      case Some(user) =>
         logger.debug("User found")
-        val code = PasswordResetCode(Utils.randomString(32), user)
-        storeCode(code)
-        sendCode(code)
-      }
-      case None => logger.debug("User not found")
+        val code = randomPass(user)
+        storeCode(code).flatMap(_ => sendCode(code))
+      case None =>
+        logger.debug(s"User not found: $login")
+        Future.successful((): Unit)
     }
   }
 
-  private def storeCode(code: PasswordResetCode) {
+  private def randomPass(user: User): PasswordResetCode = PasswordResetCode(Utils.randomString(32), user)
+
+  private def storeCode(code: PasswordResetCode): Future[Unit] = {
     logger.debug("Storing code")
     codeDao.store(code)
   }
 
-  private def sendCode(code: PasswordResetCode) {
+  private def sendCode(code: PasswordResetCode): Future[Unit] = {
     logger.debug("Scheduling e-mail with reset code")
     emailScheduler.scheduleEmail(code.user.email, prepareResetEmail(code.user, code))
   }
@@ -52,29 +54,27 @@ class PasswordRecoveryService(
 
   def performPasswordReset(code: String, newPassword: String): Future[Either[String, Boolean]] = {
     logger.debug("Performing password reset")
-    codeDao.load(code).map {
-      case Some(c) => {
+    codeDao.load(code).flatMap {
+      case Some(c) =>
         if (c.validTo.isAfter(new DateTime())) {
-          changePassword(c, newPassword)
-          invalidateResetCode(c)
-          Right(true)
+          for {
+            _ <- changePassword(c, newPassword)
+            _ <- invalidateResetCode(c)
+          } yield Right(true)
         } else {
-          invalidateResetCode(c)
-          Left("Your reset code is invalid. Please try again.")
+          invalidateResetCode(c).map(_ => Left("Your reset code is invalid. Please try again."))
         }
-      }
-      case None => {
+      case None =>
         logger.debug("Reset code not found")
-        Left("Your reset code is invalid. Please try again.")
-      }
+        Future.successful(Left("Your reset code is invalid. Please try again."))
     }
   }
 
-  private def changePassword(code: PasswordResetCode, newPassword: String) {
+  private def changePassword(code: PasswordResetCode, newPassword: String) = {
     userDao.changePassword(code.user.id, User.encryptPassword(newPassword, code.user.salt))
   }
 
-  private def invalidateResetCode(code: PasswordResetCode) {
+  private def invalidateResetCode(code: PasswordResetCode) = {
     codeDao.delete(code)
   }
 }

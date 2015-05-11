@@ -8,14 +8,16 @@ class InMemoryPasswordResetCodeDao(implicit ec: ExecutionContext) extends Passwo
 
   private var codes = List[PasswordResetCode]()
 
-  def store(code: PasswordResetCode) {
-    codes ::= code
+  def store(code: PasswordResetCode) = {
+    Future { codes ::= code }
   }
 
   override def load(code: String) = Future { codes.find(_.code == code) }
 
-  def delete(code: PasswordResetCode) {
-    val index = codes.indexOf(code)
-    codes = codes.take(index) ::: codes.drop(index + 1)
+  def delete(code: PasswordResetCode) = {
+    Future {
+      val index = codes.indexOf(code)
+      codes = codes.take(index) ::: codes.drop(index + 1)
+    }
   }
 }
