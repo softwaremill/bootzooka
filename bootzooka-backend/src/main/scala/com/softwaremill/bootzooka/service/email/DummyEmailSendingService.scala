@@ -5,7 +5,9 @@ import collection.mutable.ListBuffer
 import com.typesafe.scalalogging.LazyLogging
 import com.softwaremill.bootzooka.service.email.sender.EmailDescription
 
-class DummyEmailSendingService extends EmailScheduler with LazyLogging {
+import scala.concurrent.{ExecutionContext, Future}
+
+class DummyEmailSendingService(implicit val ec: ExecutionContext) extends EmailScheduler with LazyLogging {
 
   private val emailsToSend: ListBuffer[EmailDescription] = ListBuffer()
 
@@ -28,11 +30,13 @@ class DummyEmailSendingService extends EmailScheduler with LazyLogging {
     email.emails.mkString + ", " + email.subject + ", " + email.message
   }
 
-  def scheduleEmail(address: String, emailData: EmailContentWithSubject) {
+  override def scheduleEmail(address: String, emailData: EmailContentWithSubject) = {
     this.synchronized {
       emailsToSend += new EmailDescription(List(address), emailData.content, emailData.subject)
     }
-    logger.debug(s"Email to $address scheduled.")
+    Future {
+      logger.debug(s"Email to $address scheduled.")
+    }
   }
 
   def wasEmailSent(address: String, subject: String): Boolean = {
