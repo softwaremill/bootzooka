@@ -6,10 +6,13 @@ import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.test.{ClearSqlDataAfterEach, FlatSpecWithSql}
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.ScalaFutures
 
 import scala.language.implicitConversions
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class SqlUserDaoSpec extends FlatSpecWithSql with BeforeAndAfterEach with ClearSqlDataAfterEach with LazyLogging {
+class SqlUserDaoSpec extends FlatSpecWithSql with BeforeAndAfterEach with ClearSqlDataAfterEach with ScalaFutures
+with LazyLogging {
   behavior of "SqlUserDao"
 
   val userDao = new SqlUserDao(sqlDatabase)
@@ -27,110 +30,94 @@ class SqlUserDaoSpec extends FlatSpecWithSql with BeforeAndAfterEach with ClearS
       val salt = "salt" + i
       val token = "token" + i
       userDao.add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt, token))
+        .futureValue
     }
   }
 
   it should "load all users" in {
-    userDao.loadAll should have size 3
-  }
-
-  it should "count all users" in {
-    userDao.countItems() should be (3)
+    userDao.loadAll().futureValue should have size 3
   }
 
   it should "add new user" in {
     // Given
-    val numberOfUsersBefore = userDao.countItems()
     val login = "newuser"
     val email = "newemail@sml.com"
 
     // When
-    userDao.add(User(login, email, "pass", "salt", "token"))
+    userDao.add(User(login, email, "pass", "salt", "token")).futureValue
 
     // Then
-    (userDao.countItems() - numberOfUsersBefore) should be (1)
+    userDao.findByEmail(email).futureValue should be ('defined)
   }
 
 
-  it should "throw exception when trying to add user with existing login" in {
+  it should "fail with exception when trying to add user with existing login" in {
     // Given
     val login = "newuser"
     val email = "anotherEmaill@sml.com"
 
-    userDao.add(User(login, "somePrefix" + email, "somePass", "someSalt", "someToken"))
+    userDao.add(User(login, "somePrefix" + email, "somePass", "someSalt", "someToken")).futureValue
 
     // When & then
-    intercept[Exception] {
-      userDao.add(User(login, email, "pass", "salt", "token"))
-    }
+    userDao.add(User(login, email, "pass", "salt", "token")).failed.futureValue should equal(
+      new IllegalArgumentException("User with given e-mail or login already exists"))
   }
 
-  it should "throw exception when trying to add user with existing email" in {
+  it should "fail with exception when trying to add user with existing email" in {
     // Given
     val login = "anotherUser"
     val email = "newemail@sml.com"
 
-    userDao.add(User("somePrefixed" + login, email, "somePass", "someSalt", "someToken"))
+    userDao.add(User("somePrefixed" + login, email, "somePass", "someSalt", "someToken")).futureValue
 
-    // When
-    intercept[Exception] {
-      userDao.add(User(login, email, "pass", "salt", "token"))
-    }
+    // When & then
+    userDao.add(User(login, email, "pass", "salt", "token")).failed.futureValue should equal(
+      new IllegalArgumentException("User with given e-mail or login already exists"))
   }
 
   it should "remove user" in {
     // Given
-    val numberOfUsersBefore = userDao.countItems()
-    val userOpt: Option[User] = userDao.findByLoginOrEmail("user1")
+    val userOpt = userDao.findByLoginOrEmail("user1").futureValue
 
     // When
-    userOpt.foreach(u => userDao.remove(u.id))
+    userOpt.foreach(u => userDao.remove(u.id).futureValue)
 
     // Then
     userOpt should not be None
-    (userDao.countItems() - numberOfUsersBefore) should be (-1)
+    userDao.findByLoginOrEmail("user1").futureValue should be (None)
   }
 
   it should "find by email" in {
     // Given
-    val email: String = "1email@sml.com"
+    val email = "1email@sml.com"
 
     // When
-    val userOpt: Option[User] = userDao.findByEmail(email)
+    val userOpt = userDao.findByEmail(email).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.email should be (email)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.email) should equal(email)
   }
 
-  it should "find by uppercased email" in {
+  it should "find by uppercase email" in {
     // Given
-    val email: String = "1email@sml.com".toUpperCase
+    val email = "1email@sml.com".toUpperCase
 
     // When
-    val userOpt: Option[User] = userDao.findByEmail(email)
+    val userOpt = userDao.findByEmail(email).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.email should be (email.toLowerCase)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.email) should equal(email.toLowerCase)
   }
 
   it should "find by login" in {
     // Given
-    val login: String = "user1"
+    val login = "user1"
 
     // When
-    val userOpt: Option[User] = userDao.findByLowerCasedLogin(login)
+    val userOpt = userDao.findByLowerCasedLogin(login).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.login should be (login)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.login) should equal(login)
   }
 
   it should "find users by identifiers" in {
@@ -138,80 +125,65 @@ class SqlUserDaoSpec extends FlatSpecWithSql with BeforeAndAfterEach with ClearS
     val ids = Set(randomIds(0), randomIds(1), randomIds(1))
 
     // When
-    val users = userDao.findForIdentifiers(ids)
+    val users = userDao.findForIdentifiers(ids).futureValue
 
     // Then
     users.map(user => user.login) should contain theSameElementsAs List("user1", "user2")
   }
 
-  it should "find by uppercased login" in {
+  it should "find by uppercase login" in {
     // Given
-    val login: String = "user1".toUpperCase
+    val login  = "user1".toUpperCase
 
     // When
-    val userOpt: Option[User] = userDao.findByLowerCasedLogin(login)
+    val userOpt = userDao.findByLowerCasedLogin(login).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.login should be (login.toLowerCase)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.login) should equal(login.toLowerCase)
   }
 
   it should "find using login with findByLoginOrEmail" in {
     // Given
-    val login: String = "user1"
+    val login = "user1"
 
     // When
-    val userOpt: Option[User] = userDao.findByLoginOrEmail(login)
+    val userOpt = userDao.findByLoginOrEmail(login).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.login should be (login.toLowerCase)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.login) should equal(login.toLowerCase)
   }
 
-  it should "find using uppercased login with findByLoginOrEmail" in {
+  it should "find using uppercase login with findByLoginOrEmail" in {
     // Given
-    val login: String = "user1".toUpperCase
+    val login = "user1".toUpperCase
 
     // When
-    val userOpt: Option[User] = userDao.findByLoginOrEmail(login)
+    val userOpt = userDao.findByLoginOrEmail(login).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.login should be (login.toLowerCase)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.login) should equal(login.toLowerCase)
   }
 
   it should "find using email with findByLoginOrEmail" in {
     // Given
-    val email: String = "1email@sml.com"
+    val email = "1email@sml.com"
 
     // When
-    val userOpt: Option[User] = userDao.findByLoginOrEmail(email)
+    val userOpt = userDao.findByLoginOrEmail(email).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.email should be (email.toLowerCase)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.email) should equal(email.toLowerCase)
   }
 
-  it should "find using uppercased email with findByLoginOrEmail" in {
+  it should "find using uppercase email with findByLoginOrEmail" in {
     // Given
-    val email: String = "1email@sml.com".toUpperCase
+    val email = "1email@sml.com".toUpperCase
 
     // When
-    val userOpt: Option[User] = userDao.findByLoginOrEmail(email)
+    val userOpt = userDao.findByLoginOrEmail(email).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.email should be (email.toLowerCase)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.email) should equal(email.toLowerCase)
   }
 
   it should "find by token" in {
@@ -219,45 +191,51 @@ class SqlUserDaoSpec extends FlatSpecWithSql with BeforeAndAfterEach with ClearS
     val token = "token1"
 
     // When
-    val userOpt: Option[User] = userDao.findByToken(token)
+    val userOpt = userDao.findByToken(token).futureValue
 
     // Then
-    userOpt match {
-      case Some(u) => u.token should be (token)
-      case _ => fail("User option should be defined")
-    }
+    userOpt.map(_.token) should equal(token)
   }
 
   it should "change password" in {
+    // Given
     val login = "user1"
     val password = User.encryptPassword("pass11", "salt1")
-    val user = userDao.findByLoginOrEmail(login).get
-    userDao.changePassword(user.id, password)
-    val postModifyUserOpt = userDao.findByLoginOrEmail(login)
+    val user = userDao.findByLoginOrEmail(login).futureValue.get
+
+    // When
+    userDao.changePassword(user.id, password).futureValue
+    val postModifyUserOpt = userDao.findByLoginOrEmail(login).futureValue
     val u = postModifyUserOpt.get
+
+    // Then
     u should be (user.copy(password = password))
   }
 
   it should "change login" in {
+    // Given
     val user = userDao.findByLowerCasedLogin("user1")
-    val u = user.get
-    val newLogin: String = "changedUser1"
-    userDao.changeLogin(u.login, newLogin)
-    val postModifyUser = userDao.findByLowerCasedLogin(newLogin)
-    postModifyUser match {
-      case Some(pmu) => pmu should be (u.copy(login = newLogin, loginLowerCased = newLogin.toLowerCase))
-      case None => fail("Changed user was not found. Maybe login wasn't really changed?")
-    }
+    val u = user.futureValue.get
+    val newLogin = "changedUser1"
+
+    // When
+    userDao.changeLogin(u.login, newLogin).futureValue
+    val postModifyUser = userDao.findByLowerCasedLogin(newLogin).futureValue
+
+    // Then
+    postModifyUser should equal(Some(u.copy(login = newLogin, loginLowerCased = newLogin.toLowerCase)))
   }
 
   it should "change email" in {
+    // Given
     val newEmail = "newmail@sml.pl"
-    val user = userDao.findByEmail("1email@sml.com")
+    val user = userDao.findByEmail("1email@sml.com").futureValue
     val u = user.get
-    userDao.changeEmail(u.email, newEmail)
-    userDao.findByEmail(newEmail) match {
-      case Some(cu) => cu should be (u.copy(email = newEmail))
-      case None => fail("User couldn't be found. Maybe e-mail wasn't really changed?")
-    }
+
+    // When
+    userDao.changeEmail(u.email, newEmail).futureValue
+
+    // Then
+    userDao.findByEmail(newEmail).futureValue should equal(Some(u.copy(email = newEmail)))
   }
 }
