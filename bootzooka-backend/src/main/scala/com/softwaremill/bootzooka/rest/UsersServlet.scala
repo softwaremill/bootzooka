@@ -73,24 +73,23 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
   patch("/", operation(update)) {
     haltIfNotAuthenticated()
     logger.debug("Updating user profile")
-    var messageOpt: Option[String] = None
 
-//    if (!login.isEmpty) {
-//      messageOpt = changeLogin()
-//    }
-//
-//    if (!email.isEmpty) {
-//      messageOpt = changeEmail()
-//    }
-//
-//    messageOpt match {
-//      case Some(message) => haltWithConflict(message)
-//      case None => NoContent()
-//    }
+    val updateFut = if (!login.isEmpty) {
+      changeLogin()
+    } else if (!email.isEmpty) {
+      changeEmail()
+    }
+    else Future.failed(new IllegalStateException("You have to provide new login or email"))
+    new AsyncResult {
+      val is = updateFut.map { errorMsgOpt =>
+        errorMsgOpt.foreach(msg => haltWithConflict(msg))
+        NoContent()
+      }
+    }
   }
-  
+
   private def changeLogin(): Future[Option[String]] = {
-    logger.debug(s"Updating login: ${user.login} -> ${login}")
+    logger.debug(s"Updating login: ${user.login} -> $login")
     userService.changeLogin(user.login, login).map {
       case Left(error) => Some(error)
       case _ => None
@@ -98,7 +97,7 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
   }
 
   private def changeEmail(): Future[Option[String]] = {
-    logger.debug(s"Updating email: ${user.email} -> ${email}")
+    logger.debug(s"Updating email: ${user.email} -> $email")
     userService.changeEmail(user.email, email.toLowerCase).map {
       case Left(error) => Some(error)
       case _ => None
@@ -116,9 +115,11 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
       haltWithBadRequest("Parameter newPassword is missing")
     }
 
-    changePassword(currentPassword, newPassword).map {
-      case Some(message) => haltWithForbidden(message)
-      case None => NoContent()
+    new AsyncResult() {
+     val is = changePassword(currentPassword, newPassword).map {
+        case Some(message) => haltWithForbidden(message)
+        case None => NoContent()
+      }
     }
   }
 

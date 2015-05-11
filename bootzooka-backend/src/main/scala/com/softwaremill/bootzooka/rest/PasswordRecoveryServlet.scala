@@ -1,11 +1,12 @@
 package com.softwaremill.bootzooka.rest
 
-import com.softwaremill.bootzooka.service.PasswordRecoveryService
-import org.apache.commons.lang3.StringUtils
 import com.softwaremill.bootzooka.common.StringJsonWrapper
+import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.user.UserService
+import org.apache.commons.lang3.StringUtils
+import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
 import org.scalatra.{AsyncResult, FutureSupport, NoContent}
-import org.scalatra.swagger.{StringResponseMessage, SwaggerSupport, Swagger}
+
 import scala.concurrent.ExecutionContext
 
 /**
@@ -19,12 +20,13 @@ class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, 
 
   post("/", operation(requestPasswordReset)) {
     val login = (parsedBody \ "login").extractOpt[String].getOrElse("")
-
-    userService.checkUserExistenceFor(login, login).map {
-      case Right(_) => haltWithNotFound("No user with given login/e-mail found.")
-      case _ =>
-        passwordRecoveryService.sendResetCodeToUser(login)
-        StringJsonWrapper("success")
+    new AsyncResult() {
+      override val is = userService.checkUserExistenceFor(login, login).map {
+          case Right(_) => haltWithNotFound("No user with given login/e-mail found.")
+          case _ =>
+            passwordRecoveryService.sendResetCodeToUser(login)
+            StringJsonWrapper("success")
+        }
     }
   }
 
