@@ -10,6 +10,7 @@ import org.json4s.JsonDSL._
 import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class UsersServletSpec extends BootzookaServletSpec {
   var servlet: UsersServlet = _
@@ -27,7 +28,7 @@ class UsersServletSpec extends BootzookaServletSpec {
     testToExecute(userService)
   }
 
-  "POST /" should "register new user" in {
+  "POST /register" should "register new user" in {
     onServletWithMocks {
       (userService) =>
         post("/register", mapToJson(Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")),

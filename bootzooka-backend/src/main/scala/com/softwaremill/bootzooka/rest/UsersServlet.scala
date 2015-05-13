@@ -40,12 +40,15 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
     if (!userService.isUserDataValid(loginOpt, emailOpt, passwordOpt)) {
       haltWithBadRequest("Wrong user data!")
     } else {
+      val paramLogin = login
+      val paramPass = password
+      val paramEmail = email // these values have to be extracted before
       new AsyncResult {
-        val is = userService.checkUserExistenceFor(login, email).map {
-          case Left(error) => haltWithConflict(error)
+        val is = userService.checkUserExistenceFor(paramLogin, paramEmail).flatMap {
+          case Left(error) => Future { haltWithConflict(error) }
           case _ =>
-            userService.registerNewUser(escapeHtml4(login), email, password)
-            Created(StringJsonWrapper("success"))
+            userService.registerNewUser(escapeHtml4(paramLogin), paramEmail, paramPass).map(
+            _ => Created(StringJsonWrapper("success")))
         }
       }
     }
