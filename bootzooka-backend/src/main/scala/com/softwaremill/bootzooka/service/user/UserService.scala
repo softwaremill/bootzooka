@@ -60,27 +60,27 @@ class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataV
   }
 
   def changeLogin(currentLogin: String, newLogin: String): Future[Either[String, Unit]] = {
-    findByLogin(newLogin).map {
-      case Some(u) => Left("Login is already taken")
-      case None => Right(userDao.changeLogin(currentLogin, newLogin))
+    findByLogin(newLogin).flatMap {
+      case Some(u) => Future { Left("Login is already taken") }
+      case None => userDao.changeLogin(currentLogin, newLogin).map(Right(_))
     }
   }
 
   def changeEmail(currentEmail: String, newEmail: String): Future[Either[String, Unit]] = {
-    findByEmail(newEmail).map {
-      case Some(u) => Left("E-mail used by another user")
-      case None => Right(userDao.changeEmail(currentEmail, newEmail))
+    findByEmail(newEmail).flatMap {
+      case Some(u) => Future { Left("E-mail used by another user") }
+      case None => userDao.changeEmail(currentEmail, newEmail).map(Right(_))
     }
   }
 
   def changePassword(userToken: String, currentPassword: String, newPassword: String): Future[Either[String, Unit]] = {
-    userDao.findByToken(userToken).map {
+    userDao.findByToken(userToken).flatMap {
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
-        Right(userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)))
+        userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)).map(Right(_))
       } else {
-        Left("Current password is invalid")
+        Future { Left("Current password is invalid") }
       }
-      case None => Left("User not found hence cannot change password")
+      case None => Future { Left("User not found hence cannot change password") }
     }
   }
 
