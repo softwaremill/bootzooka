@@ -60,7 +60,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   protected def registerUserIfNotExists(login: String, email: String, pass: String): Try[Boolean] = Try {
     val userService = beans.userService
     if (userService.findByLogin(login).futureValue.isEmpty) {
-      userService.registerNewUser(login, email, pass)
+      userService.registerNewUser(login, email, pass).futureValue
       true
     }
     false
@@ -87,7 +87,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
       userOpt <- beans.userDao.findByLoginOrEmail("someUser")
       user <- userOpt
     } {
-      beans.userDao.remove(user.id)
+      beans.userDao.remove(user.id).futureValue
     }
   }
 
