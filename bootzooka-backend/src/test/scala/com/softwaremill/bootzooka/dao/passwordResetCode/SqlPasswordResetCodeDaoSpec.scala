@@ -2,21 +2,17 @@ package com.softwaremill.bootzooka.dao.passwordResetCode
 
 import com.softwaremill.bootzooka.dao.user.SqlUserDao
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
-import com.softwaremill.bootzooka.test.{FutureTestSupport, ClearSqlDataAfterEach, FlatSpecWithSql}
-import org.scalatest.concurrent.ScalaFutures
+import com.softwaremill.bootzooka.test.{ClearSqlDataAfterEach, FlatSpecWithSql}
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.language.postfixOps
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.postfixOps
 import scala.util.Random
 
-class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfterEach with FutureTestSupport {
+class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfterEach {
   behavior of "SqlPasswordResetCodeDao"
 
   val dao = new SqlPasswordResetCodeDao(sqlDatabase)
   val userDao = new SqlUserDao(sqlDatabase)
-
-  override implicit def ec: ExecutionContext = global
 
   def generateRandomUser = {
     val randomLogin = s"${Random.nextInt() * Random.nextPrintableChar()}"
@@ -26,11 +22,10 @@ class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfter
   it should "store and load code" in {
     // Given
     val code = PasswordResetCode(code = "code", user = generateRandomUser)
-    runFutures(
-    userDao.add(code.user),
+    userDao.add(code.user).futureValue
 
     // When
-    dao.store(code))
+    dao.store(code).futureValue
 
     // Then
     dao.load(code.code).futureValue.map(_.code) should be(Some(code.code))
@@ -45,13 +40,13 @@ class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfter
     val code1: PasswordResetCode = PasswordResetCode(code = "code1", user = generateRandomUser)
     val code2: PasswordResetCode = PasswordResetCode(code = "code2", user = generateRandomUser)
 
-    runFutures(
-    userDao.add(code1.user),
-    userDao.add(code2.user),
-    dao.store(code1),
-    dao.store(code2),
+    userDao.add(code1.user).futureValue
+    userDao.add(code2.user).futureValue
+    dao.store(code1).futureValue
+    dao.store(code2).futureValue
+
     //When
-    dao.delete(code1))
+    dao.delete(code1).futureValue
 
     //Then
     dao.load("code1").futureValue should be (None)
@@ -62,18 +57,17 @@ class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfter
     // Given
     val user = generateRandomUser
 
-    val code1 = PasswordResetCode(code = "code1", user = user)
-    val code2 = PasswordResetCode(code = "code2", user = user)
-    val code3 = PasswordResetCode(code = "code3", user = user)
+    val code1 = PasswordResetCode(code = "code1", user)
+    val code2 = PasswordResetCode(code = "code2", user)
+    val code3 = PasswordResetCode(code = "code3", user)
 
-    runFutures(
-      userDao.add(user),
-      dao.store(code1),
-      dao.store(code2),
-      dao.store(code3),
+    userDao.add(user).futureValue
+    dao.store(code1).futureValue
+    dao.store(code2).futureValue
+    dao.store(code3).futureValue
 
     // When
-    userDao.remove(user.id))
+    userDao.remove(user.id).futureValue
 
     // Then
     dao.load(code1.code).futureValue should be (None)
@@ -86,13 +80,11 @@ class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfter
     val user = generateRandomUser
     val code = PasswordResetCode(code = "code", user = user)
 
-    runFutures(
-      userDao.add(user),
-      dao.store(code),
+    userDao.add(user).futureValue
+    dao.store(code).futureValue
 
-      // When
-      dao.delete(code))
-
+    // When
+    dao.delete(code).futureValue
     // Then
     userDao.load(user.id).futureValue should be (Some(user))
   }
