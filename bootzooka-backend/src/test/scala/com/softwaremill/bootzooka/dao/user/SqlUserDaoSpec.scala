@@ -59,8 +59,8 @@ with LazyLogging {
     userDao.add(User(login, "somePrefix" + email, "somePass", "someSalt", "someToken")).futureValue
 
     // When & then
-    userDao.add(User(login, email, "pass", "salt", "token")).failed.futureValue should equal(
-      new IllegalArgumentException("User with given e-mail or login already exists"))
+    userDao.add(User(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
+      "User with given e-mail or login already exists")
   }
 
   it should "fail with exception when trying to add user with existing email" in {
@@ -71,8 +71,8 @@ with LazyLogging {
     userDao.add(User("somePrefixed" + login, email, "somePass", "someSalt", "someToken")).futureValue
 
     // When & then
-    userDao.add(User(login, email, "pass", "salt", "token")).failed.futureValue should equal(
-      new IllegalArgumentException("User with given e-mail or login already exists"))
+    userDao.add(User(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
+      "User with given e-mail or login already exists")
   }
 
   it should "remove user" in {
@@ -95,7 +95,7 @@ with LazyLogging {
     val userOpt = userDao.findByEmail(email).futureValue
 
     // Then
-    userOpt.map(_.email) should equal(email)
+    userOpt.map(_.email) should equal(Some(email))
   }
 
   it should "find by uppercase email" in {
@@ -106,7 +106,7 @@ with LazyLogging {
     val userOpt = userDao.findByEmail(email).futureValue
 
     // Then
-    userOpt.map(_.email) should equal(email.toLowerCase)
+    userOpt.map(_.email) should equal(Some(email.toLowerCase))
   }
 
   it should "find by login" in {
@@ -117,7 +117,7 @@ with LazyLogging {
     val userOpt = userDao.findByLowerCasedLogin(login).futureValue
 
     // Then
-    userOpt.map(_.login) should equal(login)
+    userOpt.map(_.login) should equal(Some(login))
   }
 
   it should "find users by identifiers" in {
@@ -139,7 +139,7 @@ with LazyLogging {
     val userOpt = userDao.findByLowerCasedLogin(login).futureValue
 
     // Then
-    userOpt.map(_.login) should equal(login.toLowerCase)
+    userOpt.map(_.login) should equal(Some(login.toLowerCase))
   }
 
   it should "find using login with findByLoginOrEmail" in {
@@ -150,7 +150,7 @@ with LazyLogging {
     val userOpt = userDao.findByLoginOrEmail(login).futureValue
 
     // Then
-    userOpt.map(_.login) should equal(login.toLowerCase)
+    userOpt.map(_.login) should equal(Some(login.toLowerCase))
   }
 
   it should "find using uppercase login with findByLoginOrEmail" in {
@@ -161,7 +161,7 @@ with LazyLogging {
     val userOpt = userDao.findByLoginOrEmail(login).futureValue
 
     // Then
-    userOpt.map(_.login) should equal(login.toLowerCase)
+    userOpt.map(_.login) should equal(Some(login.toLowerCase))
   }
 
   it should "find using email with findByLoginOrEmail" in {
@@ -172,7 +172,7 @@ with LazyLogging {
     val userOpt = userDao.findByLoginOrEmail(email).futureValue
 
     // Then
-    userOpt.map(_.email) should equal(email.toLowerCase)
+    userOpt.map(_.email) should equal(Some(email.toLowerCase))
   }
 
   it should "find using uppercase email with findByLoginOrEmail" in {
@@ -183,7 +183,7 @@ with LazyLogging {
     val userOpt = userDao.findByLoginOrEmail(email).futureValue
 
     // Then
-    userOpt.map(_.email) should equal(email.toLowerCase)
+    userOpt.map(_.email) should equal(Some(email.toLowerCase))
   }
 
   it should "find by token" in {
@@ -194,7 +194,7 @@ with LazyLogging {
     val userOpt = userDao.findByToken(token).futureValue
 
     // Then
-    userOpt.map(_.token) should equal(token)
+    userOpt.map(_.token) should equal(Some(token))
   }
 
   it should "change password" in {

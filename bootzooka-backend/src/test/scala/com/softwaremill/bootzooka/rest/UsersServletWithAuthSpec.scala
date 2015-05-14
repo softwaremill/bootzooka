@@ -9,6 +9,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatra.auth.Scentry
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class UsersServletWithAuthSpec extends BootzookaServletSpec {
 
