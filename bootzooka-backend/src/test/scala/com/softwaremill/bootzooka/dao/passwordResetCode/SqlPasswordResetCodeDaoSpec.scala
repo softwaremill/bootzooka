@@ -40,17 +40,21 @@ class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfter
     val code1: PasswordResetCode = PasswordResetCode(code = "code1", user = generateRandomUser)
     val code2: PasswordResetCode = PasswordResetCode(code = "code2", user = generateRandomUser)
 
-    userDao.add(code1.user).futureValue
-    userDao.add(code2.user).futureValue
-    dao.store(code1).futureValue
-    dao.store(code2).futureValue
+    val bgActions = for {
+      _ <- userDao.add(code1.user)
+      _ <- userDao.add(code2.user)
+      _ <- dao.store(code1)
+      _ <- dao.store(code2)
+    }
 
     //When
-    dao.delete(code1).futureValue
+    yield dao.delete(code1).futureValue
 
     //Then
-    dao.load("code1").futureValue should be (None)
-    dao.load("code2").futureValue should be ('defined)
+    whenReady(bgActions) { _ =>
+      dao.load("code1").futureValue should be (None)
+      dao.load("code2").futureValue should be ('defined)
+    }
   }
 
   it should "delete all user codes on user removal" in {
@@ -61,18 +65,21 @@ class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfter
     val code2 = PasswordResetCode(code = "code2", user)
     val code3 = PasswordResetCode(code = "code3", user)
 
-    userDao.add(user).futureValue
-    dao.store(code1).futureValue
-    dao.store(code2).futureValue
-    dao.store(code3).futureValue
-
+    val bgActions = for {
+      _ <- userDao.add(user)
+      _ <- dao.store(code1)
+      _ <- dao.store(code2)
+      _ <- dao.store(code3)
+    }
     // When
-    userDao.remove(user.id).futureValue
+    yield userDao.remove(user.id).futureValue
 
     // Then
-    dao.load(code1.code).futureValue should be (None)
-    dao.load(code2.code).futureValue should be (None)
-    dao.load(code3.code).futureValue should be (None)
+    whenReady(bgActions) { _ =>
+      dao.load(code1.code).futureValue should be (None)
+      dao.load(code2.code).futureValue should be (None)
+      dao.load(code3.code).futureValue should be (None)
+    }
   }
 
   it should "not delete user on code removal" in {
@@ -80,13 +87,17 @@ class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfter
     val user = generateRandomUser
     val code = PasswordResetCode(code = "code", user = user)
 
-    userDao.add(user).futureValue
-    dao.store(code).futureValue
-
+    val bgActions = for {
+      _ <- userDao.add(user)
+      _ <- dao.store(code)
+    }
     // When
-    dao.delete(code).futureValue
+    yield dao.delete(code)
+
     // Then
-    userDao.load(user.id).futureValue should be (Some(user))
+    whenReady(bgActions) { _ =>
+      userDao.load(user.id).futureValue should be (Some(user))
+    }
   }
 
 }
