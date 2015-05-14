@@ -10,6 +10,9 @@ import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.BDDMockito._
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar {
   behavior of "RememberMe"
 
@@ -18,7 +21,6 @@ class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar {
   val app = mock[UsersServlet]
   val userService = mock[UserService]
   val loggedUser: UserJson = UserJson("1" * 24, "admin", "admin@admin.net", "token")
-  when(userService.authenticateWithToken(loggedUser.token)) thenReturn(Option(loggedUser))
 
   val rememberMe = true
   val strategy = new RememberMeStrategy(app, rememberMe, userService)
@@ -26,23 +28,25 @@ class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar {
   it should "authenticate user base on cookie" in {
     // Given
     given(app.cookies) willReturn new SweetCookies(Map(("rememberMe", loggedUser.token)), httpResponse)
+    given(userService.authenticateWithToken(loggedUser.token)) willReturn Future { Some(loggedUser) }
 
     // When
-    val user: Option[UserJson] = strategy.authenticate()
+    val user = strategy.authenticate()
 
     // Then
-    user should not be (None)
+    user should not be None
     user.get.login should be ("admin")
   }
 
   it should "not authenticate user with invalid cookie" in {
     // Given
     given(app.cookies) willReturn new SweetCookies(Map(("rememberMe", loggedUser.token + "X")), httpResponse)
+    given(userService.authenticateWithToken(loggedUser.token + "X")) willReturn Future { None }
 
     // When
-    val user: Option[UserJson] = strategy.authenticate()
+    val user = strategy.authenticate()
 
     // Then
-    user should be (null)
+    user should be (None)
   }
 }
