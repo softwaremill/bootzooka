@@ -3,9 +3,7 @@ package uitest
 import org.fest.assertions.Assertions
 import com.softwaremill.bootzooka.common.Utils
 
-import scala.concurrent.ExecutionContext
-
-class ScalaSendMessageUITest(implicit ec: ExecutionContext) extends BootzookaUITest {
+class ScalaSendMessageUITest extends BootzookaUITest {
   final val MSG_TEXT = Utils.randomString(20)
 
 

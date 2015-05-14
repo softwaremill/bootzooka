@@ -12,11 +12,11 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
 import uitest.pages.{MainPage, LoginPage, MessagesPage, PasswordResetPage}
 
-import scala.util.Try
 import scala.concurrent.ExecutionContext
+import scala.util.Try
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class BootzookaUITest(implicit ec: ExecutionContext)
-  extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
+class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
   final val REGUSER = "reguser"
   final val REGPASS = "regpass"
   final val REGMAIL = "reguser@regmail.pl"
@@ -81,6 +81,7 @@ class BootzookaUITest(implicit ec: ExecutionContext)
   }
 
   protected def removeUsers(logins: String*): Unit = {
+    implicit val ec: ExecutionContext = global
     for {
       login <- logins
       userOpt <- beans.userDao.findByLoginOrEmail("someUser")

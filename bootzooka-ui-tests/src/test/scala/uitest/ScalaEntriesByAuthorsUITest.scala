@@ -5,9 +5,9 @@ import org.openqa.selenium.By
 import org.openqa.selenium.support.PageFactory
 import uitest.pages.EntriesByAuthorsPage
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class ScalaEntriesByAuthorsUITest(implicit ec: ExecutionContext) extends BootzookaUITest {
+class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
 
   ignore("entries by authors without logged user") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])

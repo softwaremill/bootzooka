@@ -3,9 +3,9 @@ package uitest
 import com.softwaremill.bootzooka.version.BootzookaBuildInfo._
 import org.fest.assertions.Assertions
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class MainPageUITest(implicit ec: ExecutionContext) extends BootzookaUITest {
+class MainPageUITest extends BootzookaUITest {
 
   test("application version") {
     // when

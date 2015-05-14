@@ -3,9 +3,9 @@ package uitest
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.fest.assertions.Assertions
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class ScalaPasswordResetUITest(implicit ec: ExecutionContext) extends BootzookaUITest {
+class ScalaPasswordResetUITest extends BootzookaUITest {
 
   private val validCode = "SOME00CODE"
   private val invalidCode = validCode + "666"
