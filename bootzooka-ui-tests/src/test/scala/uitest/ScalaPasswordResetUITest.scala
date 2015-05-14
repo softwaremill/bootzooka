@@ -3,27 +3,27 @@ package uitest
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.fest.assertions.Assertions
 
-import scala.util.Success
+import scala.concurrent.ExecutionContext
 
-class ScalaPasswordResetUITest extends BootzookaUITest {
+class ScalaPasswordResetUITest(implicit ec: ExecutionContext) extends BootzookaUITest {
 
   private val validCode = "SOME00CODE"
   private val invalidCode = validCode + "666"
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    registerUserIfNotExists("someUser", "some-user@example.com", "somePass") match {
-      case Success(_) =>
-        beans.userDao.findByLoginOrEmail("someUser").foreach { user =>
-          val passResetCode = PasswordResetCode(validCode, user)
-          beans.codeDao.store(passResetCode)
+    registerUserIfNotExists("someUser", "some-user@example.com", "somePass") foreach { _ =>
+      beans.userDao.findByLoginOrEmail("someUser").map { userOpt =>
+        userOpt foreach { user =>
+        val passResetCode = PasswordResetCode(validCode, user)
+        beans.codeDao.store(passResetCode).futureValue
         }
-      case _ =>
+      }.futureValue
     }
   }
 
   override def afterAll(): Unit = {
-    beans.codeDao.load(validCode).foreach(beans.codeDao.delete)
+    beans.codeDao.load(validCode).map(codeOpt => codeOpt.foreach(beans.codeDao.delete)).futureValue
     removeUsers("someUser")
     super.afterAll()
   }

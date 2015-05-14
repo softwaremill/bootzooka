@@ -2,7 +2,9 @@ package uitest
 
 import org.fest.assertions.Assertions
 
-class ScalaLoginUITest extends BootzookaUITest {
+import scala.concurrent.ExecutionContext
+
+class ScalaLoginUITest(implicit ec: ExecutionContext) extends BootzookaUITest {
   test("login") {
     loginPage.openLoginPage()
     loginPage.login(REGUSER, REGPASS)

@@ -1,11 +1,13 @@
 package uitest
 
-import uitest.pages.{EntriesByAuthorsPage}
-import org.openqa.selenium.support.PageFactory
 import org.fest.assertions.Assertions._
 import org.openqa.selenium.By
+import org.openqa.selenium.support.PageFactory
+import uitest.pages.EntriesByAuthorsPage
 
-class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
+import scala.concurrent.ExecutionContext
+
+class ScalaEntriesByAuthorsUITest(implicit ec: ExecutionContext) extends BootzookaUITest {
 
   ignore("entries by authors without logged user") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])
@@ -33,7 +35,7 @@ class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
     loginPage.openLoginPage()
     loginPage.login(REGUSER, REGPASS)
 
-    val authorWithEntries = beans.userService.findByLogin(REGUSER).get
+    val authorWithEntries = beans.userService.findByLogin(REGUSER).futureValue.get
     entriesByAuthorsPage.openWithAuthor(authorWithEntries)
 
     assertThat(entriesByAuthorsPage.areTwoRegisteredUsersDisplayed()).isTrue()
@@ -49,7 +51,7 @@ class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
     loginPage.login(REGUSER, REGPASS)
 
     val authorWithNoEntries = beans.userService.findByLogin("1" + REGUSER)
-    entriesByAuthorsPage.openWithAuthor(authorWithNoEntries.get)
+    entriesByAuthorsPage.openWithAuthor(authorWithNoEntries.futureValue.get)
 
     assertThat(entriesByAuthorsPage.areTwoRegisteredUsersDisplayed()).isTrue()
     assertThat(entriesByAuthorsPage.isNoEntriesMessageDisplayed).isTrue()

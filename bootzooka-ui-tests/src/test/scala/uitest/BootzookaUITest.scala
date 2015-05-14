@@ -8,12 +8,15 @@ import com.typesafe.config.ConfigFactory
 import org.eclipse.jetty.webapp.WebAppContext
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
 import uitest.pages.{MainPage, LoginPage, MessagesPage, PasswordResetPage}
 
 import scala.util.Try
+import scala.concurrent.ExecutionContext
 
-class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter {
+class BootzookaUITest(implicit ec: ExecutionContext)
+  extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
   final val REGUSER = "reguser"
   final val REGPASS = "regpass"
   final val REGMAIL = "reguser@regmail.pl"
@@ -56,7 +59,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
    */
   protected def registerUserIfNotExists(login: String, email: String, pass: String): Try[Boolean] = Try {
     val userService = beans.userService
-    if (userService.findByLogin(login).isEmpty) {
+    if (userService.findByLogin(login).futureValue.isEmpty) {
       userService.registerNewUser(login, email, pass)
       true
     }
@@ -80,7 +83,8 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   protected def removeUsers(logins: String*): Unit = {
     for {
       login <- logins
-      user <- beans.userDao.findByLoginOrEmail("someUser")
+      userOpt <- beans.userDao.findByLoginOrEmail("someUser")
+      user <- userOpt
     } {
       beans.userDao.remove(user.id)
     }

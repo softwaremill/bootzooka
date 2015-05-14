@@ -6,7 +6,9 @@ import org.fest.assertions.Assertions
 import org.openqa.selenium.support.PageFactory
 import uitest.pages.RegistrationPage
 
-class ScalaRegisterUITest extends BootzookaUITest with AwaitilitySupport {
+import scala.concurrent.ExecutionContext
+
+class ScalaRegisterUITest(implicit ec: ExecutionContext) extends BootzookaUITest with AwaitilitySupport {
   final val LOGIN = Utils.randomString(5)
   final val EMAIL = LOGIN + "@example.org"
   final val PASSWORD = "test"
