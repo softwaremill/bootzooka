@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils
 import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
 import org.scalatra.{AsyncResult, FutureSupport, NoContent}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Future, ExecutionContext}
 
 /**
  * Servlet handling requests related to password recovery.
@@ -21,11 +21,12 @@ class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, 
   post("/", operation(requestPasswordReset)) {
     val login = (parsedBody \ "login").extractOpt[String].getOrElse("")
     new AsyncResult() {
-      override val is = userService.checkUserExistenceFor(login, login).map {
-          case Right(_) => haltWithNotFound("No user with given login/e-mail found.")
+      override val is = userService.checkUserExistenceFor(login, login).flatMap {
+          case Right(_) => Future { haltWithNotFound("No user with given login/e-mail found.") }
           case _ =>
-            passwordRecoveryService.sendResetCodeToUser(login)
-            StringJsonWrapper("success")
+            passwordRecoveryService.sendResetCodeToUser(login).map(_ =>
+              StringJsonWrapper("success"))
+
         }
     }
   }

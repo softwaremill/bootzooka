@@ -9,13 +9,16 @@ import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
   def onServletWithMocks(testToExecute: (PasswordRecoveryService) => Unit) {
     val recoveryService = mock[PasswordRecoveryService]
     val userService = mock[UserService]
-    when(userService.checkUserExistenceFor("existing", "existing")) thenReturn Left("User exists")
-    when(userService.checkUserExistenceFor("notexisting", "notexisting")) thenReturn Right(())
+    when(userService.checkUserExistenceFor("existing", "existing")) thenReturn Future { Left("User exists") }
+    when(userService.checkUserExistenceFor("notexisting", "notexisting")) thenReturn Future { Right(()) }
 
     val servlet = new PasswordRecoveryServlet(recoveryService, userService)
     addServlet(servlet, "/*")
@@ -24,6 +27,9 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
   "POST /" should "send e-mail to user" in {
     onServletWithMocks { (recoveryService) =>
+      // given
+      given(recoveryService.sendResetCodeToUser(any[String])).willReturn(Future{})
+      // when
       post("/", mapToJson(Map("login" -> "existing")), defaultJsonHeaders) {
         status should be (200)
         body should be ("{\"value\":\"success\"}")
@@ -44,6 +50,9 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
   "POST /123 with password" should "change it" in {
     onServletWithMocks { (recoveryService) =>
+      // given
+      given(recoveryService.performPasswordReset(any[String], any[String])).willReturn(Future{Right(true)})
+      // when
       post("/123", mapToJson(Map("password" -> "validPassword")), defaultJsonHeaders) {
         status should be (204)
         verify(recoveryService).performPasswordReset("123", "validPassword")
@@ -63,7 +72,7 @@ class PasswordRecoveryServletSpec extends BootzookaServletSpec {
 
   "POST /123 with password but without code" should "complain" in {
     onServletWithMocks { (recoveryService) =>
-      given(recoveryService.performPasswordReset("123", "validPassword")) willReturn  Left("Error")
+      given(recoveryService.performPasswordReset("123", "validPassword")) willReturn Future { Left("Error") }
       post("/123", mapToJson(Map("password" -> "validPassword")), defaultJsonHeaders) {
         status should be (403)
         body should be ("{\"value\":\"Error\"}")
