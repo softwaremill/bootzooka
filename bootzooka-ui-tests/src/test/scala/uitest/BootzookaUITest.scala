@@ -84,8 +84,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
     implicit val ec: ExecutionContext = global
     for {
       login <- logins
-      userOpt <- beans.userDao.findByLoginOrEmail("someUser")
-      user <- userOpt
+      user <- beans.userDao.findByLoginOrEmail("someUser").futureValue
     } {
       beans.userDao.remove(user.id).futureValue
     }

@@ -13,12 +13,10 @@ class ScalaPasswordResetUITest extends BootzookaUITest {
   override def beforeAll(): Unit = {
     super.beforeAll()
     registerUserIfNotExists("someUser", "some-user@example.com", "somePass") foreach { _ =>
-      beans.userDao.findByLoginOrEmail("someUser").map { userOpt =>
-        userOpt foreach { user =>
+      beans.userDao.findByLoginOrEmail("someUser").futureValue foreach { user =>
         val passResetCode = PasswordResetCode(validCode, user)
         beans.codeDao.store(passResetCode).futureValue
-        }
-      }.futureValue
+      }
     }
   }
 
