@@ -10,15 +10,15 @@ import com.typesafe.scalalogging.LazyLogging
 import org.flywaydb.core.Flyway
 import org.joda.time.{DateTime, DateTimeZone}
 
-import scala.slick.driver.JdbcProfile
-import scala.slick.jdbc.JdbcBackend._
+import slick.driver.JdbcProfile
+import slick.jdbc.JdbcBackend._
 
 case class SqlDatabase(
   db: scala.slick.jdbc.JdbcBackend.Database,
   driver: JdbcProfile,
   ds: DataSource) {
 
-  import driver.simple._
+  import driver.api._
 
   implicit val dateTimeColumnType = MappedColumnType.base[DateTime, java.sql.Timestamp](
     dt => new java.sql.Timestamp(dt.getMillis),
@@ -57,7 +57,7 @@ object SqlDatabase extends LazyLogging {
   def createEmbedded(connectionString: String): SqlDatabase = {
     val ds = createConnectionPool(connectionString)
     val db = Database.forDataSource(ds)
-    SqlDatabase(db, scala.slick.driver.H2Driver, ds)
+    SqlDatabase(db, slick.driver.H2Driver, ds)
   }
 
   private def createConnectionPool(connectionString: String) = {

@@ -13,7 +13,7 @@ trait SqlPasswordResetCodeSchema {
   protected val database: SqlDatabase
 
   import database._
-  import database.driver.simple._
+  import database.driver.api._
 
   protected val passwordResetCodes = TableQuery[PasswordResetCodes]
 

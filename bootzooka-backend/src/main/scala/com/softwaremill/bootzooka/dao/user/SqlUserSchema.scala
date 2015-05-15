@@ -10,7 +10,7 @@ trait SqlUserSchema {
   protected val database: SqlDatabase
 
   import database._
-  import database.driver.simple._
+  import database.driver.api._
 
   protected val users = TableQuery[Users]
 
