@@ -25,10 +25,18 @@ class SqlPasswordResetCodeDao(protected val database: SqlDatabase)(implicit ec: 
       resetCode <- passwordResetCodes.filter(condition)
       user <- resetCode.user
     } yield (resetCode, user)
-    db.run(q.result.headOption.map(_.map {
-        case (rc: SqlPasswordResetCode, u: User) => PasswordResetCode(rc.id, rc.code, u, rc.validTo)}))
+
+    val conversion: PartialFunction[(SqlPasswordResetCode, User), PasswordResetCode] = {
+      case (rc, u) => PasswordResetCode(rc.id, rc.code, u, rc.validTo)
+    }
+
+    db.run(convertFirstResultItem(q.result.headOption, conversion))
   }
 
   override def delete(code: PasswordResetCode): Future[Unit] =
     db.run(passwordResetCodes.filter(_.id === code.id).delete).mapToUnit
+
+  private def convertFirstResultItem[A, B](action: DBIOAction[Option[A], _, _], conversion: (PartialFunction[A, B])) = {
+    action.map(_.map(conversion))
+  }
 }
