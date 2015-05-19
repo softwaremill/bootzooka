@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.domain.User
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.slick.driver.JdbcProfile
+import com.softwaremill.bootzooka.common.FutureHelpers._
 
 class SqlUserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionContext)
   extends UserDao with SqlUserSchema {
@@ -49,20 +49,17 @@ class SqlUserDao(protected val database: SqlDatabase)(implicit val ec: Execution
     findOneWhere(_.token === token)
 
   override def changePassword(userId: UserId, newPassword: String): Future[Unit] = {
-    runUnitAction(users.filter(_.id === userId).map(_.password).update(newPassword))
+    db.run(users.filter(_.id === userId).map(_.password).update(newPassword)).mapToUnit
   }
 
   override def changeLogin(currentLogin: String, newLogin: String): Future[Unit] = {
     val action = users.filter(_.loginLowerCase === currentLogin.toLowerCase).map { user =>
       (user.login, user.loginLowerCase)
     }.update((newLogin, newLogin.toLowerCase))
-    runUnitAction(action)
+    db.run(action).mapToUnit
   }
 
   override def changeEmail(currentEmail: String, newEmail: String): Future[Unit] = {
-    val action = users.filter(_.email.toLowerCase === currentEmail.toLowerCase).map(_.email).update(newEmail)
-    runUnitAction(action)
+    db.run(users.filter(_.email.toLowerCase === currentEmail.toLowerCase).map(_.email).update(newEmail)).mapToUnit
   }
-
-  private def runUnitAction[T](action: DBIOAction[_, NoStream, Nothing]) = db.run(action).map(_ => ())
 }
