@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.dao.user.SqlUserDao
 import scala.concurrent.ExecutionContext
 
 trait Daos {
-  implicit val daoEc: ExecutionContext
+  implicit val ec: ExecutionContext
 
   lazy val userDao = new SqlUserDao(sqlDatabase)
 
