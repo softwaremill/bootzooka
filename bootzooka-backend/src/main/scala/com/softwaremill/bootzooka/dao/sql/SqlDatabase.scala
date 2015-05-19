@@ -14,7 +14,7 @@ import slick.driver.JdbcProfile
 import slick.jdbc.JdbcBackend._
 
 case class SqlDatabase(
-  db: scala.slick.jdbc.JdbcBackend.Database,
+  db: slick.jdbc.JdbcBackend.Database,
   driver: JdbcProfile,
   ds: DataSource) {
 
