@@ -16,8 +16,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with BeforeAndAfter with ScalaFutures {
   def prepareUserDaoMock: UserDao = {
     val dao = new InMemoryUserDao
-    dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
-    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
+    dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1")).flatMap( _ =>
+    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))).futureValue
     dao
   }
 
