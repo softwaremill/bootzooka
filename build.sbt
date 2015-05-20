@@ -73,6 +73,7 @@ lazy val seleniumStack = Seq(seleniumJava, seleniumFirefox, fest)
 // As provided implies test, so is enough here.
 lazy val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided" artifacts Artifact("javax.servlet", "jar", "jar")
 
+name := "bootzooka"
 
 // factor out common settings into a sequence
 lazy val commonSettings = Seq(
@@ -107,7 +108,7 @@ def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
   haltOnCmdResultError(buildGrunt())
 } dependsOn updateNpm
 
-lazy val parent = (project in file(".")).
+lazy val bootzooka = (project in file(".")).
   settings(commonSettings: _*)
   .aggregate(backend, ui, dist)
 
