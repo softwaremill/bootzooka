@@ -15,11 +15,11 @@ class SqlUserDao(protected val database: SqlDatabase)(implicit val ec: Execution
   override def loadAll() = db.run(users.result)
 
   override protected def internalAddUser(user: User): Future[Unit] = {
-    db.run(users += user).map(_ => ())
+    db.run(users += user).mapToUnit
   }
 
   override def remove(userId: UserId): Future[Unit] = {
-    db.run(users.filter(_.id === userId).delete).map(_ => ())
+    db.run(users.filter(_.id === userId).delete).mapToUnit
   }
 
   override def load(userId: UserId): Future[Option[User]] =
