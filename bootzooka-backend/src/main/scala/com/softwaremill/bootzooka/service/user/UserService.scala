@@ -23,7 +23,7 @@ class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataV
   def registerNewUser(login: String, email: String, password: String): Future[Unit] = {
     val salt = Utils.randomString(128)
     val token = UUID.randomUUID().toString
-    userDao.add(User(login, email.toLowerCase, password, salt, token)).map (_ => {
+    userDao.add(User(login, email.toLowerCase, password, salt, token)).flatMap (_ => {
       val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
       emailScheduler.scheduleEmail(email, confirmationEmail)
     })
