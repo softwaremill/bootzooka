@@ -6,12 +6,14 @@ import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import org.mockito.Matchers
 import org.mockito.Matchers._
+import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.scalatest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with BeforeAndAfter with ScalaFutures {
   def prepareUserDaoMock: UserDao = {
@@ -85,6 +87,9 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
 
 
   "registerNewUser" should "add user with unique lowercased login info" in {
+    // Given
+    given(emailScheduler.scheduleEmail(any(), any())).willReturn(Future {})
+
     // When
     userService.registerNewUser("John", "newUser@sml.com", "password").futureValue
 
