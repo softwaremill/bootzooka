@@ -117,17 +117,17 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
     } else if (newPassword.isEmpty) {
       haltWithBadRequest("Parameter newPassword is missing")
     }
-
+    val token = user.token
     new AsyncResult() {
-     val is = changePassword(currentPassword, newPassword).map {
+      val is = changePassword(token, currentPassword, newPassword).map {
         case Some(message) => haltWithForbidden(message)
         case None => NoContent()
       }
     }
   }
 
-  def changePassword(currentPassword: String, newPassword: String): Future[Option[String]] = {
-    userService.changePassword(user.token, currentPassword, newPassword).map {
+  def changePassword(token: String, currentPassword: String, newPassword: String): Future[Option[String]] = {
+    userService.changePassword(token, currentPassword, newPassword).map {
       case Left(error) => Some(error)
       case _ => None
     }
