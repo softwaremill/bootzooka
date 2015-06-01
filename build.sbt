@@ -83,9 +83,7 @@ lazy val commonSettings = Seq(
 
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   classpathTypes ~= (_ + "orbit"),
-  libraryDependencies ++= commonDependencies,
-
-  parallelExecution := false
+  libraryDependencies ++= commonDependencies
 )
 
 def haltOnCmdResultError(result: Int) {
