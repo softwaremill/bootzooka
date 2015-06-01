@@ -15,14 +15,14 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest
 import org.scalatest.FlatSpec
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
-import org.scalatest.time.{Milliseconds, Seconds, Span}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures {
+class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
+with IntegrationPatience {
   val invalidLogin = "user2"
   val validLogin = "user"
 
@@ -41,8 +41,6 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
 
     test(userDao, codeDao, emailScheduler, passwordRecoveryService, emailTemplatingEngine)
   }
-
-  override implicit val patienceConfig = PatienceConfig(Span(2, Seconds), Span(15, Milliseconds))
 
   def prepareUserDaoMock = {
     val userDao = mock[UserDao]
