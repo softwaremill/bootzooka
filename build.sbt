@@ -159,6 +159,7 @@ lazy val dist = (project in file("bootzooka-dist")).
 lazy val uiTests = (project in file("bootzooka-ui-tests")).
   settings(commonSettings: _*).
   settings(
+    parallelExecution := false,
     libraryDependencies ++= seleniumStack ++ Seq(awaitility, jettyTest, servletApiProvided),
     test in Test <<= (test in Test) dependsOn (Keys.`package` in Compile in backend)
   ) dependsOn dist
