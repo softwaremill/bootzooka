@@ -11,7 +11,7 @@ import scala.util.Random
 class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql {
   behavior of "SqlPasswordResetCodeDao"
 
-  val dao = new SqlPasswordResetCodeDao(sqlDatabase)
+  val dao = new PasswordResetCodeDao(sqlDatabase)
   val userDao = new UserDao(sqlDatabase)
 
   def generateRandomUser = {

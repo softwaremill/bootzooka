@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.dao
 
-import com.softwaremill.bootzooka.dao.passwordResetCode.SqlPasswordResetCodeDao
+import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDao
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.dao.user.UserDao
 
@@ -11,7 +11,7 @@ trait Daos {
 
   lazy val userDao = new UserDao(sqlDatabase)
 
-  lazy val codeDao = new SqlPasswordResetCodeDao(sqlDatabase)
+  lazy val codeDao = new PasswordResetCodeDao(sqlDatabase)
 
   def sqlDatabase: SqlDatabase
 }
