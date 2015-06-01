@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.service
 import java.util.UUID
 
 import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDao
-import com.softwaremill.bootzooka.dao.user.{InMemoryUserDao, UserDao}
+import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.BootzookaConfig
 import com.softwaremill.bootzooka.service.email.EmailScheduler
@@ -17,6 +17,7 @@ import org.scalatest
 import org.scalatest.FlatSpec
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
+import org.scalatest.time.{Milliseconds, Seconds, Span}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -41,8 +42,10 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
     test(userDao, codeDao, emailScheduler, passwordRecoveryService, emailTemplatingEngine)
   }
 
+  override implicit val patienceConfig = PatienceConfig(Span(2, Seconds), Span(15, Milliseconds))
+
   def prepareUserDaoMock = {
-    val userDao = mock[InMemoryUserDao]
+    val userDao = mock[UserDao]
     when (userDao.findByLoginOrEmail(validLogin)) thenReturn Future {
       Some(User(validLogin, "user@sml.pl", "pass", "salt", "token"))
     }

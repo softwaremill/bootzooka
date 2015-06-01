@@ -1,22 +1,24 @@
 package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.BootzookaServletSpec
-import com.softwaremill.bootzooka.dao.user.InMemoryUserDao
+import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
+import com.softwaremill.bootzooka.test.FlatSpecWithSql
 import org.json4s.JsonDSL._
 import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UsersServletSpec extends BootzookaServletSpec {
+class UsersServletSpec extends BootzookaServletSpec with FlatSpecWithSql {
   var servlet: UsersServlet = _
 
   def onServletWithMocks(testToExecute: (UserService) => Unit) = {
-    val dao = new InMemoryUserDao
+    val dao = new UserDao(sqlDatabase)
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1"))
     dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
 

@@ -1,23 +1,27 @@
 package com.softwaremill.bootzooka.service.user
 
-import com.softwaremill.bootzooka.dao.user.{InMemoryUserDao, UserDao}
+import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.test.FlatSpecWithSql
+import org.mockito.BDDMockito._
 import org.mockito.Matchers
 import org.mockito.Matchers._
-import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.scalatest
+import org.scalatest.FlatSpec
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
-import org.scalatest.{BeforeAndAfter, FlatSpec}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with BeforeAndAfter with ScalaFutures {
+class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
+with FlatSpecWithSql {
+
   def prepareUserDaoMock: UserDao = {
-    val dao = new InMemoryUserDao
+    val dao = new UserDao(sqlDatabase)
     dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1")).flatMap( _ =>
     dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))).futureValue
     dao
@@ -29,7 +33,8 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
   var userDao: UserDao = _
   var userService: UserService = _
 
-  before {
+  override protected def beforeEach() = {
+    super.beforeEach()
     userDao = prepareUserDaoMock
     userService = new UserService(userDao, registrationDataValidator, emailScheduler, emailTemplatingEngine)
   }
@@ -176,4 +181,5 @@ class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar
   "changePassword" should "complain when user cannot be found" in {
     userService.changePassword("someirrelevanttoken", "pass", "newpass").futureValue should be ('left)
   }
+
 }

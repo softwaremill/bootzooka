@@ -3,19 +3,18 @@ package com.softwaremill.bootzooka.dao.user
 import java.util.UUID
 
 import com.softwaremill.bootzooka.domain.User
-import com.softwaremill.bootzooka.test.{ClearSqlDataAfterEach, FlatSpecWithSql}
+import com.softwaremill.bootzooka.test.FlatSpecWithSql
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 
-import scala.language.implicitConversions
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.implicitConversions
 
-class SqlUserDaoSpec extends FlatSpecWithSql with BeforeAndAfterEach with ClearSqlDataAfterEach with ScalaFutures
-with LazyLogging {
+class SqlUserDaoSpec extends FlatSpecWithSql with ScalaFutures with LazyLogging {
   behavior of "SqlUserDao"
 
-  val userDao = new SqlUserDao(sqlDatabase)
+  var userDao: UserDao = new UserDao(sqlDatabase)
 
   def generateRandomId = UUID.randomUUID()
 
@@ -23,7 +22,6 @@ with LazyLogging {
 
   override def beforeEach() {
     super.beforeEach()
-
     for (i <- 1 to randomIds.size) {
       val login = "user" + i
       val password = "pass" + i

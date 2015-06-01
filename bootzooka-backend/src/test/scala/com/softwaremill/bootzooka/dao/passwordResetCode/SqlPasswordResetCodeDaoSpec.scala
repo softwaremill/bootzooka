@@ -1,18 +1,18 @@
 package com.softwaremill.bootzooka.dao.passwordResetCode
 
-import com.softwaremill.bootzooka.dao.user.SqlUserDao
+import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
-import com.softwaremill.bootzooka.test.{ClearSqlDataAfterEach, FlatSpecWithSql}
+import com.softwaremill.bootzooka.test.FlatSpecWithSql
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 import scala.util.Random
 
-class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql with ClearSqlDataAfterEach {
+class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql {
   behavior of "SqlPasswordResetCodeDao"
 
   val dao = new SqlPasswordResetCodeDao(sqlDatabase)
-  val userDao = new SqlUserDao(sqlDatabase)
+  val userDao = new UserDao(sqlDatabase)
 
   def generateRandomUser = {
     val randomLogin = s"${Random.nextInt() * Random.nextPrintableChar()}"

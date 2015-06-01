@@ -4,9 +4,7 @@ import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 
-import scala.slick.jdbc.StaticQuery
-
-trait FlatSpecWithSql extends FlatSpec with BeforeAndAfterAll with Matchers with ScalaFutures {
+trait FlatSpecWithSql extends FlatSpec with BeforeAndAfterAll with BeforeAndAfterEach with Matchers with ScalaFutures {
 
   private val connectionString = "jdbc:h2:mem:bootzooka_test" + this.getClass.getSimpleName + ";DB_CLOSE_DELAY=-1"
 
@@ -35,5 +33,15 @@ trait FlatSpecWithSql extends FlatSpec with BeforeAndAfterAll with Matchers with
 
   private def createAll() {
     sqlDatabase.updateSchema()
+  }
+
+  override protected def afterEach() {
+    try {
+      clearData()
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
+
+    super.afterEach()
   }
 }
