@@ -3,6 +3,7 @@ package com.softwaremill.bootzooka.dao.passwordResetCode
 import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.test.FlatSpecWithSql
+import org.scalatest.time.{Milliseconds, Seconds, Span}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps

@@ -17,8 +17,7 @@ import org.scalatest.mock.MockitoSugar
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
-with FlatSpecWithSql {
+class UserServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with FlatSpecWithSql {
 
   def prepareUserDaoMock: UserDao = {
     val dao = new UserDao(sqlDatabase)

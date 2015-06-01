@@ -3,12 +3,14 @@ package com.softwaremill.bootzooka.test
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Milliseconds, Seconds, Span}
 
 trait FlatSpecWithSql extends FlatSpec with BeforeAndAfterAll with BeforeAndAfterEach with Matchers with ScalaFutures {
 
   private val connectionString = "jdbc:h2:mem:bootzooka_test" + this.getClass.getSimpleName + ";DB_CLOSE_DELAY=-1"
 
   val sqlDatabase = SqlDatabase.createEmbedded(connectionString)
+  override implicit val patienceConfig = PatienceConfig(Span(2, Seconds), Span(15, Milliseconds))
 
   override protected def beforeAll() {
     super.beforeAll()
