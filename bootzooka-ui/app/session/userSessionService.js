@@ -4,19 +4,27 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     var self = this;
 
-    self.userResource = $resource('rest/users/', { }, {
+    self.userResource = $resource('rest/users/', {}, {
         login: {method: 'POST'},
         valid: {method: 'GET'}
-    }, { });
+    }, {});
 
-    self.logoutResource = $resource('rest/users/logout', { }, { }, { });
+    self.logoutResource = $resource('rest/users/logout', {}, {}, {});
 
     var userSessionService = {
         loggedUser: null
     };
 
     userSessionService.isLogged = function () {
-        return userSessionService.loggedUser !== null || !angular.isUndefined($cookies["scentry.auth.default.user"]);
+        if (userSessionService.loggedUser !== null) {
+            return true;
+
+        }
+        if (!angular.isUndefined($cookies["scentry.auth.default.user"])) {
+            userSessionService.validate()
+            return true;
+        }
+        return false;
     };
 
     userSessionService.isNotLogged = function () {
