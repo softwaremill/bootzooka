@@ -48,6 +48,7 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
           case Left(error) =>
             Future { haltWithConflict(error) }
           case _ =>
+            logger.info(">>>>>>>>>>>>>>>>")
             userService.registerNewUser(escapeHtml4(paramLogin), paramEmail, paramPass).map(
             _ => Created(StringJsonWrapper("success")))
         }

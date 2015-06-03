@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
-import com.softwaremill.bootzooka.test.FlatSpecWithSql
+import com.softwaremill.bootzooka.test.{UserTestHelpers, FlatSpecWithSql}
 import org.mockito.BDDMockito._
 import org.mockito.Matchers
 import org.mockito.Matchers._
@@ -17,12 +17,12 @@ import org.scalatest.mock.MockitoSugar
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with MockitoSugar {
+class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with MockitoSugar with UserTestHelpers {
 
   def prepareUserDaoMock: UserDao = {
     val dao = new UserDao(sqlDatabase)
-    dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1")).flatMap( _ =>
-    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2"))).futureValue
+    dao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1")).flatMap( _ =>
+    dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))).futureValue
     dao
   }
 

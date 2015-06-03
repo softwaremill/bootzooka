@@ -5,6 +5,7 @@ import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
 import com.softwaremill.bootzooka.common.Utils
+import org.joda.time.DateTime
 
 case class User(id: UUID,
                 login: String,
@@ -12,17 +13,24 @@ case class User(id: UUID,
                 email: String,
                 password: String,
                 salt: String,
-                token: String)
+                token: String,
+                registrationDateTime: DateTime)
 
 /*
 Extending function is a workaround for:
 https://issues.scala-lang.org/browse/SI-3664
 https://issues.scala-lang.org/browse/SI-4808
  */
-object User extends ((UUID, String, String, String, String, String, String) => User) {
+object User extends ((UUID, String, String, String, String, String, String, DateTime) => User) {
 
-  def apply(login: String, email: String, plainPassword: String, salt: String, token: String): User =
-    User(UUID.randomUUID(), login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, token)
+  def apply(login: String,
+            email: String,
+            plainPassword: String,
+            salt: String,
+            token: String,
+            registrationDateTime: DateTime): User =
+    User(UUID.randomUUID(), login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, token,
+      registrationDateTime)
 
   def encryptPassword(password: String, salt: String): String = {
     // 10k iterations takes about 10ms to encrypt a password on a 2013 MacBook

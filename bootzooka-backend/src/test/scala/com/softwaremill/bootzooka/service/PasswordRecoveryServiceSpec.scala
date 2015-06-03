@@ -8,6 +8,7 @@ import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.BootzookaConfig
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.test.UserTestHelpers
 import org.joda.time.DateTime
 import org.mockito.BDDMockito._
 import org.mockito.Matchers
@@ -22,7 +23,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
-with IntegrationPatience {
+with IntegrationPatience with UserTestHelpers {
   val invalidLogin = "user2"
   val validLogin = "user"
 
@@ -45,7 +46,7 @@ with IntegrationPatience {
   def prepareUserDaoMock = {
     val userDao = mock[UserDao]
     when (userDao.findByLoginOrEmail(validLogin)) thenReturn Future {
-      Some(User(validLogin, "user@sml.pl", "pass", "salt", "token"))
+      Some(newUser(validLogin, "user@sml.pl", "pass", "salt", "token"))
     }
     when (userDao.findByLoginOrEmail(invalidLogin)) thenReturn Future { None }
     userDao
@@ -117,7 +118,7 @@ with IntegrationPatience {
       val login = "login"
       val password = "password"
       val salt = "salt"
-      val user = User(login, s"$login@example.com", password, salt, "someRandomToken")
+      val user = newUser(login, s"$login@example.com", password, salt, "someRandomToken")
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().plusHours(1))
 
       given(codeDao.load(code)) willReturn Future { Some(resetCode) }
@@ -143,7 +144,7 @@ with IntegrationPatience {
       val login = "login"
       val password = "password"
       val salt = "salt"
-      val user = User(login, s"$login@example.com", password, salt, "someRandomToken")
+      val user = newUser(login, s"$login@example.com", password, salt, "someRandomToken")
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().minusHours(1))
 
       given(codeDao.load(code)) willReturn Future { Some(resetCode) }

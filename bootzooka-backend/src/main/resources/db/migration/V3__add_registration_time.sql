@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD "registration_ts" TIMESTAMP NOT NULL;

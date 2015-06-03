@@ -3,19 +3,17 @@ package com.softwaremill.bootzooka.dao.user
 import java.util.UUID
 
 import com.softwaremill.bootzooka.domain.User
-import com.softwaremill.bootzooka.test.FlatSpecWithSql
+import com.softwaremill.bootzooka.test.{FlatSpecWithSql, UserTestHelpers}
 import com.typesafe.scalalogging.LazyLogging
-import org.scalatest.{Matchers, BeforeAndAfterEach}
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.Matchers
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 
-class UserDaoSpec extends FlatSpecWithSql with LazyLogging with Matchers {
+class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers with Matchers {
   behavior of "UserDao"
 
   var userDao: UserDao = new UserDao(sqlDatabase)
-
   def generateRandomId = UUID.randomUUID()
 
   lazy val randomIds: List[UUID] = List.fill(3)(generateRandomId)
@@ -27,7 +25,8 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with Matchers {
       val password = "pass" + i
       val salt = "salt" + i
       val token = "token" + i
-      userDao.add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt, token))
+      userDao.add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt, token,
+        registrationDateTime))
         .futureValue
     }
   }
@@ -42,7 +41,7 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with Matchers {
     val email = "newemail@sml.com"
 
     // When
-    userDao.add(User(login, email, "pass", "salt", "token")).futureValue
+    userDao.add(newUser(login, email, "pass", "salt", "token")).futureValue
 
     // Then
     userDao.findByEmail(email).futureValue should be ('defined)
@@ -54,10 +53,10 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with Matchers {
     val login = "newuser"
     val email = "anotherEmaill@sml.com"
 
-    userDao.add(User(login, "somePrefix" + email, "somePass", "someSalt", "someToken")).futureValue
+    userDao.add(newUser(login, "somePrefix" + email, "somePass", "someSalt", "someToken")).futureValue
 
     // When & then
-    userDao.add(User(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
+    userDao.add(newUser(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
       "User with given e-mail or login already exists")
   }
 
@@ -66,10 +65,10 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with Matchers {
     val login = "anotherUser"
     val email = "newemail@sml.com"
 
-    userDao.add(User("somePrefixed" + login, email, "somePass", "someSalt", "someToken")).futureValue
+    userDao.add(newUser("somePrefixed" + login, email, "somePass", "someSalt", "someToken")).futureValue
 
     // When & then
-    userDao.add(User(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
+    userDao.add(newUser(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
       "User with given e-mail or login already exists")
   }
 
@@ -236,4 +235,6 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with Matchers {
     // Then
     userDao.findByEmail(newEmail).futureValue should equal(Some(u.copy(email = newEmail)))
   }
+
+
 }

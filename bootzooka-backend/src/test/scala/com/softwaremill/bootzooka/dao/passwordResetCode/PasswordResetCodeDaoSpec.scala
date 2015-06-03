@@ -2,14 +2,14 @@ package com.softwaremill.bootzooka.dao.passwordResetCode
 
 import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
-import com.softwaremill.bootzooka.test.FlatSpecWithSql
+import com.softwaremill.bootzooka.test.{FlatSpecWithSql, UserTestHelpers}
 import org.scalatest.Matchers
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 import scala.util.Random
 
-class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers {
+class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTestHelpers {
   behavior of "PasswordResetCodeDao"
 
   val dao = new PasswordResetCodeDao(sqlDatabase)
@@ -17,7 +17,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers {
 
   def generateRandomUser = {
     val randomLogin = s"${Random.nextInt() * Random.nextPrintableChar()}"
-    User(randomLogin, s"$randomLogin@example.com", "pass", "someSalt", "someToken")
+    User(randomLogin, s"$randomLogin@example.com", "pass", "someSalt", "someToken", registrationDateTime)
   }
 
   it should "store and load code" in {
