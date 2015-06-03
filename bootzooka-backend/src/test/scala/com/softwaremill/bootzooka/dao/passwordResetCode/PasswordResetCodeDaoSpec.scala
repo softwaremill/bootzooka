@@ -9,8 +9,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 import scala.util.Random
 
-class SqlPasswordResetCodeDaoSpec extends FlatSpecWithSql {
-  behavior of "SqlPasswordResetCodeDao"
+class PasswordResetCodeDaoSpec extends FlatSpecWithSql {
+  behavior of "PasswordResetCodeDao"
 
   val dao = new PasswordResetCodeDao(sqlDatabase)
   val userDao = new UserDao(sqlDatabase)

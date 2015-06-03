@@ -11,8 +11,8 @@ import org.scalatest.concurrent.ScalaFutures
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 
-class SqlUserDaoSpec extends FlatSpecWithSql with LazyLogging {
-  behavior of "SqlUserDao"
+class UserDaoSpec extends FlatSpecWithSql with LazyLogging {
+  behavior of "UserDao"
 
   var userDao: UserDao = new UserDao(sqlDatabase)
 
