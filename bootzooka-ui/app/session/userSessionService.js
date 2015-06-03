@@ -21,7 +21,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
         }
         if (!angular.isUndefined($cookies["scentry.auth.default.user"])) {
-            userSessionService.validate()
+            userSessionService.validate();
             return true;
         }
         return false;

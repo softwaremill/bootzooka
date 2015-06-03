@@ -1,6 +1,6 @@
 <form class="form-bootzooka" role="form" name="registerForm" novalidate>
     <h2 class="form-bootzooka-heading">Please sign up</h2>
-    <input type="text" name="login" class="form-control" placeholder="Login" ng-model="user.login" ng-minlength="3" required autofocus>
+    <input type="text" name="login" class="form-control" placeholder="Login" ng-model="user.login" ng-minlength="3" focus-on required autofocus>
     <span class="text-error" ng-show="registerForm.login.$dirty && registerForm.login.$error.required">Login is required</span>
     <span class="text-error" ng-show="registerForm.login.$error.minlength">At least three characters!</span>
     <input type="email" name="email" class="form-control" placeholder="Email address" ng-model="user.email" required>

@@ -1,7 +1,7 @@
 <form class="form-bootzooka" role="form" name="loginForm" novalidate>
     <h2 class="form-bootzooka-heading">Please sign in</h2>
     <input type="text" name="login" class="form-control" placeholder="Login/Email address"
-           ng-model="user.login" required>
+           ng-model="user.login" required focus-on>
     <span class="text-error" ng-show="loginForm.login.$dirty && loginForm.login.$error.required">Login is required</span>
     <input type="password" name="password" class="form-control bottom" placeholder="Password"
            ng-model="user.password" required>
