@@ -45,10 +45,8 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
       val paramEmail = email // these values have to be extracted before
       new AsyncResult {
         val is = userService.checkUserExistenceFor(paramLogin, paramEmail).flatMap {
-          case Left(error) => {
-            println(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " + error)
+          case Left(error) =>
             Future { haltWithConflict(error) }
-          }
           case _ =>
             userService.registerNewUser(escapeHtml4(paramLogin), paramEmail, paramPass).map(
             _ => Created(StringJsonWrapper("success")))
