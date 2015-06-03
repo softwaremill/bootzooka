@@ -8,9 +8,12 @@
     <span class="text-error"
           ng-show="loginForm.password.$dirty && loginForm.password.$error.required">Password is required</span>
     <span class="help-block"><a href="#/recover-lost-password">Forgotten password?</a></span>
-    <label class="checkbox">
-        <input type="checkbox" value="remember-me" ng-model="user.rememberMe"> Remember me
-    </label>
+
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" value="remember-me" ng-model="user.rememberMe"><span> Remember me</span>
+        </label>
+    </div>
     <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()">Sign in
     </button>
 </form>
