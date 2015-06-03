@@ -17,16 +17,16 @@ trait SqlUserSchema {
   protected val users = TableQuery[Users]
 
   protected class Users(tag: Tag) extends Table[User](tag, "users") {
-    def id                    = column[UUID]("id", O.PrimaryKey)
-    def login                 = column[String]("login")
-    def loginLowerCase        = column[String]("login_lowercase")
-    def email                 = column[String]("email")
-    def password              = column[String]("password")
-    def salt                  = column[String]("salt")
-    def token                 = column[String]("token")
-    def registrationDateTime  = column[DateTime]("registration_ts")
+    def id              = column[UUID]("id", O.PrimaryKey)
+    def login           = column[String]("login")
+    def loginLowerCase  = column[String]("login_lowercase")
+    def email           = column[String]("email")
+    def password        = column[String]("password")
+    def salt            = column[String]("salt")
+    def token           = column[String]("token")
+    def createdOn       = column[DateTime]("created_on")
 
-    def * = (id, login, loginLowerCase, email, password, salt, token, registrationDateTime) <>
+    def * = (id, login, loginLowerCase, email, password, salt, token, createdOn) <>
       (User.tupled, User.unapply)
   }
 

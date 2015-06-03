@@ -26,7 +26,7 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
       val salt = "salt" + i
       val token = "token" + i
       userDao.add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt, token,
-        registrationDateTime))
+        createdOn))
         .futureValue
     }
   }

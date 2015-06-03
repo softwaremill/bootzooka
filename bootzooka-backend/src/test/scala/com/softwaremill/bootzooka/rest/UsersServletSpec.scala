@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.BootzookaServletSpec
 import com.softwaremill.bootzooka.dao.user.UserDao
-import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
@@ -19,8 +18,8 @@ class UsersServletSpec extends BootzookaServletSpec with FlatSpecWithSql with Us
 
   def onServletWithMocks(testToExecute: (UserService) => Unit) = {
     val dao = new UserDao(sqlDatabase)
-    dao.add(User("Admin", "admin@sml.com", "pass", "salt", "token1", registrationDateTime))
-    dao.add(User("Admin2", "admin2@sml.com", "pass", "salt", "token2", registrationDateTime))
+    dao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1"))
+    dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
 
     val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService(), new EmailTemplatingEngine))
 

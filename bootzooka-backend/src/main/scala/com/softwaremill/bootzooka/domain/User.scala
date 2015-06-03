@@ -14,7 +14,7 @@ case class User(id: UUID,
                 password: String,
                 salt: String,
                 token: String,
-                registrationDateTime: DateTime)
+                createdOn: DateTime)
 
 /*
 Extending function is a workaround for:
@@ -28,9 +28,9 @@ object User extends ((UUID, String, String, String, String, String, String, Date
             plainPassword: String,
             salt: String,
             token: String,
-            registrationDateTime: DateTime): User =
+            createdOn: DateTime): User =
     User(UUID.randomUUID(), login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, token,
-      registrationDateTime)
+      createdOn)
 
   def encryptPassword(password: String, salt: String): String = {
     // 10k iterations takes about 10ms to encrypt a password on a 2013 MacBook

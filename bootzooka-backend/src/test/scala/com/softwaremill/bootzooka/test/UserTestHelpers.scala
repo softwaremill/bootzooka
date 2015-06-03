@@ -5,9 +5,9 @@ import org.joda.time.DateTime
 
 trait UserTestHelpers {
 
-  val registrationDateTime = new DateTime()
+  val createdOn = new DateTime()
 
   def newUser(login: String, email: String, pass: String, salt: String, token: String) =
-    User(login, email, pass, salt, token, registrationDateTime)
+    User(login, email, pass, salt, token, createdOn)
 
 }

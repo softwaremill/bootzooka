@@ -1,1 +1,1 @@
-ALTER TABLE "users" ADD "registration_ts" TIMESTAMP NOT NULL;
+ALTER TABLE "users" ADD "created_on" TIMESTAMP NOT NULL;

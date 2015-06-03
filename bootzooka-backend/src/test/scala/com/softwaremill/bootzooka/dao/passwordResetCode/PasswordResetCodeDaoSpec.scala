@@ -17,7 +17,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
 
   def generateRandomUser = {
     val randomLogin = s"${Random.nextInt() * Random.nextPrintableChar()}"
-    User(randomLogin, s"$randomLogin@example.com", "pass", "someSalt", "someToken", registrationDateTime)
+    newUser(randomLogin, s"$randomLogin@example.com", "pass", "someSalt", "someToken")
   }
 
   it should "store and load code" in {
