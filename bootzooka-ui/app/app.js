@@ -17,7 +17,10 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'sm
                 controller: 'LoginCtrl',
                 templateUrl: "profile/login/login.html",
                 params: {
-                    page: null
+                    // these are used to redirect to a secure page if the user is not logged in
+                    // see the $stateChangeStart handler below and LoginCtrl
+                    targetState: null,
+                    targetParams: null
                 }
             })
             .state('register', {
@@ -126,9 +129,9 @@ angular.module(
             return targetState && targetState.data && targetState.data.auth;
         }
 
-        $rootScope.$on('$stateChangeStart', function(ev, targetState) {
+        $rootScope.$on('$stateChangeStart', function(ev, targetState, targetParams) {
             if(requireAuth(targetState) && UserSessionService.isNotLogged()) {
-                $state.go('login', { page: targetState.url });
+                $state.go('login', { targetState: targetState, targetParams: targetParams });
                 ev.preventDefault();
             }
         });

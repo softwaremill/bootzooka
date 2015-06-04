@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('smlBootzooka.profile')
-    .controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $stateParams, NotificationsService) {
+    .controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $state, $stateParams, NotificationsService) {
 
     var self = this;
 
@@ -22,10 +22,9 @@ angular.module('smlBootzooka.profile')
 
 
     this.loginOk = function () {
-        var optionalRedirect = $stateParams.page;
-        if (typeof optionalRedirect !== "undefined") {
-            $location.search("page", null);
-            $location.path(optionalRedirect);
+        var optionalRedirect = $stateParams.targetState;
+        if (optionalRedirect) {
+            $state.go(optionalRedirect, $stateParams.targetParams)
         } else {
             $location.path("/main");
         }
