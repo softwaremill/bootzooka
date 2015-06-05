@@ -53,7 +53,7 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec with UserTestHelpers
         status should be (200)
         body should be ("{\"id\":\"" + uuidStr +
           "\",\"login\":\"Jas Kowalski\",\"email\":\"kowalski@kowalski.net\"," +
-          "\"token\":\"token\",\"createdOn\":\"2015-06-03 13:25:03\"}")
+          "\"token\":\"token\",\"createdOn\":\"20150603T132503.000Z\"}")
       }
     )
   }
