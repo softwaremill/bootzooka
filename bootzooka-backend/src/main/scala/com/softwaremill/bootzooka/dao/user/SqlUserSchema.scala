@@ -11,7 +11,6 @@ trait SqlUserSchema {
   protected val database: SqlDatabase
 
   import database._
-  import com.github.tototoshi.slick.H2JodaSupport._
   import database.driver.api._
 
   protected val users = TableQuery[Users]

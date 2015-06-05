@@ -36,8 +36,7 @@ val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "test"
 
 val jodaTime = "joda-time" % "joda-time" % "2.6"
 val jodaConvert = "org.joda" % "joda-convert" % "1.7"
-val slickJoda = "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0"
-lazy val jodaDependencies = Seq(jodaTime, jodaConvert, slickJoda)
+lazy val jodaDependencies = Seq(jodaTime, jodaConvert)
 
 val guava = "com.google.guava" % "guava" % "18.0"
 val googleJsr305 = "com.google.code.findbugs" % "jsr305" % "3.0.0"
