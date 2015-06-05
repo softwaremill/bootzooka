@@ -94,23 +94,23 @@ def haltOnCmdResultError(result: Int) {
 
 val updateNpm = baseDirectory map { bd =>
   println("Updating NPM dependencies")
-  haltOnCmdResultError(Process("npm install", bd / ".." / "bootzooka-ui") !)
+  haltOnCmdResultError(Process("npm install", bd / ".." / "ui") !)
 }
 
 def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
   val localGruntCommand = "./node_modules/.bin/grunt " + taskName
   def buildGrunt() = {
-    Process(localGruntCommand, bd / ".." / "bootzooka-ui").!
+    Process(localGruntCommand, bd / ".." / "ui").!
   }
   println("Building with Grunt.js : " + taskName)
   haltOnCmdResultError(buildGrunt())
 } dependsOn updateNpm
 
-lazy val bootzooka = (project in file(".")).
+lazy val rootProject = (project in file(".")).
   settings(commonSettings: _*)
   .aggregate(backend, ui, dist)
 
-lazy val backend: Project = (project in file("bootzooka-backend")).
+lazy val backend: Project = (project in file("backend")).
   settings(commonSettings ++ webSettings: _*).
   settings(
     buildInfoSettings,
@@ -140,15 +140,15 @@ lazy val backend: Project = (project in file("bootzooka-backend")).
       packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"))
   )
 
-lazy val ui = (project in file("bootzooka-ui")).
+lazy val ui = (project in file("ui")).
   settings(commonSettings: _*).
   settings(test in Test <<= (test in Test) dependsOn gruntTask("test"))
 
-lazy val dist = (project in file("bootzooka-dist")).
+lazy val dist = (project in file("dist")).
   settings(commonSettings ++ assemblySettings: _*).
   settings(
     libraryDependencies += jetty,
-    mainClass in assembly := Some("com.softwaremill.bootzooka.Bootzooka"),
+    mainClass in assembly := Some("com.softwaremill.bootzooka.AppRunner"),
     // We need to include the whole webapp, hence replacing the resource directory
     unmanagedResourceDirectories in Compile <<= baseDirectory { bd => {
       List(bd.getParentFile / backend.base.getName / "src" / "main", bd.getParentFile / ui.base.getName / "dist")
@@ -156,7 +156,7 @@ lazy val dist = (project in file("bootzooka-dist")).
     }
   ) dependsOn(ui, backend)
 
-lazy val uiTests = (project in file("bootzooka-ui-tests")).
+lazy val uiTests = (project in file("ui-tests")).
   settings(commonSettings: _*).
   settings(
     parallelExecution := false,

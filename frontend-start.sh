@@ -1,4 +1,4 @@
 #!/bin/sh
-cd bootzooka-ui
+cd ui
 npm install
 ./node_modules/.bin/grunt server
