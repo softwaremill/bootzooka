@@ -68,42 +68,6 @@ code {
 
 /* Sticky Footer End */
 
-.form-bootzooka {
-    max-width: 330px;
-    padding: 15px;
-    margin: 0 auto;
-}
-
-.form-bootzooka .form-bootzooka-heading,
-.form-bootzooka .checkbox {
-    margin-top: 10px;
-}
-
-.form-bootzooka .checkbox {
-    font-weight: normal;
-}
-
-.form-bootzooka .form-control {
-    position: relative;
-    height: auto;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 10px;
-    font-size: 16px;
-}
-
-.form-bootzooka .form-control:focus {
-    z-index: 2;
-}
-
-.form-bootzooka input[type="text"],
-.form-bootzooka input[type="email"],
-.form-bootzooka input[type="password"],
-.form-bootzooka button {
-    margin-top: 10px;
-}
-
 .centered-block {
     display: block;
     text-align: center;
