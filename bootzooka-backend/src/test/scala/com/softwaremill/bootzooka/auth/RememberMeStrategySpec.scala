@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.auth
 
+import java.util.UUID
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import com.softwaremill.bootzooka.rest.UsersServlet
@@ -21,7 +22,7 @@ class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar with Use
   implicit val httpRequest = mock[HttpServletRequest]
   val app = mock[UsersServlet]
   val userService = mock[UserService]
-  val loggedUser: UserJson = UserJson("1" * 24, "admin", "admin@admin.net", "token", createdOn)
+  val loggedUser: UserJson = UserJson(UUID.fromString(uuidStr), "admin", "admin@admin.net", "token", createdOn)
 
   val rememberMe = true
   val strategy = new RememberMeStrategy(app, rememberMe, userService)

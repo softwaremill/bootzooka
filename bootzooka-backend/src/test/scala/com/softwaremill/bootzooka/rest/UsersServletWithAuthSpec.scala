@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.rest
 
+import java.util.UUID
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import com.softwaremill.bootzooka.BootzookaServletSpec
@@ -13,7 +14,6 @@ import org.scalatra.auth.Scentry
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class UsersServletWithAuthSpec extends BootzookaServletSpec with UserTestHelpers {
-
 
   def onServletWithMocks(authenticated: Boolean, testToExecute: (UserService, Scentry[UserJson]) => Unit) {
     val userService = mock[UserService]
@@ -51,7 +51,8 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec with UserTestHelpers
     onServletWithMocks(authenticated = true, testToExecute = (userService, mock) =>
       get("/") {
         status should be (200)
-        body should be ("{\"id\":\"" + "1" * 24  + "\",\"login\":\"Jas Kowalski\",\"email\":\"kowalski@kowalski.net\"," +
+        body should be ("{\"id\":\"" + uuidStr +
+          "\",\"login\":\"Jas Kowalski\",\"email\":\"kowalski@kowalski.net\"," +
           "\"token\":\"token\",\"createdOn\":\"2015-06-03 13:25:03\"}")
       }
     )
@@ -60,7 +61,8 @@ class UsersServletWithAuthSpec extends BootzookaServletSpec with UserTestHelpers
   class MockUsersServlet(userService: UserService, mockedScentry: Scentry[UserJson]) extends UsersServlet(userService) with MockitoSugar {
     override def scentry(implicit request: javax.servlet.http.HttpServletRequest) = mockedScentry
     override def user(implicit request: javax.servlet.http.HttpServletRequest) =
-      new UserJson("1" * 24, "Jas Kowalski", "kowalski@kowalski.net", "token", createdOn)
+      new UserJson(UUID.fromString(uuidStr),
+        "Jas Kowalski", "kowalski@kowalski.net", "token", createdOn)
   }
 }
 
