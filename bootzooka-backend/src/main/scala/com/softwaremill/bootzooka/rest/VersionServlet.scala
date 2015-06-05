@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.rest
 
-import com.softwaremill.bootzooka.version.BootzookaBuildInfo._
+import com.softwaremill.bootzooka.version.BuildInfo._
 import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
 
 case class VersionJson(build: String, date: String)

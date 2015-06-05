@@ -34,7 +34,7 @@ class ScalatraBootstrap extends LifeCycle with Beans {
     mountServlet(new VersionServlet)
     mountServlet(new SwaggerServlet)
 
-    context.setAttribute("bootzooka", this)
+    context.setAttribute("appObject", this)
   }
 
   override def destroy(context: ServletContext) {

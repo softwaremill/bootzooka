@@ -4,7 +4,7 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
 import org.eclipse.jetty.webapp.WebAppContext
 
-object Bootzooka extends App with EmbeddedJetty with LazyLogging {
+object AppRunner extends App with EmbeddedJetty with LazyLogging {
   val embeddedJettyConfig = new EmbeddedJettyConfig {
     def rootConfig = ConfigFactory.load()
   }
@@ -15,12 +15,12 @@ object Bootzooka extends App with EmbeddedJetty with LazyLogging {
   }
 
   startJetty()
-  logger.info(s"Bootzooka started on $jettyAddress")
+  logger.info(s"Application started on $jettyAddress")
 
   Runtime.getRuntime.addShutdownHook(new Thread() {
     override def run() {
       stopJetty()
-      logger.info("Bootzooka stopped")
+      logger.info("Application stopped")
     }
   })
 }

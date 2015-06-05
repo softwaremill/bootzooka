@@ -118,7 +118,7 @@ lazy val backend: Project = (project in file("bootzooka-backend")).
       Seq(jettyContainer, commonsValidator, javaxMail, typesafeConfig, servletApiProvided, bugsnag),
     sourceGenerators in Compile <+= buildInfo,
     buildInfoPackage := "com.softwaremill.bootzooka.version",
-    buildInfoObject := "BootzookaBuildInfo",
+    buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](
       BuildInfoKey.action("buildDate")(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date())),
       BuildInfoKey.action("buildSha")((Process("git rev-parse HEAD") !!).stripLineEnd)),

@@ -42,7 +42,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
 
   override def beforeAll() {
     startJetty()
-    beans = context.getAttribute("bootzooka").asInstanceOf[Beans]
+    beans = context.getAttribute("appObject").asInstanceOf[Beans]
     registerUserIfNotExists(REGUSER, REGMAIL, REGPASS)
     registerUserIfNotExists("1" + REGUSER, "1" + REGMAIL, REGPASS)
     emailService = beans.emailScheduler.asInstanceOf[DummyEmailSendingService]

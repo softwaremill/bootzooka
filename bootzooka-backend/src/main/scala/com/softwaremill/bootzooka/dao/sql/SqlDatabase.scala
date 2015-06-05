@@ -44,7 +44,7 @@ case class SqlDatabase(
 object SqlDatabase extends LazyLogging {
 
   def connectionString(config: DaoConfig): String = {
-    val fullPath = new File(config.embeddedDataDir, "bootzooka").getCanonicalPath
+    val fullPath = new File(config.embeddedDataDir, "app-database").getCanonicalPath
     logger.info(s"Using an embedded database, with data files located at: $fullPath")
 
     s"jdbc:h2:file:$fullPath"

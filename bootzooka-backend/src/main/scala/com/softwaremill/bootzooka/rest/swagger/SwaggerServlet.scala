@@ -10,11 +10,11 @@ class SwaggerServlet(implicit val swagger: Swagger) extends ScalatraServlet with
   override def mappingPath: String = "api-docs"
 }
 
-object BootzookaSwagger {
+object AppSwagger {
 
   val Info = ApiInfo(
-    "Bootzooka API",
-    "Docs for the Bootzooka API",
+    "Web API",
+    "Docs for the web API",
     "http://bootzooka.softwaremill.com",
     "hello@softwaremill.com",
     "Apache License, Version 2.0",
@@ -22,4 +22,4 @@ object BootzookaSwagger {
   )
 }
 
-class BootzookaSwagger extends Swagger(Swagger.SpecVersion, "1.0.0", BootzookaSwagger.Info)
+class AppSwagger extends Swagger(Swagger.SpecVersion, "1.0.0", AppSwagger.Info)

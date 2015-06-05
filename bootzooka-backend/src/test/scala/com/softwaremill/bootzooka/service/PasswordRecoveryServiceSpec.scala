@@ -5,7 +5,7 @@ import java.util.UUID
 import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDao
 import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
-import com.softwaremill.bootzooka.service.config.BootzookaConfig
+import com.softwaremill.bootzooka.service.config.CoreConfig
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.test.UserTestHelpers
@@ -35,9 +35,9 @@ with IntegrationPatience with UserTestHelpers {
     val emailScheduler = mock[EmailScheduler]
     val emailTemplatingEngine = mock[EmailTemplatingEngine]
     val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailScheduler, emailTemplatingEngine,
-      new BootzookaConfig {
+      new CoreConfig {
         override def rootConfig = null
-        override lazy val bootzookaResetLinkPattern = "%s"
+        override lazy val resetLinkPattern = "%s"
       })
 
     test(userDao, codeDao, emailScheduler, passwordRecoveryService, emailTemplatingEngine)

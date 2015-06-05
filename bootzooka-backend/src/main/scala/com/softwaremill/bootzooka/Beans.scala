@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.dao.{Daos, DaoConfig}
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
-import com.softwaremill.bootzooka.service.config.{BootzookaConfig, EmailConfig}
+import com.softwaremill.bootzooka.service.config.{CoreConfig, EmailConfig}
 import com.softwaremill.bootzooka.service.email.{DummyEmailSendingService, ProductionEmailSendingService}
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait Beans extends LazyLogging with Daos {
-  lazy val config = new BootzookaConfig with EmailConfig with DaoConfig {
+  lazy val config = new CoreConfig with EmailConfig with DaoConfig {
     override def rootConfig = ConfigFactory.load()
   }
 
