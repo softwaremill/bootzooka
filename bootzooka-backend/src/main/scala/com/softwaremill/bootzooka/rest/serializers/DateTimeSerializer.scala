@@ -16,5 +16,5 @@ class DateTimeSerializer extends CustomSerializer[DateTime](format => ({
   )
 
 object DateTimeSerializer {
-  val Formatter = DateTimeFormat.fullDateTime()
+  val Formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 }

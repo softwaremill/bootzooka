@@ -1,26 +1,27 @@
 package com.softwaremill.bootzooka.auth
 
-import org.scalatra.SweetCookies
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
+
 import com.softwaremill.bootzooka.rest.UsersServlet
-import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
-import org.scalatra.test.scalatest.ScalatraFlatSpec
-import org.scalatest.mock.MockitoSugar
-import org.mockito.Mockito._
+import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.test.UserTestHelpers
 import org.mockito.BDDMockito._
+import org.scalatest.mock.MockitoSugar
+import org.scalatra.SweetCookies
+import org.scalatra.test.scalatest.ScalatraFlatSpec
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar {
+class RememberMeStrategySpec extends ScalatraFlatSpec with MockitoSugar with UserTestHelpers {
   behavior of "RememberMe"
 
   implicit val httpResponse = mock[HttpServletResponse]
   implicit val httpRequest = mock[HttpServletRequest]
   val app = mock[UsersServlet]
   val userService = mock[UserService]
-  val loggedUser: UserJson = UserJson("1" * 24, "admin", "admin@admin.net", "token")
+  val loggedUser: UserJson = UserJson("1" * 24, "admin", "admin@admin.net", "token", createdOn)
 
   val rememberMe = true
   val strategy = new RememberMeStrategy(app, rememberMe, userService)
