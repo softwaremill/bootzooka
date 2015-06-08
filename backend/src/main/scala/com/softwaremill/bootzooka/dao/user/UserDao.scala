@@ -16,20 +16,20 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
   type UserId = UUID
 
   def add(user: User): Future[Unit] = {
-    val userByLoginFut = findByLowerCasedLogin(user.login)
-    val userByEmailFut = findByEmail(user.email)
+    val action = (for {
+      userByLoginOpt <- findByLowerCasedLoginAction(user.login)
+      userByEmailOpt <- findByEmailAction(user.email)
+      _ <- addOrThrowAction(userByLoginOpt, userByEmailOpt, user)
+    } yield ()).transactionally
 
-    for {
-      userByLoginOpt <- userByLoginFut
-      userByEmailOpt <- userByEmailFut
-    } yield {
-      if (userByLoginOpt.isDefined || userByEmailOpt.isDefined) {
-        throw new IllegalArgumentException("User with given e-mail or login already exists")
-      }
-      else {
-        db.run(users += user).mapToUnit
-      }
-    }
+    db.run(action)
+  }
+
+  private def addOrThrowAction(userByLoginOpt: Option[User], userByEmailOpt: Option[User], user: User) = {
+    if (userByLoginOpt.isDefined || userByEmailOpt.isDefined)
+      DBIO.failed(new IllegalArgumentException("User with given e-mail or login already exists"))
+    else
+      users += user
   }
 
   def loadAll() = db.run(users.result)
@@ -41,15 +41,21 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
   def load(userId: UserId): Future[Option[User]] =
     findOneWhere(_.id === userId)
 
-  private def findOneWhere(condition: Users => Rep[Boolean]): Future[Option[User]] = {
-    db.run(users.filter(condition).result.headOption)
+  private def findOneWhereAction(condition: Users => Rep[Boolean]) = {
+    users.filter(condition).result.headOption
   }
 
-  def findByEmail(email: String)  =
-    findOneWhere(_.email.toLowerCase === email.toLowerCase)
+  private def findByEmailAction(email: String) = findOneWhereAction(_.email.toLowerCase === email.toLowerCase)
 
-  def findByLowerCasedLogin(login: String) =
-    findOneWhere(_.loginLowerCase === login.toLowerCase)
+  private def findByLowerCasedLoginAction(login: String) = findOneWhereAction(_.loginLowerCase === login.toLowerCase)
+
+  private def findOneWhere(condition: Users => Rep[Boolean]): Future[Option[User]] = {
+    db.run(findOneWhereAction(condition))
+  }
+
+  def findByEmail(email: String) = db.run(findByEmailAction(email))
+
+  def findByLowerCasedLogin(login: String) = db.run(findByLowerCasedLoginAction(login))
 
   def findByLoginOrEmail(loginOrEmail: String) = {
     findByLowerCasedLogin(loginOrEmail).flatMap(userOpt =>
