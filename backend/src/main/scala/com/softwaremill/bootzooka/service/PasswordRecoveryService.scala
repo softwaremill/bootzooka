@@ -38,7 +38,7 @@ class PasswordRecoveryService(
 
   private def storeCode(code: PasswordResetCode): Future[Unit] = {
     logger.debug("Storing code")
-    codeDao.store(code)
+    codeDao.add(code)
   }
 
   private def sendCode(code: PasswordResetCode): Future[Unit] = {
@@ -75,6 +75,6 @@ class PasswordRecoveryService(
   }
 
   private def invalidateResetCode(code: PasswordResetCode) = {
-    codeDao.delete(code)
+    codeDao.remove(code)
   }
 }

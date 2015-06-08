@@ -14,7 +14,7 @@ class PasswordResetCodeDao(protected val database: SqlDatabase)(implicit ec: Exe
   import database._
   import database.driver.api._
 
-  def store(code: PasswordResetCode): Future[Unit] = {
+  def add(code: PasswordResetCode): Future[Unit] = {
     db.run(passwordResetCodes += SqlPasswordResetCode(code)).mapToUnit
   }
 
@@ -33,7 +33,7 @@ class PasswordResetCodeDao(protected val database: SqlDatabase)(implicit ec: Exe
     db.run(convertFirstResultItem(q.result.headOption, conversion))
   }
 
-  def delete(code: PasswordResetCode): Future[Unit] =
+  def remove(code: PasswordResetCode): Future[Unit] =
     db.run(passwordResetCodes.filter(_.id === code.id).delete).mapToUnit
 
   private def convertFirstResultItem[A, B](action: DBIOAction[Option[A], _, _], conversion: (PartialFunction[A, B])) = {
