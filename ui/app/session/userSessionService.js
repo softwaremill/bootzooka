@@ -66,9 +66,5 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         }
     };
 
-    if (userSessionService.loggedUser === null && $cookies["scentry.auth.default.user"] !== null) {
-        userSessionService.validate();
-    }
-
     return userSessionService;
 });
