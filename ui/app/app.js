@@ -51,13 +51,13 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'sm
 angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);
 
 angular.module(
-        'smlBootzooka', [
-            'smlBootzooka.templates',
-            'smlBootzooka.profile',
-            'smlBootzooka.session',
-            'smlBootzooka.common',
-            'smlBootzooka.notifications',
-            'smlBootzooka.version', 'ngSanitize', 'ui.router'])
+    'smlBootzooka', [
+        'smlBootzooka.templates',
+        'smlBootzooka.profile',
+        'smlBootzooka.session',
+        'smlBootzooka.common',
+        'smlBootzooka.notifications',
+        'smlBootzooka.version', 'ngSanitize', 'ui.router'])
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/error404');
 
@@ -116,8 +116,8 @@ angular.module(
             }
 
             return {
-                response : success,
-                responseError : error
+                response: success,
+                responseError: error
             };
 
         }];
@@ -129,9 +129,9 @@ angular.module(
             return targetState && targetState.data && targetState.data.auth;
         }
 
-        $rootScope.$on('$stateChangeStart', function(ev, targetState, targetParams) {
-            if(requireAuth(targetState) && UserSessionService.isNotLogged()) {
-                $state.go('login', { targetState: targetState, targetParams: targetParams });
+        $rootScope.$on('$stateChangeStart', function (ev, targetState, targetParams) {
+            if (requireAuth(targetState) && UserSessionService.isNotLogged()) {
+                $state.go('login', {targetState: targetState, targetParams: targetParams});
                 ev.preventDefault();
             }
         });
@@ -141,4 +141,10 @@ angular.module(
             var message = FlashService.get();
             NotificationsService.showInfo(message);
         });
+    })
+    .run(function ($rootScope, UserSessionService) {
+        $rootScope.$on("$stateChangeStart", function () {
+            UserSessionService.validate();
+        });
     });
+
