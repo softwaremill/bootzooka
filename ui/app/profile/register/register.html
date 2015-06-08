@@ -5,7 +5,7 @@
                 <h3>Please sign up</h3>
 
                 <div class="form-group">
-                    <input type="text" name="login" class="form-control" placeholder="Login" ng-model="user.login" ng-minlength="3" required autofocus>
+                    <input type="text" name="login" class="form-control" placeholder="Login" ng-model="user.login" ng-minlength="3" required focus-on>
                     <p class="text-danger form-control-static" ng-show="registerForm.login.$dirty && registerForm.login.$error.required">Login is required</p>
                     <p class="text-danger form-control-static" ng-show="registerForm.login.$error.minlength">At least three characters!</p>
                 </div>

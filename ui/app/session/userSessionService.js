@@ -21,7 +21,6 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
         }
         if (!angular.isUndefined($cookies["scentry.auth.default.user"])) {
-            userSessionService.validate();
             return true;
         }
         return false;
@@ -66,6 +65,10 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
             return "";
         }
     };
+
+    if (userSessionService.loggedUser === null && $cookies["scentry.auth.default.user"] !== null) {
+        userSessionService.validate();
+    }
 
     return userSessionService;
 });
