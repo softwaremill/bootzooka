@@ -144,7 +144,11 @@ angular.module(
     })
     .run(function ($rootScope, UserSessionService) {
         $rootScope.$on("$stateChangeStart", function () {
-            UserSessionService.validate();
+            //We load user when he is logged in but wasn't loaded (e.g. after live reload)
+            //TODO it could be done better, now there is still problem with editing profile.
+            if (UserSessionService.isLogged() && !UserSessionService.isUserLoaded()) {
+                UserSessionService.validate();
+            }
         });
     });
 
