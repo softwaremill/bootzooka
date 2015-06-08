@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka
 
+import com.softwaremill.bootzooka.common.RealTimeClock
 import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.dao.{Daos, DaoConfig}
@@ -29,6 +30,7 @@ trait Beans extends LazyLogging with Daos {
     new DummyEmailSendingService
   }
 
+  implicit lazy val clock = RealTimeClock
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
 
   lazy val userService = new UserService(

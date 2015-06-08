@@ -1,19 +1,19 @@
 package com.softwaremill.bootzooka.service.user
 
+import java.util.UUID
+
+import com.softwaremill.bootzooka.common.{Clock, Utils}
 import com.softwaremill.bootzooka.dao.user.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
-import java.util.UUID
-import com.softwaremill.bootzooka.common.{RealTimeClock, Clock, Utils}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
 
 class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
-                  emailTemplatingEngine: EmailTemplatingEngine, clock: Clock = RealTimeClock)
-                 (implicit ec: ExecutionContext) {
+                  emailTemplatingEngine: EmailTemplatingEngine)
+                 (implicit ec: ExecutionContext, clock: Clock) {
 
   def load(userId: userDao.UserId) = {
     userDao.load(userId).map(toUserJson)
