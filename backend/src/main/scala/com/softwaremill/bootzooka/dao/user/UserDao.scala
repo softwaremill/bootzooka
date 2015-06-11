@@ -19,13 +19,13 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
     val action = (for {
       userByLoginOpt <- findByLowerCasedLoginAction(user.login)
       userByEmailOpt <- findByEmailAction(user.email)
-      _ <- addOrThrowAction(userByLoginOpt, userByEmailOpt, user)
+      _ <- addOrFailOnExistingAction(userByLoginOpt, userByEmailOpt, user)
     } yield ()).transactionally
 
     db.run(action)
   }
 
-  private def addOrThrowAction(userByLoginOpt: Option[User], userByEmailOpt: Option[User], user: User) = {
+  private def addOrFailOnExistingAction(userByLoginOpt: Option[User], userByEmailOpt: Option[User], user: User) = {
     if (userByLoginOpt.isDefined || userByEmailOpt.isDefined)
       DBIO.failed(new IllegalArgumentException("User with given e-mail or login already exists"))
     else
