@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka.service.templates
 
-import com.google.common.io.Resources
-import java.nio.charset.Charset
+import scala.io.Source
 
 class EmailTemplatingEngine {
   def registrationConfirmation(userName: String): EmailContentWithSubject = {
@@ -15,9 +14,10 @@ class EmailTemplatingEngine {
   }
 
   private def prepareEmailTemplate(templateNameWithoutExtension: String, params: Map[String, Object]): String = {
-    val rawTemplate = Resources.toString(
-      Resources.getResource(this.getClass, s"/templates/email/$templateNameWithoutExtension.txt"),
-      Charset.forName("UTF-8"))
+    val rawTemplate = Source
+      .fromURL(getClass.getResource(s"/templates/email/$templateNameWithoutExtension.txt"), "UTF-8")
+      .getLines()
+      .mkString("\n")
 
     params.foldLeft(rawTemplate) { case (template, (param, paramValue)) =>
       template.replaceAll(s"\\{\\{$param\\}\\}", paramValue.toString)
