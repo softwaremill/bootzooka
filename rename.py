@@ -86,3 +86,11 @@ updateFileContent('./', replaceExcludes, replacePhrase(initialRootPackage, packa
 
 print 'Moving classes to new package'
 moveSources(initialRootPackage, packageName, scalaModules)
+
+print 'Removing irrelevant files'
+os.remove('./activator.properties')
+os.remove('./CHANGELOG.md')
+os.remove('./README.md')
+os.remove('./ui/README.md')
+
+print 'Done! In case you want to roll back, call `git reset --hard HEAD; git clean -f -d`'
