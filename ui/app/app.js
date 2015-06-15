@@ -79,7 +79,7 @@ angular.module(
             });
     })
     .config(['$httpProvider', function ($httpProvider) {
-        var interceptor = ['$rootScope', '$q', '$injector', 'NotificationsService', function ($rootScope, $q, $injector, NotificationsService) {
+        var interceptor = ['$rootScope', '$q', '$injector', '$log', 'NotificationsService', function ($rootScope, $q, $injector, $log, NotificationsService) {
 
             function redirectToState(stateName) {
                 // Because $httpProvider is a factory for $http which is used by $state we can't inject it directly
@@ -100,7 +100,7 @@ angular.module(
                 if (response.status === 401) { // user is not logged in
                     $rootScope.$emit("401", {});
                 } else if (response.status === 403) {
-                    console.log(response.data);
+                    $log.error(response.data);
                     // do nothing, user is trying to modify data without privileges
                 } else if (response.status === 404) {
                     redirectToState('error404');
