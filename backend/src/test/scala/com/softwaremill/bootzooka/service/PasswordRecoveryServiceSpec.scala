@@ -1,9 +1,7 @@
 package com.softwaremill.bootzooka.service
 
 import java.util.UUID
-
-import com.softwaremill.bootzooka.dao.passwordResetCode.PasswordResetCodeDao
-import com.softwaremill.bootzooka.dao.user.UserDao
+import com.softwaremill.bootzooka.dao.{UserDao, PasswordResetCodeDao}
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.CoreConfig
 import com.softwaremill.bootzooka.service.email.EmailScheduler

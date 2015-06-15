@@ -1,12 +1,13 @@
-package com.softwaremill.bootzooka.dao.user
+package com.softwaremill.bootzooka.dao
 
 import java.util.UUID
 
+import com.softwaremill.bootzooka.common.FutureHelpers._
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.domain.User
+import org.joda.time.DateTime
 
 import scala.concurrent.{ExecutionContext, Future}
-import com.softwaremill.bootzooka.common.FutureHelpers._
 
 class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionContext) extends SqlUserSchema {
 
@@ -84,4 +85,29 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
   def changeEmail(currentEmail: String, newEmail: String): Future[Unit] = {
     db.run(users.filter(_.email.toLowerCase === currentEmail.toLowerCase).map(_.email).update(newEmail)).mapToUnit
   }
+}
+
+trait SqlUserSchema {
+
+  protected val database: SqlDatabase
+
+  import database._
+  import database.driver.api._
+
+  protected val users = TableQuery[Users]
+
+  protected class Users(tag: Tag) extends Table[User](tag, "users") {
+    def id              = column[UUID]("id", O.PrimaryKey)
+    def login           = column[String]("login")
+    def loginLowerCase  = column[String]("login_lowercase")
+    def email           = column[String]("email")
+    def password        = column[String]("password")
+    def salt            = column[String]("salt")
+    def token           = column[String]("token")
+    def createdOn       = column[DateTime]("created_on")
+
+    def * = (id, login, loginLowerCase, email, password, salt, token, createdOn) <>
+      (User.tupled, User.unapply)
+  }
+
 }

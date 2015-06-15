@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.service.user
 
-import com.softwaremill.bootzooka.dao.user.UserDao
+import com.softwaremill.bootzooka.dao.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.EmailScheduler
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}

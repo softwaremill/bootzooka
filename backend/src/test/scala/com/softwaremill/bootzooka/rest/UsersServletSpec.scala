@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.BootzookaServletSpec
-import com.softwaremill.bootzooka.dao.user.UserDao
+import com.softwaremill.bootzooka.dao.UserDao
 import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}

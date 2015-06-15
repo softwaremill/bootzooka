@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.dao.user
+package com.softwaremill.bootzooka.dao
 
 import java.util.UUID
 

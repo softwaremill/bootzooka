@@ -1,7 +1,6 @@
-package com.softwaremill.bootzooka.dao.passwordResetCode
+package com.softwaremill.bootzooka.dao
 
-import com.softwaremill.bootzooka.dao.user.UserDao
-import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
+import com.softwaremill.bootzooka.domain.PasswordResetCode
 import com.softwaremill.bootzooka.test.{FlatSpecWithSql, UserTestHelpers}
 import org.scalatest.Matchers
 import org.scalatest.concurrent.IntegrationPatience
