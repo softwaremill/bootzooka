@@ -1,6 +1,5 @@
 package com.softwaremill.bootzooka.dao
 
-import com.softwaremill.bootzooka.dao.{UserDao, PasswordResetCodeDao}
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 
 import scala.concurrent.ExecutionContext
