@@ -10,14 +10,17 @@ describe("Profile Controller", function () {
     var $httpBackend, ctrl, scope, userSessionService;
 
     beforeEach(inject(function ($rootScope, $controller, _$httpBackend_, UserSessionService) {
-        UserSessionService.loggedUser = {
+        var user = {
             login: "user1",
             email: "user1@sml.com"
         };
+        UserSessionService.loggedUser.init(user);
         userSessionService = UserSessionService;
         scope = $rootScope.$new();
         ctrl = $controller("ProfileCtrl", {$scope: scope});
         $httpBackend = _$httpBackend_;
+        $httpBackend.expectGET('rest/users').respond(user);
+        $httpBackend.flush();
     }));
 
     var withValidForm = function () {

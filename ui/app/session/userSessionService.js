@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource, $cookies, $q) {
+angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource) {
 
     var self = this;
 
@@ -11,23 +11,33 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     self.logoutResource = $resource('rest/users/logout', {}, {}, {});
 
-    var userSessionService = {
-        loggedUser: null
+    var initPromise = function () {
+        self.userResource.valid().$promise.then(function (data) {
+            userSessionService.loggedUser.init(data);
+        });
     };
 
-    userSessionService.isUserLoaded = function () {
-        return userSessionService.loggedUser !== null;
+    var userSessionService = {
+        loggedUser: {
+            login: "",
+            email: "",
+            isLogged: false,
+            init: function (user) {
+                this.email = user.email;
+                this.login = user.login;
+                this.isLogged = true;
+            },
+            reset: function () {
+                this.email = "";
+                this.login = "";
+                this.isLogged = false;
+            }
+        },
+        loggedUserPromise: initPromise()
     };
 
     userSessionService.isLogged = function () {
-        if (userSessionService.loggedUser !== null) {
-            return true;
-
-        }
-        if (!angular.isUndefined($cookies["scentry.auth.default.user"])) {
-            return true;
-        }
-        return false;
+        return userSessionService.loggedUser.isLogged;
     };
 
     userSessionService.isNotLogged = function () {
@@ -36,7 +46,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     userSessionService.login = function (user, successFunction, errorFunction) {
         self.userResource.login(angular.toJson(user), function (data) {
-            userSessionService.loggedUser = data;
+            userSessionService.loggedUser.init(data);
             if (typeof successFunction === "function") {
                 successFunction(data);
             }
@@ -45,17 +55,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     userSessionService.logout = function (successFunction) {
         self.logoutResource.query(null, function (data) {
-            userSessionService.loggedUser = null;
-            delete $cookies["scentry.auth.default.user"];
-            if (typeof successFunction === "function") {
-                successFunction(data);
-            }
-        });
-    };
-
-    userSessionService.validate = function (successFunction) {
-        self.userResource.valid(function (data) {
-            userSessionService.loggedUser = data;
+            userSessionService.loggedUser.reset();
             if (typeof successFunction === "function") {
                 successFunction(data);
             }
@@ -71,4 +71,5 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     };
 
     return userSessionService;
-});
+})
+;

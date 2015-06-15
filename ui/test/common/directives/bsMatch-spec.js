@@ -9,11 +9,11 @@ describe("Match directive", function () {
     beforeEach(inject(function ($rootScope, $compile) {
         elm = angular.element(
             '<form name="registerForm" novalidate>' +
-                '<input type="password" name="password" ng-model="model.password1">' +
-                '<input type="password" name="repeatPassword" ng-model="model.password2" bs-match="model.password1">' +
+            '<input type="password" name="password" ng-model="model.password1">' +
+            '<input type="password" name="repeatPassword" ng-model="model.password2" bs-match="model.password1">' +
             '</form>');
         scope = $rootScope;
-        scope.model = { password1: null, password2: null};
+        scope.model = {password1: null, password2: null};
         $compile(elm)(scope);
         scope.$digest();
         form = scope.registerForm;

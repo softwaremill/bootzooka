@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootzooka.session').controller('UserSessionCtrl', function UserSessionCtrl($scope, $location, UserSessionService) {
+angular.module('smlBootzooka.session').controller('UserSessionCtrl', function UserSessionCtrl($rootScope, $window, $scope, $location, UserSessionService, FlashService) {
     $scope.isLogged = function () {
         return UserSessionService.isLogged();
     };
@@ -15,7 +15,14 @@ angular.module('smlBootzooka.session').controller('UserSessionCtrl', function Us
 
     $scope.logout = function () {
         UserSessionService.logout(function () {
-            $location.path("/");
+            $window.location = '/'
         });
     };
+
+    $rootScope.$on('401', function () {
+        if (UserSessionService.isLogged()) {
+            UserSessionService.logout();
+            FlashService.set('Your session timed out. Please login again.');
+        }
+    });
 });

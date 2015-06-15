@@ -11,9 +11,9 @@ describe("Blur directive", function () {
             '<form name="form"><input type="text" ng-model="model.login" name="login" bs-blur="changeLogin()"></form>');
         scope = $rootScope;
 
-        scope.model = { login: ''};
+        scope.model = {login: ''};
         scope.callSpy = 'not called';
-        scope.changeLogin = function() {
+        scope.changeLogin = function () {
             scope.callSpy = 'called';
         };
         $compile(elm)(scope);
