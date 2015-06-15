@@ -1,0 +1,4 @@
+name: Bootzooka Documentation
+markdown: redcarpet
+highlighter: pygments
+baseurl: "/bootzooka/"
