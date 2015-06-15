@@ -26,9 +26,6 @@ val bugsnag = "com.bugsnag" % "bugsnag" % "1.2.8"
 
 val typesafeConfig = "com.typesafe" % "config" % "1.2.1"
 
-val commonsValidator = "commons-validator" % "commons-validator" % "1.4.0" exclude("commons-logging", "commons-logging")
-val commonsLang = "org.apache.commons" % "commons-lang3" % "3.3.2"
-
 val jetty = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion
 val jettyContainer = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "container"
 val jettyTest = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "test"
@@ -45,7 +42,7 @@ val scalatraJson = "org.scalatra" %% "scalatra-json" % scalatraVersion
 val scalatraSwagger = "org.scalatra" %% "scalatra-swagger" % scalatraVersion
 val json4s = "org.json4s" %% "json4s-native" % json4sVersion
 val scalatraAuth = "org.scalatra" %% "scalatra-auth" % scalatraVersion exclude("commons-logging", "commons-logging")
-lazy val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, scalatraSwagger, json4s, scalatraAuth, commonsLang)
+lazy val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, scalatraSwagger, json4s, scalatraAuth)
 
 val javaxMail = "javax.mail" % "javax.mail-api" % "1.5.2"
 
@@ -113,7 +110,7 @@ lazy val backend: Project = (project in file("backend"))
   .settings(commonSettings ++ webSettings: _*)
   .settings(
     libraryDependencies ++= jodaDependencies ++ slickStack ++ scalatraStack ++
-      Seq(jettyContainer, commonsValidator, javaxMail, typesafeConfig, servletApiProvided, bugsnag),
+      Seq(jettyContainer, javaxMail, typesafeConfig, servletApiProvided, bugsnag),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](

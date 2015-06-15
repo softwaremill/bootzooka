@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.rest
 import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.user.UserService
-import org.apache.commons.lang3.StringUtils
 import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
 import org.scalatra.{AsyncResult, FutureSupport, NoContent}
 
@@ -34,7 +33,7 @@ class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, 
   post("/:code", operation(resetPassword)) {
     val code = params("code")
     val password = (parsedBody \ "password").extractOpt[String].getOrElse("")
-    if (!StringUtils.isBlank(password)) {
+    if (!password.isEmpty) {
       new AsyncResult {
         val is = passwordRecoveryService.performPasswordReset(code, password).map {
           case Left(e) => haltWithForbidden(e)

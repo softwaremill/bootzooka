@@ -4,7 +4,6 @@ import org.scalatra._
 import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
-import org.apache.commons.lang3.StringEscapeUtils._
 import org.scalatra.swagger.{StringResponseMessage, SwaggerSupport, Swagger}
 
 import scala.concurrent.{Future, ExecutionContext}
@@ -48,7 +47,8 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
           case Left(error) =>
             Future { haltWithConflict(error) }
           case _ =>
-            userService.registerNewUser(escapeHtml4(paramLogin), paramEmail, paramPass).map(
+            val loginEscaped = scala.xml.Utility.escape(paramLogin)
+            userService.registerNewUser(loginEscaped, paramEmail, paramPass).map(
             _ => Created(StringJsonWrapper("success")))
         }
       }
