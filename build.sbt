@@ -7,6 +7,8 @@ import com.earldouglas.xsbtwebplugin.PluginKeys._
 import sbt.ScalaVersion
 import com.earldouglas.xsbtwebplugin.WebPlugin.webSettings
 
+import scala.util.Try
+
 val slf4jVersion = "1.7.9"
 val logBackVersion = "1.1.2"
 val scalatraVersion = "2.3.1"
@@ -101,20 +103,22 @@ def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
   haltOnCmdResultError(buildGrunt())
 } dependsOn updateNpm
 
-lazy val rootProject = (project in file(".")).
-  settings(commonSettings: _*)
+lazy val rootProject = (project in file("."))
+  .settings(commonSettings: _*)
   .aggregate(backend, ui, dist)
 
-lazy val backend: Project = (project in file("backend")).
-  settings(commonSettings ++ webSettings: _*).
-  settings(
+lazy val backend: Project = (project in file("backend"))
+  .enablePlugins(BuildInfoPlugin)
+  .settings(commonSettings ++ webSettings: _*)
+  .settings(
     libraryDependencies ++= jodaDependencies ++ slickOnH2Stack ++ scalatraStack ++
       Seq(jettyContainer, commonsValidator, javaxMail, typesafeConfig, servletApiProvided, bugsnag),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](
       BuildInfoKey.action("buildDate")(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date())),
-      BuildInfoKey.action("buildSha")((Process("git rev-parse HEAD") !!).stripLineEnd)),
+      // if the build is done outside of a git repository, we still want it to succeed
+      BuildInfoKey.action("buildSha")(Try(Process("git rev-parse HEAD").!!.stripLineEnd).getOrElse("?"))),
     Seq(
       artifactName := { (config: ScalaVersion, module: ModuleID, artifact: Artifact) =>
         "bootzooka." + artifact.extension // produces nice war name -> http://stackoverflow.com/questions/8288859/how-do-you-remove-the-scala-version-postfix-from-artifacts-builtpublished-wi
