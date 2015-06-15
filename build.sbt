@@ -136,27 +136,26 @@ lazy val backend: Project = (project in file("backend")).
       packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"))
   )
 
-lazy val ui = (project in file("ui")).
-  settings(commonSettings: _*).
-  settings(test in Test <<= (test in Test) dependsOn gruntTask("test"))
+lazy val ui = (project in file("ui"))
+  .settings(commonSettings: _*)
+  .settings(test in Test <<= (test in Test) dependsOn gruntTask("test"))
 
-lazy val dist = (project in file("dist")).
-  settings(commonSettings: _*).
-  settings(
+lazy val dist = (project in file("dist"))
+  .settings(commonSettings: _*)
+  .settings(
     libraryDependencies += jetty,
     mainClass in assembly := Some("com.softwaremill.bootzooka.AppRunner"),
     // We need to include the whole webapp, hence replacing the resource directory
     unmanagedResourceDirectories in Compile <<= baseDirectory { bd => {
       List(bd.getParentFile / backend.base.getName / "src" / "main", bd.getParentFile / ui.base.getName / "dist")
-    }
-    },
+    } },
     assemblyJarName in assembly := "bootzooka.jar",
     assembly <<= assembly dependsOn gruntTask("build")
   ) dependsOn(ui, backend)
 
-lazy val uiTests = (project in file("ui-tests")).
-  settings(commonSettings: _*).
-  settings(
+lazy val uiTests = (project in file("ui-tests"))
+  .settings(commonSettings: _*)
+  .settings(
     parallelExecution := false,
     libraryDependencies ++= seleniumStack ++ Seq(awaitility, jettyTest, servletApiProvided),
     test in Test <<= (test in Test) dependsOn (Keys.`package` in Compile in backend)
