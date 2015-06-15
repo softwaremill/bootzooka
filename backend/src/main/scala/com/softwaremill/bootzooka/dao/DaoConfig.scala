@@ -6,5 +6,6 @@ import com.typesafe.config.Config
 trait DaoConfig extends ConfigWithDefault {
   def rootConfig: Config
 
-  lazy val embeddedDataDir: String = getString("bootzooka.data-dir", "./data")
+  lazy val dbH2EmbeddedDataDir      = getString("updateimpact.db.h2.data-dir", "./data")
+  lazy val dbPostgresConnectionUrl  = getString("updateimpact.db.postgres.connection-url", "")
 }

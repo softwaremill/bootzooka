@@ -20,7 +20,7 @@ trait Beans extends LazyLogging with Daos {
     override def rootConfig = ConfigFactory.load()
   }
 
-  override lazy val sqlDatabase = SqlDatabase.createEmbedded(config)
+  override lazy val sqlDatabase = SqlDatabase.create(config)
   override implicit val ec: ExecutionContext = global
 
   lazy val emailService = if (config.emailEnabled) {
