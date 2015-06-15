@@ -2,13 +2,14 @@
 
 describe('User Session Controller', function () {
     beforeEach(module('smlBootzooka.session'));
+    beforeEach(module("smlBootzooka.common.services"));
 
     describe('without logged user', function () {
         var scope, ctrl, userSessionService;
 
-        beforeEach(inject(function ($rootScope, $controller, UserSessionService) {
+        beforeEach(inject(function ($rootScope, $controller, UserSessionService, FlashService) {
             scope = $rootScope.$new();
-            ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: {}});
+            ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: FlashService});
             userSessionService = UserSessionService;
         }));
 
@@ -20,9 +21,9 @@ describe('User Session Controller', function () {
     describe('with user logged in', function () {
         var scope, ctrl, userSessionService, $httpBackend, $cookies;
 
-        beforeEach(inject(function ($rootScope, $controller, _$cookies_, _$httpBackend_, $location, UserSessionService) {
+        beforeEach(inject(function ($rootScope, $controller, _$cookies_, _$httpBackend_, $location, UserSessionService, FlashService) {
             scope = $rootScope.$new();
-            ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: {}});
+            ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: FlashService});
             userSessionService = UserSessionService;
             $cookies = _$cookies_;
             $cookies["scentry.auth.default.user"] = "Jan Kowalski";
