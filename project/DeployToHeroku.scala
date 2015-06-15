@@ -27,7 +27,7 @@ object DeployToHeroku {
       val baseDir = baseDirectory.value / ".."
 
       val includedFiles = java.util.Arrays.asList(assemblyFile)
-      val processTypes = JavaConversions.mapAsJavaMap(Map("web" -> "java $JAVA_OPTS -jar app.jar"))
+      val processTypes = JavaConversions.mapAsJavaMap(Map("web" -> "java $JAVA_OPTS -jar bootzooka.jar"))
       new DeployToHeroku("sbt-heroku", baseDir, target.value, java.util.Collections.emptyList(), streams.value.log)
         .deploy(includedFiles, java.util.Collections.emptyMap[String, String](), "", "cedar-14", processTypes, "slug.tgz")
     }
