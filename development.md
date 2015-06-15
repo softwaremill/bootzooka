@@ -30,4 +30,4 @@ To run the frontend server part, enter the main directory and type `./frontend-s
 `http://0.0.0.0:9090/` in your browser (frontend listens on port 9090, backend on port 8080; so all HTTP requests
  will be proxied to port 8080).
 
-For details of frontend build and architecture please refere to the [bootzooka-ui README](bootzooka-ui).
+For details of frontend build and architecture please refere to the [frontend docs](frontend.html).
