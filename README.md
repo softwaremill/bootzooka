@@ -101,11 +101,11 @@ For details of frontend build and architecture please refere to the [bootzooka-u
 
 ### Fat jar
 
-To build an executable jar, simply run `bootzooka-dist/assembly` (that is, the `assembly` task in the `bootzooka-dist`
+To build an executable jar, simply run `dist/assembly` (that is, the `assembly` task in the `dist`
 subproject). This will create a fat-jar with all the code, processed javascript, css and html. You can run the jar
 simply by running java:
 
-    java -jar bootzooka-dist/target/scala-2.11/bootzooka-dist-assembly-0.0.1-SNAPSHOT.jar
+    java -jar bootzooka-dist/target/scala-2.11/bootzooka.jar
 
 ### Deployable .war
 

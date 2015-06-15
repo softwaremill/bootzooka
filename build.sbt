@@ -5,8 +5,6 @@ import sbt._
 import Keys._
 import com.earldouglas.xsbtwebplugin.PluginKeys._
 import sbt.ScalaVersion
-import sbtassembly.Plugin._
-import AssemblyKeys._
 import sbtbuildinfo.Plugin._
 import com.earldouglas.xsbtwebplugin.WebPlugin.webSettings
 
@@ -143,7 +141,7 @@ lazy val ui = (project in file("ui")).
   settings(test in Test <<= (test in Test) dependsOn gruntTask("test"))
 
 lazy val dist = (project in file("dist")).
-  settings(commonSettings ++ assemblySettings: _*).
+  settings(commonSettings: _*).
   settings(
     libraryDependencies += jetty,
     mainClass in assembly := Some("com.softwaremill.bootzooka.AppRunner"),
@@ -151,7 +149,9 @@ lazy val dist = (project in file("dist")).
     unmanagedResourceDirectories in Compile <<= baseDirectory { bd => {
       List(bd.getParentFile / backend.base.getName / "src" / "main", bd.getParentFile / ui.base.getName / "dist")
     }
-    }
+    },
+    assemblyJarName in assembly := "bootzooka.jar",
+    assembly <<= assembly dependsOn gruntTask("build")
   ) dependsOn(ui, backend)
 
 lazy val uiTests = (project in file("ui-tests")).
