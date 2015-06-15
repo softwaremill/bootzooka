@@ -4,7 +4,7 @@ import java.util.UUID
 import com.softwaremill.bootzooka.dao.{UserDao, PasswordResetCodeDao}
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.CoreConfig
-import com.softwaremill.bootzooka.service.email.EmailScheduler
+import com.softwaremill.bootzooka.service.email.EmailService
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.test.UserTestHelpers
 import org.joda.time.DateTime
@@ -27,18 +27,18 @@ with IntegrationPatience with UserTestHelpers {
 
   def generateRandomId = UUID.randomUUID()
 
-  def withCleanMocks(test: (UserDao, PasswordResetCodeDao, EmailScheduler, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
+  def withCleanMocks(test: (UserDao, PasswordResetCodeDao, EmailService, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
     val userDao = prepareUserDaoMock
     val codeDao = mock[PasswordResetCodeDao]
-    val emailScheduler = mock[EmailScheduler]
+    val emailService = mock[EmailService]
     val emailTemplatingEngine = mock[EmailTemplatingEngine]
-    val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailScheduler, emailTemplatingEngine,
+    val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailService, emailTemplatingEngine,
       new CoreConfig {
         override def rootConfig = null
         override lazy val resetLinkPattern = "%s"
       })
 
-    test(userDao, codeDao, emailScheduler, passwordRecoveryService, emailTemplatingEngine)
+    test(userDao, codeDao, emailService, passwordRecoveryService, emailTemplatingEngine)
   }
 
   def prepareUserDaoMock = {

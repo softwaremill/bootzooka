@@ -8,7 +8,7 @@ import com.softwaremill.bootzooka.service.config.EmailConfig
 
 import scala.util.{Failure, Try, Success}
 
-class ProductionEmailSendingService(emailConfig: EmailConfig)(implicit ec: ExecutionContext) extends EmailScheduler with LazyLogging {
+class SmtpEmailService(emailConfig: EmailConfig)(implicit ec: ExecutionContext) extends EmailService with LazyLogging {
   def scheduleEmail(address: String, email: EmailContentWithSubject) = {
     val result = Future {
       val emailToSend = new EmailDescription(List(address), email.content, email.subject)

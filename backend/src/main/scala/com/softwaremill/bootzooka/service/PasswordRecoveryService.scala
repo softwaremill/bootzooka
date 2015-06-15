@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.dao.{UserDao, PasswordResetCodeDao}
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.CoreConfig
-import com.softwaremill.bootzooka.service.email.EmailScheduler
+import com.softwaremill.bootzooka.service.email.EmailService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PasswordRecoveryService(
   userDao: UserDao,
   codeDao: PasswordResetCodeDao,
-  emailScheduler: EmailScheduler,
+  emailService: EmailService,
   emailTemplatingEngine: EmailTemplatingEngine,
   config: CoreConfig)(implicit ec: ExecutionContext) extends LazyLogging {
 
@@ -42,7 +42,7 @@ class PasswordRecoveryService(
 
   private def sendCode(code: PasswordResetCode): Future[Unit] = {
     logger.debug("Scheduling e-mail with reset code")
-    emailScheduler.scheduleEmail(code.user.email, prepareResetEmail(code.user, code))
+    emailService.scheduleEmail(code.user.email, prepareResetEmail(code.user, code))
   }
 
   private def prepareResetEmail(user: User, code: PasswordResetCode) = {

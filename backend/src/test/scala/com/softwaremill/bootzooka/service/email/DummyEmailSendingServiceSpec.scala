@@ -7,7 +7,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class DummyEmailSendingServiceSpec extends FunSpec with Matchers {
   describe("Dummy email sending service") {
     it("send scheduled email") {
-      val service = new DummyEmailSendingService
+      val service = new DummyEmailService
       service.scheduleEmail("test@sml.com", new EmailContentWithSubject("content", "subject"))
       service.run()
       service.wasEmailSent("test@sml.com", "subject") should be(true)

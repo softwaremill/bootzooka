@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.service.email.sender.EmailDescription
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DummyEmailSendingService(implicit val ec: ExecutionContext) extends EmailScheduler with LazyLogging {
+class DummyEmailService(implicit val ec: ExecutionContext) extends EmailService with LazyLogging {
 
   private val emailsToSend: ListBuffer[EmailDescription] = ListBuffer()
 

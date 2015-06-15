@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.service.user
 
 import com.softwaremill.bootzooka.dao.UserDao
 import com.softwaremill.bootzooka.domain.User
-import com.softwaremill.bootzooka.service.email.EmailScheduler
+import com.softwaremill.bootzooka.service.email.EmailService
 import com.softwaremill.bootzooka.service.templates.{EmailContentWithSubject, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.test.{UserTestHelpers, FlatSpecWithSql}
 import org.mockito.BDDMockito._
@@ -27,7 +27,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
   }
 
   val registrationDataValidator: RegistrationDataValidator = mock[RegistrationDataValidator]
-  val emailScheduler = mock[EmailScheduler]
+  val emailService = mock[EmailService]
   val emailTemplatingEngine = mock[EmailTemplatingEngine]
   var userDao: UserDao = _
   var userService: UserService = _
@@ -35,7 +35,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
   override protected def beforeEach() = {
     super.beforeEach()
     userDao = prepareUserDaoMock
-    userService = new UserService(userDao, registrationDataValidator, emailScheduler, emailTemplatingEngine)
+    userService = new UserService(userDao, registrationDataValidator, emailService, emailTemplatingEngine)
   }
 
   // this test is silly :\
@@ -92,7 +92,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
 
   "registerNewUser" should "add user with unique lowercased login info" in {
     // Given
-    given(emailScheduler.scheduleEmail(any(), any())).willReturn(Future {})
+    given(emailService.scheduleEmail(any(), any())).willReturn(Future {})
 
     // When
     userService.registerNewUser("John", "newUser@sml.com", "password").futureValue
@@ -105,7 +105,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     user.login should be ("John")
     user.loginLowerCased should be ("john")
     verify(emailTemplatingEngine).registrationConfirmation(Matchers.eq("John"))
-    verify(emailScheduler)
+    verify(emailService)
       .scheduleEmail(Matchers.eq("newUser@sml.com"), any[EmailContentWithSubject])
   }
 
@@ -118,7 +118,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
       case e: Exception =>
     }
     // Then
-    verify(emailScheduler, never()).scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
+    verify(emailService, never()).scheduleEmail(Matchers.eq("secondEmail@sml.com"), any[EmailContentWithSubject])
   }
 
   "changeEmail" should "change email for specified user" in {

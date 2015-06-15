@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.BootzookaServletSpec
 import com.softwaremill.bootzooka.dao.UserDao
-import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
+import com.softwaremill.bootzooka.service.email.DummyEmailService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
 import com.softwaremill.bootzooka.test.{FlatSpecWithSql, UserTestHelpers}
@@ -21,7 +21,7 @@ class UsersServletSpec extends BootzookaServletSpec with FlatSpecWithSql with Us
     dao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1"))
     dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
 
-    val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailSendingService(), new EmailTemplatingEngine))
+    val userService = spy(new UserService(dao, new RegistrationDataValidator(), new DummyEmailService(), new EmailTemplatingEngine))
 
     servlet = new UsersServlet(userService)
     addServlet(servlet, "/*")

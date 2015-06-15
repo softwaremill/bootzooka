@@ -6,7 +6,7 @@ import com.softwaremill.bootzooka.dao.sql.SqlDatabase
 import com.softwaremill.bootzooka.dao.{Daos, DaoConfig}
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.config.{CoreConfig, EmailConfig}
-import com.softwaremill.bootzooka.service.email.{DummyEmailSendingService, ProductionEmailSendingService}
+import com.softwaremill.bootzooka.service.email.{DummyEmailService, SmtpEmailService}
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
 import com.typesafe.config.ConfigFactory
@@ -23,11 +23,11 @@ trait Beans extends LazyLogging with Daos {
   override lazy val sqlDatabase = SqlDatabase.createEmbedded(config)
   override implicit val ec: ExecutionContext = global
 
-  lazy val emailScheduler = if (config.emailEnabled) {
-    new ProductionEmailSendingService(config)
+  lazy val emailService = if (config.emailEnabled) {
+    new SmtpEmailService(config)
   } else {
     logger.info("Starting with fake email sending service. No emails will be sent.")
-    new DummyEmailSendingService
+    new DummyEmailService
   }
 
   implicit lazy val clock = RealTimeClock
@@ -36,13 +36,13 @@ trait Beans extends LazyLogging with Daos {
   lazy val userService = new UserService(
     userDao,
     new RegistrationDataValidator(),
-    emailScheduler,
+    emailService,
     emailTemplatingEngine)
 
   lazy val passwordRecoveryService = new PasswordRecoveryService(
     userDao,
     codeDao,
-    emailScheduler,
+    emailService,
     emailTemplatingEngine,
     config)
 

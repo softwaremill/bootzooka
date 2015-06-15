@@ -6,12 +6,12 @@ import com.softwaremill.bootzooka.common.{Clock, Utils}
 import com.softwaremill.bootzooka.dao.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
-import com.softwaremill.bootzooka.service.email.EmailScheduler
+import com.softwaremill.bootzooka.service.email.EmailService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataValidator, emailScheduler: EmailScheduler,
+class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataValidator, emailService: EmailService,
                   emailTemplatingEngine: EmailTemplatingEngine)
                  (implicit ec: ExecutionContext, clock: Clock) {
 
@@ -27,7 +27,7 @@ class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataV
     val now = clock.nowUtc
     userDao.add(User(login, email.toLowerCase, password, salt, token, now)).flatMap (_ => {
       val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
-      emailScheduler.scheduleEmail(email, confirmationEmail)
+      emailService.scheduleEmail(email, confirmationEmail)
     })
   }
 

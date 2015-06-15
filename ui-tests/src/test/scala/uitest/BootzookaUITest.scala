@@ -2,7 +2,7 @@ package uitest
 
 import java.util.concurrent.TimeUnit
 
-import com.softwaremill.bootzooka.service.email.DummyEmailSendingService
+import com.softwaremill.bootzooka.service.email.DummyEmailService
 import com.softwaremill.bootzooka.{Beans, EmbeddedJetty, EmbeddedJettyConfig}
 import com.typesafe.config.ConfigFactory
 import org.eclipse.jetty.webapp.WebAppContext
@@ -24,7 +24,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
   final val MESSAGE = "Dummy message"
 
   var driver: FirefoxDriver = _
-  var emailService: DummyEmailSendingService = _
+  var emailService: DummyEmailService = _
   var loginPage: LoginPage = _
   var messagesPage: MessagesPage = _
   var passwordRestPage: PasswordResetPage = _
@@ -45,7 +45,7 @@ class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll
     beans = context.getAttribute("appObject").asInstanceOf[Beans]
     registerUserIfNotExists(REGUSER, REGMAIL, REGPASS)
     registerUserIfNotExists("1" + REGUSER, "1" + REGMAIL, REGPASS)
-    emailService = beans.emailScheduler.asInstanceOf[DummyEmailSendingService]
+    emailService = beans.emailService.asInstanceOf[DummyEmailService]
   }
 
   /**
