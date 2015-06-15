@@ -12,8 +12,10 @@ module.exports = function (grunt) {
                 files: ['app/**/*.html'],
                 tasks: ['html2js']
             },
-            livereload: {
+            watchAndLivereload: {
                 options: {
+                    // Start livereload server on port 9988.
+                    // When event occurs, it sends it to the connected page via WebSocket
                     livereload: 9988
                 },
                 files: [
@@ -41,7 +43,11 @@ module.exports = function (grunt) {
                     middleware: function (connect) {
                         return [
                             proxyRequests,
+
+                            // Add the bit of JS to the page that connects to livereload server with WebSocket
+                            // and listenes for events.
                             liveReload,
+
                             connect.static('tmp'),
                             connect().use('/bower_files', connect.static('./bower_files')),
                             connect.static('app')
