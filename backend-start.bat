@@ -1,2 +1,2 @@
 @setlocal
-sbt container:start "~ compile"
+sbt "~;container:start; container:reload /"

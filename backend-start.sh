@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sbt container:start "~ compile"
+sbt "~;container:start; container:reload /"
