@@ -143,6 +143,7 @@ lazy val ui = (project in file("ui"))
 
 lazy val dist = (project in file("dist"))
   .settings(commonSettings: _*)
+  .settings(DeployToHeroku.settings: _*)
   .settings(
     libraryDependencies += jetty,
     mainClass in assembly := Some("com.softwaremill.bootzooka.AppRunner"),
