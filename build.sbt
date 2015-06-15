@@ -5,7 +5,6 @@ import sbt._
 import Keys._
 import com.earldouglas.xsbtwebplugin.PluginKeys._
 import sbt.ScalaVersion
-import sbtbuildinfo.Plugin._
 import com.earldouglas.xsbtwebplugin.WebPlugin.webSettings
 
 val slf4jVersion = "1.7.9"
@@ -109,10 +108,8 @@ lazy val rootProject = (project in file(".")).
 lazy val backend: Project = (project in file("backend")).
   settings(commonSettings ++ webSettings: _*).
   settings(
-    buildInfoSettings,
     libraryDependencies ++= jodaDependencies ++ slickOnH2Stack ++ scalatraStack ++
       Seq(jettyContainer, commonsValidator, javaxMail, typesafeConfig, servletApiProvided, bugsnag),
-    sourceGenerators in Compile <+= buildInfo,
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](
