@@ -9,7 +9,6 @@ class DummyEmailSendingServiceSpec extends FunSpec with Matchers {
     it("send scheduled email") {
       val service = new DummyEmailService
       service.scheduleEmail("test@sml.com", new EmailContentWithSubject("content", "subject"))
-      service.run()
       service.wasEmailSent("test@sml.com", "subject") should be(true)
     }
   }

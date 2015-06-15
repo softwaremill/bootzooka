@@ -1,42 +1,29 @@
 package com.softwaremill.bootzooka.service.email
 
-import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
-import collection.mutable.ListBuffer
-import com.typesafe.scalalogging.LazyLogging
 import com.softwaremill.bootzooka.service.email.sender.EmailDescription
+import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
+import com.typesafe.scalalogging.LazyLogging
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.Future
 
-class DummyEmailService(implicit val ec: ExecutionContext) extends EmailService with LazyLogging {
-
-  private val emailsToSend: ListBuffer[EmailDescription] = ListBuffer()
+class DummyEmailService extends EmailService with LazyLogging {
 
   private val sentEmails: ListBuffer[EmailDescription] = ListBuffer()
-
-  def run() {
-    var tempList: ListBuffer[EmailDescription] = ListBuffer()
-    this.synchronized {
-      tempList ++= emailsToSend
-      sentEmails ++= emailsToSend
-      emailsToSend.clear()
-    }
-    for (email <- tempList) {
-      logger.info("Dummy send email: " + emailToString(email))
-    }
-
-  }
 
   def emailToString(email: EmailDescription): String = {
     email.emails.mkString + ", " + email.subject + ", " + email.message
   }
 
   override def scheduleEmail(address: String, emailData: EmailContentWithSubject) = {
+    val email = new EmailDescription(List(address), emailData.content, emailData.subject)
+
     this.synchronized {
-      emailsToSend += new EmailDescription(List(address), emailData.content, emailData.subject)
+      sentEmails += email
     }
-    Future {
-      logger.debug(s"Email to $address scheduled.")
-    }
+
+    logger.debug(s"Would send email to $address, if this wasn't a dummy email service implementation.")
+    Future.successful(())
   }
 
   def wasEmailSent(address: String, subject: String): Boolean = {
