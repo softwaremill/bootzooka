@@ -14,9 +14,7 @@ module.exports = function (grunt) {
             },
             livereload: {
                 options: {
-                    livereload: {
-                        port: 9988
-                    }
+                    livereload: 9988
                 },
                 files: [
                     'app/**/*.js',
@@ -24,7 +22,8 @@ module.exports = function (grunt) {
                     'app/common/styles/*.css',
                     'tmp/scripts/**/*.js',
                     'app/*.html',
-                    'app/**/*.html'
+                    'app/**/*.html',
+                    '../backend/target/**/*'
                 ]
             }
         },
