@@ -20,10 +20,8 @@ module.exports = function (grunt) {
                 },
                 files: [
                     'app/**/*.js',
-                    'app/**/**/*.js',
                     'app/common/styles/*.css',
                     'tmp/scripts/**/*.js',
-                    'app/*.html',
                     'app/**/*.html',
                     '../backend/target/**/*'
                 ]
