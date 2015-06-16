@@ -12,18 +12,20 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     self.logoutResource = $resource('rest/users/logout', {}, {}, {});
 
     var loggedUser = null;
-    var initPromise = function () {
-        return self.userResource.valid().$promise.then(function (user) {
-            loggedUser = user;
-            return user;
-        });
-    };
+    var target = null;
+
+    var loggedUserPromise = self.userResource.valid().$promise.then(function (user) {
+        loggedUser = user;
+        return user;
+    });
 
     var userSessionService = {
         loggedUser: function () {
             return loggedUser;
         },
-        loggedUserPromise: initPromise()
+        loggedUserPromise: function () {
+            return loggedUserPromise;
+        }
     };
 
     userSessionService.isLogged = function () {
@@ -36,16 +38,20 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     userSessionService.login = function (user, successFunction, errorFunction) {
         self.userResource.login(angular.toJson(user), function (data) {
-            loggedUser = user;
+            loggedUser = data;
             if (typeof successFunction === "function") {
                 successFunction(data);
             }
         }, errorFunction);
     };
 
+    userSessionService.resetLoggedUser = function () {
+        loggedUser = null;
+    };
+
     userSessionService.logout = function (successFunction) {
         self.logoutResource.query(null, function (data) {
-            loggedUser = null;
+            userSessionService.resetLoggedUser();
             if (typeof successFunction === "function") {
                 successFunction(data);
             }
@@ -60,6 +66,15 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         }
     };
 
+    userSessionService.saveTarget = function (targetState, targetParams) {
+        target = {targetState: targetState, targetParams: targetParams};
+    };
+
+    userSessionService.loadTarget = function () {
+        var result = target;
+        target = null;
+        return result;
+    };
+
     return userSessionService;
-})
-;
+});

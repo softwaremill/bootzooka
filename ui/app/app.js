@@ -127,18 +127,17 @@ angular.module(
         $rootScope.$on('$stateChangeStart', function (ev, targetState, targetParams) {
             if (requireAuth(targetState) && UserSessionService.isNotLogged()) {
                 ev.preventDefault();
-                UserSessionService.loggedUserPromise.then(function () {
+                UserSessionService.loggedUserPromise().then(function () {
                     $state.go(targetState, targetParams);
                 }, function () {
-                    //todo store params in localstorage...
-                    //$state.go('login', {targetState: targetState, targetParams: targetParams});
+                    UserSessionService.saveTarget(targetState, targetParams);
                 });
             }
         });
 
         $rootScope.$on('401', function () {
             if (UserSessionService.isLogged()) {
-                UserSessionService.logout();
+                UserSessionService.resetLoggedUser();
                 FlashService.set('Your session timed out. Please login again.');
             }
             $state.go('login');
