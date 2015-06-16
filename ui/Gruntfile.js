@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 
         watch: {
             templates: {
-                files: ['app/**/*.html'],
+                files: ['app/*/**/*.html'],
                 tasks: ['html2js']
             },
             watchAndLivereload: {
