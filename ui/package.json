@@ -28,7 +28,8 @@
     "karma-html2js-preprocessor": "0.1.0",
     "karma-jasmine": "0.3.4",
     "karma-teamcity-reporter": "0.1.2",
-    "karma-osx-reporter": "0.1.0"
+    "karma-osx-reporter": "0.1.0",
+    "tiny-lr": "0.1.6"
   },
   "peerDependencies": {
     "grunt-cli": "0.1.9"

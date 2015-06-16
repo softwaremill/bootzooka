@@ -4,6 +4,9 @@ module.exports = function (grunt) {
 
     var proxyRequests = require('grunt-connect-proxy/lib/utils').proxyRequest;
     var liveReload = require('connect-livereload')({port: 9988});
+    var http = require('http');
+
+    var staticDirs = ['app', 'tmp'];
 
     grunt.initConfig({
 
@@ -13,11 +16,6 @@ module.exports = function (grunt) {
                 tasks: ['html2js']
             },
             watchAndLivereload: {
-                options: {
-                    // Start livereload server on port 9988.
-                    // When event occurs, it sends it to the connected page via WebSocket
-                    livereload: 9988
-                },
                 files: [
                     'app/**/*.js',
                     'app/common/styles/*.css',
@@ -25,6 +23,9 @@ module.exports = function (grunt) {
                     'app/*.html',
                     '../backend/target/**/*'
                 ]
+            },
+            watchAndLivereloadAfterServer: {
+                files: ['../backend/target/**/*']
             }
         },
 
@@ -39,17 +40,22 @@ module.exports = function (grunt) {
                 options: {
                     open: true,
                     middleware: function (connect) {
-                        return [
+
+                        var middlewares = [
                             proxyRequests,
 
                             // Add the bit of JS to the page that connects to livereload server with WebSocket
                             // and listenes for events.
                             liveReload,
 
-                            connect.static('tmp'),
-                            connect().use('/bower_files', connect.static('./bower_files')),
-                            connect.static('app')
+                            connect().use('/bower_files', connect.static('./bower_files'))
                         ];
+
+                        for (var i = 0, length = staticDirs.length; i < length; i++) {
+                            middlewares.push(connect.static(staticDirs[i]));
+                        }
+
+                        return middlewares;
                     }
                 }
             },
@@ -205,6 +211,7 @@ module.exports = function (grunt) {
           'html2js',
           'configureProxies',
           'connect:livereload',
+          'startLivereloadServer',
           'watch'
         ]);
     });
@@ -241,5 +248,74 @@ module.exports = function (grunt) {
         'html2js',
         'karma:autotest'
     ]);
+
+    grunt.registerTask('startLivereloadServer', function(target) {
+        var lrserver = require('tiny-lr')();
+
+        lrserver.listen(9988, function (err) {
+            grunt.log.writeln('LR Server Started');
+        });
+
+        var staticDirsAsRegex = new RegExp("^(" + staticDirs.join("|") + ")/");
+
+        var weAreWaiting = false;
+
+        var waitForServer = function(timeoutMillis, onServerUp) {
+            if (weAreWaiting) {
+                return;
+            }
+
+            weAreWaiting = true;
+            grunt.log.writeln("Starting to wait for backend server..............");
+            var waitingStart = new Date().getTime();
+
+            var options = {
+                host: 'localhost',
+                port: 8080,
+                path: '/'
+            };
+
+
+            var checkServer = function() {
+                http.get(options, function (resp) {
+                    grunt.log.writeln("Response status from backend server: " + resp.statusCode);
+                    if (resp.statusCode == 200) {
+                        onServerUp();
+                        weAreWaiting = false;
+                    } else {
+                        waitMoreIfNotTimeouted();
+                    }
+                }).on("error", function(err) {
+                    grunt.log.writeln("Error occured on backend server connection: " + err);
+                    waitMoreIfNotTimeouted();
+                });
+            };
+
+            var waitMoreIfNotTimeouted = function () {
+                var timePassed = new Date().getTime() - waitingStart;
+                if (timePassed > timeoutMillis) {
+                    grunt.log.writeln("Waiting for backend server timeouted. No more waiting.");
+                    weAreWaiting = false;
+                } else {
+                    setTimeout(checkServer, 100);
+                }
+            };
+
+            setTimeout(checkServer, 300);
+        };
+
+        grunt.event.on('watch', function (action, filepath, target) {
+            if (target == 'watchAndLivereload') {
+                var clientPath = filepath.replace(staticDirsAsRegex, "");
+                lrserver.changed({body: {files: [clientPath]}});
+
+            } else if (target == 'watchAndLivereloadAfterServer') {
+                // Wait for backend server to reload
+                waitForServer(10000, function () {
+                    lrserver.changed({body: {files: ['index.html']}});
+                });
+            }
+        });
+    });
 
 };
