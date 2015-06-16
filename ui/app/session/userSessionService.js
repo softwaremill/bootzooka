@@ -2,19 +2,10 @@
 
 angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource, $http) {
 
-    var self = this;
-
-    self.userResource = $resource('rest/users/', {}, {
-        login: {method: 'POST'},
-        valid: {method: 'GET'}
-    }, {});
-
-    self.logoutResource = $resource('rest/users/logout', {}, {}, {});
-
     var loggedUser = null;
     var target = null;
 
-    var loggedUserPromise = $http.get('rest/users/').success(function (user) {
+    var loggedUserPromise = $http.get('rest/users').success(function (user) {
         loggedUser = user;
         return user;
     });
@@ -37,7 +28,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     };
 
     userSessionService.login = function (user, successFunction, errorFunction) {
-        $http.post('rest/users/', angular.toJson(user)).success(function (data) {
+        $http.post('rest/users', angular.toJson(user)).success(function (data) {
             loggedUser = data;
             if (typeof successFunction === "function") {
                 successFunction(data);
