@@ -131,7 +131,6 @@ angular.module(
                     $state.go(targetState, targetParams);
                 }, function () {
                     UserSessionService.saveTarget(targetState, targetParams);
-                    $state.go('login');
                 });
             }
         });
@@ -141,7 +140,6 @@ angular.module(
                 UserSessionService.resetLoggedUser();
                 FlashService.set('Your session timed out. Please login again.');
             }
-            $state.go('login');
         });
     })
     .run(function ($rootScope, $timeout, FlashService, NotificationsService) {
