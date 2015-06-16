@@ -43,7 +43,7 @@ describe('User Session Controller', function () {
         it("user should be able to log out", function () {
             // Given
             $httpBackend.expectGET('rest/users/logout').respond(['anything']); // resource#query returns array
-            expect(userSessionService.loggedUser).not.toBe(null);
+            expect(userSessionService.loggedUser()).not.toBe(null);
 
             // When
             scope.logout();
@@ -51,7 +51,7 @@ describe('User Session Controller', function () {
 
             // Then
             expect(scope.isLogged()).toBe(false);
-            expect(userSessionService.loggedUser.isLogged).toBe(false);
+            expect(userSessionService.isLogged()).toBe(false);
         });
     });
 });

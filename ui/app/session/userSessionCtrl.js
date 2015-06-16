@@ -18,11 +18,4 @@ angular.module('smlBootzooka.session').controller('UserSessionCtrl', function Us
             $window.location = '/'
         });
     };
-
-    $rootScope.$on('401', function () {
-        if (UserSessionService.isLogged()) {
-            UserSessionService.logout();
-            FlashService.set('Your session timed out. Please login again.');
-        }
-    });
 });

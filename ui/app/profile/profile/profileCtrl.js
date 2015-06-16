@@ -1,8 +1,8 @@
 "use strict";
 
 angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, UserSessionService, ProfileService, NotificationsService) {
-    $scope.login = UserSessionService.loggedUser.login.concat();
-    $scope.email = UserSessionService.loggedUser.email.concat();
+    $scope.login = UserSessionService.loggedUser().login.concat();
+    $scope.email = UserSessionService.loggedUser().email.concat();
 
     var self = this;
 
@@ -15,7 +15,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     $scope.changeLogin = function () {
         if (self.shouldPerformLoginChange()) {
             ProfileService.changeLogin($scope.login, function () {
-                UserSessionService.loggedUser.login = $scope.login.concat();
+                UserSessionService.loggedUser().login = $scope.login.concat();
                 NotificationsService.showSuccess("Login changed!");
                 $scope.profileForm.login.$dirty = false;
                 $scope.profileForm.login.$pristine = true;
@@ -24,13 +24,13 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     };
 
     this.shouldPerformLoginChange = function () {
-        return $scope.profileForm.login.$dirty && $scope.login !== UserSessionService.loggedUser.login && $scope.profileForm.login.$valid;
+        return $scope.profileForm.login.$dirty && $scope.login !== UserSessionService.loggedUser().login && $scope.profileForm.login.$valid;
     };
 
     $scope.changeEmail = function () {
         if (self.shouldPerformEmailChange()) {
             ProfileService.changeEmail($scope.email, function () {
-                UserSessionService.loggedUser.email = $scope.email;
+                UserSessionService.loggedUser().email = $scope.email;
                 NotificationsService.showSuccess("Email changed!");
                 $scope.profileForm.email.$dirty = false;
                 $scope.profileForm.email.$pristine = true;
@@ -39,7 +39,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     };
 
     this.shouldPerformEmailChange = function () {
-        return $scope.profileForm.email.$dirty && $scope.email !== UserSessionService.loggedUser.email && $scope.profileForm.email.$valid;
+        return $scope.profileForm.email.$dirty && $scope.email !== UserSessionService.loggedUser().email && $scope.profileForm.email.$valid;
     };
 
     $scope.currentPassword = undefined;

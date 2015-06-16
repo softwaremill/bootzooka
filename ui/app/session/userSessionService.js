@@ -11,33 +11,23 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     self.logoutResource = $resource('rest/users/logout', {}, {}, {});
 
+    var loggedUser = null;
     var initPromise = function () {
-        self.userResource.valid().$promise.then(function (data) {
-            userSessionService.loggedUser.init(data);
+        return self.userResource.valid().$promise.then(function (user) {
+            loggedUser = user;
+            return user;
         });
     };
 
     var userSessionService = {
-        loggedUser: {
-            login: "",
-            email: "",
-            isLogged: false,
-            init: function (user) {
-                this.email = user.email;
-                this.login = user.login;
-                this.isLogged = true;
-            },
-            reset: function () {
-                this.email = "";
-                this.login = "";
-                this.isLogged = false;
-            }
+        loggedUser: function () {
+            return loggedUser;
         },
         loggedUserPromise: initPromise()
     };
 
     userSessionService.isLogged = function () {
-        return userSessionService.loggedUser.isLogged;
+        return angular.isObject(loggedUser);
     };
 
     userSessionService.isNotLogged = function () {
@@ -46,7 +36,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     userSessionService.login = function (user, successFunction, errorFunction) {
         self.userResource.login(angular.toJson(user), function (data) {
-            userSessionService.loggedUser.init(data);
+            loggedUser = user;
             if (typeof successFunction === "function") {
                 successFunction(data);
             }
@@ -55,7 +45,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
 
     userSessionService.logout = function (successFunction) {
         self.logoutResource.query(null, function (data) {
-            userSessionService.loggedUser.reset();
+            loggedUser = null;
             if (typeof successFunction === "function") {
                 successFunction(data);
             }
@@ -63,8 +53,8 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     };
 
     userSessionService.getLoggedUserName = function () {
-        if (userSessionService.loggedUser) {
-            return userSessionService.loggedUser.login;
+        if (loggedUser) {
+            return loggedUser.login;
         } else {
             return "";
         }

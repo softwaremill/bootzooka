@@ -98,9 +98,9 @@ angular.module(
 
             function error(response) {
                 if (response.status === 401) { // user is not logged in
-                    $rootScope.$emit("401", {});
+                    $rootScope.$emit("401");
                 } else if (response.status === 403) {
-                    $log.error(response.data);
+                    $log.warn(response.data);
                     // do nothing, user is trying to modify data without privileges
                 } else if (response.status === 404) {
                     redirectToState('error404');
@@ -118,7 +118,7 @@ angular.module(
         }];
         $httpProvider.interceptors.push(interceptor);
     }])
-    .run(function ($rootScope, UserSessionService, $state) {
+    .run(function ($rootScope, UserSessionService, FlashService, $state) {
 
         function requireAuth(targetState) {
             return targetState && targetState.data && targetState.data.auth;
@@ -130,9 +130,18 @@ angular.module(
                 UserSessionService.loggedUserPromise.then(function () {
                     $state.go(targetState, targetParams);
                 }, function () {
-                    $state.go('login', {targetState: targetState, targetParams: targetParams});
+                    //todo store params in localstorage...
+                    //$state.go('login', {targetState: targetState, targetParams: targetParams});
                 });
             }
+        });
+
+        $rootScope.$on('401', function () {
+            if (UserSessionService.isLogged()) {
+                UserSessionService.logout();
+                FlashService.set('Your session timed out. Please login again.');
+            }
+            $state.go('login');
         });
     })
     .run(function ($rootScope, $timeout, FlashService, NotificationsService) {

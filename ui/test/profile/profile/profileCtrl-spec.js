@@ -14,13 +14,12 @@ describe("Profile Controller", function () {
             login: "user1",
             email: "user1@sml.com"
         };
-        UserSessionService.loggedUser.init(user);
-        userSessionService = UserSessionService;
-        scope = $rootScope.$new();
-        ctrl = $controller("ProfileCtrl", {$scope: scope});
         $httpBackend = _$httpBackend_;
         $httpBackend.expectGET('rest/users').respond(user);
         $httpBackend.flush();
+        userSessionService = UserSessionService;
+        scope = $rootScope.$new();
+        ctrl = $controller("ProfileCtrl", {$scope: scope});
     }));
 
     var withValidForm = function () {
@@ -42,8 +41,8 @@ describe("Profile Controller", function () {
     it("should get logged user", function () {
         scope.login = "user1";
         scope.email = "user1@sml.com";
-        expect(scope.login).toBe(userSessionService.loggedUser.login);
-        expect(scope.email).toBe(userSessionService.loggedUser.email);
+        expect(scope.login).toBe(userSessionService.loggedUser().login);
+        expect(scope.email).toBe(userSessionService.loggedUser().email);
     });
 
     describe("when changing login", function () {
@@ -82,7 +81,7 @@ describe("Profile Controller", function () {
         it("should update local data after successful change", function () {
             withValidForm();
             performLoginChange("newlogin");
-            expect(userSessionService.loggedUser.login).toBe("newlogin");
+            expect(userSessionService.loggedUser().login).toBe("newlogin");
         });
         it("should make form pristine after successful change", function () {
             withValidForm();
@@ -127,7 +126,7 @@ describe("Profile Controller", function () {
             scope.email = "newMail@sml.com";
             scope.changeEmail();
             $httpBackend.flush();
-            expect(userSessionService.loggedUser.email).toBe(scope.email);
+            expect(userSessionService.loggedUser().email).toBe(scope.email);
         });
         it("should mark form as pristine after successful change", function () {
             withValidForm();
