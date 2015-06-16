@@ -22,7 +22,7 @@ module.exports = function (grunt) {
                     'app/**/*.js',
                     'app/common/styles/*.css',
                     'tmp/scripts/**/*.js',
-                    'app/**/*.html',
+                    'app/*.html',
                     '../backend/target/**/*'
                 ]
             }
