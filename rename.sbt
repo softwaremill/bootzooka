@@ -11,7 +11,6 @@ renameProject := {
   val targetRootPackage = cmd.packageName + "." + cmd.projectName.toLowerCase
   val excludes = List("README.md", "RenameProject.scala", "rename.sbt", "out")
   log.info("Cleaning all projects...")
-  clean.all(ScopeFilter(inAnyProject)).value
   log.info("Removing scaffolding in HTML elements...")
   val baseDir: File = baseDirectory.value
   RenameProject.updateDirContent(baseDir, excludes, removeRegexes(List(
