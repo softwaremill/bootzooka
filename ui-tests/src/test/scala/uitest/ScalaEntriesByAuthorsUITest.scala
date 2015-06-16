@@ -7,7 +7,7 @@ import uitest.pages.EntriesByAuthorsPage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ScalaEntriesByAuthorsUITest extends BootzookaUITest {
+class ScalaEntriesByAuthorsUITest extends BaseUITest {
 
   test("entries by authors without logged user") {
     val entriesByAuthorsPage: EntriesByAuthorsPage = PageFactory.initElements(driver, classOf[EntriesByAuthorsPage])

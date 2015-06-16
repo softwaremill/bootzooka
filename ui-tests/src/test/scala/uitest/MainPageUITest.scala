@@ -5,7 +5,7 @@ import org.fest.assertions.Assertions
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MainPageUITest extends BootzookaUITest {
+class MainPageUITest extends BaseUITest {
 
   test("application version") {
     // when

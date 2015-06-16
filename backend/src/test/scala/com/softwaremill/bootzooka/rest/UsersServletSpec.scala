@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.rest
 
-import com.softwaremill.bootzooka.BootzookaServletSpec
+import com.softwaremill.bootzooka.BaseServletSpec
 import com.softwaremill.bootzooka.dao.UserDao
 import com.softwaremill.bootzooka.service.email.DummyEmailService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
@@ -13,7 +13,7 @@ import org.mockito.Mockito._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UsersServletSpec extends BootzookaServletSpec with FlatSpecWithSql with UserTestHelpers {
+class UsersServletSpec extends BaseServletSpec with FlatSpecWithSql with UserTestHelpers {
   var servlet: UsersServlet = _
 
   def onServletWithMocks(testToExecute: (UserService) => Unit) = {

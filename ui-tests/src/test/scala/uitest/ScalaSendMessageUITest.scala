@@ -3,7 +3,7 @@ package uitest
 import org.fest.assertions.Assertions
 import com.softwaremill.bootzooka.common.Utils
 
-class ScalaSendMessageUITest extends BootzookaUITest {
+class ScalaSendMessageUITest extends BaseUITest {
   final val MSG_TEXT = Utils.randomString(20)
 
 

@@ -16,7 +16,7 @@ import scala.concurrent.ExecutionContext
 import scala.util.Try
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class BootzookaUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
+class BaseUITest extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
   final val REGUSER = "reguser"
   final val REGPASS = "regpass"
   final val REGMAIL = "reguser@regmail.pl"

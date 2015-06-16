@@ -8,7 +8,7 @@ import org.scalatra.test.scalatest.ScalatraFlatSpec
 import org.scalatest.mock.MockitoSugar
 import javax.servlet.http.{HttpServlet, HttpServletResponse, HttpServletRequest}
 
-trait BootzookaServletSpec extends ScalatraFlatSpec with MockitoSugar {
+trait BaseServletSpec extends ScalatraFlatSpec with MockitoSugar {
 
   implicit val httpRequest = mock[HttpServletRequest]
   implicit val httpResponse = mock[HttpServletResponse]

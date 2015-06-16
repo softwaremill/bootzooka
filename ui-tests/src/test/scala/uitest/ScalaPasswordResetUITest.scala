@@ -5,7 +5,7 @@ import org.fest.assertions.Assertions
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ScalaPasswordResetUITest extends BootzookaUITest {
+class ScalaPasswordResetUITest extends BaseUITest {
 
   private val validCode = "SOME00CODE"
   private val invalidCode = validCode + "666"

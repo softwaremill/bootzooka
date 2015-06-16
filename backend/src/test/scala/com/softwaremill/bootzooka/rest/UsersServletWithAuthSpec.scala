@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.rest
 import java.util.UUID
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
-import com.softwaremill.bootzooka.BootzookaServletSpec
+import com.softwaremill.bootzooka.BaseServletSpec
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.test.UserTestHelpers
@@ -13,7 +13,7 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatra.auth.Scentry
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UsersServletWithAuthSpec extends BootzookaServletSpec with UserTestHelpers {
+class UsersServletWithAuthSpec extends BaseServletSpec with UserTestHelpers {
 
   def onServletWithMocks(authenticated: Boolean, testToExecute: (UserService, Scentry[UserJson]) => Unit) {
     val userService = mock[UserService]

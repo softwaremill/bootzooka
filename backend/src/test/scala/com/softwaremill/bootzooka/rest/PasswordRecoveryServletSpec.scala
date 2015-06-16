@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.rest
 
-import com.softwaremill.bootzooka.BootzookaServletSpec
+import com.softwaremill.bootzooka.BaseServletSpec
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.user.UserService
 import org.json4s.JsonDSL._
@@ -12,7 +12,7 @@ import org.mockito.Mockito._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class PasswordRecoveryServletSpec extends BootzookaServletSpec {
+class PasswordRecoveryServletSpec extends BaseServletSpec {
 
   def onServletWithMocks(testToExecute: (PasswordRecoveryService) => Unit) {
     val recoveryService = mock[PasswordRecoveryService]
