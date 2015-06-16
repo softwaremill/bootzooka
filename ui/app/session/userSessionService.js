@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource) {
+angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource, $http) {
 
     var self = this;
 
@@ -14,7 +14,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     var loggedUser = null;
     var target = null;
 
-    var loggedUserPromise = self.userResource.valid().$promise.then(function (user) {
+    var loggedUserPromise = $http.get('rest/users/').success(function (user) {
         loggedUser = user;
         return user;
     });
@@ -37,7 +37,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     };
 
     userSessionService.login = function (user, successFunction, errorFunction) {
-        self.userResource.login(angular.toJson(user), function (data) {
+        $http.post('rest/users/', angular.toJson(user)).success(function (data) {
             loggedUser = data;
             if (typeof successFunction === "function") {
                 successFunction(data);
@@ -50,7 +50,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     };
 
     userSessionService.logout = function (successFunction) {
-        self.logoutResource.query(null, function (data) {
+        $http.get('rest/users/logout').then(function (data) {
             userSessionService.resetLoggedUser();
             if (typeof successFunction === "function") {
                 successFunction(data);

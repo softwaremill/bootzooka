@@ -131,6 +131,7 @@ angular.module(
                     $state.go(targetState, targetParams);
                 }, function () {
                     UserSessionService.saveTarget(targetState, targetParams);
+                    $state.go('login');
                 });
             }
         });
