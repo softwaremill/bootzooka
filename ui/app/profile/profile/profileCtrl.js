@@ -1,8 +1,10 @@
 "use strict";
 
 angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, ProfileService, NotificationsService, user, UserSessionService) {
-    $scope.login = user.login;
-    $scope.email = user.email;
+    $scope.user = {
+        login: user.login,
+        email: user.email
+    };
 
     var self = this;
 
@@ -14,8 +16,8 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
 
     $scope.changeLogin = function () {
         if (self.shouldPerformLoginChange()) {
-            ProfileService.changeLogin($scope.login, function () {
-                UserSessionService.updateLogin($scope.login);
+            ProfileService.changeLogin($scope.user.login, function () {
+                UserSessionService.updateLogin($scope.user.login);
                 NotificationsService.showSuccess("Login changed!");
                 $scope.profileForm.login.$dirty = false;
                 $scope.profileForm.login.$pristine = true;
@@ -24,13 +26,13 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     };
 
     this.shouldPerformLoginChange = function () {
-        return $scope.profileForm.login.$dirty && $scope.login !== user.login && $scope.profileForm.login.$valid;
+        return $scope.profileForm.login.$dirty && $scope.user.login !== user.login && $scope.profileForm.login.$valid;
     };
 
     $scope.changeEmail = function () {
         if (self.shouldPerformEmailChange()) {
-            ProfileService.changeEmail($scope.email, function () {
-                UserSessionService.updateEmail($scope.email);
+            ProfileService.changeEmail($scope.user.email, function () {
+                UserSessionService.updateEmail($scope.user.email);
                 NotificationsService.showSuccess("Email changed!");
                 $scope.profileForm.email.$dirty = false;
                 $scope.profileForm.email.$pristine = true;
@@ -39,7 +41,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     };
 
     this.shouldPerformEmailChange = function () {
-        return $scope.profileForm.email.$dirty && $scope.email !== user.email && $scope.profileForm.email.$valid;
+        return $scope.profileForm.email.$dirty && $scope.user.email !== user.email && $scope.profileForm.email.$valid;
     };
 
     $scope.currentPassword = undefined;
@@ -60,4 +62,5 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
             }, showError);
         }
     };
-});
+})
+;
