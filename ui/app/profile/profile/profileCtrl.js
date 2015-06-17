@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, ProfileService, NotificationsService, user) {
+angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, ProfileService, NotificationsService, user, UserSessionService) {
     $scope.login = user.login;
     $scope.email = user.email;
 
@@ -15,7 +15,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     $scope.changeLogin = function () {
         if (self.shouldPerformLoginChange()) {
             ProfileService.changeLogin($scope.login, function () {
-                user.login = $scope.login;
+                UserSessionService.updateLogin($scope.login);
                 NotificationsService.showSuccess("Login changed!");
                 $scope.profileForm.login.$dirty = false;
                 $scope.profileForm.login.$pristine = true;
@@ -30,7 +30,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     $scope.changeEmail = function () {
         if (self.shouldPerformEmailChange()) {
             ProfileService.changeEmail($scope.email, function () {
-                user.email = $scope.email;
+                UserSessionService.updateEmail($scope.email);
                 NotificationsService.showSuccess("Email changed!");
                 $scope.profileForm.email.$dirty = false;
                 $scope.profileForm.email.$pristine = true;

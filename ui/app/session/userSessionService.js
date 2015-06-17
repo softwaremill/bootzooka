@@ -62,9 +62,21 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         return result;
     };
 
+    userSessionService.updateLogin = function (login) {
+        if (loggedUser) {
+            loggedUser.login = login;
+        }
+    };
+
+    userSessionService.updateEmail = function (email) {
+        if (loggedUser) {
+            loggedUser.email = email;
+        }
+    };
+
     $rootScope.isLogged = userSessionService.isLogged;
     $rootScope.isNotLogged = userSessionService.isNotLogged;
-    
+
     return userSessionService;
 })
 ;
