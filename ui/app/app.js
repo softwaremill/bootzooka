@@ -42,6 +42,11 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'sm
                 url: '/profile',
                 controller: "ProfileCtrl",
                 templateUrl: "profile/profile/profile.html",
+                resolve: {
+                    user: function (UserSessionService) {
+                        return UserSessionService.loggedUser();
+                    }
+                },
                 data: {
                     auth: true
                 }
@@ -131,6 +136,7 @@ angular.module(
                     $state.go(targetState, targetParams);
                 }, function () {
                     UserSessionService.saveTarget(targetState, targetParams);
+                    $state.go('login');
                 });
             }
         });
