@@ -1,5 +1,5 @@
-import sbt._
 import RenameProject._
+import sbt._
 import sbt.IO._
 val renameProject = inputKey[Unit]("Renames the project")
 
