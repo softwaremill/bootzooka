@@ -15,7 +15,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
     $scope.changeLogin = function () {
         if (self.shouldPerformLoginChange()) {
             ProfileService.changeLogin($scope.login, function () {
-                user.login = $scope.login.concat();
+                user.login = $scope.login;
                 NotificationsService.showSuccess("Login changed!");
                 $scope.profileForm.login.$dirty = false;
                 $scope.profileForm.login.$pristine = true;
