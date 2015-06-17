@@ -1,18 +1,12 @@
 "use strict";
 
-angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($scope, ProfileService, NotificationsService, user, UserSessionService) {
+angular.module('smlBootzooka.profile').controller("ProfileCtrl", function ProfileCtrl($q, $scope, ProfileService, NotificationsService, user, UserSessionService) {
     $scope.user = {
         login: user.login,
         email: user.email
     };
 
     var self = this;
-
-    function showError(error) {
-        if (angular.isDefined(error) && angular.isDefined(error.value)) {
-            NotificationsService.showError(error.value);
-        }
-    }
 
     $scope.changeLogin = function () {
         if (self.shouldPerformLoginChange()) {
@@ -21,7 +15,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
                 NotificationsService.showSuccess("Login changed!");
                 $scope.profileForm.login.$dirty = false;
                 $scope.profileForm.login.$pristine = true;
-            }, showError);
+            });
         }
     };
 
@@ -36,7 +30,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
                 NotificationsService.showSuccess("Email changed!");
                 $scope.profileForm.email.$dirty = false;
                 $scope.profileForm.email.$pristine = true;
-            }, showError);
+            });
         }
     };
 
@@ -59,7 +53,9 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
                 $scope.currentPassword = undefined;
                 $scope.newPassword = undefined;
                 $scope.newPasswordRepeated = undefined;
-            }, showError);
+            }, function (response) {
+                NotificationsService.showError(NotificationsService.unwrapResponseError(response))
+            });
         }
     };
 })

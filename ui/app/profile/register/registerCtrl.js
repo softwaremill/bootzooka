@@ -21,8 +21,9 @@ angular.module('smlBootzooka.profile').controller('RegisterCtrl', function Regis
             jsonUser.login = $scope.user.login;
             jsonUser.email = $scope.user.email;
             jsonUser.password = $scope.user.password;
-
-            RegisterService.register(jsonUser, self.registerOk, NotificationsService.showError);
+            RegisterService.register(jsonUser).then(self.registerOk, function (error) {
+                NotificationsService.error(NotificationsService.unwrapResponseError(error));
+            });
         }
     };
 

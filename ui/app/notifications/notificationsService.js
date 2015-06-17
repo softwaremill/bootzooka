@@ -4,6 +4,14 @@ angular.module('smlBootzooka.notifications')
     .factory('NotificationsService', function () {
         var messages = [];
 
+        var unwrapResponseError = function (response) {
+            if (angular.isDefined(response.data) && angular.isDefined(response.data.value)) {
+                return response.data.value;
+            } else {
+                return response;
+            }
+        };
+
         function checkPreconditions(title, content) {
             return angular.isDefined(content) || angular.isDefined(title);
         }
@@ -35,6 +43,7 @@ angular.module('smlBootzooka.notifications')
             showInfo: show('info'),
             showError: show('danger'),
             showSuccess: show('success'),
-            showWarning: show('warning')
+            showWarning: show('warning'),
+            unwrapResponseError: unwrapResponseError
         };
     });

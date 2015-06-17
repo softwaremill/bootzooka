@@ -109,6 +109,8 @@ angular.module(
                     // do nothing, user is trying to modify data without privileges
                 } else if (response.status === 404) {
                     redirectToState('error404');
+                } else if (response.status === 409) {
+                    NotificationsService.showError(NotificationsService.unwrapResponseError(response));
                 } else {
                     NotificationsService.showError('Something went wrong..', 'Unexpected error');
                 }
