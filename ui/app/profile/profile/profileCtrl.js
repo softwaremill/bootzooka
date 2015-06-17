@@ -16,7 +16,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
 
     $scope.changeLogin = function () {
         if (self.shouldPerformLoginChange()) {
-            ProfileService.changeLogin($scope.user.login, function () {
+            ProfileService.changeLogin($scope.user.login).then(function () {
                 UserSessionService.updateLogin($scope.user.login);
                 NotificationsService.showSuccess("Login changed!");
                 $scope.profileForm.login.$dirty = false;
@@ -31,7 +31,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
 
     $scope.changeEmail = function () {
         if (self.shouldPerformEmailChange()) {
-            ProfileService.changeEmail($scope.user.email, function () {
+            ProfileService.changeEmail($scope.user.email).then(function () {
                 UserSessionService.updateEmail($scope.user.email);
                 NotificationsService.showSuccess("Email changed!");
                 $scope.profileForm.email.$dirty = false;
@@ -53,7 +53,7 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
         $scope.passwordChangeForm.newPassword.$dirty = true;
         $scope.passwordChangeForm.newPasswordRepeated.$dirty = true;
         if ($scope.passwordChangeForm.$valid) {
-            ProfileService.changePassword($scope.currentPassword, $scope.newPassword, function () {
+            ProfileService.changePassword($scope.currentPassword, $scope.newPassword).then(function () {
                 NotificationsService.showSuccess("Password changed!");
                 $scope.passwordChangeForm.$setPristine();
                 $scope.currentPassword = undefined;
