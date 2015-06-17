@@ -160,3 +160,5 @@ lazy val uiTests = (project in file("ui-tests"))
     libraryDependencies ++= seleniumStack ++ Seq(awaitility, jettyTest, servletApiProvided),
     test in Test <<= (test in Test) dependsOn (Keys.`package` in Compile in backend)
   ) dependsOn dist
+
+RenameProject.settings
