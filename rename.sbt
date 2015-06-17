@@ -13,7 +13,7 @@ renameProject := {
   log.info("Cleaning all projects...")
   log.info("Removing scaffolding in HTML elements...")
   val baseDir: File = baseDirectory.value
-  RenameProject.updateDirContent(baseDir, excludes, removeRegexes(List(
+  updateDirContent(baseDir, excludes, removeRegexes(List(
     """(?s)<li id='scaffolding.*?li>""",
     """(?s)<span id='scaffolding.*?span>""")), log)
   log.info(s"Replacing project name and package name")
