@@ -7,7 +7,7 @@ angular.module('smlBootzooka.session').controller('UserSessionCtrl', function Us
     };
 
     $scope.logout = function () {
-        UserSessionService.logout(function () {
+        UserSessionService.logout().then(function () {
             $window.location = '/'
         });
     };

@@ -16,7 +16,7 @@ angular.module('smlBootzooka.profile')
             $scope.loginForm.password.$dirty = true;
 
             if ($scope.loginForm.$invalid === false) {
-                UserSessionService.login($scope.user, self.loginOk, self.loginFailed);
+                UserSessionService.login($scope.user).then(self.loginOk, self.loginFailed);
             }
         };
 

@@ -5,9 +5,9 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     var loggedUser = null;
     var target = null;
 
-    var loggedUserPromise = $http.get('rest/users').success(function (user) {
-        loggedUser = user;
-        return user;
+    var loggedUserPromise = $http.get('rest/users').then(function (response) {
+        loggedUser = response.data;
+        return loggedUser;
     });
 
     var userSessionService = {
@@ -27,25 +27,20 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         return !userSessionService.isLogged();
     };
 
-    userSessionService.login = function (user, successFunction, errorFunction) {
-        $http.post('rest/users', angular.toJson(user)).success(function (data) {
-            loggedUser = data;
-            if (typeof successFunction === "function") {
-                successFunction(data);
-            }
-        }, errorFunction);
+    userSessionService.login = function (user) {
+        return $http.post('rest/users', angular.toJson(user)).then(function (response) {
+            loggedUser = response.data;
+            return response.data;
+        });
     };
 
     userSessionService.resetLoggedUser = function () {
         loggedUser = null;
     };
 
-    userSessionService.logout = function (successFunction) {
-        $http.get('rest/users/logout').then(function (data) {
+    userSessionService.logout = function () {
+        return $http.get('rest/users/logout').then(function () {
             userSessionService.resetLoggedUser();
-            if (typeof successFunction === "function") {
-                successFunction(data);
-            }
         });
     };
 
@@ -67,13 +62,9 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         return result;
     };
 
-    $rootScope.isLogged = function () {
-        return userSessionService.isLogged();
-    };
-
-    $rootScope.isNotLogged = function () {
-        return userSessionService.isNotLogged();
-    };
-
+    $rootScope.isLogged = userSessionService.isLogged;
+    $rootScope.isNotLogged = userSessionService.isNotLogged;
+    
     return userSessionService;
-});
+})
+;
