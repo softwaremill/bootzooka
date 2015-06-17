@@ -19,7 +19,7 @@ describe("Profile Controller", function () {
         $httpBackend.flush();
         userSessionService = UserSessionService;
         scope = $rootScope.$new();
-        ctrl = $controller("ProfileCtrl", {$scope: scope});
+        ctrl = $controller("ProfileCtrl", {$scope: scope, user: user});
     }));
 
     var withValidForm = function () {
@@ -39,16 +39,14 @@ describe("Profile Controller", function () {
     };
 
     it("should get logged user", function () {
-        scope.login = "user1";
-        scope.email = "user1@sml.com";
-        expect(scope.login).toBe(userSessionService.loggedUser().login);
-        expect(scope.email).toBe(userSessionService.loggedUser().email);
+        expect(scope.user.login).toBe(userSessionService.loggedUser().login);
+        expect(scope.user.email).toBe(userSessionService.loggedUser().email);
     });
 
     describe("when changing login", function () {
         var performLoginChange = function (login) {
             $httpBackend.expectPATCH('rest/users', '{"login":"' + login + '"}').respond("nothing");
-            scope.login = login;
+            scope.user.login = login;
             scope.changeLogin();
             $httpBackend.flush();
         };
@@ -96,7 +94,7 @@ describe("Profile Controller", function () {
         it("should call ReST service when email changed", function () {
             withValidForm();
             $httpBackend.expectPATCH('rest/users', '{"email":"newMail@sml.com"}').respond("nothing");
-            scope.email = "newMail@sml.com";
+            scope.user.email = "newMail@sml.com";
             scope.changeEmail();
             $httpBackend.flush();
         });
@@ -123,15 +121,15 @@ describe("Profile Controller", function () {
         it("should update local data after successful change", function () {
             withValidForm();
             $httpBackend.expectPATCH('rest/users').respond("nothing");
-            scope.email = "newMail@sml.com";
+            scope.user.email = "newMail@sml.com";
             scope.changeEmail();
             $httpBackend.flush();
-            expect(userSessionService.loggedUser().email).toBe(scope.email);
+            expect(userSessionService.loggedUser().email).toBe(scope.user.email);
         });
         it("should mark form as pristine after successful change", function () {
             withValidForm();
             $httpBackend.expectPATCH('rest/users').respond("nothing");
-            scope.email = "newMail@sml.com";
+            scope.user.email = "newMail@sml.com";
             scope.changeEmail();
             $httpBackend.flush();
             expect(scope.profileForm.email.$dirty).toBe(false);
