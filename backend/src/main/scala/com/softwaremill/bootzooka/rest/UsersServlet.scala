@@ -1,18 +1,19 @@
 package com.softwaremill.bootzooka.rest
 
-import org.scalatra._
 import com.softwaremill.bootzooka.common.StringJsonWrapper
-import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
+import com.softwaremill.bootzooka.service.user.UserService
 import org.apache.commons.lang3.StringEscapeUtils._
-import org.scalatra.swagger.{StringResponseMessage, SwaggerSupport, Swagger}
+import org.scalatra._
+import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class UsersServlet(val userService: UserService)(override implicit val swagger: Swagger, ec: ExecutionContext)
   extends JsonServletWithAuthentication with SwaggerMappable with UsersServlet.ApiDocs with FutureSupport {
 
   override def mappingPath = UsersServlet.MappingPath
+
   override protected implicit def executor = ec
 
   post("/", operation(authenticate)) {
@@ -46,10 +47,12 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
       new AsyncResult {
         val is = userService.checkUserExistenceFor(paramLogin, paramEmail).flatMap {
           case Left(error) =>
-            Future { haltWithConflict(error) }
+            Future {
+              haltWithConflict(error)
+            }
           case _ =>
             userService.registerNewUser(escapeHtml4(paramLogin), paramEmail, paramPass).map(
-            _ => Created(StringJsonWrapper("success")))
+              _ => Created(StringJsonWrapper("success")))
         }
       }
     }
@@ -154,8 +157,8 @@ object UsersServlet {
         summary "Authenticate user"
         parameter bodyParam[AuthenticationCommand]("body").description("Authentication data").required
         responseMessages(
-          StringResponseMessage(200, "OK"),
-          StringResponseMessage(401, "Invalid login and/or password")
+        StringResponseMessage(200, "OK"),
+        StringResponseMessage(401, "Invalid login and/or password")
         )
       )
 
@@ -163,8 +166,8 @@ object UsersServlet {
       apiOperation[UserJson]("getAuthenticatedUser")
         summary "Get authenticated user"
         responseMessages(
-          StringResponseMessage(200, "OK"),
-          StringResponseMessage(401, "User not logged in")
+        StringResponseMessage(200, "OK"),
+        StringResponseMessage(401, "User not logged in")
         )
       )
 
@@ -179,9 +182,9 @@ object UsersServlet {
         summary "Register new user"
         parameter bodyParam[RegistrationCommand]("body").description("Registration data").required
         responseMessages(
-          StringResponseMessage(201, "Created"),
-          StringResponseMessage(400, "Wrong user data"),
-          StringResponseMessage(409, "Login or e-mail already exists")
+        StringResponseMessage(201, "Created"),
+        StringResponseMessage(400, "Wrong user data"),
+        StringResponseMessage(409, "Login or e-mail already exists")
         )
       )
 
@@ -190,9 +193,9 @@ object UsersServlet {
         summary "Update user profile"
         parameter bodyParam[UserUpdateCommand]("body").description("Fields to update")
         responseMessages(
-          StringResponseMessage(204, "OK"),
-          StringResponseMessage(401, "User not logged in"),
-          StringResponseMessage(409, "Login or e-mail already exists")
+        StringResponseMessage(204, "OK"),
+        StringResponseMessage(401, "User not logged in"),
+        StringResponseMessage(409, "Login or e-mail already exists")
         )
       )
 
@@ -201,10 +204,10 @@ object UsersServlet {
         summary "Change password"
         parameter bodyParam[PasswordChangeCommand]("body").description("Current and new password").required
         responseMessages(
-          StringResponseMessage(204, "OK"),
-          StringResponseMessage(400, "Current or new password is missing"),
-          StringResponseMessage(401, "User not logged in"),
-          StringResponseMessage(403, "Current password is invalid")
+        StringResponseMessage(204, "OK"),
+        StringResponseMessage(400, "Current or new password is missing"),
+        StringResponseMessage(401, "User not logged in"),
+        StringResponseMessage(403, "Current password is invalid")
         )
       )
 
@@ -212,8 +215,8 @@ object UsersServlet {
       apiOperation[List[UserJson]]("getAll")
         summary "Get all users"
         responseMessages(
-          StringResponseMessage(200, "OK"),
-          StringResponseMessage(401, "User not logged in")
+        StringResponseMessage(200, "OK"),
+        StringResponseMessage(401, "User not logged in")
         )
       )
   }

@@ -1,4 +1,4 @@
-angular.module("smlBootzooka.profile").factory("ProfileService", function ($resource) {
+angular.module("smlBootzooka.profile").factory("ProfileService", function ($resource, $cookies) {
     var profileService = {};
 
     this.profileResource = $resource("rest/users", {}, {
@@ -15,6 +15,7 @@ angular.module("smlBootzooka.profile").factory("ProfileService", function ($reso
 
     profileService.changeLogin = function (newLogin, onSuccess, onError) {
         self.profileResource.changeLogin({login: newLogin}, function () {
+            $cookies["scentry.auth.default.user"] = newLogin;
             onSuccess();
         }, function (error) {
             onError(error.data);
