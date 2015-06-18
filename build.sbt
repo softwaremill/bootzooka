@@ -132,7 +132,14 @@ lazy val backend: Project = (project in file("backend"))
         }
         List(restResources, uiResources)
       },
-      packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"))
+      packageWar in DefaultConf <<= (packageWar in DefaultConf) dependsOn gruntTask("build"),
+      compile in Compile := {
+        val compilationResult = (compile in Compile).value
+        IO.touch(target.value / "compilationFinished")
+
+        compilationResult
+      }
+    )
   )
 
 lazy val ui = (project in file("ui"))
