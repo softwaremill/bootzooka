@@ -9,12 +9,21 @@ describe("Login Controller", function () {
         _$httpBackend_.verifyNoOutstandingRequest();
     }));
 
-    var scope, $httpBackend, ctrl;
+    var scope, $httpBackend, ctrl, state;
 
     beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
         $httpBackend = _$httpBackend_;
         scope = $rootScope.$new();
-        ctrl = $controller('LoginCtrl', {$scope: scope});
+        state = {
+            current: null,
+            go: function (newState) {
+                this.current = newState;
+            }
+        };
+        ctrl = $controller('LoginCtrl', {
+            $scope: scope,
+            $state: state
+        });
         $httpBackend.expectGET('rest/users').respond(401);
         $httpBackend.flush();
         scope.loginForm = {
@@ -35,6 +44,9 @@ describe("Login Controller", function () {
         // When
         scope.login();
         $httpBackend.flush();
+        
+        //then
+        expect(state.current).toBe("main");
     });
 
     it('Should not call login rest service when form is invalid', function () {
