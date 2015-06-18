@@ -8,6 +8,10 @@ Generally during development you'll need two processes:
 * sbt running the backend server (e.g. using `~;container:start; container:reload /`)
 * grunt server which automatically picks up any changes
 
+## Cloning
+
+If you are planning to use Bootzooka as scaffolding for your own project, consider cloning the repo with `git clone --depth 1` in order to start the history with last commit.
+
 ## IDE
 
 We are using the best IDE right now: [IntelliJ IDEA](http://www.jetbrains.com/idea/). To generate an Idea project start
@@ -15,6 +19,7 @@ We are using the best IDE right now: [IntelliJ IDEA](http://www.jetbrains.com/id
 
 ## Useful sbt commands
 
+* `renameProject` - replace Bootzooka with your custom name and adjust scala package names
 * `compile` - compile the whole project
 * `test` - run all the tests
 * `project <sub-project-name>` - switch context to the given sub-project, then all the commands will be execute only for
