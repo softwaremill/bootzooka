@@ -12,18 +12,23 @@ object RenameProject {
     (Space ~>
       token(NotSpace, "top level package, for example com.softwaremill") ~
       Space ~
-      token(NotSpace, "project name - lowercase, single word like bootzooka")).map {
+      token(NotSpace, "project name, single word like bootzooka")).map {
       case ((pkg, _), proj) => RenameCommand(pkg, proj)
     }
   }
 
   case class RenameCommand(packageName: String, projectName: String)
 
+  object RenameCommand {
+    def apply(packageName: String, projectName: String) =
+      new RenameCommand(packageName.toLowerCase, projectName.toLowerCase)
+  }
+
   def renameAction(state: State, cmd: RenameCommand): State = s"doRename ${cmd.packageName} ${cmd.projectName}" :: state
 
   val renameHelp = Help(
     Seq(
-      "renameProject <package> <name>" -> "Override default name and root package name with your own"
+      "renameProject <package> <name>" -> "Replace default name and root package name with your own"
     ), Map("renameProject" ->
       """|Override default name and root package name with your own. Parameters:
         |<packageName> - top level package like com.softwaremill
@@ -110,7 +115,7 @@ object RenameProject {
     val cmd = renameArgsParser.parsed
     val initialName = name.value
     val initialRootPackage = "com.softwaremill.bootzooka"
-    val targetRootPackage = cmd.packageName + "." + cmd.projectName.toLowerCase
+    val targetRootPackage = cmd.packageName + "." + cmd.projectName
     val excludes = List("README.md", "RenameProject.scala", "rename.sbt", "out")
     info("Cleaning all projects...")
     info("Removing scaffolding in HTML elements...")
