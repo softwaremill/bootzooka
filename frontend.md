@@ -15,7 +15,7 @@ Thanks to great tools existing in JavaScript ecosystem it is fully automated and
 Installing Node.js
 ---
 
-To work with `bootzooka-ui` you need to have `node.js` installed in version 0.10.13 or newer. Make sure you have both
+To work with the `ui` module you need to have `node.js` installed in version 0.10.13 or newer. Make sure you have both
 `node` and `npm` commands available on `PATH`.
 
 Installing Grunt.js and Bower
@@ -46,7 +46,7 @@ To run grunt from local installation you should be in `bootzooka-ui` project and
 First run
 ---
 
-If this is your first attempt to run `bootzooka-ui`, please go to `bootzooka-ui` project and run
+If this is your first attempt to run `ui`, please go to `ui` project and run
 
 	npm install
 
@@ -107,7 +107,7 @@ It runs all tests and builds everything to as distribution version to `dist` dir
 ---
 
 It simply tests the build one time. Tests are run with Karma runner using PhantomJS as default browser. Whole tests
-configuration is in `karma-config.js` file in `bootzooka-ui` project.
+configuration is in `karma-config.js` file in `ui` project.
 
 `Grunt autotest` task
 ---
@@ -119,7 +119,7 @@ Distribution and deployment
 ---
 
 Although in development `bootzooka-ui` is separate project there is no need to deploy it separately. All files
-from `bootzooka-ui/dist/webapp` (which are genereated during `grunt build`) are used by `bootzooka-rest` to build
+from `ui/dist/webapp` (which are genereated during `grunt build`) are used by `backend` to build
 WAR application. All necessary integration on SBT (server build) level is already provided. That means when you issue
 `package` in SBT, you get complete web application which contains both server side and frontend components. You can drop
 it into your web container (as usual) and make use of it.
