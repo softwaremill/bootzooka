@@ -53,9 +53,8 @@ angular.module('smlBootzooka.profile').controller("ProfileCtrl", function Profil
                 $scope.currentPassword = undefined;
                 $scope.newPassword = undefined;
                 $scope.newPasswordRepeated = undefined;
-            }, function (response) {
-                NotificationsService.showError(NotificationsService.unwrapResponseError(response))
-            });
+            }, NotificationsService.showError);
+
         }
     };
 })

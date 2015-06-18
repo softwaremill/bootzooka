@@ -110,7 +110,7 @@ angular.module(
                 } else if (response.status === 404) {
                     redirectToState('error404');
                 } else if (response.status === 409) {
-                    NotificationsService.showError(NotificationsService.unwrapResponseError(response));
+                    NotificationsService.showError(response);
                 } else {
                     NotificationsService.showError('Something went wrong..', 'Unexpected error');
                 }
