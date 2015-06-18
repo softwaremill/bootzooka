@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource, $http, $rootScope, $log) {
+angular.module("smlBootzooka.session").factory('UserSessionService', function ($http, $rootScope, $log, $window) {
 
     var loggedUser = null;
     var target = null;
@@ -42,6 +42,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     userSessionService.logout = function () {
         return $http.get('rest/users/logout').then(function () {
             userSessionService.resetLoggedUser();
+            $window.location = '/';
         });
     };
 
