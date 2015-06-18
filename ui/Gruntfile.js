@@ -298,11 +298,11 @@ module.exports = function (grunt) {
                     grunt.log.writeln("Waiting for backend server timeouted. No more waiting.");
                     weAreWaiting = false;
                 } else {
-                    setTimeout(checkServer, 100);
+                    setTimeout(checkServer, 500);
                 }
             };
 
-            setTimeout(checkServer, 300);
+            setTimeout(checkServer, 1000);
         };
 
         grunt.event.on('watch', function (action, filepath, target) {
