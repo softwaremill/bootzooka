@@ -1,74 +1,82 @@
 "use strict";
 
-angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource, $cookies, $q) {
+angular.module("smlBootzooka.session").factory('UserSessionService', function ($resource, $http, $rootScope) {
 
-    var self = this;
+    var loggedUser = null;
+    var target = null;
 
-    self.userResource = $resource('rest/users/', {}, {
-        login: {method: 'POST'},
-        valid: {method: 'GET'}
-    }, {});
-
-    self.logoutResource = $resource('rest/users/logout', {}, {}, {});
+    var loggedUserPromise = $http.get('rest/users').then(function (response) {
+        loggedUser = response.data;
+        return loggedUser;
+    });
 
     var userSessionService = {
-        loggedUser: null
-    };
-
-    userSessionService.isUserLoaded = function () {
-        return userSessionService.loggedUser !== null;
+        loggedUser: function () {
+            return loggedUser;
+        },
+        loggedUserPromise: function () {
+            return loggedUserPromise;
+        }
     };
 
     userSessionService.isLogged = function () {
-        if (userSessionService.loggedUser !== null) {
-            return true;
-
-        }
-        if (!angular.isUndefined($cookies["scentry.auth.default.user"])) {
-            return true;
-        }
-        return false;
+        return angular.isObject(loggedUser);
     };
 
     userSessionService.isNotLogged = function () {
         return !userSessionService.isLogged();
     };
 
-    userSessionService.login = function (user, successFunction, errorFunction) {
-        self.userResource.login(angular.toJson(user), function (data) {
-            userSessionService.loggedUser = data;
-            if (typeof successFunction === "function") {
-                successFunction(data);
-            }
-        }, errorFunction);
-    };
-
-    userSessionService.logout = function (successFunction) {
-        self.logoutResource.query(null, function (data) {
-            userSessionService.loggedUser = null;
-            delete $cookies["scentry.auth.default.user"];
-            if (typeof successFunction === "function") {
-                successFunction(data);
-            }
+    userSessionService.login = function (user) {
+        return $http.post('rest/users', angular.toJson(user)).then(function (response) {
+            loggedUser = response.data;
+            return response.data;
         });
     };
 
-    userSessionService.validate = function (successFunction) {
-        self.userResource.valid(function (data) {
-            userSessionService.loggedUser = data;
-            if (typeof successFunction === "function") {
-                successFunction(data);
-            }
+    userSessionService.resetLoggedUser = function () {
+        loggedUser = null;
+    };
+
+    userSessionService.logout = function () {
+        return $http.get('rest/users/logout').then(function () {
+            userSessionService.resetLoggedUser();
         });
     };
 
     userSessionService.getLoggedUserName = function () {
-        if (userSessionService.loggedUser) {
-            return userSessionService.loggedUser.login;
+        if (loggedUser) {
+            return loggedUser.login;
         } else {
             return "";
         }
     };
 
+    userSessionService.saveTarget = function (targetState, targetParams) {
+        target = {targetState: targetState, targetParams: targetParams};
+    };
+
+    userSessionService.loadTarget = function () {
+        var result = target;
+        target = null;
+        return result;
+    };
+
+    userSessionService.updateLogin = function (login) {
+        if (loggedUser) {
+            loggedUser.login = login;
+        }
+    };
+
+    userSessionService.updateEmail = function (email) {
+        if (loggedUser) {
+            loggedUser.email = email;
+        }
+    };
+
+    $rootScope.isLogged = userSessionService.isLogged;
+    $rootScope.isNotLogged = userSessionService.isNotLogged;
+
     return userSessionService;
-});
+})
+;

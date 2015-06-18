@@ -4,7 +4,7 @@ describe("Login Controller", function () {
 
     beforeEach(module('smlBootzooka.profile'));
 
-    afterEach(inject(function(_$httpBackend_) {
+    afterEach(inject(function (_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();
         _$httpBackend_.verifyNoOutstandingRequest();
     }));
@@ -13,10 +13,10 @@ describe("Login Controller", function () {
 
     beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
         $httpBackend = _$httpBackend_;
-
         scope = $rootScope.$new();
         ctrl = $controller('LoginCtrl', {$scope: scope});
-
+        $httpBackend.expectGET('rest/users').respond(401);
+        $httpBackend.flush();
         scope.loginForm = {
             login: {
                 $dirty: false

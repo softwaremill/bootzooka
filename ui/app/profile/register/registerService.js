@@ -1,19 +1,16 @@
 "use strict";
 
-angular.module("smlBootzooka.profile").factory('RegisterService', function ($resource, FlashService) {
-
-    var self = this;
-    self.registerResource = $resource('rest/users/register', null, null, {});
+angular.module("smlBootzooka.profile").factory('RegisterService', function ($http, $q, FlashService) {
 
     var registerService = {};
 
-    registerService.register = function (user, successFunction, errorFunction) {
-        self.registerResource.save(angular.toJson(user), function (data) {
-            if (angular.equals(data.value, 'success')) {
+    registerService.register = function (user) {
+        return $http.post('rest/users/register', angular.toJson(user)).then(function (response) {
+            if (angular.equals(response.data.value, 'success')) {
                 FlashService.set("User registered successfully! Please check your e-mail for confirmation.");
-                successFunction();
+                return $q.when(response.data);
             } else {
-                errorFunction(data.value);
+                return $q.reject(response);
             }
         });
     };

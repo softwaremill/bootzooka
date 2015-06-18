@@ -42,6 +42,11 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'sm
                 url: '/profile',
                 controller: "ProfileCtrl",
                 templateUrl: "profile/profile/profile.html",
+                resolve: {
+                    user: function (UserSessionService) {
+                        return UserSessionService.loggedUser();
+                    }
+                },
                 data: {
                     auth: true
                 }
@@ -79,7 +84,7 @@ angular.module(
             });
     })
     .config(['$httpProvider', function ($httpProvider) {
-        var interceptor = ['$q', 'FlashService', '$injector', 'NotificationsService', function ($q, FlashService, $injector, NotificationsService) {
+        var interceptor = ['$rootScope', '$q', '$injector', '$log', 'NotificationsService', function ($rootScope, $q, $injector, $log, NotificationsService) {
 
             function redirectToState(stateName) {
                 // Because $httpProvider is a factory for $http which is used by $state we can't inject it directly
@@ -98,17 +103,14 @@ angular.module(
 
             function error(response) {
                 if (response.status === 401) { // user is not logged in
-                    var UserSessionService = $injector.get('UserSessionService'); // uses $injector to avoid circular dependency
-                    if (UserSessionService.isLogged()) {
-                        UserSessionService.logout(); // Http session expired / logged out - logout on Angular layer
-                        FlashService.set('Your session timed out. Please login again.');
-                        redirectToState('login');
-                    }
+                    $rootScope.$emit("401");
                 } else if (response.status === 403) {
-                    console.log(response.data);
+                    $log.warn(response.data);
                     // do nothing, user is trying to modify data without privileges
                 } else if (response.status === 404) {
                     redirectToState('error404');
+                } else if (response.status === 409) {
+                    NotificationsService.showError(NotificationsService.unwrapResponseError(response));
                 } else {
                     NotificationsService.showError('Something went wrong..', 'Unexpected error');
                 }
@@ -123,7 +125,7 @@ angular.module(
         }];
         $httpProvider.interceptors.push(interceptor);
     }])
-    .run(function ($rootScope, UserSessionService, $state) {
+    .run(function ($rootScope, UserSessionService, FlashService, $state) {
 
         function requireAuth(targetState) {
             return targetState && targetState.data && targetState.data.auth;
@@ -131,8 +133,20 @@ angular.module(
 
         $rootScope.$on('$stateChangeStart', function (ev, targetState, targetParams) {
             if (requireAuth(targetState) && UserSessionService.isNotLogged()) {
-                $state.go('login', {targetState: targetState, targetParams: targetParams});
                 ev.preventDefault();
+                UserSessionService.loggedUserPromise().then(function () {
+                    $state.go(targetState, targetParams);
+                }, function () {
+                    UserSessionService.saveTarget(targetState, targetParams);
+                    $state.go('login');
+                });
+            }
+        });
+
+        $rootScope.$on('401', function () {
+            if (UserSessionService.isLogged()) {
+                UserSessionService.resetLoggedUser();
+                FlashService.set('Your session timed out. Please login again.');
             }
         });
     })
@@ -140,15 +154,6 @@ angular.module(
         $rootScope.$on("$stateChangeSuccess", function () {
             var message = FlashService.get();
             NotificationsService.showInfo(message);
-        });
-    })
-    .run(function ($rootScope, UserSessionService) {
-        $rootScope.$on("$stateChangeStart", function () {
-            //We load user when he is logged in but wasn't loaded (e.g. after live reload)
-            //TODO it could be done better, now there is still problem with editing profile.
-            if (UserSessionService.isLogged() && !UserSessionService.isUserLoaded()) {
-                UserSessionService.validate();
-            }
         });
     });
 

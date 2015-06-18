@@ -63,7 +63,7 @@ describe("Register Controller", function () {
         // verifyNoOutstandingRequest(); is checked after each test
     });
 
-    it("should not call register rest service when passwords don't match", function() {
+    it("should not call register rest service when passwords don't match", function () {
         //Given
         scope.registerForm.repeatPassword.$error.repeat = true;
 

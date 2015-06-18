@@ -2,13 +2,14 @@
 
 describe('User Session Controller', function () {
     beforeEach(module('smlBootzooka.session'));
+    beforeEach(module("smlBootzooka.common.services"));
 
     describe('without logged user', function () {
         var scope, ctrl, userSessionService;
 
-        beforeEach(inject(function ($rootScope, $controller, UserSessionService) {
+        beforeEach(inject(function ($rootScope, $controller, UserSessionService, FlashService) {
             scope = $rootScope.$new();
-            ctrl = $controller('UserSessionCtrl', {$scope: scope});
+            ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: FlashService});
             userSessionService = UserSessionService;
         }));
 
@@ -20,26 +21,29 @@ describe('User Session Controller', function () {
     describe('with user logged in', function () {
         var scope, ctrl, userSessionService, $httpBackend, $cookies;
 
-        beforeEach(inject(function ($rootScope, $controller, _$cookies_, _$httpBackend_, $location, UserSessionService) {
+        beforeEach(inject(function ($rootScope, $controller, _$cookies_, _$httpBackend_, $location, UserSessionService, FlashService) {
             scope = $rootScope.$new();
-            ctrl = $controller('UserSessionCtrl', {$scope: scope});
+            ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: FlashService});
             userSessionService = UserSessionService;
-            userSessionService.loggedUser = {
-                login: "User1"
+            $cookies = _$cookies_;
+            $cookies["scentry.auth.default.user"] = "Jan Kowalski";
+            $httpBackend = _$httpBackend_;
+            var user = {
+                login: "User1",
+                email: "test@test.pl"
             };
-          $cookies = _$cookies_;
-          $cookies["scentry.auth.default.user"] = "Jan Kowalski";
-          $httpBackend = _$httpBackend_;
+            $httpBackend.expectGET('rest/users').respond(user);
+            $httpBackend.flush();
         }));
 
-        it("should know user is logged in", function() {
-          expect(scope.isLogged()).toBe(true);
+        it("should know user is logged in", function () {
+            expect(scope.isLogged()).toBe(true);
         });
 
         it("user should be able to log out", function () {
             // Given
             $httpBackend.expectGET('rest/users/logout').respond(['anything']); // resource#query returns array
-            expect(userSessionService.loggedUser).not.toBe(null);
+            expect(userSessionService.loggedUser()).not.toBe(null);
 
             // When
             scope.logout();
@@ -47,8 +51,7 @@ describe('User Session Controller', function () {
 
             // Then
             expect(scope.isLogged()).toBe(false);
-            expect(scope.loggedUser).toBeUndefined();
-            expect($cookies["scentry.auth.default.user"]).toBeUndefined();
+            expect(userSessionService.isLogged()).toBe(false);
         });
     });
 });

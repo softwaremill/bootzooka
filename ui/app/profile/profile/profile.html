@@ -5,12 +5,12 @@
                 <h3>Profile</h3>
 
                 <div class="form-group">
-                    <input type="text" name="login" class="form-control" placeholder="Login" ng-model="login" bs-blur="changeLogin()" ng-minlength="3" required focus-on>
+                    <input type="text" name="login" class="form-control" placeholder="Login" ng-model="user.login" bs-blur="changeLogin()" ng-minlength="3" required focus-on>
                     <p class="text-danger form-control-static" ng-show="profileForm.login.$error.required">Login is required</p>
                     <p class="text-danger form-control-static" ng-show="profileForm.login.$error.minlength">At least three characters!</p>
                 </div>
                 <div class="form-group">
-                    <input type="email" name="email" class="form-control" placeholder="E-mail address" ng-model="email" bs-blur="changeEmail()" required>
+                    <input type="email" name="email" class="form-control" placeholder="E-mail address" ng-model="user.email" bs-blur="changeEmail()" required>
                     <p class="text-danger form-control-static" ng-show="registerForm.email.$dirty && registerForm.email.$error.required">E-mail is required</p>
                     <p class="text-danger form-control-static" ng-show="registerForm.email.$error.email">It's not a valid email!</p>
                 </div>
