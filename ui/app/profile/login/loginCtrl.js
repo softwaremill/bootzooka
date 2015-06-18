@@ -18,16 +18,16 @@ angular.module('smlBootzooka.profile')
             }
         };
 
-        var loginOk = function () {
+        function loginOk() {
             var optionalRedirect = UserSessionService.loadTarget();
             if (optionalRedirect) {
                 $state.go(optionalRedirect.targetState, optionalRedirect.targetParams)
             } else {
                 $location.path("/main");
             }
-        };
+        }
 
-        var loginFailed = function () {
+        function loginFailed() {
             NotificationsService.showError("Invalid login and/or password.");
-        };
+        }
     });

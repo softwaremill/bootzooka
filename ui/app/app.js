@@ -44,7 +44,7 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'sm
                 templateUrl: "profile/profile/profile.html",
                 resolve: {
                     user: function (UserSessionService) {
-                        return UserSessionService.loggedUser();
+                        return UserSessionService.getLoggedUserPromise();
                     }
                 },
                 data: {
@@ -134,7 +134,7 @@ angular.module(
         $rootScope.$on('$stateChangeStart', function (ev, targetState, targetParams) {
             if (requireAuth(targetState) && UserSessionService.isNotLogged()) {
                 ev.preventDefault();
-                UserSessionService.loggedUserPromise().then(function () {
+                UserSessionService.getLoggedUserPromise().then(function () {
                     $state.go(targetState, targetParams);
                 }, function () {
                     UserSessionService.saveTarget(targetState, targetParams);

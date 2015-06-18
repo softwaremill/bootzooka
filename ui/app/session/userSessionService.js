@@ -11,10 +11,10 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     });
 
     var userSessionService = {
-        loggedUser: function () {
+        getLoggedUser: function () {
             return loggedUser;
         },
-        loggedUserPromise: function () {
+        getLoggedUserPromise: function () {
             return loggedUserPromise;
         }
     };
@@ -28,10 +28,11 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
     };
 
     userSessionService.login = function (user) {
-        return $http.post('rest/users', angular.toJson(user)).then(function (response) {
+        loggedUserPromise = $http.post('rest/users', angular.toJson(user)).then(function (response) {
             loggedUser = response.data;
             return response.data;
         });
+        return loggedUserPromise;
     };
 
     userSessionService.resetLoggedUser = function () {
@@ -66,7 +67,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         if (loggedUser) {
             loggedUser.login = login;
         } else {
-            $log.warn("Trying to updated login but use is null");
+            $log.warn("Trying to updated login but user is null");
         }
     };
 
@@ -74,7 +75,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         if (loggedUser) {
             loggedUser.email = email;
         } else {
-            $log.warn("Trying to updated email but use is null");
+            $log.warn("Trying to updated email but user is null");
         }
     };
 

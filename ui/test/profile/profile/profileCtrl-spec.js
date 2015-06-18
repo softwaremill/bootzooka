@@ -39,8 +39,8 @@ describe("Profile Controller", function () {
     };
 
     it("should get logged user", function () {
-        expect(scope.user.login).toBe(userSessionService.loggedUser().login);
-        expect(scope.user.email).toBe(userSessionService.loggedUser().email);
+        expect(scope.user.login).toBe(userSessionService.getLoggedUser().login);
+        expect(scope.user.email).toBe(userSessionService.getLoggedUser().email);
     });
 
     describe("when changing login", function () {
@@ -79,7 +79,7 @@ describe("Profile Controller", function () {
         it("should update local data after successful change", function () {
             withValidForm();
             performLoginChange("newlogin");
-            expect(userSessionService.loggedUser().login).toBe("newlogin");
+            expect(userSessionService.getLoggedUser().login).toBe("newlogin");
         });
         it("should make form pristine after successful change", function () {
             withValidForm();
@@ -124,7 +124,7 @@ describe("Profile Controller", function () {
             scope.user.email = "newMail@sml.com";
             scope.changeEmail();
             $httpBackend.flush();
-            expect(userSessionService.loggedUser().email).toBe(scope.user.email);
+            expect(userSessionService.getLoggedUser().email).toBe(scope.user.email);
         });
         it("should mark form as pristine after successful change", function () {
             withValidForm();
