@@ -3,8 +3,6 @@
 angular.module('smlBootzooka.profile')
     .controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $location, $state, $stateParams, NotificationsService) {
 
-        var self = this;
-
         $scope.user = {};
         $scope.user.login = '';
         $scope.user.password = '';
@@ -16,11 +14,11 @@ angular.module('smlBootzooka.profile')
             $scope.loginForm.password.$dirty = true;
 
             if ($scope.loginForm.$invalid === false) {
-                UserSessionService.login($scope.user).then(self.loginOk, self.loginFailed);
+                UserSessionService.login($scope.user).then(loginOk, loginFailed);
             }
         };
 
-        this.loginOk = function () {
+        var loginOk = function () {
             var optionalRedirect = UserSessionService.loadTarget();
             if (optionalRedirect) {
                 $state.go(optionalRedirect.targetState, optionalRedirect.targetParams)
@@ -29,7 +27,7 @@ angular.module('smlBootzooka.profile')
             }
         };
 
-        this.loginFailed = function () {
+        var loginFailed = function () {
             NotificationsService.showError("Invalid login and/or password.");
         };
     });
