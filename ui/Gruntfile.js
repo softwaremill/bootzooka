@@ -4,11 +4,12 @@ module.exports = function (grunt) {
 
     var proxyRequests = require('grunt-connect-proxy/lib/utils').proxyRequest;
     var liveReload = require('connect-livereload')({port: 9988});
-    var http = require('http');
-
-    var staticDirs = ['app', 'tmp'];
 
     grunt.initConfig({
+
+        common: {
+            staticDirs: ['app', 'tmp']
+        },
 
         watch: {
             templates: {
@@ -52,6 +53,8 @@ module.exports = function (grunt) {
                             connect().use('/bower_files', connect.static('./bower_files'))
                         ];
 
+                        var staticDirs = grunt.config('common').staticDirs;
+
                         for (var i = 0, length = staticDirs.length; i < length; i++) {
                             middlewares.push(connect.static(staticDirs[i]));
                         }
@@ -85,7 +88,6 @@ module.exports = function (grunt) {
                 module: 'smlBootzooka.templates'
             }
         },
-
 
         karma: {
             options: {
@@ -189,12 +191,13 @@ module.exports = function (grunt) {
 
             }
         },
-      bowerInstall: {
-        target: {
-          src: ['app/index.html'],
-          exclude: ['bower_files/angular-mocks/angular-mocks.js']
+
+        bowerInstall: {
+            target: {
+                src: ['app/index.html'],
+                exclude: ['bower_files/angular-mocks/angular-mocks.js']
+            }
         }
-      }
     });
 
     require('matchdep').filterDev('grunt-*').forEach(function (dep) {
@@ -250,73 +253,5 @@ module.exports = function (grunt) {
         'karma:autotest'
     ]);
 
-    grunt.registerTask('startLivereloadServer', function(target) {
-        var lrserver = require('tiny-lr')();
-
-        lrserver.listen(9988, function (err) {
-            grunt.log.writeln('LR Server Started');
-        });
-
-        var staticDirsAsRegex = new RegExp("^(" + staticDirs.join("|") + ")/");
-
-        var weAreWaiting = false;
-
-        var waitForServer = function(timeoutMillis, onServerUp) {
-            if (weAreWaiting) {
-                return;
-            }
-
-            weAreWaiting = true;
-            grunt.log.writeln("Starting to wait for backend server..............");
-            var waitingStart = new Date().getTime();
-
-            var options = {
-                host: 'localhost',
-                port: 8080,
-                path: '/'
-            };
-
-
-            var checkServer = function() {
-                http.get(options, function (resp) {
-                    grunt.log.writeln("Response status from backend server: " + resp.statusCode);
-                    if (resp.statusCode == 200) {
-                        onServerUp();
-                        weAreWaiting = false;
-                    } else {
-                        waitMoreIfNotTimedOut();
-                    }
-                }).on("error", function(err) {
-                    grunt.log.writeln("Error occured on backend server connection: " + err);
-                    waitMoreIfNotTimedOut();
-                });
-            };
-
-            var waitMoreIfNotTimedOut = function () {
-                var timePassed = new Date().getTime() - waitingStart;
-                if (timePassed > timeoutMillis) {
-                    grunt.log.writeln("Waiting for backend server timed out. No more waiting.");
-                    weAreWaiting = false;
-                } else {
-                    setTimeout(checkServer, 500);
-                }
-            };
-
-            setTimeout(checkServer, 1000);
-        };
-
-        grunt.event.on('watch', function (action, filepath, target) {
-            if (target == 'watchAndLivereload') {
-                var clientPath = filepath.replace(staticDirsAsRegex, "");
-                lrserver.changed({body: {files: [clientPath]}});
-
-            } else if (target == 'watchAndLivereloadAfterServer') {
-                // Wait for backend server to reload
-                waitForServer(10000, function () {
-                    lrserver.changed({body: {files: ['index.html']}});
-                });
-            }
-        });
-    });
-
+    grunt.loadTasks('grunttasks');
 };
