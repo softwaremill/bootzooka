@@ -12,6 +12,8 @@ module.exports = function (grunt) {
 
         watch: {
             templates: {
+                // Watch only templates, don't watch app/index.html. All the templates are in subdirectories, not in
+                // the root 'app' dir.
                 files: ['app/*/**/*.html'],
                 tasks: ['html2js']
             },
