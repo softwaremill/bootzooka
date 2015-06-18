@@ -17,11 +17,9 @@ object RenameProject {
     }
   }
 
-  case class RenameCommand(packageName: String, projectName: String)
-
-  object RenameCommand {
-    def apply(packageName: String, projectName: String) =
-      new RenameCommand(packageName.toLowerCase, projectName.toLowerCase)
+  case class RenameCommand(inputPackageName: String, inputProjectName: String) {
+    def packageName = inputPackageName.toLowerCase
+    def projectName = inputProjectName.toLowerCase
   }
 
   def renameAction(state: State, cmd: RenameCommand): State = s"doRename ${cmd.packageName} ${cmd.projectName}" :: state
