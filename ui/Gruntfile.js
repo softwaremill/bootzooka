@@ -284,18 +284,18 @@ module.exports = function (grunt) {
                         onServerUp();
                         weAreWaiting = false;
                     } else {
-                        waitMoreIfNotTimeouted();
+                        waitMoreIfNotTimedOut();
                     }
                 }).on("error", function(err) {
                     grunt.log.writeln("Error occured on backend server connection: " + err);
-                    waitMoreIfNotTimeouted();
+                    waitMoreIfNotTimedOut();
                 });
             };
 
-            var waitMoreIfNotTimeouted = function () {
+            var waitMoreIfNotTimedOut = function () {
                 var timePassed = new Date().getTime() - waitingStart;
                 if (timePassed > timeoutMillis) {
-                    grunt.log.writeln("Waiting for backend server timeouted. No more waiting.");
+                    grunt.log.writeln("Waiting for backend server timed out. No more waiting.");
                     weAreWaiting = false;
                 } else {
                     setTimeout(checkServer, 500);
