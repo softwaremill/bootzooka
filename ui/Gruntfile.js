@@ -26,7 +26,7 @@ module.exports = function (grunt) {
                 ]
             },
             watchAndLivereloadAfterServer: {
-                files: ['../backend/target/**/*']
+                files: ['../backend/target/compilationFinished']
             }
         },
 
