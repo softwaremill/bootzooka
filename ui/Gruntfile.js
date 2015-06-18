@@ -82,7 +82,7 @@ module.exports = function (grunt) {
                 options: {
                     base: 'app'
                 },
-                src: ['app/**/*.html', 'app/common/**/*.html'],
+                src: ['app/**/*.html'],
                 dest: '.tmp/scripts/templates.js',
                 module: 'smlBootzooka.templates'
             }
