@@ -79,7 +79,7 @@ object RenameProject {
     def replacePhrases(replacements: Seq[(String, String)])(source: String, file: File) = {
       replacements.foldLeft(source)((currentSource, replacementPair) => {
         val (from, to) = replacementPair
-        if (currentSource.indexOf(from) > 0)
+        if (currentSource.indexOf(from) != -1)
           currentSource.replaceAllLiterally(from, to)
         else
           currentSource
