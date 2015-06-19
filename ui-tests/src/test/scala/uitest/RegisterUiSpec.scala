@@ -3,41 +3,48 @@ package uitest
 import com.jayway.awaitility.scala.AwaitilitySupport
 import com.softwaremill.bootzooka.common.Utils
 import org.fest.assertions.Assertions
+import org.fest.assertions.Assertions._
 import org.openqa.selenium.support.PageFactory
+import org.scalatest.{BeforeAndAfterEach, BeforeAndAfter}
 import uitest.pages.RegistrationPage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RegisterUiSpec extends BaseUiSpec with AwaitilitySupport {
-  final val LOGIN = Utils.randomString(5)
-  final val EMAIL = LOGIN + "@example.org"
-  final val PASSWORD = "test"
+class RegisterUiSpec extends BaseUiSpec with AwaitilitySupport with BeforeAndAfterEach {
+  
+  val Login = Utils.randomString(5)
+  val Email = Login + "@example.org"
+  val Password = "test"
 
-  final val EMAIL_SUBJECT = s"SoftwareMill Bootzooka - registration confirmation for user $LOGIN"
+  final val EmailSubject = s"SoftwareMill Bootzooka - registration confirmation for user $Login"
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    emailService.reset()
+  }
 
   test("register new user and send an email") {
     //given
-    val registrationPage: RegistrationPage = PageFactory.initElements(driver, classOf[RegistrationPage])
+    val registrationPage = createPage(classOf[RegistrationPage])
 
     //when
-    registrationPage.register(LOGIN, EMAIL, PASSWORD)
+    registrationPage.register(Login, Email, Password)
 
     //then
-    Assertions.assertThat(messagesPage.getInfoText).contains("User registered successfully")
-    Assertions.assertThat(emailService.wasEmailSent(EMAIL, EMAIL_SUBJECT))
+    assertThat(messagesPage.getInfoText) contains "User registered successfully"
+    assertThat(emailService.wasEmailSent(Email, EmailSubject))
   }
 
   test("register - fail due to not matching passwords") {
     //given
-    val registrationPage: RegistrationPage = PageFactory.initElements(driver, classOf[RegistrationPage])
+    val registrationPage = createPage(classOf[RegistrationPage])
 
     // when
-    registrationPage.register(LOGIN, EMAIL, PASSWORD, Some(PASSWORD + "FooBarBaz"))
+    registrationPage.register(Login, Email, Password, Some(Password + "FooBarBaz"))
 
     //then
-    Assertions.assertThat(messagesPage.isUMessageDisplayed("Passwords don't match!"))
-    Assertions.assertThat(!emailService.wasEmailSent(EMAIL, EMAIL_SUBJECT))
+    assertThat(registrationPage.getPassErrorText) contains "Passwords don't match!"
+    assertThat(emailService.wasEmailSent(Email, EmailSubject)).isFalse()
   }
-
 
 }

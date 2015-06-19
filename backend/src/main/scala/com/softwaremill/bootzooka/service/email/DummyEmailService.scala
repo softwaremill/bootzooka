@@ -15,6 +15,10 @@ class DummyEmailService extends EmailService with LazyLogging {
     email.emails.mkString + ", " + email.subject + ", " + email.message
   }
 
+  def reset() {
+    sentEmails.clear()
+  }
+
   override def scheduleEmail(address: String, emailData: EmailContentWithSubject) = {
     val email = new EmailDescription(List(address), emailData.content, emailData.subject)
 

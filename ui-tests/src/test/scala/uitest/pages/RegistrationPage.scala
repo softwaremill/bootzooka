@@ -24,6 +24,9 @@ class RegistrationPage(driver: WebDriver) {
   @FindBy(css = "button[type=submit]")
   val registerButton: WebElement = null
 
+  @FindBy(id = "regPassDontMatch")
+  val registerPassErrorText: WebElement = null
+
   def register(login: String, email: String, password: String, repeatedPassword: Option[String] = None) {
     openRegistrationPage()
     loginField.sendKeys(login)
@@ -38,4 +41,6 @@ class RegistrationPage(driver: WebDriver) {
     driver.get(url)
     sc.waitForFinishLoading()
   }
+
+  def getPassErrorText = registerPassErrorText.getText
 }

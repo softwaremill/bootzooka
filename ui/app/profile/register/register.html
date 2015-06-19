@@ -21,7 +21,7 @@
                 <div class="form-group">
                     <input type="password" name="repeatPassword" class="form-control" placeholder="Repeat password" ng-model="user.repeatPassword" bs-match="user.password" required>
                     <p class="text-danger form-control-static" ng-show="registerForm.repeatPassword.$dirty && registerForm.repeatPassword.$error.required">Repeat password</p>
-                    <p class="text-danger form-control-static" ng-show="registerForm.repeatPassword.$dirty && !registerForm.repeatPassword.$error.required && registerForm.repeatPassword.$error.match">Passwords don't match!</p>
+                    <p id="regPassDontMatch" class="text-danger form-control-static" ng-show="registerForm.repeatPassword.$dirty && !registerForm.repeatPassword.$error.required && registerForm.repeatPassword.$error.match">Passwords don't match!</p>
                 </div>
                 <div class="form-group">
                     <span class="help-block"><a ui-sref="recover-lost-password">Forgotten password?</a></span>
