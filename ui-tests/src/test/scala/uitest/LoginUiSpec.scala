@@ -2,7 +2,7 @@ package uitest
 
 import org.fest.assertions.Assertions
 
-class ScalaLoginUITest extends BaseUITest {
+class LoginUiSpec extends BaseUiSpec {
   test("login") {
     loginPage.openLoginPage()
     loginPage.login(REGUSER, REGPASS)

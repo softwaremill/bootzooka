@@ -8,7 +8,7 @@ import uitest.pages.RegistrationPage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ScalaRegisterUITest extends BaseUITest with AwaitilitySupport {
+class RegisterUiSpec extends BaseUiSpec with AwaitilitySupport {
   final val LOGIN = Utils.randomString(5)
   final val EMAIL = LOGIN + "@example.org"
   final val PASSWORD = "test"
