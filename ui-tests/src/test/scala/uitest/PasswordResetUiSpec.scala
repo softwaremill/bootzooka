@@ -20,12 +20,6 @@ class PasswordResetUiSpec extends BaseUiSpec {
     }
   }
 
-  override def afterAll(): Unit = {
-    beans.codeDao.load(validCode).map(codeOpt => codeOpt.foreach(beans.codeDao.remove)).futureValue
-    removeUsers("someUser")
-    super.afterAll()
-  }
-
   test("password-reset should reset password") {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "asd")

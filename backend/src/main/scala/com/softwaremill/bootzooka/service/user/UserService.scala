@@ -19,8 +19,6 @@ class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataV
     userDao.load(userId).map(toUserJson)
   }
 
-  def loadAll = userDao.loadAll().map(users => users.map(UserJson(_)))
-
   def registerNewUser(login: String, email: String, password: String): Future[Unit] = {
     val salt = Utils.randomString(128)
     val token = UUID.randomUUID().toString

@@ -31,10 +31,6 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
     }
   }
 
-  it should "load all users" in {
-    userDao.loadAll().futureValue should have size 3
-  }
-
   it should "add new user" in {
     // Given
     val login = "newuser"
@@ -72,18 +68,6 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
       "User with given e-mail or login already exists")
   }
 
-  it should "remove user" in {
-    // Given
-    val userOpt = userDao.findByLoginOrEmail("user1").futureValue
-
-    // When
-    userOpt.foreach(u => userDao.remove(u.id).futureValue)
-
-    // Then
-    userOpt should not be None
-    userDao.findByLoginOrEmail("user1").futureValue should be (None)
-  }
-
   it should "find by email" in {
     // Given
     val email = "1email@sml.com"
@@ -115,17 +99,6 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
 
     // Then
     userOpt.map(_.login) should equal(Some(login))
-  }
-
-  it should "find users by identifiers" in {
-    // Given
-    val ids = Set(randomIds(0), randomIds(1), randomIds(1))
-
-    // When
-    val users = userDao.findForIdentifiers(ids).futureValue
-
-    // Then
-    users.map(user => user.login) should contain theSameElementsAs List("user1", "user2")
   }
 
   it should "find by uppercase login" in {

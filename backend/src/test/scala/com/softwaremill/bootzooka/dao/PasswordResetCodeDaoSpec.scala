@@ -58,31 +58,6 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
     }
   }
 
-  it should "remove all user codes on user removal" in {
-    // Given
-    val user = generateRandomUser
-
-    val code1 = PasswordResetCode(code = "code1", user)
-    val code2 = PasswordResetCode(code = "code2", user)
-    val code3 = PasswordResetCode(code = "code3", user)
-
-    val bgActions = for {
-      _ <- userDao.add(user)
-      _ <- dao.add(code1)
-      _ <- dao.add(code2)
-      _ <- dao.add(code3)
-    }
-    // When
-    yield userDao.remove(user.id).futureValue
-
-    // Then
-    whenReady(bgActions) { _ =>
-      dao.load(code1.code).futureValue should be (None)
-      dao.load(code2.code).futureValue should be (None)
-      dao.load(code3.code).futureValue should be (None)
-    }
-  }
-
   it should "not delete user on code removal" in {
     // Given
     val user = generateRandomUser

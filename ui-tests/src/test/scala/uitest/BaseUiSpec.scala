@@ -2,6 +2,7 @@ package uitest
 
 import java.util.concurrent.TimeUnit
 
+import com.softwaremill.bootzooka.dao.{SqlUserSchema, SqlPasswordResetCodeSchema}
 import com.softwaremill.bootzooka.service.email.DummyEmailService
 import com.softwaremill.bootzooka.{Beans, EmbeddedJetty, EmbeddedJettyConfig}
 import com.typesafe.config.ConfigFactory
@@ -10,12 +11,9 @@ import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
-import uitest.pages.{MainPage, LoginPage, MessagesPage, PasswordResetPage}
+import uitest.pages.{LoginPage, MainPage, MessagesPage, PasswordResetPage}
 
-import scala.concurrent.ExecutionContext
-import scala.reflect.ClassTag
 import scala.util.Try
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
   val RegUser = "reguser"
@@ -62,7 +60,20 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
     false
   }
 
+  lazy val schema = new SqlPasswordResetCodeSchema with SqlUserSchema {
+    override protected val database = beans.sqlDatabase
+
+    import database.driver.api._
+
+    val allSchemas = passwordResetCodes.schema ++ users.schema
+
+    def drop() = database.db.run(allSchemas.drop)
+
+    def create() = database.db.run(allSchemas.create)
+  }
+
   before {
+    schema.create()
     driver = new FirefoxDriver()
     driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
     loginPage = createPage(classOf[LoginPage])
@@ -72,22 +83,12 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
   }
 
   after {
+    schema.drop()
     driver.close()
     driver = null
   }
 
-  protected def removeUsers(logins: String*): Unit = {
-    implicit val ec: ExecutionContext = global
-    for {
-      login <- logins
-      user <- beans.userDao.findByLoginOrEmail("someUser").futureValue
-    } {
-      beans.userDao.remove(user.id).futureValue
-    }
-  }
-
   override def afterAll() {
-    removeUsers(RegUser, "1" + RegUser)
     stopJetty()
   }
 

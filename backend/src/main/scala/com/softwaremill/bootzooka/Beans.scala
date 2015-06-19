@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka
 import com.softwaremill.bootzooka.common.RealTimeClock
 import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
-import com.softwaremill.bootzooka.dao.{Daos, DaoConfig}
+import com.softwaremill.bootzooka.dao.{SqlUserSchema, SqlPasswordResetCodeSchema, Daos, DaoConfig}
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.config.{CoreConfig, EmailConfig}
 import com.softwaremill.bootzooka.service.email.{DummyEmailService, SmtpEmailService}

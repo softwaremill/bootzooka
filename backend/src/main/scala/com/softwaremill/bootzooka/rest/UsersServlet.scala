@@ -133,11 +133,6 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
       case _ => None
     }
   }
-
-  get("/all", operation(getAll)) {
-    haltIfNotAuthenticated()
-    userService.loadAll
-  }
 }
 
 object UsersServlet {

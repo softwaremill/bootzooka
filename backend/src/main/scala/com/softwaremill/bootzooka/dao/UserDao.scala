@@ -33,12 +33,6 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
       users += user
   }
 
-  def loadAll() = db.run(users.result)
-
-  def remove(userId: UserId): Future[Unit] = {
-    db.run(users.filter(_.id === userId).delete).mapToUnit
-  }
-
   def load(userId: UserId): Future[Option[User]] =
     findOneWhere(_.id === userId)
 
@@ -62,10 +56,6 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
     findByLowerCasedLogin(loginOrEmail).flatMap(userOpt =>
       userOpt.map(user => Future{Some(user)}).getOrElse(findByEmail(loginOrEmail))
     )
-  }
-
-  def findForIdentifiers(uniqueIds: Set[UserId]): Future[Seq[User]] = {
-      db.run(users.filter(_.id inSet uniqueIds).result)
   }
 
   def findByToken(token: String) =
