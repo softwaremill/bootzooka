@@ -30,27 +30,27 @@ class PasswordResetUiSpec extends BaseUiSpec {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "asd")
 
-    assertThat(messagesPage.getInfoText.contains("Your password has been changed")).isTrue()
+    assertThat(messagesPage.getInfoText) contains "Your password has been changed"
   }
 
   test("password-reset should not reset password due to missing code") {
     passwordRestPage.openPasswordResetPage("")
     passwordRestPage.resetPassword("asd", "asd")
 
-    assertThat(messagesPage.getErrorText.contains("Wrong or malformed password recovery code.")).isTrue()
+    assertThat(messagesPage.getErrorText) contains "Wrong or malformed password recovery code."
   }
 
   test("password-reset should not reset password due to invalid code") {
     passwordRestPage.openPasswordResetPage(invalidCode)
     passwordRestPage.resetPassword("asd", "asd")
 
-    assertThat(messagesPage.getErrorText.contains("Your reset code is invalid. Please try again.")).isTrue()
+    assertThat(messagesPage.getErrorText) contains "Your reset code is invalid. Please try again."
   }
 
   test("password-reset should do nothing if password & its repetition differ") {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "notMatching")
-    assertThat(passwordRestPage.getErrorText.contains("Passwords don't match!")).isTrue()
+    assertThat(passwordRestPage.getErrorText) contains "Passwords don't match!"
   }
 
 
