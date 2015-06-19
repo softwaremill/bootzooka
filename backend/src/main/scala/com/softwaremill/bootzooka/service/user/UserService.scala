@@ -25,10 +25,14 @@ class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataV
     val salt = Utils.randomString(128)
     val token = UUID.randomUUID().toString
     val now = clock.nowUtc
-    userDao.add(User(login, email.toLowerCase, password, salt, token, now)).flatMap (_ => {
-      val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
-      emailService.scheduleEmail(email, confirmationEmail)
-    })
+    val userCreatation: Future[Unit] = userDao.add(User(login, email.toLowerCase, password, salt, token, now))
+    userCreatation.onSuccess {
+      case _ => {
+        val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
+        emailService.scheduleEmail(email, confirmationEmail)
+      }
+    }
+    userCreatation
   }
 
   def authenticate(login: String, nonEncryptedPassword: String): Future[Option[UserJson]] = {
@@ -63,14 +67,18 @@ class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataV
 
   def changeLogin(currentLogin: String, newLogin: String): Future[Either[String, Unit]] = {
     findByLogin(newLogin).flatMap {
-      case Some(u) => Future { Left("Login is already taken") }
+      case Some(u) => Future {
+        Left("Login is already taken")
+      }
       case None => userDao.changeLogin(currentLogin, newLogin).map(Right(_))
     }
   }
 
   def changeEmail(currentEmail: String, newEmail: String): Future[Either[String, Unit]] = {
     findByEmail(newEmail).flatMap {
-      case Some(u) => Future { Left("E-mail used by another user") }
+      case Some(u) => Future {
+        Left("E-mail used by another user")
+      }
       case None => userDao.changeEmail(currentEmail, newEmail).map(Right(_))
     }
   }
@@ -80,9 +88,13 @@ class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataV
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
         userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)).map(Right(_))
       } else {
-        Future { Left("Current password is invalid") }
+        Future {
+          Left("Current password is invalid")
+        }
       }
-      case None => Future { Left("User not found hence cannot change password") }
+      case None => Future {
+        Left("User not found hence cannot change password")
+      }
     }
   }
 
