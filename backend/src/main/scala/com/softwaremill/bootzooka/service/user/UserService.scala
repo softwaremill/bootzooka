@@ -2,18 +2,17 @@ package com.softwaremill.bootzooka.service.user
 
 import java.util.UUID
 
-import com.softwaremill.bootzooka.common.{Clock, Utils}
+import com.softwaremill.bootzooka.common.{ Clock, Utils }
 import com.softwaremill.bootzooka.dao.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.email.EmailService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataValidator, emailService: EmailService,
-                  emailTemplatingEngine: EmailTemplatingEngine)
-                 (implicit ec: ExecutionContext, clock: Clock) {
+    emailTemplatingEngine: EmailTemplatingEngine)(implicit ec: ExecutionContext, clock: Clock) {
 
   def load(userId: userDao.UserId) = {
     userDao.load(userId).map(toUserJson)
@@ -59,7 +58,8 @@ class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataV
       existingEmailOpt <- existingEmailFuture
     } yield {
       existingLoginOpt.map(_ => Left("Login already in use!")).orElse(
-        existingEmailOpt.map(_ => Left("E-mail already in use!"))).getOrElse(Right((): Unit))
+        existingEmailOpt.map(_ => Left("E-mail already in use!"))
+      ).getOrElse(Right((): Unit))
     }
   }
 

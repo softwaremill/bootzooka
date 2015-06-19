@@ -7,7 +7,7 @@ import org.scalatra.auth.{ Scentry, ScentryConfig, ScentrySupport }
 import com.softwaremill.bootzooka.common.{ Utils, StringJsonWrapper }
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
-import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
+import javax.servlet.http.{ HttpServletResponse, HttpServletRequest }
 
 import scala.concurrent.Await
 import AuthOps._
@@ -42,7 +42,7 @@ trait AuthenticationSupport extends ScentrySupport[UserJson] {
     case id: String =>
       val userFut = userService.findByLogin(id)
       // We have to block here since Scalatra does not talk well to async API
-        val userOpt: Option[UserJson] = Await.result(userFut, SyncUserResolveTimeout)
+      val userOpt: Option[UserJson] = Await.result(userFut, SyncUserResolveTimeout)
       userOpt match {
         case Some(u) => u
         case _ => null

@@ -5,19 +5,20 @@ import java.net.URI
 import java.util.UUID
 import javax.sql.DataSource
 
-import com.mchange.v2.c3p0.{ComboPooledDataSource, DataSources}
+import com.mchange.v2.c3p0.{ ComboPooledDataSource, DataSources }
 import com.softwaremill.bootzooka.dao.DaoConfig
 import com.typesafe.scalalogging.LazyLogging
 import org.flywaydb.core.Flyway
-import org.joda.time.{DateTime, DateTimeZone}
+import org.joda.time.{ DateTime, DateTimeZone }
 
 import slick.driver.JdbcProfile
 import slick.jdbc.JdbcBackend._
 
 case class SqlDatabase(
-  db: slick.jdbc.JdbcBackend.Database,
-  driver: JdbcProfile,
-  ds: DataSource) {
+    db: slick.jdbc.JdbcBackend.Database,
+    driver: JdbcProfile,
+    ds: DataSource
+) {
 
   import driver.api._
 

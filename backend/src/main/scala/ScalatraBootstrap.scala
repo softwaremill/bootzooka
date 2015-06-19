@@ -5,7 +5,7 @@ import com.softwaremill.bootzooka.Beans
 import com.softwaremill.bootzooka.common.logging.AsyncErrorReportingLogAppender
 import com.softwaremill.bootzooka.rest._
 import com.softwaremill.bootzooka.rest.swagger.SwaggerServlet
-import org.scalatra.{LifeCycle, ScalatraServlet}
+import org.scalatra.{ LifeCycle, ScalatraServlet }
 
 /**
  * This is the ScalatraBootstrap bootstrap file. You can use it to mount servlets or

@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.common.logging.bugsnag
 
 import ch.qos.logback.classic.spi.ILoggingEvent
-import com.bugsnag.{MetaData, Client}
+import com.bugsnag.{ MetaData, Client }
 import com.softwaremill.bootzooka.common.config.ConfigWithDefault
-import com.softwaremill.bootzooka.common.logging.{DummyErrorReporter, AsyncErrorReportingLogAppender, ErrorReporter}
+import com.softwaremill.bootzooka.common.logging.{ DummyErrorReporter, AsyncErrorReportingLogAppender, ErrorReporter }
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 

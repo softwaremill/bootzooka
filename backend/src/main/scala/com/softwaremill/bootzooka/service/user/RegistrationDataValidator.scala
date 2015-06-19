@@ -4,8 +4,8 @@ class RegistrationDataValidator() {
 
   def isDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean =
     validLogin(trim(loginOpt)) &&
-    validEmail(trim(emailOpt)) &&
-    validPassword(trim(passwordOpt))
+      validEmail(trim(emailOpt)) &&
+      validPassword(trim(passwordOpt))
 
   private def trim(s: Option[String]) = s map { _.trim }
 

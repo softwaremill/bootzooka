@@ -8,7 +8,7 @@ class EmailTemplatingEngine {
     addSignature(splitToContentAndSubject(template))
   }
 
-  def passwordReset(userName:String, resetLink:String) = {
+  def passwordReset(userName: String, resetLink: String) = {
     val template = prepareEmailTemplate("resetPassword", Map("userName" -> userName, "resetLink" -> resetLink))
     addSignature(splitToContentAndSubject(template))
   }
@@ -19,8 +19,9 @@ class EmailTemplatingEngine {
       .getLines()
       .mkString("\n")
 
-    params.foldLeft(rawTemplate) { case (template, (param, paramValue)) =>
-      template.replaceAll(s"\\{\\{$param\\}\\}", paramValue.toString)
+    params.foldLeft(rawTemplate) {
+      case (template, (param, paramValue)) =>
+        template.replaceAll(s"\\{\\{$param\\}\\}", paramValue.toString)
     }
   }
 

@@ -5,7 +5,7 @@ import org.scalatra.auth.ScentryStrategy
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
-import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
+import javax.servlet.http.{ HttpServletResponse, HttpServletRequest }
 
 import scala.concurrent.Await
 import AuthOps._
@@ -19,8 +19,10 @@ class RememberMeStrategy(protected val app: ScalatraBase, rememberMe: Boolean, v
   override def afterAuthenticate(winningStrategy: String, user: UserJson)(implicit request: HttpServletRequest, response: HttpServletResponse) {
     if (winningStrategy == name || (winningStrategy == UserPassword.name && rememberMe)) {
       val token = user.token
-      app.response.addHeader("Set-Cookie",
-        Cookie(CookieKey, token)(CookieOptions(path = "/", secure = false, maxAge = Utils.OneWeek, httpOnly = true)).toCookieString)
+      app.response.addHeader(
+        "Set-Cookie",
+        Cookie(CookieKey, token)(CookieOptions(path = "/", secure = false, maxAge = Utils.OneWeek, httpOnly = true)).toCookieString
+      )
     }
   }
 
@@ -38,8 +40,10 @@ class RememberMeStrategy(protected val app: ScalatraBase, rememberMe: Boolean, v
   }
 
   override def beforeLogout(user: UserJson)(implicit request: HttpServletRequest, response: HttpServletResponse) {
-    app.response.addHeader("Set-Cookie",
-      Cookie(CookieKey, "")(CookieOptions(path = "/", secure = false, maxAge = 0, httpOnly = true)).toCookieString)
+    app.response.addHeader(
+      "Set-Cookie",
+      Cookie(CookieKey, "")(CookieOptions(path = "/", secure = false, maxAge = 0, httpOnly = true)).toCookieString
+    )
   }
 
 }

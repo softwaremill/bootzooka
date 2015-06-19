@@ -1,29 +1,31 @@
 package com.softwaremill.bootzooka.service.email.sender
 
 import com.typesafe.scalalogging.LazyLogging
-import java.io.{ByteArrayOutputStream, ByteArrayInputStream}
-import java.util.{Date, Properties}
-import javax.activation.{DataHandler, DataSource}
-import javax.mail.internet.{MimeBodyPart, MimeMultipart, MimeMessage, InternetAddress}
-import javax.mail.{Address, Transport, Session, Message}
+import java.io.{ ByteArrayOutputStream, ByteArrayInputStream }
+import java.util.{ Date, Properties }
+import javax.activation.{ DataHandler, DataSource }
+import javax.mail.internet.{ MimeBodyPart, MimeMultipart, MimeMessage, InternetAddress }
+import javax.mail.{ Address, Transport, Session, Message }
 
 /**
  * Copied from softwaremill-common:
  * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
  */
 object EmailSender extends LazyLogging {
-  
-  def send(smtpHost: String,
-           smtpPort: String,
-           smtpUsername: String,
-           smtpPassword: String,
-           verifySSLCertificate: Boolean,
-           sslConnection: Boolean,
-           from: String,
-           encoding: String,
-           emailDescription: EmailDescription,
-           attachmentDescriptions: AttachmentDescription*) {
-    
+
+  def send(
+    smtpHost: String,
+    smtpPort: String,
+    smtpUsername: String,
+    smtpPassword: String,
+    verifySSLCertificate: Boolean,
+    sslConnection: Boolean,
+    from: String,
+    encoding: String,
+    emailDescription: EmailDescription,
+    attachmentDescriptions: AttachmentDescription*
+  ) {
+
     val props = setupSmtpServerProperties(sslConnection, smtpHost, smtpPort, verifySSLCertificate)
 
     // Get a mail session
@@ -59,7 +61,6 @@ object EmailSender extends LazyLogging {
     }
   }
 
-
   private def setupSmtpServerProperties(sslConnection: Boolean, smtpHost: String, smtpPort: String, verifySSLCertificate: Boolean): Properties = {
     // Setup mail server
     val props = new Properties()
@@ -67,7 +68,7 @@ object EmailSender extends LazyLogging {
       props.put("mail.smtps.host", smtpHost)
       props.put("mail.smtps.port", smtpPort)
       props.put("mail.smtps.starttls.enable", "true")
-      if(!verifySSLCertificate) {
+      if (!verifySSLCertificate) {
         props.put("mail.smtps.ssl.checkserveridentity", "false")
         props.put("mail.smtps.ssl.trust", "*")
       }

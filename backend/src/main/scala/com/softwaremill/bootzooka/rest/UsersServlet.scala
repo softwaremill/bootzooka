@@ -4,12 +4,12 @@ import org.scalatra._
 import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
-import org.scalatra.swagger.{StringResponseMessage, SwaggerSupport, Swagger}
+import org.scalatra.swagger.{ StringResponseMessage, SwaggerSupport, Swagger }
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ Future, ExecutionContext }
 
 class UsersServlet(val userService: UserService)(override implicit val swagger: Swagger, ec: ExecutionContext)
-  extends JsonServletWithAuthentication with SwaggerMappable with UsersServlet.ApiDocs with FutureSupport {
+    extends JsonServletWithAuthentication with SwaggerMappable with UsersServlet.ApiDocs with FutureSupport {
 
   override def mappingPath = UsersServlet.MappingPath
   override protected implicit def executor = ec
@@ -49,7 +49,8 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
           case _ =>
             val loginEscaped = scala.xml.Utility.escape(paramLogin)
             userService.registerNewUser(loginEscaped, paramEmail, paramPass).map(
-            _ => Created(StringJsonWrapper("success")))
+              _ => Created(StringJsonWrapper("success"))
+            )
         }
       }
     }
@@ -82,8 +83,7 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
       changeLogin()
     } else if (!email.isEmpty) {
       changeEmail()
-    }
-    else Future.failed(new IllegalStateException("You have to provide new login or email"))
+    } else Future.failed(new IllegalStateException("You have to provide new login or email"))
     new AsyncResult {
       val is = updateFut.map { errorMsgOpt =>
         errorMsgOpt.foreach(msg => haltWithConflict(msg))
@@ -146,71 +146,71 @@ object UsersServlet {
 
     protected val authenticate = (
       apiOperation[UserJson]("authenticate")
-        summary "Authenticate user"
-        parameter bodyParam[AuthenticationCommand]("body").description("Authentication data").required
-        responseMessages(
-          StringResponseMessage(200, "OK"),
-          StringResponseMessage(401, "Invalid login and/or password")
-        )
+      summary "Authenticate user"
+      parameter bodyParam[AuthenticationCommand]("body").description("Authentication data").required
+      responseMessages (
+        StringResponseMessage(200, "OK"),
+        StringResponseMessage(401, "Invalid login and/or password")
       )
+    )
 
     protected val getAuthenticatedUser = (
       apiOperation[UserJson]("getAuthenticatedUser")
-        summary "Get authenticated user"
-        responseMessages(
-          StringResponseMessage(200, "OK"),
-          StringResponseMessage(401, "User not logged in")
-        )
+      summary "Get authenticated user"
+      responseMessages (
+        StringResponseMessage(200, "OK"),
+        StringResponseMessage(401, "User not logged in")
       )
+    )
 
     protected val logout = (
       apiOperation[Unit]("logout")
-        summary "Log out authenticated user"
-        responseMessage StringResponseMessage(204, "OK")
-      )
+      summary "Log out authenticated user"
+      responseMessage StringResponseMessage(204, "OK")
+    )
 
     protected val register = (
       apiOperation[StringJsonWrapper]("register")
-        summary "Register new user"
-        parameter bodyParam[RegistrationCommand]("body").description("Registration data").required
-        responseMessages(
-          StringResponseMessage(201, "Created"),
-          StringResponseMessage(400, "Wrong user data"),
-          StringResponseMessage(409, "Login or e-mail already exists")
-        )
+      summary "Register new user"
+      parameter bodyParam[RegistrationCommand]("body").description("Registration data").required
+      responseMessages (
+        StringResponseMessage(201, "Created"),
+        StringResponseMessage(400, "Wrong user data"),
+        StringResponseMessage(409, "Login or e-mail already exists")
       )
+    )
 
     protected val update = (
       apiOperation[Unit]("update")
-        summary "Update user profile"
-        parameter bodyParam[UserUpdateCommand]("body").description("Fields to update")
-        responseMessages(
-          StringResponseMessage(204, "OK"),
-          StringResponseMessage(401, "User not logged in"),
-          StringResponseMessage(409, "Login or e-mail already exists")
-        )
+      summary "Update user profile"
+      parameter bodyParam[UserUpdateCommand]("body").description("Fields to update")
+      responseMessages (
+        StringResponseMessage(204, "OK"),
+        StringResponseMessage(401, "User not logged in"),
+        StringResponseMessage(409, "Login or e-mail already exists")
       )
+    )
 
     protected val changePassword = (
       apiOperation[Unit]("changePassword")
-        summary "Change password"
-        parameter bodyParam[PasswordChangeCommand]("body").description("Current and new password").required
-        responseMessages(
-          StringResponseMessage(204, "OK"),
-          StringResponseMessage(400, "Current or new password is missing"),
-          StringResponseMessage(401, "User not logged in"),
-          StringResponseMessage(403, "Current password is invalid")
-        )
+      summary "Change password"
+      parameter bodyParam[PasswordChangeCommand]("body").description("Current and new password").required
+      responseMessages (
+        StringResponseMessage(204, "OK"),
+        StringResponseMessage(400, "Current or new password is missing"),
+        StringResponseMessage(401, "User not logged in"),
+        StringResponseMessage(403, "Current password is invalid")
       )
+    )
 
     protected val getAll = (
       apiOperation[List[UserJson]]("getAll")
-        summary "Get all users"
-        responseMessages(
-          StringResponseMessage(200, "OK"),
-          StringResponseMessage(401, "User not logged in")
-        )
+      summary "Get all users"
+      responseMessages (
+        StringResponseMessage(200, "OK"),
+        StringResponseMessage(401, "User not logged in")
       )
+    )
   }
 
   private[this] case class AuthenticationCommand(login: String, password: String, rememberMe: Boolean)

@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.rest
 
 import com.softwaremill.bootzooka.version.BuildInfo._
-import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
+import org.scalatra.swagger.{ StringResponseMessage, Swagger, SwaggerSupport }
 
 case class VersionJson(build: String, date: String)
 
@@ -25,10 +25,10 @@ object VersionServlet {
 
     protected val getVersion = (
       apiOperation[VersionJson]("getVersion")
-        summary "Get version"
-        responseMessages(
-          StringResponseMessage(200, "OK")
-        )
+      summary "Get version"
+      responseMessages (
+        StringResponseMessage(200, "OK")
       )
+    )
   }
 }

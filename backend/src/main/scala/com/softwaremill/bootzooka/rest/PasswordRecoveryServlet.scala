@@ -3,17 +3,16 @@ package com.softwaremill.bootzooka.rest
 import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.user.UserService
-import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
-import org.scalatra.{AsyncResult, FutureSupport, NoContent}
+import org.scalatra.swagger.{ StringResponseMessage, Swagger, SwaggerSupport }
+import org.scalatra.{ AsyncResult, FutureSupport, NoContent }
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ Future, ExecutionContext }
 
 /**
  * Servlet handling requests related to password recovery.
  */
-class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, userService: UserService)
-                             (override implicit val swagger: Swagger, implicit val executor: ExecutionContext)
-  extends JsonServlet with SwaggerMappable with PasswordRecoveryServlet.ApiDocs with FutureSupport {
+class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, userService: UserService)(override implicit val swagger: Swagger, implicit val executor: ExecutionContext)
+    extends JsonServlet with SwaggerMappable with PasswordRecoveryServlet.ApiDocs with FutureSupport {
 
   override def mappingPath = PasswordRecoveryServlet.MappingPath
 
@@ -21,12 +20,12 @@ class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, 
     val login = (parsedBody \ "login").extractOpt[String].getOrElse("")
     new AsyncResult() {
       override val is = userService.checkUserExistenceFor(login, login).flatMap {
-          case Right(_) => Future { haltWithNotFound("No user with given login/e-mail found.") }
-          case _ =>
-            passwordRecoveryService.sendResetCodeToUser(login).map(_ =>
-              StringJsonWrapper("success"))
+        case Right(_) => Future { haltWithNotFound("No user with given login/e-mail found.") }
+        case _ =>
+          passwordRecoveryService.sendResetCodeToUser(login).map(_ =>
+            StringJsonWrapper("success"))
 
-        }
+      }
     }
   }
 
@@ -58,27 +57,27 @@ object PasswordRecoveryServlet {
 
     protected val requestPasswordReset = (
       apiOperation[StringJsonWrapper]("requestPasswordReset")
-        summary "Request password reset"
-        parameter bodyParam[PasswordResetRequestCommand]("body").description("User login").required
-        responseMessages(
-          StringResponseMessage(200, "OK"),
-          StringResponseMessage(404, "No user with given login/e-mail found")
-        )
+      summary "Request password reset"
+      parameter bodyParam[PasswordResetRequestCommand]("body").description("User login").required
+      responseMessages (
+        StringResponseMessage(200, "OK"),
+        StringResponseMessage(404, "No user with given login/e-mail found")
       )
+    )
 
     protected val resetPassword = (
       apiOperation[Unit]("resetPassword")
-        summary "Reset password"
-        parameters(
+      summary "Reset password"
+      parameters (
         pathParam[String]("code").description("Password reset code").required,
         bodyParam[PasswordResetCommand]("body").description("New password").required
-        )
-        responseMessages(
+      )
+        responseMessages (
           StringResponseMessage(200, "OK"),
           StringResponseMessage(400, "Missing password"),
           StringResponseMessage(403, "Invalid password reset code")
         )
-      )
+    )
   }
 
   private[this] case class PasswordResetRequestCommand(login: String)
