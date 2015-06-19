@@ -1,6 +1,6 @@
 package uitest.pages
 
-import org.openqa.selenium.{WebDriver, WebElement}
+import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.openqa.selenium.support.FindBy
 import uitest.commands.SeleniumCommands
 
@@ -11,17 +11,20 @@ class PasswordResetPage(driver: WebDriver) {
   @FindBy(name = "password")
   val passwordField: WebElement = null
 
+  @FindBy(id = "repeatNotMatching")
+  val repeatErrorText: WebElement = null
+
   @FindBy(name = "repeatPassword")
   val repeatPassField: WebElement = null
 
   @FindBy(css = "button[type=submit]")
-  val loginButton: WebElement = null
+  val resetButton: WebElement = null
 
-  def resetPassword(password: String, repeatedPassword: String, afterClick: SeleniumCommands => Unit = _.waitForFinishLoading()) {
+  def resetPassword(password: String, repeatedPassword: String) {
     passwordField.sendKeys(password)
     repeatPassField.sendKeys(repeatedPassword)
-    loginButton.click()
-    afterClick(sc)
+    resetButton.click()
+    sc.waitForFinishLoading()
   }
 
   def openPasswordResetPage(code: String) {
@@ -29,4 +32,5 @@ class PasswordResetPage(driver: WebDriver) {
     sc.waitForFinishLoading()
   }
 
+  def getErrorText = repeatErrorText.getText
 }

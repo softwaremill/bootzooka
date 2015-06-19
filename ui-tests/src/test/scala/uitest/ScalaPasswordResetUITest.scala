@@ -1,7 +1,7 @@
 package uitest
 
 import com.softwaremill.bootzooka.domain.PasswordResetCode
-import org.fest.assertions.Assertions
+import org.fest.assertions.Assertions._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -30,28 +30,27 @@ class ScalaPasswordResetUITest extends BaseUITest {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "asd")
 
-    Assertions.assertThat(messagesPage.getInfoText.contains("Your password has been changed"))
+    assertThat(messagesPage.getInfoText.contains("Your password has been changed")).isTrue()
   }
 
   test("password-reset should not reset password due to missing code") {
     passwordRestPage.openPasswordResetPage("")
     passwordRestPage.resetPassword("asd", "asd")
 
-    Assertions.assertThat(messagesPage.getErrorText.contains("Wrong or malformed password recovery code."))
+    assertThat(messagesPage.getErrorText.contains("Wrong or malformed password recovery code.")).isTrue()
   }
 
   test("password-reset should not reset password due to invalid code") {
     passwordRestPage.openPasswordResetPage(invalidCode)
     passwordRestPage.resetPassword("asd", "asd")
 
-    Assertions.assertThat(messagesPage.getErrorText.contains("Wrong or malformed password recovery code."))
+    assertThat(messagesPage.getErrorText.contains("Your reset code is invalid. Please try again.")).isTrue()
   }
 
   test("password-reset should do nothing if password & its repetition differ") {
     passwordRestPage.openPasswordResetPage(validCode)
-    passwordRestPage.resetPassword("asd", "notMatching", sc => {
-      Assertions.assertThat(messagesPage.isUMessageDisplayed("Passwords don't match!"))
-    })
+    passwordRestPage.resetPassword("asd", "notMatching")
+    assertThat(passwordRestPage.getErrorText.contains("Passwords don't match!")).isTrue()
   }
 
 
