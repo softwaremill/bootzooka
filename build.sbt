@@ -45,6 +45,8 @@ val scalatraAuth = "org.scalatra" %% "scalatra-auth" % scalatraVersion exclude("
 lazy val scalatraStack = Seq(scalatra, scalatraScalatest, scalatraJson, scalatraSwagger, json4s, scalatraAuth)
 
 val javaxMail = "javax.mail" % "javax.mail-api" % "1.5.2"
+val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.5.3"
+lazy val mail = Seq(javaxMail, javaxMailSun)
 
 val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.6.3" % "test"
 
@@ -109,8 +111,8 @@ lazy val backend: Project = (project in file("backend"))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings ++ webSettings: _*)
   .settings(
-    libraryDependencies ++= jodaDependencies ++ slickStack ++ scalatraStack ++
-      Seq(jettyContainer, javaxMail, typesafeConfig, servletApiProvided, bugsnag),
+    libraryDependencies ++= jodaDependencies ++ slickStack ++ scalatraStack ++ mail ++
+      Seq(jettyContainer, typesafeConfig, servletApiProvided, bugsnag),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](
