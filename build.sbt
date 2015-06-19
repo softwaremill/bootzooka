@@ -15,7 +15,7 @@ val scalatraVersion = "2.3.1"
 val scalaLoggingVersion = "3.1.0"
 val jettyVersion = "9.2.6.v20141205"
 val json4sVersion = "3.2.11"
-val seleniumVersion = "2.44.0"
+val seleniumVersion = "2.46.0"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
 val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
