@@ -21,8 +21,6 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
   final val REGPASS = "regpass"
   final val REGMAIL = "reguser@regmail.pl"
 
-  final val MESSAGE = "Dummy message"
-
   var driver: FirefoxDriver = _
   var emailService: DummyEmailService = _
   var loginPage: LoginPage = _

@@ -29,12 +29,6 @@ class MessagesPage(driver: WebDriver) {
     sc.waitForFinishLoading()
   }
 
-  def sendMessage(messagetext: String) {
-    messageField.sendKeys(messagetext)
-    sendButton.click()
-    sc.waitForFinishLoading()
-  }
-
   def isUserLogged(user: String): Boolean = {
     sc.waitForElementVisible(By.linkText("Logged in as " + user))
     true
