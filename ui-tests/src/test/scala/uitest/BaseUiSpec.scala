@@ -13,6 +13,7 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
 import uitest.pages.{MainPage, LoginPage, MessagesPage, PasswordResetPage}
 
 import scala.concurrent.ExecutionContext
+import scala.reflect.ClassTag
 import scala.util.Try
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -64,10 +65,10 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
   before {
     driver = new FirefoxDriver()
     driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
-    loginPage = PageFactory.initElements(driver, classOf[LoginPage])
-    messagesPage = PageFactory.initElements(driver, classOf[MessagesPage])
-    passwordRestPage = PageFactory.initElements(driver, classOf[PasswordResetPage])
-    mainPage = PageFactory.initElements(driver, classOf[MainPage])
+    loginPage = createPage(classOf[LoginPage])
+    messagesPage = createPage(classOf[MessagesPage])
+    passwordRestPage = createPage(classOf[PasswordResetPage])
+    mainPage = createPage(classOf[MainPage])
   }
 
   after {
@@ -89,4 +90,6 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
     removeUsers(RegUser, "1" + RegUser)
     stopJetty()
   }
+
+  def createPage[T](clazz: Class[T]):T = PageFactory.initElements(driver, clazz)
 }
