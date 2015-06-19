@@ -17,9 +17,9 @@ import scala.util.Try
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
-  final val REGUSER = "reguser"
-  final val REGPASS = "regpass"
-  final val REGMAIL = "reguser@regmail.pl"
+  val RegUser = "reguser"
+  val RegPass = "regpass"
+  val RegMail = "reguser@regmail.pl"
 
   var driver: FirefoxDriver = _
   var emailService: DummyEmailService = _
@@ -41,17 +41,14 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
   override def beforeAll() {
     startJetty()
     beans = context.getAttribute("appObject").asInstanceOf[Beans]
-    registerUserIfNotExists(REGUSER, REGMAIL, REGPASS)
-    registerUserIfNotExists("1" + REGUSER, "1" + REGMAIL, REGPASS)
+    registerUserIfNotExists(RegUser, RegMail, RegPass)
+    registerUserIfNotExists("1" + RegUser, "1" + RegMail, RegPass)
     emailService = beans.emailService.asInstanceOf[DummyEmailService]
   }
 
   /**
    * Register a new user if doesn't exist.
    *
-   * @param login
-   * @param pass
-   * @param email
    * @return boolean value (wrapped within scala.util.Try) indicating
    *         if new user was created or an existing user was found
    */
@@ -89,7 +86,7 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
   }
 
   override def afterAll() {
-    removeUsers(REGUSER, "1" + REGUSER)
+    removeUsers(RegUser, "1" + RegUser)
     stopJetty()
   }
 }
