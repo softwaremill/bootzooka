@@ -43,6 +43,7 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'sm
                 controller: "ProfileCtrl",
                 templateUrl: "profile/profile/profile.html",
                 resolve: {
+                    //this is a kind of constructor injection to controller, since ProfileCtrl require logged user.
                     user: function (UserSessionService) {
                         return UserSessionService.getLoggedUserPromise();
                     }

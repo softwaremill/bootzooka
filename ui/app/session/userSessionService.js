@@ -10,13 +10,14 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         return loggedUser;
     });
 
-    var userSessionService = {
-        getLoggedUser: function () {
-            return loggedUser;
-        },
-        getLoggedUserPromise: function () {
-            return loggedUserPromise;
-        }
+    var userSessionService = {};
+    
+    userSessionService.getLoggedUser = function () {
+        return loggedUser;
+    };
+
+    userSessionService.getLoggedUserPromise = function () {
+        return loggedUserPromise;
     };
 
     userSessionService.isLogged = function () {
