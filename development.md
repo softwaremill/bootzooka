@@ -7,22 +7,20 @@ title:  "Development"
 
 In order to build and develop on Bootzooka foundations you need the following:
 
-*	Java JDK >= 7
-*	[SBT](http://www.scala-sbt.org/) >= 0.13
-*	Node.js >= 0.10.13
+* Java JDK >= 7
+* [SBT](http://www.scala-sbt.org/) >= 0.13
+* Node.js >= 0.10.13
 
 ## How to run
 
 Because (as said before) Bootzooka consists of two separate applications, in development you need to run both
 separately.
 
-**NOTE: This is not the case in production by default. When the final WAR package is built it contains both client and
-server parts in one application that can be dropped into any servlet container.**
+**NOTE: This is not the case in production by default. When the final fat-jar application/.war package is built it contains both client and server parts.**
 
 ### Server
 
-To run the backend server part, enter the main directory and type `./backend-start.sh` or
-`backend-start.bat` depending on your OS.
+To run the backend server part, enter the main directory and type `./backend-start.sh` or `backend-start.bat` depending on your OS.
 
 ### Browser client
 
