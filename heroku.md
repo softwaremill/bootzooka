@@ -33,8 +33,8 @@ After that's done you can visit your application's URL. If anything goes wrong, 
 
 ## Email
 
-You can configure email either by [providing SMTP server details](config.html), or by using a service provided by Heroku, such as [SendGrid](https://sendgrid.com). In the latter case, you'll need to modify the code a bit to add a new `EmailService`:
+You can configure email either by [providing SMTP server details](configuration.html), or by using a service provided by Heroku, such as [SendGrid](https://sendgrid.com). In the latter case, you'll need to modify the code a bit to add a new `EmailService`:
 
-# in `build.sbt`, add `"com.sendgrid" % "sendgrid-java" % "2.2.2"` or newer to the `libraryDependencies` of the `backend` project.
-# if the `SENDGRID_USERNAME` and `SENDGRID_PASSWORD` environmental variables are present, instantiate the `SendGridEmailService` in `Beans` instead of the smtp one
-# implement the `SendGridEmailService`, extending `EmailService`, using SendGrid's API. 
+* in `build.sbt`, add `"com.sendgrid" % "sendgrid-java" % "2.2.2"` or newer to the `libraryDependencies` of the `backend` project.
+* if the `SENDGRID_USERNAME` and `SENDGRID_PASSWORD` environmental variables are present, instantiate the `SendGridEmailService` in `Beans` instead of the smtp one
+* implement the `SendGridEmailService`, extending `EmailService`, using SendGrid's API. 
