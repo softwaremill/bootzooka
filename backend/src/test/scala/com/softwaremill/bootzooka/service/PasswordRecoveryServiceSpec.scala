@@ -18,7 +18,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Promise, Future}
 
 class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
 with IntegrationPatience with UserTestHelpers {
@@ -53,8 +53,8 @@ with IntegrationPatience with UserTestHelpers {
   "sendResetCodeToUser" should "search for user using provided login" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       // given
-      given(codeDao.add(any[PasswordResetCode])).willReturn(Future{})
-      given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future{})
+      given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
+      given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future.successful(()))
       // when
       passwordRecoveryService.sendResetCodeToUser(invalidLogin).futureValue
       // then
@@ -65,7 +65,7 @@ with IntegrationPatience with UserTestHelpers {
   "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       // given
-      given(codeDao.add(any[PasswordResetCode])).willReturn(Future{})
+      given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
       // when
       passwordRecoveryService.sendResetCodeToUser(invalidLogin).futureValue
       // then
@@ -76,8 +76,8 @@ with IntegrationPatience with UserTestHelpers {
   "sendResetCodeToUser" should "store generated code for reuse" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       // given
-      given(codeDao.add(any[PasswordResetCode])).willReturn(Future{})
-      given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future{})
+      given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
+      given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future.successful(()))
       // when
       passwordRecoveryService.sendResetCodeToUser(validLogin).futureValue
       // then
@@ -88,8 +88,8 @@ with IntegrationPatience with UserTestHelpers {
   "sendResetCodeToUser" should "send e-mail to user containing link to reset page with generated reset code" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       // given
-      given(codeDao.add(any[PasswordResetCode])).willReturn(Future{})
-      given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future{})
+      given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
+      given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future.successful(()))
       // when
       passwordRecoveryService.sendResetCodeToUser(validLogin).futureValue
       // then
@@ -100,8 +100,8 @@ with IntegrationPatience with UserTestHelpers {
   "sendResetCodeToUser" should "use template to generate e-mail" in {
     withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
       // given
-      given(codeDao.add(any[PasswordResetCode])).willReturn(Future{})
-      given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future{})
+      given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
+      given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future.successful(()))
       // when
       passwordRecoveryService.sendResetCodeToUser(validLogin).futureValue
       // then
@@ -120,8 +120,8 @@ with IntegrationPatience with UserTestHelpers {
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().plusHours(1))
 
       given(codeDao.load(code)) willReturn Future { Some(resetCode) }
-      given(userDao.changePassword(any[UserDao#UserId], any[String])).willReturn(Future{})
-      given(codeDao.remove(resetCode)).willReturn(Future{})
+      given(userDao.changePassword(any[UserDao#UserId], any[String])).willReturn(Future.successful(()))
+      given(codeDao.remove(resetCode)).willReturn(Future.successful(()))
 
       // when
       val result = passwordRecoveryService.performPasswordReset(code, password).futureValue
@@ -146,7 +146,7 @@ with IntegrationPatience with UserTestHelpers {
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().minusHours(1))
 
       given(codeDao.load(code)) willReturn Future { Some(resetCode) }
-      given(codeDao.remove(resetCode)).willReturn(Future{})
+      given(codeDao.remove(resetCode)).willReturn(Future.successful(()))
 
       //When
       val result = passwordRecoveryService.performPasswordReset(code, password).futureValue
@@ -168,7 +168,7 @@ with IntegrationPatience with UserTestHelpers {
       val mockCode = mock[PasswordResetCode]
       given(mockCode.validTo) willReturn new DateTime().minusDays(2)
       given(codeDao.load(code)) willReturn Future { Some(mockCode) }
-      given(codeDao.remove(mockCode)).willReturn(Future{})
+      given(codeDao.remove(mockCode)).willReturn(Future.successful(()))
 
       //When
       val result = passwordRecoveryService.performPasswordReset(code, password).futureValue

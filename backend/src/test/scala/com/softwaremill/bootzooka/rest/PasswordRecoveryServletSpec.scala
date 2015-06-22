@@ -28,7 +28,7 @@ class PasswordRecoveryServletSpec extends BaseServletSpec {
   "POST /" should "send e-mail to user" in {
     onServletWithMocks { (recoveryService) =>
       // given
-      given(recoveryService.sendResetCodeToUser(any[String])).willReturn(Future{})
+      given(recoveryService.sendResetCodeToUser(any[String])).willReturn(Future.successful(()))
       // when
       post("/", mapToJson(Map("login" -> "existing")), defaultJsonHeaders) {
         status should be (200)
