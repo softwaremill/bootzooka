@@ -78,6 +78,7 @@ lazy val commonSettings = scalariformSettings ++ Seq(
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
     .setPreference(DoubleIndentClassDeclaration, true)
     .setPreference(PreserveSpaceBeforeArguments, true)
+    .setPreference(CompactControlReadability, true)
     .setPreference(SpacesAroundMultiImports, false),
   organization := "com.softwaremill",
   version := "0.0.1-SNAPSHOT",

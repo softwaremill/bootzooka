@@ -62,14 +62,16 @@ object SqlDatabase extends LazyLogging {
 
     if (config.dbPostgresConnectionUrl.length > 0) {
       createPostgres(config.dbPostgresConnectionUrl, None, None)
-    } else if (envDatabaseUrl != null) {
+    }
+    else if (envDatabaseUrl != null) {
       val dbUri = new URI(envDatabaseUrl)
       val username = dbUri.getUserInfo.split(":")(0)
       val password = dbUri.getUserInfo.split(":")(1)
       val url = s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}"
 
       createPostgres(url, Some(username), Some(password))
-    } else {
+    }
+    else {
       createEmbedded(config)
     }
   }

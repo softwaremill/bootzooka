@@ -49,7 +49,8 @@ object EmailSender extends LazyLogging {
 
     if (attachmentDescriptions.length > 0) {
       addAttachments(m, emailDescription.message, encoding, attachmentDescriptions: _*)
-    } else {
+    }
+    else {
       m.setText(emailDescription.message, encoding, "plain")
     }
 
@@ -57,7 +58,8 @@ object EmailSender extends LazyLogging {
     try {
       connectToSmtpServer(transport, smtpUsername, smtpPassword)
       sendEmail(transport, m, emailDescription, to)
-    } finally {
+    }
+    finally {
       transport.close()
     }
   }
@@ -73,7 +75,8 @@ object EmailSender extends LazyLogging {
         props.put("mail.smtps.ssl.checkserveridentity", "false")
         props.put("mail.smtps.ssl.trust", "*")
       }
-    } else {
+    }
+    else {
       props.put("mail.smtp.host", smtpHost)
       props.put("mail.smtp.port", smtpPort)
     }
@@ -92,7 +95,8 @@ object EmailSender extends LazyLogging {
   private def connectToSmtpServer(transport: Transport, smtpUsername: String, smtpPassword: String) {
     if (smtpUsername != null && smtpUsername.nonEmpty) {
       transport.connect(smtpUsername, smtpPassword)
-    } else {
+    }
+    else {
       transport.connect()
     }
   }

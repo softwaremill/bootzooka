@@ -114,7 +114,8 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     // When
     try {
       userService.registerNewUser("Admin", "secondEmail@sml.com", "password").futureValue
-    } catch {
+    }
+    catch {
       case e: Exception =>
     }
     // Then

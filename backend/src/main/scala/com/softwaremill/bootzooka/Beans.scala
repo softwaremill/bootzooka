@@ -25,7 +25,8 @@ trait Beans extends LazyLogging with Daos {
 
   lazy val emailService = if (config.emailEnabled) {
     new SmtpEmailService(config)
-  } else {
+  }
+  else {
     logger.info("Starting with fake email sending service. No emails will be sent.")
     new DummyEmailService
   }

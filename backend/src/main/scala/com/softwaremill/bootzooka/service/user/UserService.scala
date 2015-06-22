@@ -90,7 +90,8 @@ class UserService(
     userDao.findByToken(userToken).flatMap {
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
         userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)).map(Right(_))
-      } else {
+      }
+      else {
         Future {
           Left("Current password is invalid")
         }

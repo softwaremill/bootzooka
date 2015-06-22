@@ -38,7 +38,8 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
   post("/register", operation(register)) {
     if (!userService.isUserDataValid(loginOpt, emailOpt, passwordOpt)) {
       haltWithBadRequest("Wrong user data!")
-    } else {
+    }
+    else {
       val paramLogin = login
       val paramPass = password
       val paramEmail = email // these values have to be extracted before
@@ -81,9 +82,11 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
 
     val updateFut = if (!login.isEmpty) {
       changeLogin()
-    } else if (!email.isEmpty) {
+    }
+    else if (!email.isEmpty) {
       changeEmail()
-    } else Future.failed(new IllegalStateException("You have to provide new login or email"))
+    }
+    else Future.failed(new IllegalStateException("You have to provide new login or email"))
     new AsyncResult {
       val is = updateFut.map { errorMsgOpt =>
         errorMsgOpt.foreach(msg => haltWithConflict(msg))
@@ -115,7 +118,8 @@ class UsersServlet(val userService: UserService)(override implicit val swagger: 
 
     if (currentPassword.isEmpty) {
       haltWithBadRequest("Parameter currentPassword is missing")
-    } else if (newPassword.isEmpty) {
+    }
+    else if (newPassword.isEmpty) {
       haltWithBadRequest("Parameter newPassword is missing")
     }
     val token = user.token

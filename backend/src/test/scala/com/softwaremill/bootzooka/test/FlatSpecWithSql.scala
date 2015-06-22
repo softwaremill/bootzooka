@@ -40,7 +40,8 @@ trait FlatSpecWithSql extends FlatSpec with BeforeAndAfterAll with BeforeAndAfte
   override protected def afterEach() {
     try {
       clearData()
-    } catch {
+    }
+    catch {
       case e: Exception => e.printStackTrace()
     }
 

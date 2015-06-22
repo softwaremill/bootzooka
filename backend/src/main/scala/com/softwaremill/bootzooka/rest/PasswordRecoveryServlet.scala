@@ -42,7 +42,8 @@ class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, 
           case _ => NoContent()
         }
       }
-    } else {
+    }
+    else {
       haltWithBadRequest("missingpassword")
     }
   }

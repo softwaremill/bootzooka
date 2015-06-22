@@ -61,7 +61,8 @@ class PasswordRecoveryService(
             _ <- changePassword(c, newPassword)
             _ <- invalidateResetCode(c)
           } yield Right(true)
-        } else {
+        }
+        else {
           invalidateResetCode(c).map(_ => Left("Your reset code is invalid. Please try again."))
         }
       case None =>
