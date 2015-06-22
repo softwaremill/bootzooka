@@ -28,10 +28,9 @@ class UserService(
     val now = clock.nowUtc
     val userCreatation: Future[Unit] = userDao.add(User(login, email.toLowerCase, password, salt, token, now))
     userCreatation.onSuccess {
-      case _ => {
+      case _ =>
         val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
         emailService.scheduleEmail(email, confirmationEmail)
-      }
     }
     userCreatation
   }
