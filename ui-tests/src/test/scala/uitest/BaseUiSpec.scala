@@ -2,7 +2,7 @@ package uitest
 
 import java.util.concurrent.TimeUnit
 
-import com.softwaremill.bootzooka.dao.{SqlUserSchema, SqlPasswordResetCodeSchema}
+import com.softwaremill.bootzooka.dao.{SqlPasswordResetCodeSchema, SqlUserSchema}
 import com.softwaremill.bootzooka.service.email.DummyEmailService
 import com.softwaremill.bootzooka.{Beans, EmbeddedJetty, EmbeddedJettyConfig}
 import com.typesafe.config.ConfigFactory
@@ -92,5 +92,5 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
     stopJetty()
   }
 
-  def createPage[T](clazz: Class[T]):T = PageFactory.initElements(driver, clazz)
+  def createPage[T](clazz: Class[T]): T = PageFactory.initElements(driver, clazz)
 }

@@ -2,16 +2,12 @@ package uitest
 
 import com.jayway.awaitility.scala.AwaitilitySupport
 import com.softwaremill.bootzooka.common.Utils
-import org.fest.assertions.Assertions
 import org.fest.assertions.Assertions._
-import org.openqa.selenium.support.PageFactory
-import org.scalatest.{BeforeAndAfterEach, BeforeAndAfter}
+import org.scalatest.BeforeAndAfterEach
 import uitest.pages.RegistrationPage
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class RegisterUiSpec extends BaseUiSpec with AwaitilitySupport with BeforeAndAfterEach {
-  
+
   val Login = Utils.randomString(5)
   val Email = Login + "@example.org"
   val Password = "test"

@@ -3,8 +3,6 @@ package uitest
 import com.softwaremill.bootzooka.domain.PasswordResetCode
 import org.fest.assertions.Assertions._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class PasswordResetUiSpec extends BaseUiSpec {
 
   private val validCode = "SOME00CODE"
@@ -46,6 +44,5 @@ class PasswordResetUiSpec extends BaseUiSpec {
     passwordRestPage.resetPassword("asd", "notMatching")
     assertThat(passwordRestPage.getErrorText) contains "Passwords don't match!"
   }
-
 
 }
