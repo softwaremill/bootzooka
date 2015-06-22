@@ -1,16 +1,31 @@
 'use strict';
 
 describe('User Session Controller', function () {
+
     beforeEach(module('smlBootzooka.session'));
     beforeEach(module('smlBootzooka.common.services'));
 
-    describe('without logged user', function () {
-        var scope, ctrl, userSessionService;
+    var userSessionService;
 
-        beforeEach(inject(function ($rootScope, $controller, UserSessionService, FlashService) {
+    var testWindow;
+    
+    beforeEach(function() {
+        testWindow = {location: "dummy" };
+
+        module(function($provide) {
+            $provide.value('$window', testWindow);
+        });
+        inject(function($injector) {
+            userSessionService = $injector.get('UserSessionService');
+        });
+    });
+
+    describe('without logged user', function () {
+        var scope, ctrl;
+
+        beforeEach(inject(function ($rootScope, $controller, FlashService) {
             scope = $rootScope.$new();
             ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: FlashService});
-            userSessionService = UserSessionService;
         }));
 
         it('Should have user not logged', function () {
@@ -19,12 +34,11 @@ describe('User Session Controller', function () {
     });
 
     describe('with user logged in', function () {
-        var scope, ctrl, userSessionService, $httpBackend, $cookies;
+        var scope, ctrl, $httpBackend, $cookies;
 
-        beforeEach(inject(function ($rootScope, $controller, _$cookies_, _$httpBackend_, $location, UserSessionService, FlashService) {
+        beforeEach(inject(function ($rootScope, $controller, _$cookies_, _$httpBackend_, $location, FlashService) {
             scope = $rootScope.$new();
             ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: FlashService});
-            userSessionService = UserSessionService;
             $cookies = _$cookies_;
             $cookies['scentry.auth.default.user'] = 'Jan Kowalski';
             $httpBackend = _$httpBackend_;
@@ -52,6 +66,7 @@ describe('User Session Controller', function () {
             // Then
             expect(scope.isLogged()).toBe(false);
             expect(userSessionService.isLogged()).toBe(false);
+            expect(testWindow.location).toBe("/");
         });
     });
 });
