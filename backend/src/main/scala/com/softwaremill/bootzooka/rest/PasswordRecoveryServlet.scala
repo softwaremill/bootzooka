@@ -11,7 +11,8 @@ import scala.concurrent.{ Future, ExecutionContext }
 /**
  * Servlet handling requests related to password recovery.
  */
-class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, userService: UserService)(override implicit val swagger: Swagger, implicit val executor: ExecutionContext)
+class PasswordRecoveryServlet(passwordRecoveryService: PasswordRecoveryService, userService: UserService)
+                             (override implicit val swagger: Swagger, implicit val executor: ExecutionContext)
     extends JsonServlet with SwaggerMappable with PasswordRecoveryServlet.ApiDocs with FutureSupport {
 
   override def mappingPath = PasswordRecoveryServlet.MappingPath

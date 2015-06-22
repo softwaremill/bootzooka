@@ -7,14 +7,16 @@ import javax.crypto.spec.PBEKeySpec
 import com.softwaremill.bootzooka.common.Utils
 import org.joda.time.DateTime
 
-case class User(id: UUID,
-                login: String,
-                loginLowerCased: String,
-                email: String,
-                password: String,
-                salt: String,
-                token: String,
-                createdOn: DateTime)
+case class User(
+  id: UUID,
+  login: String,
+  loginLowerCased: String,
+  email: String,
+  password: String,
+  salt: String,
+  token: String,
+  createdOn: DateTime
+)
 
 /*
 Extending function is a workaround for:
@@ -23,12 +25,14 @@ https://issues.scala-lang.org/browse/SI-4808
  */
 object User extends ((UUID, String, String, String, String, String, String, DateTime) => User) {
 
-  def apply(login: String,
-            email: String,
-            plainPassword: String,
-            salt: String,
-            token: String,
-            createdOn: DateTime): User =
+  def apply(
+    login: String,
+    email: String,
+    plainPassword: String,
+    salt: String,
+    token: String,
+    createdOn: DateTime
+  ): User =
     User(UUID.randomUUID(), login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, token,
       createdOn)
 
