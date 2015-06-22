@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $state, $stateParams, NotificationsService) {
 
@@ -15,7 +15,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
     };
 
     function beginResetProcessSuccess() {
-        FlashService.set("E-mail with link to reset your password has been sent. Please check your mailbox.");
+        FlashService.set('E-mail with link to reset your password has been sent. Please check your mailbox.');
         $state.go('home');
     }
 
@@ -27,13 +27,13 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
             if ($stateParams.code) {
                 PasswordRecoveryService.changePassword($stateParams.code, $scope.password).then(onChangeSuccess, onChangeFailure);
             } else {
-                onChangeFailure("Wrong or malformed password recovery code.")
+                onChangeFailure('Wrong or malformed password recovery code.')
             }
         }
     };
 
     function onChangeSuccess() {
-        FlashService.set("Your password has been changed");
+        FlashService.set('Your password has been changed');
         $state.go('home');
     }
 

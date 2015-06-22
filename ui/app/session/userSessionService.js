@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-angular.module("smlBootzooka.session").factory('UserSessionService', function ($http, $rootScope, $log, $window) {
+angular.module('smlBootzooka.session').factory('UserSessionService', function ($http, $rootScope, $log, $window) {
 
     var loggedUser = null;
     var target = null;
@@ -51,7 +51,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         if (loggedUser) {
             return loggedUser.login;
         } else {
-            return "";
+            return '';
         }
     };
 
@@ -69,7 +69,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         if (loggedUser) {
             loggedUser.login = login;
         } else {
-            $log.warn("Trying to updated login but user is null");
+            $log.warn('Trying to updated login but user is null');
         }
     };
 
@@ -77,7 +77,7 @@ angular.module("smlBootzooka.session").factory('UserSessionService', function ($
         if (loggedUser) {
             loggedUser.email = email;
         } else {
-            $log.warn("Trying to updated email but user is null");
+            $log.warn('Trying to updated email but user is null');
         }
     };
 

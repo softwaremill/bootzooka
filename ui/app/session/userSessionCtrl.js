@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 angular.module('smlBootzooka.session').controller('UserSessionCtrl', function UserSessionCtrl($scope, UserSessionService) {
 

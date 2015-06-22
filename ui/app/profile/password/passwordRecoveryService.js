@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-angular.module("smlBootzooka.profile").factory("PasswordRecoveryService", function ($q, $http) {
+angular.module('smlBootzooka.profile').factory('PasswordRecoveryService', function ($q, $http) {
     var passwordRecoveryService = {};
 
     passwordRecoveryService.beginResetProcess = function (login) {
-        return $http.post("rest/passwordrecovery", {login: login}).then(function (response) {
+        return $http.post('rest/passwordrecovery', {login: login}).then(function (response) {
             if (response.data.value !== 'success') {
                 return $q.reject(response.data.value);
             }
@@ -13,7 +13,7 @@ angular.module("smlBootzooka.profile").factory("PasswordRecoveryService", functi
     };
 
     passwordRecoveryService.changePassword = function (code, password) {
-        return $http.post("rest/passwordrecovery/" + code, {code: code, password: password});
+        return $http.post('rest/passwordrecovery/' + code, {code: code, password: password});
     };
 
     return passwordRecoveryService;

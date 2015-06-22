@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module("smlBootzooka.version").factory('Version', function () {
+angular.module('smlBootzooka.version').factory('Version', function () {
 
     var Version = function (data) {
         this.buildSha = data.build;

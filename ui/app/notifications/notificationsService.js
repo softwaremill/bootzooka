@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 angular.module('smlBootzooka.notifications')
     .factory('NotificationsService', function () {
@@ -43,6 +43,6 @@ angular.module('smlBootzooka.notifications')
             showInfo: show('info'),
             showError: show('danger'),
             showSuccess: show('success'),
-            showWarning: show('warning'),
+            showWarning: show('warning')
         };
     });

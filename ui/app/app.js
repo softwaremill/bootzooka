@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 angular.module('smlBootzooka.common.directives', []);
 angular.module('smlBootzooka.common.filters', []);
@@ -15,7 +15,7 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'sm
             .state('login', {
                 url: '/login',
                 controller: 'LoginCtrl',
-                templateUrl: "profile/login/login.html",
+                templateUrl: 'profile/login/login.html',
                 params: {
                     // these are used to redirect to a secure page if the user is not logged in
                     // see the $stateChangeStart handler below and LoginCtrl
@@ -26,22 +26,22 @@ angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'sm
             .state('register', {
                 url: '/register',
                 controller: 'RegisterCtrl',
-                templateUrl: "profile/register/register.html"
+                templateUrl: 'profile/register/register.html'
             })
             .state('recover-lost-password', {
                 url: '/recover-lost-password',
                 controller: 'PasswordRecoveryCtrl',
-                templateUrl: "profile/password/recover-lost-password.html"
+                templateUrl: 'profile/password/recover-lost-password.html'
             })
             .state('password-reset', {
                 url: '/password-reset?code',
-                controller: "PasswordRecoveryCtrl",
-                templateUrl: "profile/password/password-reset.html"
+                controller: 'PasswordRecoveryCtrl',
+                templateUrl: 'profile/password/password-reset.html'
             })
             .state('profile', {
                 url: '/profile',
-                controller: "ProfileCtrl",
-                templateUrl: "profile/profile/profile.html",
+                controller: 'ProfileCtrl',
+                templateUrl: 'profile/profile/profile.html',
                 resolve: {
                     //this is a kind of constructor injection to controller, since ProfileCtrl require logged user.
                     user: function (UserSessionService) {
@@ -74,14 +74,14 @@ angular.module(
             })
             .state('main', {
                 url: '/main',
-                templateUrl: "common/private.html",
+                templateUrl: 'common/private.html',
                 data: {
                     auth: true
                 }
             })
             .state('home', {
                 url: '/',
-                templateUrl: "common/public.html"
+                templateUrl: 'common/public.html'
             });
     })
     .config(['$httpProvider', function ($httpProvider) {
@@ -104,7 +104,7 @@ angular.module(
 
             function error(response) {
                 if (response.status === 401) { // user is not logged in
-                    $rootScope.$emit("401");
+                    $rootScope.$emit('401');
                 } else if (response.status === 403) {
                     $log.warn(response.data);
                     // do nothing, user is trying to modify data without privileges
@@ -152,7 +152,7 @@ angular.module(
         });
     })
     .run(function ($rootScope, $timeout, FlashService, NotificationsService) {
-        $rootScope.$on("$stateChangeSuccess", function () {
+        $rootScope.$on('$stateChangeSuccess', function () {
             var message = FlashService.get();
             NotificationsService.showInfo(message);
         });

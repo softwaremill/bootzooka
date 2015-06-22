@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 angular.module('smlBootzooka.profile')
     .controller('LoginCtrl', function LoginCtrl($scope, UserSessionService, $state, $stateParams, NotificationsService) {
@@ -23,11 +23,11 @@ angular.module('smlBootzooka.profile')
             if (optionalRedirect) {
                 $state.go(optionalRedirect.targetState, optionalRedirect.targetParams);
             } else {
-                $state.go("main");
+                $state.go('main');
             }
         }
 
         function loginFailed() {
-            NotificationsService.showError("Invalid login and/or password.");
+            NotificationsService.showError('Invalid login and/or password.');
         }
     });

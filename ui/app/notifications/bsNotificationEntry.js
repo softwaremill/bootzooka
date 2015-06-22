@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 angular.module('smlBootzooka.notifications')
     .directive('bsNotificationEntry', function ($timeout) {

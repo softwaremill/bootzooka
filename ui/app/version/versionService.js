@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module("smlBootzooka.version").factory('VersionService', function ($http, Version) {
+angular.module('smlBootzooka.version').factory('VersionService', function ($http, Version) {
 
     var versionService = {};
 

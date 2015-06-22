@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-angular.module('smlBootzooka.profile').controller('RegisterCtrl', function RegisterCtrl($scope, RegisterService, $state, NotificationsService) {
+angular.module('smlBootzooka.profile').controller('RegisterCtrl', function RegisterCtrl($scope, RegisterService, $state) {
 
     $scope.user = {};
     $scope.user.login = '';
@@ -24,6 +24,6 @@ angular.module('smlBootzooka.profile').controller('RegisterCtrl', function Regis
     };
 
     function registerOk() {
-        $state.go("login");
+        $state.go('login');
     }
 });

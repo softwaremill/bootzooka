@@ -1,13 +1,13 @@
-angular.module("smlBootzooka.profile").factory("ProfileService", function ($resource, $cookies) {
+angular.module('smlBootzooka.profile').factory('ProfileService', function ($resource, $cookies) {
     var profileService = {};
 
-    this.profileResource = $resource("rest/users", {}, {
+    this.profileResource = $resource('rest/users', {}, {
         'changeLogin': {method: 'PATCH'},
         'changeEmail': {method: 'PATCH'},
         'changePassword': {method: 'PATCH'}
     }, {});
 
-    this.changePasswordResource = $resource("rest/users/changepassword", {}, {
+    this.changePasswordResource = $resource('rest/users/changepassword', {}, {
         'changePassword': {method: 'POST'}
     }, {});
 
@@ -15,7 +15,7 @@ angular.module("smlBootzooka.profile").factory("ProfileService", function ($reso
 
     profileService.changeLogin = function (newLogin) {
         return self.profileResource.changeLogin({login: newLogin}).$promise.then(function () {
-            $cookies["scentry.auth.default.user"] = newLogin;
+            $cookies['scentry.auth.default.user'] = newLogin;
         });
     };
 
