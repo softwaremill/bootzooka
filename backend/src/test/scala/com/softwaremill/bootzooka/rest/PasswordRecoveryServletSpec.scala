@@ -51,7 +51,7 @@ class PasswordRecoveryServletSpec extends BaseServletSpec {
   "POST /123 with password" should "change it" in {
     onServletWithMocks { (recoveryService) =>
       // given
-      given(recoveryService.performPasswordReset(any[String], any[String])).willReturn(Future{Right(true)})
+      given(recoveryService.performPasswordReset(any[String], any[String])).willReturn(Future{ Right(true) })
       // when
       post("/123", mapToJson(Map("password" -> "validPassword")), defaultJsonHeaders) {
         status should be (204)

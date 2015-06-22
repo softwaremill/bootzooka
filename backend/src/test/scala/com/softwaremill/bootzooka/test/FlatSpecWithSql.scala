@@ -6,7 +6,7 @@ import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 
 trait FlatSpecWithSql extends FlatSpec with BeforeAndAfterAll with BeforeAndAfterEach with ScalaFutures
-with IntegrationPatience {
+    with IntegrationPatience {
 
   private val connectionString = "jdbc:h2:mem:bootzooka_test" + this.getClass.getSimpleName + ";DB_CLOSE_DELAY=-1"
   implicit val clock = RealTimeClock

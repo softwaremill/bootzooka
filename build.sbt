@@ -8,6 +8,7 @@ import sbt.ScalaVersion
 import com.earldouglas.xsbtwebplugin.WebPlugin.webSettings
 
 import scala.util.Try
+import scalariform.formatter.preferences._
 
 val slf4jVersion = "1.7.9"
 val logBackVersion = "1.1.2"
@@ -73,11 +74,14 @@ lazy val servletApiProvided = "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0
 name := "bootzooka"
 
 // factor out common settings into a sequence
-lazy val commonSettings = Seq(
+lazy val commonSettings = scalariformSettings ++ Seq(
+  ScalariformKeys.preferences := ScalariformKeys.preferences.value
+    .setPreference(DoubleIndentClassDeclaration, true)
+    .setPreference(PreserveSpaceBeforeArguments, true)
+    .setPreference(SpacesAroundMultiImports, false),
   organization := "com.softwaremill",
   version := "0.0.1-SNAPSHOT",
   scalaVersion := "2.11.6",
-
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   classpathTypes ~= (_ + "orbit"),
   libraryDependencies ++= commonDependencies

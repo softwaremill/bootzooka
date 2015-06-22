@@ -10,9 +10,11 @@ class KillableProcess(shellCommand: String, processGrepStrings: String*) extends
   var process: Process = _
 
   def start(): Process = {
-    process = new ProcessBuilder("sh",
+    process = new ProcessBuilder(
+      "sh",
       "-c",
-      shellCommand).start()
+      shellCommand
+    ).start()
 
     process
   }
@@ -32,7 +34,7 @@ class KillableProcess(shellCommand: String, processGrepStrings: String*) extends
   def sendSig(sig: Int) {
     for (pid <- readPids()) {
       logger.info(s"Sending signal $sig to pid $pid")
-      Shell.runShellCommand("kill -"+sig+" "+pid).waitFor()
+      Shell.runShellCommand("kill -" + sig + " " + pid).waitFor()
     }
 
     process = null

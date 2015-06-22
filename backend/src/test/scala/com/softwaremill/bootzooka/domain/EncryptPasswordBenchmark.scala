@@ -10,7 +10,7 @@ object EncryptPasswordBenchmark extends App {
       User.encryptPassword(pass, salt)
     }
     val end = System.currentTimeMillis()
-    (end-start).toDouble / iterations
+    (end - start).toDouble / iterations
   }
 
   def timeEncryptingAndLog(pass: String, salt: String, iterations: Int) {

@@ -54,8 +54,7 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
 
   def findByLoginOrEmail(loginOrEmail: String) = {
     findByLowerCasedLogin(loginOrEmail).flatMap(userOpt =>
-      userOpt.map(user => Future{Some(user)}).getOrElse(findByEmail(loginOrEmail))
-    )
+      userOpt.map(user => Future { Some(user) }).getOrElse(findByEmail(loginOrEmail)))
   }
 
   def findByToken(token: String) =
@@ -87,6 +86,7 @@ trait SqlUserSchema {
   protected val users = TableQuery[Users]
 
   protected class Users(tag: Tag) extends Table[User](tag, "users") {
+    // format: OFF
     def id              = column[UUID]("id", O.PrimaryKey)
     def login           = column[String]("login")
     def loginLowerCase  = column[String]("login_lowercase")
@@ -98,6 +98,7 @@ trait SqlUserSchema {
 
     def * = (id, login, loginLowerCase, email, password, salt, token, createdOn) <>
       (User.tupled, User.unapply)
+    // format: ON
   }
 
 }

@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.service.email.sender
 
 case class EmailDescription(
-  emails: Array[String],
+    emails: Array[String],
     message: String,
     subject: String,
     replyToEmails: Array[String],

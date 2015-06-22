@@ -21,7 +21,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Promise, Future}
 
 class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
-with IntegrationPatience with UserTestHelpers {
+    with IntegrationPatience with UserTestHelpers {
   val invalidLogin = "user2"
   val validLogin = "user"
 

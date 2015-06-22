@@ -43,7 +43,6 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
     userDao.findByEmail(email).futureValue should be ('defined)
   }
 
-
   it should "fail with exception when trying to add user with existing login" in {
     // Given
     val login = "newuser"
@@ -53,7 +52,8 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
 
     // When & then
     userDao.add(newUser(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
-      "User with given e-mail or login already exists")
+      "User with given e-mail or login already exists"
+    )
   }
 
   it should "fail with exception when trying to add user with existing email" in {
@@ -65,7 +65,8 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
 
     // When & then
     userDao.add(newUser(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
-      "User with given e-mail or login already exists")
+      "User with given e-mail or login already exists"
+    )
   }
 
   it should "find by email" in {
@@ -103,7 +104,7 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
 
   it should "find by uppercase login" in {
     // Given
-    val login  = "user1".toUpperCase
+    val login = "user1".toUpperCase
 
     // When
     val userOpt = userDao.findByLowerCasedLogin(login).futureValue
@@ -208,6 +209,5 @@ class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers 
     // Then
     userDao.findByEmail(newEmail).futureValue should equal(Some(u.copy(email = newEmail)))
   }
-
 
 }

@@ -1,11 +1,11 @@
 package com.softwaremill.bootzooka.auth
 
-import org.scalatra.{ CookieOptions, Cookie, ScalatraBase }
+import org.scalatra.{CookieOptions, Cookie, ScalatraBase}
 import org.scalatra.auth.ScentryStrategy
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
-import javax.servlet.http.{ HttpServletResponse, HttpServletRequest }
+import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
 import scala.concurrent.Await
 import AuthOps._

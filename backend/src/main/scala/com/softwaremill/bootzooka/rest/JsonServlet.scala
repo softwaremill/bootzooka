@@ -44,10 +44,11 @@ abstract class JsonServlet extends ScalatraServlet with NativeJsonSupport with J
   }
 
   errorHandler = {
-    case t: Exception => {
-      logger.error("Exception during client request processing", t)
-    }
-    halt(500, "Internal server exception")
+    case t: Exception =>
+      {
+        logger.error("Exception during client request processing", t)
+      }
+      halt(500, "Internal server exception")
   }
 
 }

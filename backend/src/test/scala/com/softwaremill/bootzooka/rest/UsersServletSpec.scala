@@ -53,37 +53,39 @@ class UsersServletSpec extends BaseServletSpec with FlatSpecWithSql with UserTes
 
   "POST /register with an existing login" should "return 409 with an error message" in {
     onServletWithMocks {
-      (userService) => {
-        val newUserWithExistingLogin = mapToJson(Map(
-          "login" -> "Admin",
-          "email" -> "newUser@sml.com",
-          "password" -> "secret"
-        ))
+      (userService) =>
+        {
+          val newUserWithExistingLogin = mapToJson(Map(
+            "login" -> "Admin",
+            "email" -> "newUser@sml.com",
+            "password" -> "secret"
+          ))
 
-        post("/register", newUserWithExistingLogin, defaultJsonHeaders) {
-          val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
-          option should be(Some("Login already in use!"))
-          status should be(409)
+          post("/register", newUserWithExistingLogin, defaultJsonHeaders) {
+            val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
+            option should be(Some("Login already in use!"))
+            status should be(409)
+          }
         }
-      }
     }
   }
 
   "POST /register with an existing email" should "return 409 with an error message" in {
     onServletWithMocks {
-      (userService) => {
-        val newUserWithExistingEmail = mapToJson(Map(
-          "login" -> "newUser",
-          "email" -> "admin@sml.com",
-          "password" -> "secret"
-        ))
+      (userService) =>
+        {
+          val newUserWithExistingEmail = mapToJson(Map(
+            "login" -> "newUser",
+            "email" -> "admin@sml.com",
+            "password" -> "secret"
+          ))
 
-        post("/register", newUserWithExistingEmail, defaultJsonHeaders) {
-          val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
-          option should be(Some("E-mail already in use!"))
-          status should be(409)
+          post("/register", newUserWithExistingEmail, defaultJsonHeaders) {
+            val option: Option[String] = (stringToJson(body) \ "value").extractOpt[String]
+            option should be(Some("E-mail already in use!"))
+            status should be(409)
+          }
         }
-      }
     }
   }
 

@@ -11,7 +11,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 
 class PasswordResetCodeDao(protected val database: SqlDatabase)(implicit ec: ExecutionContext)
-  extends SqlPasswordResetCodeSchema with SqlUserSchema {
+    extends SqlPasswordResetCodeSchema with SqlUserSchema {
 
   import database._
   import database.driver.api._
@@ -60,6 +60,7 @@ trait SqlPasswordResetCodeSchema {
       SqlPasswordResetCode(rc.id, rc.code, rc.user.id, rc.validTo)
   }
 
+  // format: OFF
   protected class PasswordResetCodes(tag: Tag) extends Table[SqlPasswordResetCode](tag, "password_reset_codes") {
     def id        = column[UUID]("id", O.PrimaryKey)
     def code      = column[String]("code")
@@ -68,8 +69,9 @@ trait SqlPasswordResetCodeSchema {
 
     def *         = (id, code, userId, validTo) <> (SqlPasswordResetCode.tupled, SqlPasswordResetCode.unapply)
 
-    def user      = foreignKey("password_reset_code_user_fk", userId, users)(_.id,
-      onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
+    def user      = foreignKey("password_reset_code_user_fk", userId, users)(
+      _.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
+    // format: ON
   }
 
 }

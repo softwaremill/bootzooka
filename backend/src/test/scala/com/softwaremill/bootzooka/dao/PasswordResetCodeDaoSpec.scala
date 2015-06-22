@@ -46,9 +46,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
       _ <- userDao.add(code2.user)
       _ <- dao.add(code1)
       _ <- dao.add(code2)
-    }
-
-    //When
+    } //When
     yield dao.remove(code1).futureValue
 
     //Then
@@ -66,8 +64,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
     val bgActions = for {
       _ <- userDao.add(user)
       _ <- dao.add(code)
-    }
-    // When
+    } // When
     yield dao.remove(code)
 
     // Then

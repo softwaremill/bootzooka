@@ -21,8 +21,8 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
 
   def prepareUserDaoMock: UserDao = {
     val dao = new UserDao(sqlDatabase)
-    dao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1")).flatMap( _ =>
-    dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))).futureValue
+    dao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1")).flatMap(_ =>
+      dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))).futureValue
     dao
   }
 
@@ -45,7 +45,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     userOpt.map(_.login) should be (Some("Admin"))
   }
 
-  "findByEmail" should  "return user for uppercased ADMIN@SML.PL" in {
+  "findByEmail" should "return user for uppercased ADMIN@SML.PL" in {
     val userOpt = userService.findByEmail("ADMIN@SML.COM").futureValue
 
     userOpt.map(_.login) should be (Some("Admin"))
@@ -89,7 +89,6 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     userExistence.left.get.equals("E-mail already in use!")
   }
 
-
   "registerNewUser" should "add user with unique lowercased login info" in {
     // Given
     given(emailService.scheduleEmail(any(), any())).willReturn(Future {})
@@ -113,8 +112,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     // When
     try {
       userService.registerNewUser("Admin", "secondEmail@sml.com", "password").futureValue
-    }
-    catch {
+    } catch {
       case e: Exception =>
     }
     // Then
@@ -150,7 +148,6 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
   "changeLogin" should "not change login if already used by someone else" in {
     userService.changeLogin("admin", "admin2").futureValue should be ('left)
   }
-
 
   "changePassword" should "change password if current is correct and new is present" in {
     // Given
