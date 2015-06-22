@@ -11,8 +11,12 @@ import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataValidator, emailService: EmailService,
-    emailTemplatingEngine: EmailTemplatingEngine)(implicit ec: ExecutionContext, clock: Clock) {
+class UserService(
+  userDao: UserDao,
+  registrationDataValidator: RegistrationDataValidator,
+  emailService: EmailService,
+  emailTemplatingEngine: EmailTemplatingEngine)(
+  implicit ec: ExecutionContext, clock: Clock) {
 
   def load(userId: userDao.UserId) = {
     userDao.load(userId).map(toUserJson)
