@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka.rest
 
-import org.scalatra._
 import com.softwaremill.bootzooka.common.StringJsonWrapper
-import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.service.data.UserJson
-import org.scalatra.swagger.{ StringResponseMessage, SwaggerSupport, Swagger }
+import com.softwaremill.bootzooka.service.user.UserService
+import org.scalatra._
+import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.{ExecutionContext, Future}
 
 class UsersServlet(val userService: UserService)(override implicit val swagger: Swagger, ec: ExecutionContext)
     extends JsonServletWithAuthentication with SwaggerMappable with UsersServlet.ApiDocs with FutureSupport {

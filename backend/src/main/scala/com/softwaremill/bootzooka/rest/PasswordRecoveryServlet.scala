@@ -3,10 +3,10 @@ package com.softwaremill.bootzooka.rest
 import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
 import com.softwaremill.bootzooka.service.user.UserService
-import org.scalatra.swagger.{ StringResponseMessage, Swagger, SwaggerSupport }
-import org.scalatra.{ AsyncResult, FutureSupport, NoContent }
+import org.scalatra.swagger.{StringResponseMessage, Swagger, SwaggerSupport}
+import org.scalatra.{AsyncResult, FutureSupport, NoContent}
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * Servlet handling requests related to password recovery.

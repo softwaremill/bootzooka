@@ -2,14 +2,14 @@ package com.softwaremill.bootzooka.service.user
 
 import java.util.UUID
 
-import com.softwaremill.bootzooka.common.{ Clock, Utils }
+import com.softwaremill.bootzooka.common.{Clock, Utils}
 import com.softwaremill.bootzooka.dao.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.email.EmailService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class UserService(userDao: UserDao, registrationDataValidator: RegistrationDataValidator, emailService: EmailService,
     emailTemplatingEngine: EmailTemplatingEngine)(implicit ec: ExecutionContext, clock: Clock) {

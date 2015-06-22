@@ -3,11 +3,11 @@ package com.softwaremill.bootzooka.rest
 import java.util.Date
 import javax.servlet.http.HttpServletResponse
 
-import com.softwaremill.bootzooka.rest.serializers.{ UuidSerializer, DateTimeSerializer }
+import com.softwaremill.bootzooka.rest.serializers.{DateTimeSerializer, UuidSerializer}
 import com.typesafe.scalalogging.LazyLogging
-import org.json4s.{ DefaultFormats, Formats }
+import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
-import org.scalatra.json.{ JValueResult, NativeJsonSupport }
+import org.scalatra.json.{JValueResult, NativeJsonSupport}
 import org.scalatra.swagger.SwaggerSupport
 
 trait Mappable {

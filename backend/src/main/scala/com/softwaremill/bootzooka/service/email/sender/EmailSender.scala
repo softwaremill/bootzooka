@@ -1,11 +1,12 @@
 package com.softwaremill.bootzooka.service.email.sender
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+import java.util.{Date, Properties}
+import javax.activation.{DataHandler, DataSource}
+import javax.mail.internet.{InternetAddress, MimeBodyPart, MimeMessage, MimeMultipart}
+import javax.mail.{Address, Message, Session, Transport}
+
 import com.typesafe.scalalogging.LazyLogging
-import java.io.{ ByteArrayOutputStream, ByteArrayInputStream }
-import java.util.{ Date, Properties }
-import javax.activation.{ DataHandler, DataSource }
-import javax.mail.internet.{ MimeBodyPart, MimeMultipart, MimeMessage, InternetAddress }
-import javax.mail.{ Address, Transport, Session, Message }
 
 /**
  * Copied from softwaremill-common:

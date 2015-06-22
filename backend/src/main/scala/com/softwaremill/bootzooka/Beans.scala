@@ -3,12 +3,12 @@ package com.softwaremill.bootzooka
 import com.softwaremill.bootzooka.common.RealTimeClock
 import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
-import com.softwaremill.bootzooka.dao.{ SqlUserSchema, SqlPasswordResetCodeSchema, Daos, DaoConfig }
+import com.softwaremill.bootzooka.dao.{DaoConfig, Daos}
 import com.softwaremill.bootzooka.service.PasswordRecoveryService
-import com.softwaremill.bootzooka.service.config.{ CoreConfig, EmailConfig }
-import com.softwaremill.bootzooka.service.email.{ DummyEmailService, SmtpEmailService }
+import com.softwaremill.bootzooka.service.config.{CoreConfig, EmailConfig}
+import com.softwaremill.bootzooka.service.email.{DummyEmailService, SmtpEmailService}
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
-import com.softwaremill.bootzooka.service.user.{ RegistrationDataValidator, UserService }
+import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
 

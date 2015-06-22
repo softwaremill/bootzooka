@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.rest.swagger
 import com.softwaremill.bootzooka.rest.Mappable
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatra.ScalatraServlet
-import org.scalatra.swagger.{ ApiInfo, NativeSwaggerBase, Swagger }
+import org.scalatra.swagger.{ApiInfo, NativeSwaggerBase, Swagger}
 
 class SwaggerServlet(implicit val swagger: Swagger) extends ScalatraServlet with NativeSwaggerBase with LazyLogging with Mappable {
 

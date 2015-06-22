@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.common
 
-import org.joda.time.{ DateTimeZone, DateTime }
+import org.joda.time.{DateTime, DateTimeZone}
 
 trait Clock {
   def now: DateTime

@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka.service.email
 
+import com.softwaremill.bootzooka.service.config.EmailConfig
+import com.softwaremill.bootzooka.service.email.sender.{EmailDescription, EmailSender}
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
 import com.typesafe.scalalogging.LazyLogging
-import scala.concurrent._
-import com.softwaremill.bootzooka.service.email.sender.{ EmailSender, EmailDescription }
-import com.softwaremill.bootzooka.service.config.EmailConfig
 
-import scala.util.{ Failure, Try, Success }
+import scala.concurrent._
+import scala.util.{Failure, Success, Try}
 
 class SmtpEmailService(emailConfig: EmailConfig)(implicit ec: ExecutionContext) extends EmailService with LazyLogging {
   def scheduleEmail(address: String, email: EmailContentWithSubject) = {
