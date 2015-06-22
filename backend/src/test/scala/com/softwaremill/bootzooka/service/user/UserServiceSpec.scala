@@ -21,8 +21,10 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
 
   def prepareUserDaoMock: UserDao = {
     val dao = new UserDao(sqlDatabase)
-    dao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1")).flatMap(_ =>
-      dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))).futureValue
+    Future.sequence(Seq(
+      dao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1")),
+      dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
+    )).futureValue
     dao
   }
 
