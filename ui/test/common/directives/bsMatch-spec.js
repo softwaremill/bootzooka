@@ -1,6 +1,6 @@
 'use strict';
 
-describe("Match directive", function () {
+describe('Match directive', function () {
 
     var scope, form, elm;
 

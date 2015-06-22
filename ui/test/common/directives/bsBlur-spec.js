@@ -1,6 +1,6 @@
 'use strict';
 
-describe("Blur directive", function () {
+describe('Blur directive', function () {
 
     var scope, form, elm;
 

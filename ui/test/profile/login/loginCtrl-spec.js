@@ -1,6 +1,6 @@
 'use strict';
 
-describe("Login Controller", function () {
+describe('Login Controller', function () {
 
     beforeEach(module('smlBootzooka.profile'));
 
@@ -46,7 +46,7 @@ describe("Login Controller", function () {
         $httpBackend.flush();
         
         //then
-        expect(state.current).toBe("main");
+        expect(state.current).toBe('main');
     });
 
     it('Should not call login rest service when form is invalid', function () {

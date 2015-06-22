@@ -1,6 +1,6 @@
 'use strict';
 
-describe("Flash Service", function () {
+describe('Flash Service', function () {
 
     beforeEach(module('smlBootzooka.notifications'));
 
