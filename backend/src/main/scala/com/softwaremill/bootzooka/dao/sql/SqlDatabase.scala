@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka.dao.sql
 
-import java.io.File
 import java.net.URI
 import java.util.UUID
-import javax.sql.DataSource
 
-import com.mchange.v2.c3p0.{ComboPooledDataSource, DataSources}
 import com.softwaremill.bootzooka.dao.DaoConfig
+import com.softwaremill.bootzooka.dao.DaoConfig._
+import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigValueFactory._
 import com.typesafe.scalalogging.LazyLogging
 import org.flywaydb.core.Flyway
 import org.joda.time.{DateTime, DateTimeZone}
@@ -16,7 +16,7 @@ import slick.jdbc.JdbcBackend._
 case class SqlDatabase(
     db: slick.jdbc.JdbcBackend.Database,
     driver: JdbcProfile,
-    ds: DataSource
+    connectionString: JdbcConnectionString
 ) {
 
   import driver.api._
@@ -33,22 +33,24 @@ case class SqlDatabase(
 
   def updateSchema() {
     val flyway = new Flyway()
-    flyway.setDataSource(ds)
+    flyway.setDataSource(connectionString.url, connectionString.username, connectionString.password)
     flyway.migrate()
   }
 
   def close() {
-    DataSources.destroy(ds)
+    db.close()
   }
 }
 
+case class JdbcConnectionString(url: String, username: String = "", password: String = "")
+
 object SqlDatabase extends LazyLogging {
 
-  def embeddedConnectionString(config: DaoConfig): String = {
-    val fullPath = new File(config.dbH2EmbeddedDataDir, "updateimpact").getCanonicalPath
+  def connectionStringFromConfig(config: DaoConfig): String = {
+    val url = config.dbH2Url
+    val fullPath = url.split(":")(3)
     logger.info(s"Using an embedded database, with data files located at: $fullPath")
-
-    s"jdbc:h2:file:$fullPath"
+    url
   }
 
   def create(config: DaoConfig): SqlDatabase = {
@@ -60,47 +62,54 @@ object SqlDatabase extends LazyLogging {
      */
     val envDatabaseUrl = System.getenv("DATABASE_URL")
 
-    if (config.dbPostgresConnectionUrl.length > 0) {
-      createPostgres(config.dbPostgresConnectionUrl, None, None)
-    }
-    else if (envDatabaseUrl != null) {
-      val dbUri = new URI(envDatabaseUrl)
-      val username = dbUri.getUserInfo.split(":")(0)
-      val password = dbUri.getUserInfo.split(":")(1)
-      val url = s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}"
-
-      createPostgres(url, Some(username), Some(password))
-    }
-    else {
+    if (config.dbPostgresServerName.length > 0)
+      createPostgresFromConfig(config)
+    else if (envDatabaseUrl != null)
+      createPostgresFromEnv(envDatabaseUrl)
+    else
       createEmbedded(config)
+  }
+
+  def createPostgresFromEnv(envDatabaseUrl: String) = {
+    val dbUri = new URI(envDatabaseUrl)
+    val username = dbUri.getUserInfo.split(":")(0)
+    val password = dbUri.getUserInfo.split(":")(1)
+    val intermediaryConfig = new DaoConfig {
+      override def rootConfig: Config = ConfigFactory.empty()
+        .withValue(PostgresDSClass, fromAnyRef("org.postgresql.ds.PGSimpleDataSource"))
+        .withValue(PostgresServerNameKey, fromAnyRef(dbUri.getHost))
+        .withValue(PostgresPortKey, fromAnyRef(dbUri.getPort))
+        .withValue(PostgresDbNameKey, fromAnyRef(dbUri.getPath.tail))
+        .withValue(PostgresUsernameKey, fromAnyRef(username))
+        .withValue(PostgresPasswordKey, fromAnyRef(password))
     }
+    createPostgresFromConfig(intermediaryConfig)
+  }
+
+  def postgresUrl(host: String, port: String, dbName: String) =
+    s"jdbc:postgresql://$host:$port/$dbName"
+
+  def postgresConnectionString(config: DaoConfig) = {
+    val host = config.dbPostgresServerName
+    val port = config.dbPostgresPort
+    val dbName = config.dbPostgresDbName
+    val username = config.dbPostgresUsername
+    val password = config.dbPostgresPassword
+    JdbcConnectionString(postgresUrl(host, port, dbName), username, password)
+  }
+
+  def createPostgresFromConfig(config: DaoConfig) = {
+    val db = Database.forConfig("bootzooka.db.postgres", config.rootConfig)
+    SqlDatabase(db, slick.driver.PostgresDriver, postgresConnectionString(config))
   }
 
   private def createEmbedded(config: DaoConfig): SqlDatabase = {
-    createEmbedded(embeddedConnectionString(config))
+    val db = Database.forConfig("bootzooka.db.h2")
+    SqlDatabase(db, slick.driver.H2Driver, JdbcConnectionString(connectionStringFromConfig(config)))
   }
 
   def createEmbedded(connectionString: String): SqlDatabase = {
-    val ds = createConnectionPool(connectionString, "org.h2.Driver", None, None)
-    val db = Database.forDataSource(ds)
-    SqlDatabase(db, slick.driver.H2Driver, ds)
-  }
-
-  def createPostgres(connectionString: String, username: Option[String], password: Option[String]): SqlDatabase = {
-    logger.info(s"Using postgres database, connection url: $connectionString")
-    val ds = createConnectionPool(connectionString, "org.postgresql.Driver", username, password)
-    val db = Database.forDataSource(ds)
-    SqlDatabase(db, slick.driver.PostgresDriver, ds)
-  }
-
-  private def createConnectionPool(connectionString: String, driverClass: String,
-    username: Option[String], password: Option[String]) = {
-
-    val cpds = new ComboPooledDataSource()
-    cpds.setDriverClass(driverClass)
-    cpds.setJdbcUrl(connectionString)
-    username.foreach(cpds.setUser)
-    password.foreach(cpds.setPassword)
-    cpds
+    val db = Database.forURL(connectionString)
+    SqlDatabase(db, slick.driver.H2Driver, JdbcConnectionString(connectionString))
   }
 }

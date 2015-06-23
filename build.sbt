@@ -54,9 +54,9 @@ val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.6.3" % "test"
 val slick = "com.typesafe.slick" %% "slick" % "3.0.0"
 val h2 = "com.h2database" % "h2" % "1.3.176"
 val postgres = "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
-val c3p0 = "com.mchange" % "c3p0" % "0.9.5"
+val hikari = "com.zaxxer" % "HikariCP" % "2.3.8"
 val flyway = "org.flywaydb" % "flyway-core" % "3.1"
-lazy val slickStack = Seq(slick, h2, postgres, c3p0, flyway)
+lazy val slickStack = Seq(slick, h2, postgres, hikari, flyway)
 
 val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
 val scalatest = "org.scalatest" %% "scalatest" % "2.2.3" % "test"
