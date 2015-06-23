@@ -7,7 +7,7 @@ trait DaoConfig extends ConfigWithDefault {
   def rootConfig: Config
 
   // format: OFF
-  lazy val dbH2EmbeddedDataDir      = getString("updateimpact.db.h2.data-dir", "./data")
-  lazy val dbPostgresConnectionUrl  = getString("updateimpact.db.postgres.connection-url", "")
+  lazy val dbH2EmbeddedDataDir      = getString("bootzooka.db.h2.data-dir", "./data")
+  lazy val dbPostgresConnectionUrl  = getString("bootzooka.db.postgres.connection-url", "")
   // format: ON
 }
