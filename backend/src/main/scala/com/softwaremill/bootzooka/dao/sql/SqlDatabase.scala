@@ -26,11 +26,6 @@ case class SqlDatabase(
     t => new DateTime(t.getTime).withZone(DateTimeZone.UTC)
   )
 
-  implicit val UUIDColumnType = MappedColumnType.base[UUID, String](
-    uuid => uuid.toString,
-    s => UUID.fromString(s)
-  )
-
   def updateSchema() {
     val flyway = new Flyway()
     flyway.setDataSource(connectionString.url, connectionString.username, connectionString.password)
