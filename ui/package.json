@@ -9,7 +9,7 @@
     "grunt-contrib-watch": "0.6.1",
     "grunt-connect-proxy": "0.2.0",
     "connect-livereload": "0.5.3",
-    "grunt-usemin": "3.0.0",
+    "grunt-usemin": "0.1.12",
     "grunt-contrib-copy": "0.8.0",
     "grunt-contrib-uglify": "0.9.1",
     "grunt-contrib-concat": "0.5.1",
