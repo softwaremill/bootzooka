@@ -228,7 +228,9 @@ module.exports = function (grunt) {
       'copy:assets',
       'copy:index',
       'useminPrepare',
-      'concat',
+      'concat:generated',
+      'uglify:generated',
+      'cssmin:generated',
       'usemin'
     ]);
 
