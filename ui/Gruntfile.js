@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
         common: {
-            staticDirs: ['app', 'tmp']
+            staticDirs: ['app', '.tmp']
         },
 
         watch: {
@@ -22,7 +22,7 @@ module.exports = function (grunt) {
                 files: [
                     'app/**/*.js',
                     'app/common/styles/*.css',
-                    'tmp/scripts/**/*.js',
+                    '.tmp/scripts/**/*.js',
                     'app/*.html'
                 ]
             },
@@ -84,7 +84,7 @@ module.exports = function (grunt) {
                     base: 'app'
                 },
                 src: ['app/**/*.html', 'app/common/**/*.html'],
-                dest: 'tmp/scripts/templates.js',
+                dest: '.tmp/scripts/templates.js',
                 module: 'smlBootzooka.templates'
             }
         },
@@ -144,8 +144,8 @@ module.exports = function (grunt) {
         },
 
         clean: {
-            dist: ['dist', 'tmp'],
-            tmp: 'tmp'
+            dist: ['dist', '.tmp'],
+            tmp: '.tmp'
         },
 
         jshint: {
