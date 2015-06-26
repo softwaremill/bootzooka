@@ -28,7 +28,7 @@ class UserService(
     val salt = Utils.randomString(128)
     val token = UUID.randomUUID().toString
     val now = clock.nowUtc
-    val userCreatation: Future[Unit] = userDao.add(User(login, email.toLowerCase, password, salt, token, now))
+    val userCreatation: Future[Unit] = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, token, now))
     userCreatation.onSuccess {
       case _ =>
         val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)

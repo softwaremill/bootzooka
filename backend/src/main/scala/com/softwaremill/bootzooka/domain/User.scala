@@ -18,14 +18,9 @@ case class User(
   createdOn: DateTime
 )
 
-/*
-Extending function is a workaround for:
-https://issues.scala-lang.org/browse/SI-3664
-https://issues.scala-lang.org/browse/SI-4808
- */
-object User extends ((UUID, String, String, String, String, String, String, DateTime) => User) {
+object User {
 
-  def apply(
+  def withRandomUUID(
     login: String,
     email: String,
     plainPassword: String,

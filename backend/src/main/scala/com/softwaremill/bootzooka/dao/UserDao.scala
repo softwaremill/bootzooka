@@ -97,7 +97,7 @@ trait SqlUserSchema {
     def createdOn       = column[DateTime]("created_on")
 
     def * = (id, login, loginLowerCase, email, password, salt, token, createdOn) <>
-      (User.tupled, User.unapply)
+      ((User.apply _).tupled, User.unapply)
     // format: ON
   }
 

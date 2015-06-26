@@ -10,12 +10,7 @@ import org.joda.time.DateTime
  */
 case class PasswordResetCode(id: UUID, code: String, user: User, validTo: DateTime)
 
-/*
-Extending function is a workaround for:
-https://issues.scala-lang.org/browse/SI-3664
-https://issues.scala-lang.org/browse/SI-4808
- */
-object PasswordResetCode extends ((UUID, String, User, DateTime) => PasswordResetCode) {
+object PasswordResetCode {
 
   def apply(code: String, user: User): PasswordResetCode =
     PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().plusHours(24))
