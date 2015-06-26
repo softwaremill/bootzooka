@@ -76,6 +76,10 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
   }
 }
 
+/**
+ * The schemas are in separate traits, so that if your DAO would require to access (e.g. join) multiple tables,
+ * you can just mix in the necessary traits and have the `TableQuery` definitions available.
+ */
 trait SqlUserSchema {
 
   protected val database: SqlDatabase
