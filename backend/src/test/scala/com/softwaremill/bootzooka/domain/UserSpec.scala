@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.domain
 
 import org.scalatest.{FlatSpec, Matchers}
 
-class UserTest extends FlatSpec with Matchers {
+class UserSpec extends FlatSpec with Matchers {
   "encrypt password" should "take into account the password" in {
     // given
     val p1 = "pass1"
