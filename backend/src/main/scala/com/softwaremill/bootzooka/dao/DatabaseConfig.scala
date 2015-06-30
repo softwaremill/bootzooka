@@ -2,9 +2,9 @@ package com.softwaremill.bootzooka.dao
 
 import com.softwaremill.bootzooka.common.config.ConfigWithDefault
 import com.typesafe.config.Config
-import DaoConfig._
+import DatabaseConfig._
 
-trait DaoConfig extends ConfigWithDefault {
+trait DatabaseConfig extends ConfigWithDefault {
   def rootConfig: Config
 
   // format: OFF
@@ -16,7 +16,7 @@ trait DaoConfig extends ConfigWithDefault {
   lazy val dbPostgresPassword   = getString(PostgresPasswordKey, "")
 }
 
-object DaoConfig {
+object DatabaseConfig {
   val PostgresDSClass       = "bootzooka.db.postgres.dataSourceClass"
   val PostgresServerNameKey = "bootzooka.db.postgres.properties.serverName"
   val PostgresPortKey       = "bootzooka.db.postgres.properties.portNumber"

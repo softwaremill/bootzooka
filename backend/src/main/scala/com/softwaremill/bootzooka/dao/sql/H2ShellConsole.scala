@@ -1,10 +1,10 @@
 package com.softwaremill.bootzooka.dao.sql
 
-import com.softwaremill.bootzooka.dao.DaoConfig
+import com.softwaremill.bootzooka.dao.DatabaseConfig
 import com.typesafe.config.ConfigFactory
 
 object H2ShellConsole extends App {
-  val config = new DaoConfig {
+  val config = new DatabaseConfig {
     def rootConfig = ConfigFactory.load()
   }
 

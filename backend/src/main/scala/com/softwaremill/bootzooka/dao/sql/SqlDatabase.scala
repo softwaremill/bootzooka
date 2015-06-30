@@ -3,8 +3,8 @@ package com.softwaremill.bootzooka.dao.sql
 import java.net.URI
 import java.util.UUID
 
-import com.softwaremill.bootzooka.dao.DaoConfig
-import com.softwaremill.bootzooka.dao.DaoConfig._
+import com.softwaremill.bootzooka.dao.DatabaseConfig
+import com.softwaremill.bootzooka.dao.DatabaseConfig._
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.config.ConfigValueFactory._
 import com.typesafe.scalalogging.LazyLogging
@@ -41,14 +41,14 @@ case class JdbcConnectionString(url: String, username: String = "", password: St
 
 object SqlDatabase extends LazyLogging {
 
-  def connectionStringFromConfig(config: DaoConfig): String = {
+  def connectionStringFromConfig(config: DatabaseConfig): String = {
     val url = config.dbH2Url
     val fullPath = url.split(":")(3)
     logger.info(s"Using an embedded database, with data files located at: $fullPath")
     url
   }
 
-  def create(config: DaoConfig): SqlDatabase = {
+  def create(config: DatabaseConfig): SqlDatabase = {
     val envDatabaseUrl = System.getenv("DATABASE_URL")
 
     if (config.dbPostgresServerName.length > 0)
@@ -68,7 +68,7 @@ object SqlDatabase extends LazyLogging {
     val dbUri = new URI(envDatabaseUrl)
     val username = dbUri.getUserInfo.split(":")(0)
     val password = dbUri.getUserInfo.split(":")(1)
-    val intermediaryConfig = new DaoConfig {
+    val intermediaryConfig = new DatabaseConfig {
       override def rootConfig: Config = ConfigFactory.empty()
         .withValue(PostgresDSClass, fromAnyRef("org.postgresql.ds.PGSimpleDataSource"))
         .withValue(PostgresServerNameKey, fromAnyRef(dbUri.getHost))
@@ -83,7 +83,7 @@ object SqlDatabase extends LazyLogging {
   def postgresUrl(host: String, port: String, dbName: String) =
     s"jdbc:postgresql://$host:$port/$dbName"
 
-  def postgresConnectionString(config: DaoConfig) = {
+  def postgresConnectionString(config: DatabaseConfig) = {
     val host = config.dbPostgresServerName
     val port = config.dbPostgresPort
     val dbName = config.dbPostgresDbName
@@ -92,12 +92,12 @@ object SqlDatabase extends LazyLogging {
     JdbcConnectionString(postgresUrl(host, port, dbName), username, password)
   }
 
-  def createPostgresFromConfig(config: DaoConfig) = {
+  def createPostgresFromConfig(config: DatabaseConfig) = {
     val db = Database.forConfig("bootzooka.db.postgres", config.rootConfig)
     SqlDatabase(db, slick.driver.PostgresDriver, postgresConnectionString(config))
   }
 
-  private def createEmbedded(config: DaoConfig): SqlDatabase = {
+  private def createEmbedded(config: DatabaseConfig): SqlDatabase = {
     val db = Database.forConfig("bootzooka.db.h2")
     SqlDatabase(db, slick.driver.H2Driver, JdbcConnectionString(connectionStringFromConfig(config)))
   }
