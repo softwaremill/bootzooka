@@ -49,12 +49,6 @@ object SqlDatabase extends LazyLogging {
   }
 
   def create(config: DaoConfig): SqlDatabase = {
-    /*
-    The DATABASE_URL is set by Heroku (if deploying there) and must be converted to JDBC format:
-    postgres://<username>:<password>@<host>:<port>/<dbname>
-    -->
-    jdbc:postgresql://<host>:<port>/<dbname>?user=<username>&password=<password>
-     */
     val envDatabaseUrl = System.getenv("DATABASE_URL")
 
     if (config.dbPostgresServerName.length > 0)
@@ -66,6 +60,11 @@ object SqlDatabase extends LazyLogging {
   }
 
   def createPostgresFromEnv(envDatabaseUrl: String) = {
+    /*
+      The DATABASE_URL is set by Heroku (if deploying there) and must be converted to a proper object
+      of type Config (for Slick). Expected format:
+      postgres://<username>:<password>@<host>:<port>/<dbname>
+    */
     val dbUri = new URI(envDatabaseUrl)
     val username = dbUri.getUserInfo.split(":")(0)
     val password = dbUri.getUserInfo.split(":")(1)
