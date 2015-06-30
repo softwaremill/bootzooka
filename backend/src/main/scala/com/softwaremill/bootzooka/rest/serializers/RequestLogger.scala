@@ -1,19 +1,21 @@
 package com.softwaremill.bootzooka.rest.serializers
 
 import java.util.Date
+import java.util.concurrent.ConcurrentHashMap
 import javax.servlet.http.HttpServletRequest
 
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatra.ScalatraServlet
 
+import scala.collection._
+import scala.collection.convert.decorateAsScala._
+
 trait RequestLogger extends ScalatraServlet with LazyLogging {
 
-  private var requestWithStartTime: Map[HttpServletRequest, Long] = Map()
+  val requestWithStartTime: concurrent.Map[HttpServletRequest, Long] = new ConcurrentHashMap[HttpServletRequest, Long]().asScala
 
   before() {
-    synchronized {
-      requestWithStartTime = requestWithStartTime + (request -> new Date().getTime)
-    }
+    requestWithStartTime.put(request, new Date().getTime)
   }
 
   after() {
@@ -21,12 +23,9 @@ trait RequestLogger extends ScalatraServlet with LazyLogging {
     startOption match {
       case Some(start) => {
         logger.debug(s"Request to: ${request.getMethod} ${request.getRequestURI} served in: ${new Date().getTime - start} mills")
-        request.getMethod
+        requestWithStartTime.remove(request)
       }
-      case _ =>
-    }
-    synchronized {
-      requestWithStartTime = requestWithStartTime - request
+      case _ => logger.error("Request not found.")
     }
   }
 }
