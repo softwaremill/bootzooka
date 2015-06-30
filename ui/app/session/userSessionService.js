@@ -43,6 +43,7 @@ angular.module('smlBootzooka.session').factory('UserSessionService', function ($
     userSessionService.logout = function () {
         return $http.get('rest/users/logout').then(function () {
             userSessionService.resetLoggedUser();
+            //this line reloads page and we are sure that there are not leftovers of logged user anywhere.
             $window.location = '/';
         });
     };
