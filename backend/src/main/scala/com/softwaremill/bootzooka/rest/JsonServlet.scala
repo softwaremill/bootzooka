@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.rest
 import java.util.Date
 import javax.servlet.http.HttpServletResponse
 
-import com.softwaremill.bootzooka.rest.serializers.{DateTimeSerializer, UuidSerializer}
+import com.softwaremill.bootzooka.rest.serializers.{RequestLogger, DateTimeSerializer, UuidSerializer}
 import com.typesafe.scalalogging.LazyLogging
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
@@ -25,7 +25,7 @@ trait SwaggerMappable {
   def name = Prefix.tail + mappingPath
 }
 
-abstract class JsonServlet extends ScalatraServlet with NativeJsonSupport with JValueResult with LazyLogging with Halting with Mappable {
+abstract class JsonServlet extends ScalatraServlet with RequestLogger with NativeJsonSupport with JValueResult with LazyLogging with Halting with Mappable {
 
   protected implicit val jsonFormats: Formats = DefaultFormats + new DateTimeSerializer() + new UuidSerializer()
 
