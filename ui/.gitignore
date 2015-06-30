@@ -1,4 +1,4 @@
 node_modules
 dist
-tmp
+.tmp
 bower_files
