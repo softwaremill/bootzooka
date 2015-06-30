@@ -3,19 +3,15 @@ layout: default
 title:  "Frontend application"
 ---
 
-Bootzooka's frontend is a true Single Page Application built with Angular. It can be treated as a completely separate
-application or as a client for Bootzooka server.
+Bootzooka's frontend is a true Single Page Application built with Angular. It can be treated as a completely separate application or as a client for Bootzooka server.
 
-As a separate application it deserves its own build process handling all the details (linting, testing, minifying etc).
-Hence the frontend part is almost completely decoupled from server side code. The only coupling is on the level of
-packaging final application (which is described later in this doc).
+As a separate application it deserves its own build process handling all the details (linting, testing, minifying etc). Hence the frontend part is almost completely decoupled from server side code. The only coupling is on the level of packaging final application (which is described later in this doc).
 
 Thanks to great tools existing in JavaScript ecosystem it is fully automated and easy to configure/extend later on.
 
 ## Installing Node.js
 
-To work with the `ui` module you need to have `node.js` installed in version 0.10.13 or newer. Make sure you have both
-`node` and `npm` commands available on `PATH`.
+To work with the `ui` module you need to have `node.js` installed in version 0.10.13 or newer. Make sure you have both `node` and `npm` commands available on `PATH`.
 
 ## Installing Grunt.js and Bower
 
@@ -29,16 +25,17 @@ It is advised to install Grunt.js and Bower globally. In order to do that, pleas
 	
 	npm install -g bower
 
-This will install grunt command globally and make it available. Be sure to have NPM binaries on `PATH`. You may need
-to add `/usr/local/share/npm/bin/` to your PATH if you have NPM installed via Homebrew. Then you can use `grunt` command as described below.
+This will install grunt command globally and make it available. Be sure to have NPM binaries on `PATH`. You may need to add `/usr/local/share/npm/bin/` to your PATH if you have NPM installed via Homebrew. Then you can use `grunt` command as described below.
 
 ### Local installation
 
-If you don't want to install Grunt.js locally, Bootzooka has it already in dependencies, so doing `npm install` as
-described above should be enough. The only drawback is that in this mode `grunt` will not be available on your `PATH`.
-To run grunt from local installation you should be in `ui` project and run it via
+If you don't want to install Grunt.js locally, Bootzooka has it already in dependencies, so doing `npm install` as described above should be enough. The only drawback is that in this mode `grunt` will not be available on your `PATH`. To run grunt from local installation you should be in `ui` project and run it via
 
 	./node_modules/.bin/grunt
+
+### Why Bower AND npm?
+
+Both tools are package managers; We use npm to manage the build dependencies (grunt and grunt plugins, karma test framework etc.), and Bower to manage the application's dependencies (such as Bootstrap).
 
 ## First run
 
@@ -50,15 +47,11 @@ and
 
 	bower install
 
-
-This will install all required dependencies for this project. If all is well you can start your development version
-of frontend by issuing `grunt server` from command line (or running the provided `frontend-start` script). It should boot up your browser and point you to [Bootzooka home page](http://0.0.0.0:9090/#/).
+This will install all required dependencies for this project. If all is well you can start your development version of frontend by issuing `grunt server` from command line (or running the provided `frontend-start` script in the main directory). It should start your browser and point you to [Bootzooka home page](http://0.0.0.0:9090/#/).
 
 ## Development
 
-Build system exposes several tasks that can be run. `Gruntfile.js` contains all the build configuration. Run it
-with `grunt <task>` if you have grunt installed globally or via `./node_modules/.bin/grunt <task>` if installed
-locally.
+Build system exposes several tasks that can be run. `Gruntfile.js` contains all the build configuration. Run it with `grunt <task>` if you have grunt installed globally or via `./node_modules/.bin/grunt <task>` if installed locally.
 
 The most important tasks exposed are:
 
@@ -70,39 +63,30 @@ The most important tasks exposed are:
 
 ## `Grunt server` task
 
-This task serves Bootzooka application on port `9090` on `0.0.0.0` (it is available to all hosts from the same network).
-Your default browser should open at this location. All requests to `/rest/` context for data will be proxied to port
-`8080` when it expects backend server to be run.
+This task serves Bootzooka application on port `9090` on `0.0.0.0` (it is available to all hosts from the same network). Your default browser should open at this location. All requests to `/rest/` context for data will be proxied to port `8080` when it expects backend server to be run.
 
-Grunt will watch for any change in frontend files (templates, js files, styles) and every change is automatically
-compiled (if necessary) and browser is automatically refreshed to apply changes. No need to refresh it by hand.
+Grunt will watch for any change in frontend files (templates, js files, styles) and every change is automatically compiled (if necessary) and browser is automatically refreshed to apply changes. No need to refresh it by hand.
 
-**Note: if you have LiveReload extension enabled in you browser, please disable it so that it doesn't interfere with
-Grunt's**
+**Note: if you have LiveReload extension enabled in you browser, please disable it so that it doesn't interfere with Grunt's**
 
-In this task all scripts are served in non-concatenated and non-minified version from their original locations
-(if possible).
+In this task all scripts are served in non-concatenated and non-minified version from their original locations (if possible).
 
 ## `Grunt server:dist` task
 
-This task is similar to the one above with one difference: it preprocessess all the files in order to create
-distribution (it currently includes concatenation of scripts files), runs tests and serves application from this
-freshly baked distribution version. This server's version doesn't watch for file changes.
+This task is similar to the one above with one difference: it preprocessess all the files in order to create distribution (it currently includes concatenation of scripts files), runs tests and serves application from this freshly baked distribution version. This server's version doesn't watch for file changes.
 
 ## `Grunt build` task
 
-It runs all tests and builds everything to as distribution version to `dist` directory. It doesn't fire up server.
+It runs all tests and builds everything to as distribution version to `dist` directory. It doesn't fire up the proxy server.
 
 ## `Grunt test` task
 
-It simply tests the build one time. Tests are run with Karma runner using PhantomJS as default browser. Whole tests
-configuration is in `karma-config.js` file in `ui` project.
+It simply tests the build one time. Tests are run with Karma runner using PhantomJS as default browser. Whole tests configuration is in `karma-config.js` file in `ui` project.
 
 ## `Grunt autotest` task
 
-This task runs tests and watches for changes in files. When change is detected it runs tests automatically. This is
-especially helpful in hard-development mode.
+This task runs tests and watches for changes in files. When change is detected it runs tests automatically. This is especially helpful in hard-development mode.
 
 ## Distribution and deployment
 
-Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist/webapp` (which are genereated during `grunt build`) are used by `backend` to build the final fat-jar application or .war package. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components. You can drop it into your web container (as usual).
+Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist/webapp` (which are genereated during `grunt build`) are used by `backend` to build the final fat-jar application or `.war` package. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components. You can drop it into your web container (as usual).

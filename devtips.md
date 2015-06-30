@@ -29,8 +29,7 @@ compile changed file and to reload it
 
 ## Database schema evolution
 
-With Flyway, all you need to do is to put DDL script within bootzooka-backend/src/main/resources/db/migration/ directory.
-You have to obey the following [naming convention](http://flywaydb.org/documentation/migration/sql.html): `V#__your_arbitrary_description.sql` where `#` stands for *unique* version of your schema.
+With Flyway, all you need to do is to put DDL script within bootzooka-backend/src/main/resources/db/migration/ directory. You have to obey the following [naming convention](http://flywaydb.org/documentation/migration/sql.html): `V#__your_arbitrary_description.sql` where `#` stands for *unique* version of your schema.
 
 ## Developing frontend without backend
 

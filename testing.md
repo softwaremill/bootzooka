@@ -5,8 +5,7 @@ title:  "Testing"
 
 Because tests are using in-memory [H2 database](http://www.h2database.com/html/main.html) you don't need to have any database running on your machine. Check out easy setup of in-memory database in `FlatSpecWithSql` trait.
 
-When you issue `test` from SBT, tests for both server-side and client-side components are run. SBT integrates some Grunt
-commands and executes tests for browser part via Grunt too.
+When you issue `test` from SBT, tests for both server-side and client-side components are run. SBT integrates some Grunt commands and executes tests for browser part via Grunt too.
 
 ## UI Tests
 

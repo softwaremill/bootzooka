@@ -3,7 +3,7 @@ layout: default
 title:  "Overview"
 ---
 
-Bootzooka is a simple application scaffolding project to allow quick start of development for modern web based applications. If you'd like to have a jump start developing a Scala-based Single Page Application project, skipping the boring parts and focusing on the real business value, this template might be for you!
+Bootzooka is a simple application scaffolding project to allow quick start of development for modern, web based applications. If you'd like to have a jump start developing a Scala-based Single Page Application project, skipping the boring parts and focusing on the real business value, this template might be for you!
 
 Bootzooka contains only the very basic features, that almost any application needs (listed below). These features are fully implemented both on server- and client- side. We hope that the implementations can also serve as blueprints for new functionalities.
 
@@ -28,5 +28,4 @@ Live demo is available on [http://bootzooka.softwaremill.com](http://bootzooka.s
 
 ## License
 
-Project is licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) which means you can
-freely use any part of the project.
+Project is licensed under [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) which means you can freely use any part of the project.
