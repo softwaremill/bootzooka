@@ -35,7 +35,7 @@ If you don't want to install Grunt.js locally, Bootzooka has it already in depen
 
 ### Why Bower AND npm?
 
-Both tools are package managers; We use npm to manage the build dependencies (grunt and grunt plugins, karma test framework etc.), and Bower to manage the application's dependencies (such as Bootstrap).
+Both tools are package managers; We use npm to manage the build dependencies (node modules: grunt and grunt plugins, karma test framework etc.), and Bower to manage the frontend dependencies (such as Bootstrap).
 
 ## First run
 
