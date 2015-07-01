@@ -25,7 +25,7 @@ lazy val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
 val bugsnag = "com.bugsnag" % "bugsnag" % "1.2.8"
 
-val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
+val typesafeConfig = "com.typesafe" % "config" % "1.2.1"
 
 val jetty = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion
 val jettyContainer = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion % "container"
