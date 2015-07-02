@@ -50,7 +50,7 @@ module.exports = function (grunt) {
                             // and listenes for events.
                             liveReload,
 
-                            connect().use('/bower_files', connect.static('./bower_files'))
+                            connect().use('/bower_components', connect.static('./bower_components'))
                         ];
 
                         var staticDirs = grunt.config('common').staticDirs;
@@ -193,9 +193,10 @@ module.exports = function (grunt) {
         },
 
         bowerInstall: {
+            //main: 'bower_components',
             target: {
                 src: ['app/index.html'],
-                exclude: ['bower_files/angular-mocks/angular-mocks.js']
+                exclude: ['bower_components/angular-mocks/angular-mocks.js']
             }
         }
     });

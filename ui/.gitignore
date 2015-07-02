@@ -1,4 +1,4 @@
 node_modules
 dist
 .tmp
-bower_files
+bower_components

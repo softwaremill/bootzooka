@@ -5,17 +5,17 @@ module.exports = function(config) {
     var files = [];
 
     [
-        'bower_files/jquery/dist/jquery.js',
-        'bower_files/blockui/jquery.blockUI.js',
-        'bower_files/bootstrap/dist/js/bootstrap.js',
-        'bower_files/angular/angular.js',
-        'bower_files/angular-resource/angular-resource.js',
-        'bower_files/angular-ui-router/release/angular-ui-router.js',
-        'bower_files/angular-cookies/angular-cookies.js',
-        'bower_files/angular-sanitize/angular-sanitize.js',
-        'bower_files/angular-mocks/angular-mocks.js',
-        'bower_files/underscore/underscore.js',
-        'bower_files/moment/moment.js'
+        'bower_components/jquery/dist/jquery.js',
+        'bower_components/blockui/jquery.blockUI.js',
+        'bower_components/bootstrap/dist/js/bootstrap.js',
+        'bower_components/angular/angular.js',
+        'bower_components/angular-resource/angular-resource.js',
+        'bower_components/angular-ui-router/release/angular-ui-router.js',
+        'bower_components/angular-cookies/angular-cookies.js',
+        'bower_components/angular-sanitize/angular-sanitize.js',
+        'bower_components/angular-mocks/angular-mocks.js',
+        'bower_components/underscore/underscore.js',
+        'bower_components/moment/moment.js'
     ].forEach(function(file) {
         files.push(file);
     });
