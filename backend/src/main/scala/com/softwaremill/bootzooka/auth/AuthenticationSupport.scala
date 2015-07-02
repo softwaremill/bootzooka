@@ -4,7 +4,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import com.softwaremill.bootzooka.auth.AuthOps._
 import com.softwaremill.bootzooka.common.{StringJsonWrapper, Utils}
-import com.softwaremill.bootzooka.rest.Halting
+import com.softwaremill.bootzooka.api.Halting
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.user.UserService
 import org.scalatra._

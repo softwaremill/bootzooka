@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka
 
-import com.softwaremill.bootzooka.rest.swagger.AppSwagger
+import com.softwaremill.bootzooka.api.swagger.AppSwagger
 
-package object rest {
+package object api {
 
   implicit val bootzookaSwagger = new AppSwagger
 }

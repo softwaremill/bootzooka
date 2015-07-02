@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.rest
+package com.softwaremill.bootzooka.api
 
 import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.service.PasswordRecoveryService

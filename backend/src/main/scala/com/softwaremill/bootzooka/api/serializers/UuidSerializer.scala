@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.rest.serializers
+package com.softwaremill.bootzooka.api.serializers
 
 import java.util.UUID
 

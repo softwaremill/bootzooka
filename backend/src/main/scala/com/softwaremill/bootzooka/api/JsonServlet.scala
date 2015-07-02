@@ -1,9 +1,9 @@
-package com.softwaremill.bootzooka.rest
+package com.softwaremill.bootzooka.api
 
 import java.util.Date
 import javax.servlet.http.HttpServletResponse
 
-import com.softwaremill.bootzooka.rest.serializers.{RequestLogger, DateTimeSerializer, UuidSerializer}
+import com.softwaremill.bootzooka.api.serializers.{RequestLogger, DateTimeSerializer, UuidSerializer}
 import com.typesafe.scalalogging.LazyLogging
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._

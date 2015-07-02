@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.rest
+package com.softwaremill.bootzooka.api
 
 import java.util.UUID
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}

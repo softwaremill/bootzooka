@@ -1,6 +1,6 @@
-package com.softwaremill.bootzooka.rest.swagger
+package com.softwaremill.bootzooka.api.swagger
 
-import com.softwaremill.bootzooka.rest.Mappable
+import com.softwaremill.bootzooka.api.Mappable
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatra.ScalatraServlet
 import org.scalatra.swagger.{ApiInfo, NativeSwaggerBase, Swagger}

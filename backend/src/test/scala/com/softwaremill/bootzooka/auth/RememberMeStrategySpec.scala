@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.auth
 import java.util.UUID
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
-import com.softwaremill.bootzooka.rest.UsersServlet
+import com.softwaremill.bootzooka.api.UsersServlet
 import com.softwaremill.bootzooka.service.data.UserJson
 import com.softwaremill.bootzooka.service.user.UserService
 import com.softwaremill.bootzooka.test.UserTestHelpers
