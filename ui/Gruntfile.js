@@ -114,10 +114,24 @@ module.exports = function (grunt) {
             }
         },
 
+        ngAnnotate: {
+            options: {
+                singleQuotes: true
+            },
+            app: {
+                files: [
+                    {
+                        expand: true,
+                        src: ['/Volumes/Brooklyn/bootzooka/ui/.tmp/concat/scripts/bootzooka-all.js']
+                    }
+                ]
+            }
+        },
+
         uglify: {
             options: {
-                compress: false,
-                mangle: false
+                compress: true,
+                mangle: true
             }
         },
 
@@ -215,44 +229,45 @@ module.exports = function (grunt) {
         grunt.loadNpmTasks(dep);
     });
 
-    grunt.registerTask('server', function(target) {
-        if(target === 'dist') {
+    grunt.registerTask('server', function (target) {
+        if (target === 'dist') {
             return grunt.task.run(['build', 'configureProxies', 'connect:dist']);
         }
 
         grunt.task.run([
-          'clean:tmp',
-          'bowerInstall',
-          'html2js',
-          'configureProxies',
-          'connect:livereload',
-          'startLivereloadServer',
-          'watch'
+            'clean:tmp',
+            'bowerInstall',
+            'html2js',
+            'configureProxies',
+            'connect:livereload',
+            'startLivereloadServer',
+            'watch'
         ]);
     });
 
     grunt.registerTask('build', [
-      'clean:dist',
-      'bowerInstall',
-      'test:teamcity',
-      'html2js',
-      'copy:assets',
-      'copy:index',
-      'useminPrepare',
-      'concat:generated',
-      'uglify:generated',
-      'cssmin:generated',
-      'usemin'
+        'clean:dist',
+        'bowerInstall',
+        'test:teamcity',
+        'html2js',
+        'copy:assets',
+        'copy:index',
+        'useminPrepare',
+        'concat:generated',
+        'ngAnnotate',
+        'uglify:generated',
+        'cssmin:generated',
+        'usemin'
     ]);
 
-    grunt.registerTask('test', function(target) {
+    grunt.registerTask('test', function (target) {
         var tasks = [
             'clean:tmp',
             'bowerInstall',
             'html2js',
             'jshint'
         ];
-        if(target === 'teamcity') {
+        if (target === 'teamcity') {
             tasks.push('karma:teamcity');
         } else {
             tasks.push('karma:test');
