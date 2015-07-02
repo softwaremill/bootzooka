@@ -149,7 +149,18 @@ module.exports = function (grunt) {
         },
 
         jshint: {
-            options: grunt.file.readJSON('./.jshintrc'),
+            options: {
+                "sub": true,
+                "curly": true,
+                "eqeqeq": true,
+                "eqnull": true,
+                "expr": true,
+                "noarg": true,
+                "node": true,
+                "trailing": true,
+                "undef": true,
+                "unused": true
+            },
             app: {
                 options: {
                     "globals": {
@@ -193,7 +204,6 @@ module.exports = function (grunt) {
         },
 
         bowerInstall: {
-            //main: 'bower_components',
             target: {
                 src: ['app/index.html'],
                 exclude: ['bower_components/angular-mocks/angular-mocks.js']
