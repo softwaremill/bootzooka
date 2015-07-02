@@ -28,23 +28,13 @@
       url: document.location.origin + '/api/api-docs',
       dom_id: "swagger-ui-container",
       supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
-      onComplete: function(swaggerApi, swaggerUi){
+      onComplete: function(){
         log("Loaded SwaggerUI");
-
-        if(typeof initOAuth == "function") {
-          /*
-          initOAuth({
-            clientId: "your-client-id",
-            realm: "your-realms",
-            appName: "your-app-name"
-          });
-          */
-        }
         $('pre code').each(function(i, e) {
           hljs.highlightBlock(e)
         });
       },
-      onFailure: function(data) {
+      onFailure: function() {
         log("Unable to Load SwaggerUI");
       },
       docExpansion: "none",
@@ -58,7 +48,7 @@
         log("added key " + key);
         window.authorizations.add("key", new ApiKeyAuthorization("api_key", key, "query"));
       }
-    })
+    });
     window.swaggerUi.load();
   });
   </script>
