@@ -122,7 +122,7 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        src: ['/Volumes/Brooklyn/bootzooka/ui/.tmp/concat/scripts/bootzooka-all.js']
+                        src: ['.tmp/concat/scripts/bootzooka-all.js']
                     }
                 ]
             }
