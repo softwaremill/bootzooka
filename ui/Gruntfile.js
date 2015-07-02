@@ -239,7 +239,8 @@ module.exports = function (grunt) {
         var tasks = [
             'clean:tmp',
             'bowerInstall',
-            'html2js'
+            'html2js',
+            'jshint'
         ];
         if(target === 'teamcity') {
             tasks.push('karma:teamcity');
@@ -253,7 +254,8 @@ module.exports = function (grunt) {
         'clean:tmp',
         'bowerInstall',
         'html2js',
-        'karma:autotest'
+        'karma:autotest',
+        'jshint'
     ]);
 
     grunt.loadTasks('grunttasks');

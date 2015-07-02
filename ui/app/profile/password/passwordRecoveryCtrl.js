@@ -27,7 +27,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
             if ($stateParams.code) {
                 PasswordRecoveryService.changePassword($stateParams.code, $scope.password).then(onChangeSuccess, onChangeFailure);
             } else {
-                onChangeFailure('Wrong or malformed password recovery code.')
+                onChangeFailure('Wrong or malformed password recovery code.');
             }
         }
     };
