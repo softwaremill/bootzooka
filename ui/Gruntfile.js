@@ -32,7 +32,7 @@ module.exports = function (grunt) {
         },
 
         connect: {
-            proxies: [{context: '/rest/', host: 'localhost', port: 8080}],
+            proxies: [{context: '/api/', host: 'localhost', port: 8080}],
             options: {
                 port: 9090,
                 hostname: '0.0.0.0'

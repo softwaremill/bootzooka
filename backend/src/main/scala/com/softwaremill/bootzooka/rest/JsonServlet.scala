@@ -12,7 +12,7 @@ import org.scalatra.swagger.SwaggerSupport
 
 trait Mappable {
 
-  val Prefix = "/rest/"
+  val Prefix = "/api/"
 
   def fullMappingPath = Prefix + mappingPath
 

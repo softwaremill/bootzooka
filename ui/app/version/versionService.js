@@ -5,7 +5,7 @@ angular.module('smlBootzooka.version').factory('VersionService', function ($http
     var versionService = {};
 
     versionService.getVersion = function () {
-        return $http.get('rest/version').then(success);
+        return $http.get('api/version').then(success);
     };
 
     function success(response) {

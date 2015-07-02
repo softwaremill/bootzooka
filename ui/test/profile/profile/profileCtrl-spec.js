@@ -15,7 +15,7 @@ describe('Profile Controller', function () {
             email: 'user1@sml.com'
         };
         $httpBackend = _$httpBackend_;
-        $httpBackend.expectGET('rest/users').respond(user);
+        $httpBackend.expectGET('api/users').respond(user);
         $httpBackend.flush();
         userSessionService = UserSessionService;
         scope = $rootScope.$new();
@@ -45,7 +45,7 @@ describe('Profile Controller', function () {
 
     describe('when changing login', function () {
         var performLoginChange = function (login) {
-            $httpBackend.expectPATCH('rest/users', '{"login":"' + login + '"}').respond("nothing");
+            $httpBackend.expectPATCH('api/users', '{"login":"' + login + '"}').respond("nothing");
             scope.user.login = login;
             scope.changeLogin();
             $httpBackend.flush();
@@ -93,7 +93,7 @@ describe('Profile Controller', function () {
 
         it('should call ReST service when email changed', function () {
             withValidForm();
-            $httpBackend.expectPATCH('rest/users', '{"email":"newMail@sml.com"}').respond("nothing");
+            $httpBackend.expectPATCH('api/users', '{"email":"newMail@sml.com"}').respond("nothing");
             scope.user.email = 'newMail@sml.com';
             scope.changeEmail();
             $httpBackend.flush();
@@ -120,7 +120,7 @@ describe('Profile Controller', function () {
         });
         it('should update local data after successful change', function () {
             withValidForm();
-            $httpBackend.expectPATCH('rest/users').respond('nothing');
+            $httpBackend.expectPATCH('api/users').respond('nothing');
             scope.user.email = 'newMail@sml.com';
             scope.changeEmail();
             $httpBackend.flush();
@@ -128,7 +128,7 @@ describe('Profile Controller', function () {
         });
         it('should mark form as pristine after successful change', function () {
             withValidForm();
-            $httpBackend.expectPATCH('rest/users').respond('nothing');
+            $httpBackend.expectPATCH('api/users').respond('nothing');
             scope.user.email = 'newMail@sml.com';
             scope.changeEmail();
             $httpBackend.flush();
@@ -158,7 +158,7 @@ describe('Profile Controller', function () {
             };
         });
         it('should call ReST service when form is valid', function () {
-            $httpBackend.expectPOST('rest/users/changepassword', '{"currentPassword":"pass","newPassword":"NewPass"}').respond('nothing');
+            $httpBackend.expectPOST('api/users/changepassword', '{"currentPassword":"pass","newPassword":"NewPass"}').respond('nothing');
             scope.currentPassword = 'pass';
             scope.newPassword = 'NewPass';
             scope.newPasswordRepeated = 'NewPass';
@@ -191,7 +191,7 @@ describe('Profile Controller', function () {
             scope.changePassword();
         });
         it('should mark form pristine after successful change', function () {
-            $httpBackend.expectPOST('rest/users/changepassword', '{"currentPassword":"pass","newPassword":"NewPass"}').respond('nothing');
+            $httpBackend.expectPOST('api/users/changepassword', '{"currentPassword":"pass","newPassword":"NewPass"}').respond('nothing');
             scope.currentPassword = 'pass';
             scope.newPassword = 'NewPass';
             scope.newPasswordRepeated = 'NewPass';

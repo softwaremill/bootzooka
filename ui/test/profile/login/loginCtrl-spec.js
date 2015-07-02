@@ -24,7 +24,7 @@ describe('Login Controller', function () {
             $scope: scope,
             $state: state
         });
-        $httpBackend.expectGET('rest/users').respond(401);
+        $httpBackend.expectGET('api/users').respond(401);
         $httpBackend.flush();
         scope.loginForm = {
             login: {
@@ -39,7 +39,7 @@ describe('Login Controller', function () {
 
     it('Should call login rest service when form is valid', function () {
         // Given
-        $httpBackend.expectPOST('rest/users').respond('anything');
+        $httpBackend.expectPOST('api/users').respond('anything');
 
         // When
         scope.login();

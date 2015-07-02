@@ -13,7 +13,7 @@ describe('Version Controller', function () {
 
     it('should retrieve application version', function () {
         // given
-        $httpBackend.expectGET('rest/version').respond({build: 'foo', date: 'bar'});
+        $httpBackend.expectGET('api/version').respond({build: 'foo', date: 'bar'});
 
         // when
         $httpBackend.flush();

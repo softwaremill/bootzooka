@@ -1,13 +1,13 @@
 angular.module('smlBootzooka.profile').factory('ProfileService', function ($resource, $cookies) {
     var profileService = {};
 
-    this.profileResource = $resource('rest/users', {}, {
+    this.profileResource = $resource('api/users', {}, {
         'changeLogin': {method: 'PATCH'},
         'changeEmail': {method: 'PATCH'},
         'changePassword': {method: 'PATCH'}
     }, {});
 
-    this.changePasswordResource = $resource('rest/users/changepassword', {}, {
+    this.changePasswordResource = $resource('api/users/changepassword', {}, {
         'changePassword': {method: 'POST'}
     }, {});
 

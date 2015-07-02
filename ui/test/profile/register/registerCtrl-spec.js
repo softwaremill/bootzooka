@@ -45,7 +45,7 @@ describe('Register Controller', function () {
 
     it('Should call register rest service when form is valid', function () {
         // Given
-        $httpBackend.expectPOST('rest/users/register').respond('anything');
+        $httpBackend.expectPOST('api/users/register').respond('anything');
 
         // When
         scope.register();

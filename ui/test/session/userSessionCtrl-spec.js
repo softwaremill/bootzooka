@@ -46,7 +46,7 @@ describe('User Session Controller', function () {
                 login: 'User1',
                 email: 'test@test.pl'
             };
-            $httpBackend.expectGET('rest/users').respond(user);
+            $httpBackend.expectGET('api/users').respond(user);
             $httpBackend.flush();
         }));
 
@@ -56,7 +56,7 @@ describe('User Session Controller', function () {
 
         it('user should be able to log out', function () {
             // Given
-            $httpBackend.expectGET('rest/users/logout').respond(['anything']); // resource#query returns array
+            $httpBackend.expectGET('api/users/logout').respond(['anything']); // resource#query returns array
             expect(userSessionService.getLoggedUser()).not.toBe(null);
 
             // When
