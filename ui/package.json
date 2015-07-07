@@ -22,6 +22,7 @@
     "grunt-preprocess": "4.2.0",
     "grunt-bower-install": "1.6.0",
     "grunt-karma": "0.11.1",
+    "grunt-angular-file-loader": "1.1.5",
     "karma": "0.12.37",
     "karma-script-launcher": "0.1.0",
     "karma-chrome-launcher": "0.2.0",

@@ -108,7 +108,7 @@ module.exports = function (grunt) {
         },
 
         useminPrepare: {
-            html: 'app/index.html',
+            html: 'dist/webapp/index.html',
             options: {
                 dest: 'dist/webapp'
             }
@@ -222,6 +222,15 @@ module.exports = function (grunt) {
                 src: ['app/index.html'],
                 exclude: ['bower_components/angular-mocks/angular-mocks.js']
             }
+        },
+
+        angularFileLoader: {
+            options: {
+                scripts: ['app/**/*.js','.tmp/scripts/**/*.js']
+            },
+            default_options: {
+                src: 'dist/webapp/index.html'
+            }
         }
     });
 
@@ -252,6 +261,7 @@ module.exports = function (grunt) {
         'html2js',
         'copy:assets',
         'copy:index',
+        'angularFileLoader',
         'useminPrepare',
         'concat:generated',
         'ngAnnotate',
