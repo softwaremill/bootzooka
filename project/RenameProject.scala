@@ -22,7 +22,11 @@ object RenameProject {
     def projectName = inputProjectName.toLowerCase
   }
 
-  def renameAction(state: State, cmd: RenameCommand): State = s"doRename ${cmd.packageName} ${cmd.projectName}" :: state
+  def renameAction(state: State, cmd: RenameCommand): State =
+    "clean" ::
+    s"doRename ${cmd.packageName} ${cmd.projectName}" ::
+    "reload" ::
+    state
 
   val renameHelp = Help(
     Seq(
@@ -115,7 +119,6 @@ object RenameProject {
     val initialRootPackage = "com.softwaremill.bootzooka"
     val targetRootPackage = cmd.packageName + "." + cmd.projectName
     val excludes = List("README.md", "RenameProject.scala", "rename.sbt", "out")
-    info("Cleaning all projects...")
     info("Removing scaffolding in HTML elements...")
     val baseDir: File = baseDirectory.value
     updateDirContent(baseDir, excludes, removeRegexes(List(
