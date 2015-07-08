@@ -41,7 +41,7 @@ case class JdbcConnectionString(url: String, username: String = "", password: St
 
 object SqlDatabase extends LazyLogging {
 
-  def connectionStringFromConfig(config: DatabaseConfig): String = {
+  def embeddedConnectionStringFromConfig(config: DatabaseConfig): String = {
     val url = config.dbH2Url
     val fullPath = url.split(":")(3)
     logger.info(s"Using an embedded database, with data files located at: $fullPath")
@@ -99,7 +99,7 @@ object SqlDatabase extends LazyLogging {
 
   private def createEmbedded(config: DatabaseConfig): SqlDatabase = {
     val db = Database.forConfig("bootzooka.db.h2")
-    SqlDatabase(db, slick.driver.H2Driver, JdbcConnectionString(connectionStringFromConfig(config)))
+    SqlDatabase(db, slick.driver.H2Driver, JdbcConnectionString(embeddedConnectionStringFromConfig(config)))
   }
 
   def createEmbedded(connectionString: String): SqlDatabase = {
