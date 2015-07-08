@@ -18,12 +18,17 @@ module.exports = function (grunt) {
                 files: ['app/*/**/*.html'],
                 tasks: ['html2js']
             },
-            watchAndLivereload: {
+            resources: {
                 files: [
                     'app/**/*.js',
                     'app/common/styles/*.css',
-                    '.tmp/scripts/**/*.js',
                     'app/*.html'
+                ],
+                tasks: ['copy:local', 'angularFileLoader:local']
+            },
+            watchAndLivereload: {
+                files: [
+                    '.tmp/**/*'
                 ]
             },
             watchAndLivereloadAfterServer: {
@@ -52,13 +57,7 @@ module.exports = function (grunt) {
 
                             connect().use('/bower_components', connect.static('./bower_components'))
                         ];
-
-                        var staticDirs = grunt.config('common').staticDirs;
-
-                        for (var i = 0, length = staticDirs.length; i < length; i++) {
-                            middlewares.push(connect.static(staticDirs[i]));
-                        }
-
+                        middlewares.push(connect.static('.tmp'));
                         return middlewares;
                     }
                 }
@@ -154,6 +153,12 @@ module.exports = function (grunt) {
                 cwd: 'app/assets',
                 src: ['img/**/*'],
                 dest: 'dist/webapp/assets'
+            },
+            local: {
+                expand: true,
+                cwd: 'app/',
+                src: ['**/*.js', 'index.html', 'assets/img/**', '**/*.css'],
+                dest: '.tmp/'
             }
         },
 
@@ -225,10 +230,16 @@ module.exports = function (grunt) {
         },
 
         angularFileLoader: {
-            options: {
-                scripts: ['app/**/*.js','.tmp/scripts/**/*.js']
+            local: {
+                options: {
+                    scripts: ['.tmp/**/*.js']
+                },
+                src: '.tmp/index.html'
             },
             default_options: {
+                options: {
+                    scripts: ['app/**/*.js', '.tmp/scripts/**/*.js']
+                },
                 src: 'dist/webapp/index.html'
             }
         }
@@ -247,6 +258,8 @@ module.exports = function (grunt) {
             'clean:tmp',
             'bowerInstall',
             'html2js',
+            'copy:local',
+            'angularFileLoader:local',
             'configureProxies',
             'connect:livereload',
             'startLivereloadServer',
