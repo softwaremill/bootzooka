@@ -101,7 +101,7 @@ smlBootzooka.config(['$httpProvider', function ($httpProvider) {
                 $log.warn(response.data);
                 // do nothing, user is trying to modify data without privileges
             } else if (response.status === 404) {
-                redirectToState('error404');
+                $log.warn(response.data);
             } else if (response.status === 409) {
                 NotificationsService.showError(response);
             } else {
