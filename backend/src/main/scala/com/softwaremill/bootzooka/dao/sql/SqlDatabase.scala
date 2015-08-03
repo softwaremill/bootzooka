@@ -76,6 +76,7 @@ object SqlDatabase extends LazyLogging {
         .withValue(PostgresDbNameKey, fromAnyRef(dbUri.getPath.tail))
         .withValue(PostgresUsernameKey, fromAnyRef(username))
         .withValue(PostgresPasswordKey, fromAnyRef(password))
+        .withFallback(ConfigFactory.load())
     }
     createPostgresFromConfig(intermediaryConfig)
   }
