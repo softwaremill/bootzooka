@@ -22,8 +22,8 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
 
   override protected def beforeEach() = {
     super.beforeEach()
-    userDao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1"))
-    userDao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
+    userDao.add(newUser("Admin", "admin@sml.com", "pass", "salt"))
+    userDao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt"))
   }
 
   "POST /register" should "register new user" in {

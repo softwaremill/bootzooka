@@ -1,7 +1,8 @@
 package com.softwaremill.bootzooka.service
 
 import java.util.UUID
-import com.softwaremill.bootzooka.dao.{UserDao, PasswordResetCodeDao}
+
+import com.softwaremill.bootzooka.dao.{PasswordResetCodeDao, UserDao}
 import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.CoreConfig
 import com.softwaremill.bootzooka.service.email.EmailService
@@ -18,7 +19,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Promise, Future}
+import scala.concurrent.Future
 
 class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
     with IntegrationPatience with UserTestHelpers {
@@ -44,7 +45,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
   def prepareUserDaoMock = {
     val userDao = mock[UserDao]
     when (userDao.findByLoginOrEmail(validLogin)) thenReturn Future {
-      Some(newUser(validLogin, "user@sml.pl", "pass", "salt", "token"))
+      Some(newUser(validLogin, "user@sml.pl", "pass", "salt"))
     }
     when (userDao.findByLoginOrEmail(invalidLogin)) thenReturn Future { None }
     userDao
@@ -116,7 +117,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       val login = "login"
       val password = "password"
       val salt = "salt"
-      val user = newUser(login, s"$login@example.com", password, salt, "someRandomToken")
+      val user = newUser(login, s"$login@example.com", password, salt)
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().plusHours(1))
 
       given(codeDao.load(code)) willReturn Future { Some(resetCode) }
@@ -142,7 +143,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       val login = "login"
       val password = "password"
       val salt = "salt"
-      val user = newUser(login, s"$login@example.com", password, salt, "someRandomToken")
+      val user = newUser(login, s"$login@example.com", password, salt)
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().minusHours(1))
 
       given(codeDao.load(code)) willReturn Future { Some(resetCode) }

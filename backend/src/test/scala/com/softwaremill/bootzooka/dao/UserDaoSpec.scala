@@ -24,8 +24,7 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
       val login = "user" + i
       val password = "pass" + i
       val salt = "salt" + i
-      val token = "token" + i
-      userDao.add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt, token,
+      userDao.add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt,
         createdOn))
         .futureValue
     }
@@ -37,7 +36,7 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
     val email = "newemail@sml.com"
 
     // When
-    userDao.add(newUser(login, email, "pass", "salt", "token")).futureValue
+    userDao.add(newUser(login, email, "pass", "salt")).futureValue
 
     // Then
     userDao.findByEmail(email).futureValue should be ('defined)
@@ -48,10 +47,10 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
     val login = "newuser"
     val email = "anotherEmaill@sml.com"
 
-    userDao.add(newUser(login, "somePrefix" + email, "somePass", "someSalt", "someToken")).futureValue
+    userDao.add(newUser(login, "somePrefix" + email, "somePass", "someSalt")).futureValue
 
     // When & then
-    userDao.add(newUser(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
+    userDao.add(newUser(login, email, "pass", "salt")).failed.futureValue.getMessage should equal(
       "User with given e-mail or login already exists"
     )
   }
@@ -61,10 +60,10 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
     val login = "anotherUser"
     val email = "newemail@sml.com"
 
-    userDao.add(newUser("somePrefixed" + login, email, "somePass", "someSalt", "someToken")).futureValue
+    userDao.add(newUser("somePrefixed" + login, email, "somePass", "someSalt")).futureValue
 
     // When & then
-    userDao.add(newUser(login, email, "pass", "salt", "token")).failed.futureValue.getMessage should equal(
+    userDao.add(newUser(login, email, "pass", "salt")).failed.futureValue.getMessage should equal(
       "User with given e-mail or login already exists"
     )
   }
@@ -155,17 +154,6 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
 
     // Then
     userOpt.map(_.email) should equal(Some(email.toLowerCase))
-  }
-
-  it should "find by token" in {
-    // Given
-    val token = "token1"
-
-    // When
-    val userOpt = userDao.findByToken(token).futureValue
-
-    // Then
-    userOpt.map(_.token) should equal(Some(token))
   }
 
   it should "change password" in {

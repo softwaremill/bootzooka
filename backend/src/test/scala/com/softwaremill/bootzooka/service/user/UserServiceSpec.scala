@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka.service.user
 
+import java.util.UUID
+
 import com.softwaremill.bootzooka.dao.UserDao
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.service.email.EmailService
@@ -20,8 +22,8 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
   def prepareUserDaoMock: UserDao = {
     val dao = new UserDao(sqlDatabase)
     Future.sequence(Seq(
-      dao.add(newUser("Admin", "admin@sml.com", "pass", "salt", "token1")),
-      dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt", "token2"))
+      dao.add(newUser("Admin", "admin@sml.com", "pass", "salt")),
+      dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt"))
     )).futureValue
     dao
   }
@@ -156,7 +158,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     val newPassword = "newPass"
 
     // When
-    val changePassResult = userService.changePassword(user.token, currentPassword, newPassword).futureValue
+    val changePassResult = userService.changePassword(user.id, currentPassword, newPassword).futureValue
 
     // Then
     changePassResult should be ('right)
@@ -171,11 +173,11 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     val user = userDao.findByLowerCasedLogin("admin").futureValue.get
 
     // When, Then
-    userService.changePassword(user.token, "someillegalpass", "newpass").futureValue should be ('left)
+    userService.changePassword(user.id, "someillegalpass", "newpass").futureValue should be ('left)
   }
 
   "changePassword" should "complain when user cannot be found" in {
-    userService.changePassword("someirrelevanttoken", "pass", "newpass").futureValue should be ('left)
+    userService.changePassword(UUID.randomUUID(), "pass", "newpass").futureValue should be ('left)
   }
 
 }

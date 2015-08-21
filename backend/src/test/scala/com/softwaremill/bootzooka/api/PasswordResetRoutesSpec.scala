@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka.api
 
-import akka.http.scaladsl.model.{ContentTypes, StatusCodes}
-import akka.http.scaladsl.model.headers.`Content-Type`
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
 import com.softwaremill.bootzooka.service.PasswordResetService
 import com.softwaremill.bootzooka.test.BaseRoutesSpec

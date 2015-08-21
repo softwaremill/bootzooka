@@ -57,9 +57,6 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
       userOpt.map(user => Future { Some(user) }).getOrElse(findByEmail(loginOrEmail)))
   }
 
-  def findByToken(token: String) =
-    findOneWhere(_.token === token)
-
   def changePassword(userId: UserId, newPassword: String): Future[Unit] = {
     db.run(users.filter(_.id === userId).map(_.password).update(newPassword)).mapToUnit
   }
@@ -97,11 +94,9 @@ trait SqlUserSchema {
     def email           = column[String]("email")
     def password        = column[String]("password")
     def salt            = column[String]("salt")
-    def token           = column[String]("token")
     def createdOn       = column[DateTime]("created_on")
 
-    def * = (id, login, loginLowerCase, email, password, salt, token, createdOn) <>
-      ((User.apply _).tupled, User.unapply)
+    def * = (id, login, loginLowerCase, email, password, salt, createdOn) <> ((User.apply _).tupled, User.unapply)
     // format: ON
   }
 

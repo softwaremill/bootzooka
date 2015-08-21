@@ -58,7 +58,7 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
               val currentPassword = (body \ "currentPassword").extract[String]
               val newPassword = (body \ "newPassword").extract[String]
 
-              onSuccess(userService.changePassword(user.token, currentPassword, newPassword)) {
+              onSuccess(userService.changePassword(user.id, currentPassword, newPassword)) {
                 case Left(msg) => complete(StatusCodes.Forbidden, StringJsonWrapper(msg))
                 case Right(_) => completeOk
               }

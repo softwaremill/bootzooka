@@ -25,9 +25,8 @@ class UserService(
 
   def registerNewUser(login: String, email: String, password: String): Future[Unit] = {
     val salt = Utils.randomString(128)
-    val token = UUID.randomUUID().toString
     val now = clock.nowUtc
-    val userCreatation: Future[Unit] = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, token, now))
+    val userCreatation: Future[Unit] = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now))
     userCreatation.onSuccess {
       case _ =>
         val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
@@ -40,8 +39,6 @@ class UserService(
     userDao.findByLoginOrEmail(login).map(userOpt =>
       toUserJson(userOpt.filter(u => User.passwordsMatch(nonEncryptedPassword, u))))
   }
-
-  def authenticateWithToken(token: String): Future[Option[UserJson]] = userDao.findByToken(token).map(toUserJson)
 
   def findByLogin(login: String): Future[Option[UserJson]] = userDao.findByLowerCasedLogin(login).map(toUserJson)
 
@@ -81,8 +78,8 @@ class UserService(
     }
   }
 
-  def changePassword(userToken: String, currentPassword: String, newPassword: String): Future[Either[String, Unit]] = {
-    userDao.findByToken(userToken).flatMap {
+  def changePassword(userId: UUID, currentPassword: String, newPassword: String): Future[Either[String, Unit]] = {
+    userDao.load(userId).flatMap {
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
         userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)).map(Right(_))
       }
