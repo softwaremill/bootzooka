@@ -59,6 +59,11 @@ trait JsonSupport {
     }
   }
 
+  /**
+   * To limit what data can be serialized to the client, only classes of type `T` for which an implicit
+   * `CanBeSerialized[T]` value is in scope will be allowed. You only need to provide an implicit for the base value,
+   * any containers like `List` or `Option` will be automatically supported.
+   */
   trait CanBeSerialized[T]
   object CanBeSerialized {
     def apply[T] = new CanBeSerialized[T] {}
