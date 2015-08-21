@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sbt "~;container:start; container:reload /"
+sbt "~backend/re-start"

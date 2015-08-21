@@ -6,18 +6,18 @@ import com.softwaremill.bootzooka.domain.{PasswordResetCode, User}
 import com.softwaremill.bootzooka.service.config.CoreConfig
 import com.softwaremill.bootzooka.service.email.EmailService
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.StrictLogging
 import org.joda.time.DateTime
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PasswordRecoveryService(
+class PasswordResetService(
     userDao: UserDao,
     codeDao: PasswordResetCodeDao,
     emailService: EmailService,
     emailTemplatingEngine: EmailTemplatingEngine,
     config: CoreConfig
-)(implicit ec: ExecutionContext) extends LazyLogging {
+)(implicit ec: ExecutionContext) extends StrictLogging {
 
   def sendResetCodeToUser(login: String): Future[Unit] = {
     logger.debug("Preparing to generate and send reset code to user")

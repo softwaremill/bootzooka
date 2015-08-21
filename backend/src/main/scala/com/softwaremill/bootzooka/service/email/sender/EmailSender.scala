@@ -6,13 +6,13 @@ import javax.activation.{DataHandler, DataSource}
 import javax.mail.internet.{InternetAddress, MimeBodyPart, MimeMessage, MimeMultipart}
 import javax.mail.{Address, Message, Session, Transport}
 
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.StrictLogging
 
 /**
  * Copied from softwaremill-common:
  * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
  */
-object EmailSender extends LazyLogging {
+object EmailSender extends StrictLogging {
 
   def send(
     smtpHost: String,

@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.common.logging
 
 import ch.qos.logback.classic.spi.ILoggingEvent
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.StrictLogging
 
 /**
  * Wrapper for concrete error reporting service's API.
@@ -18,7 +18,7 @@ trait ErrorReporter {
 
 }
 
-object DummyErrorReporter extends ErrorReporter with LazyLogging {
+object DummyErrorReporter extends ErrorReporter with StrictLogging {
 
   override def report(ex: Throwable, loggingEvent: ILoggingEvent): Unit = ()
 

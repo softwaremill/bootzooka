@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.dao.DatabaseConfig
 import com.softwaremill.bootzooka.dao.DatabaseConfig._
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.config.ConfigValueFactory._
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.StrictLogging
 import org.flywaydb.core.Flyway
 import org.joda.time.{DateTime, DateTimeZone}
 import slick.driver.JdbcProfile
@@ -39,7 +39,7 @@ case class SqlDatabase(
 
 case class JdbcConnectionString(url: String, username: String = "", password: String = "")
 
-object SqlDatabase extends LazyLogging {
+object SqlDatabase extends StrictLogging {
 
   def embeddedConnectionStringFromConfig(config: DatabaseConfig): String = {
     val url = config.dbH2Url

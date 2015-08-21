@@ -14,7 +14,6 @@ import scala.concurrent.{ExecutionContext, Future}
 // format: OFF
 class UserService(
     userDao: UserDao,
-    registrationDataValidator: RegistrationDataValidator,
     emailService: EmailService,
     emailTemplatingEngine: EmailTemplatingEngine)
    (implicit ec: ExecutionContext, clock: Clock) {
@@ -49,10 +48,6 @@ class UserService(
   def findByEmail(email: String): Future[Option[UserJson]] = userDao.findByEmail(email.toLowerCase).map(toUserJson)
 
   private def toUserJson(userOpt: Option[User]) = userOpt.map(UserJson(_))
-
-  def isUserDataValid(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]): Boolean = {
-    registrationDataValidator.isDataValid(loginOpt, emailOpt, passwordOpt)
-  }
 
   def checkUserExistenceFor(userLogin: String, userEmail: String): Future[Either[String, Unit]] = {
     val existingLoginFuture = findByLogin(userLogin)

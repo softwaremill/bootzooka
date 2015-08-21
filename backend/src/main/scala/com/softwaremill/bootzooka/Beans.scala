@@ -1,27 +1,26 @@
 package com.softwaremill.bootzooka
 
+import akka.actor.ActorSystem
 import com.softwaremill.bootzooka.common.RealTimeClock
 import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.dao.sql.SqlDatabase
-import com.softwaremill.bootzooka.dao.{DatabaseConfig, Daos}
-import com.softwaremill.bootzooka.service.PasswordRecoveryService
-import com.softwaremill.bootzooka.service.config.{CoreConfig, EmailConfig}
+import com.softwaremill.bootzooka.dao.{Daos, DatabaseConfig}
+import com.softwaremill.bootzooka.service.PasswordResetService
+import com.softwaremill.bootzooka.service.config.{ServerConfig, CoreConfig, EmailConfig}
 import com.softwaremill.bootzooka.service.email.{DummyEmailService, SmtpEmailService}
 import com.softwaremill.bootzooka.service.templates.EmailTemplatingEngine
-import com.softwaremill.bootzooka.service.user.{RegistrationDataValidator, UserService}
+import com.softwaremill.bootzooka.service.user.{RememberMeStorageImpl, UserService}
 import com.typesafe.config.ConfigFactory
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.StrictLogging
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.Implicits.global
+trait Beans extends StrictLogging with Daos {
+  def system: ActorSystem
 
-trait Beans extends LazyLogging with Daos {
-  lazy val config = new CoreConfig with EmailConfig with DatabaseConfig {
+  lazy val config = new CoreConfig with EmailConfig with DatabaseConfig with ServerConfig {
     override def rootConfig = ConfigFactory.load()
   }
 
   override lazy val sqlDatabase = SqlDatabase.create(config)
-  override implicit val ec: ExecutionContext = global
 
   lazy val emailService = if (config.emailEnabled) {
     new SmtpEmailService(config)
@@ -32,16 +31,16 @@ trait Beans extends LazyLogging with Daos {
   }
 
   implicit lazy val clock = RealTimeClock
+
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
 
   lazy val userService = new UserService(
     userDao,
-    new RegistrationDataValidator(),
     emailService,
     emailTemplatingEngine
   )
 
-  lazy val passwordRecoveryService = new PasswordRecoveryService(
+  lazy val passwordResetService = new PasswordResetService(
     userDao,
     codeDao,
     emailService,
@@ -51,4 +50,5 @@ trait Beans extends LazyLogging with Daos {
 
   lazy val errorReporter = BugsnagErrorReporter(config)
 
+  lazy val rememberMeStorage = new RememberMeStorageImpl(rememberMeTokenDao, system)
 }

@@ -10,8 +10,6 @@ import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest
-import org.scalatest.FlatSpec
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -28,7 +26,6 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     dao
   }
 
-  val registrationDataValidator: RegistrationDataValidator = mock[RegistrationDataValidator]
   val emailService = mock[EmailService]
   val emailTemplatingEngine = mock[EmailTemplatingEngine]
   var userDao: UserDao = _
@@ -37,7 +34,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
   override protected def beforeEach() = {
     super.beforeEach()
     userDao = prepareUserDaoMock
-    userService = new UserService(userDao, registrationDataValidator, emailService, emailTemplatingEngine)
+    userService = new UserService(userDao, emailService, emailTemplatingEngine)
   }
 
   // this test is silly :\

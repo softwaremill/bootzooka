@@ -4,7 +4,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import com.bugsnag.{Client, MetaData}
 import com.softwaremill.bootzooka.common.config.ConfigWithDefault
 import com.softwaremill.bootzooka.common.logging.{DummyErrorReporter, ErrorReporter}
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.StrictLogging
 
 /**
  * Simple wrapper for Bugsnag's Client API
@@ -22,7 +22,7 @@ class BugsnagErrorReporter(private val apiKey: String) extends ErrorReporter {
 
 }
 
-object BugsnagErrorReporter extends LazyLogging {
+object BugsnagErrorReporter extends StrictLogging {
 
   val configApiKeyPath = "errorReporting.bugsnag.apiKey"
 

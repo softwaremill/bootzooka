@@ -27,12 +27,12 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
 
   def generateRandomId = UUID.randomUUID()
 
-  def withCleanMocks(test: (UserDao, PasswordResetCodeDao, EmailService, PasswordRecoveryService, EmailTemplatingEngine) => Unit) {
+  def withCleanMocks(test: (UserDao, PasswordResetCodeDao, EmailService, PasswordResetService, EmailTemplatingEngine) => Unit) {
     val userDao = prepareUserDaoMock
     val codeDao = mock[PasswordResetCodeDao]
     val emailService = mock[EmailService]
     val emailTemplatingEngine = mock[EmailTemplatingEngine]
-    val passwordRecoveryService = new PasswordRecoveryService(userDao, codeDao, emailService, emailTemplatingEngine,
+    val passwordRecoveryService = new PasswordResetService(userDao, codeDao, emailService, emailTemplatingEngine,
       new CoreConfig {
         override def rootConfig = null
         override lazy val resetLinkPattern = "%s"

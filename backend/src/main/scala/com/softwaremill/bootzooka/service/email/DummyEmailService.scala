@@ -2,12 +2,12 @@ package com.softwaremill.bootzooka.service.email
 
 import com.softwaremill.bootzooka.service.email.sender.EmailDescription
 import com.softwaremill.bootzooka.service.templates.EmailContentWithSubject
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.StrictLogging
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
 
-class DummyEmailService extends EmailService with LazyLogging {
+class DummyEmailService extends EmailService with StrictLogging {
 
   private val sentEmails: ListBuffer[EmailDescription] = ListBuffer()
 
@@ -26,7 +26,7 @@ class DummyEmailService extends EmailService with LazyLogging {
       sentEmails += email
     }
 
-    logger.debug(s"Would send email to $address, if this wasn't a dummy email service implementation.")
+    logger.debug(s"Would send email to $address, if this wasn't a dummy email service implementation: ${emailData.content}")
     Future.successful(())
   }
 

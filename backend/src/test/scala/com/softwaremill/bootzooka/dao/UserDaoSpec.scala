@@ -4,13 +4,13 @@ import java.util.UUID
 
 import com.softwaremill.bootzooka.domain.User
 import com.softwaremill.bootzooka.test.{FlatSpecWithSql, UserTestHelpers}
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.StrictLogging
 import org.scalatest.Matchers
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 
-class UserDaoSpec extends FlatSpecWithSql with LazyLogging with UserTestHelpers with Matchers {
+class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelpers with Matchers {
   behavior of "UserDao"
 
   var userDao: UserDao = new UserDao(sqlDatabase)

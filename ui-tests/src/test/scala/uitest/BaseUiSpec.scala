@@ -2,11 +2,10 @@ package uitest
 
 import java.util.concurrent.TimeUnit
 
+import akka.http.scaladsl.Http.ServerBinding
 import com.softwaremill.bootzooka.dao.{SqlPasswordResetCodeSchema, SqlUserSchema}
 import com.softwaremill.bootzooka.service.email.DummyEmailService
-import com.softwaremill.bootzooka.{Beans, EmbeddedJetty, EmbeddedJettyConfig}
-import com.typesafe.config.ConfigFactory
-import org.eclipse.jetty.webapp.WebAppContext
+import com.softwaremill.bootzooka.{Beans, Main}
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.concurrent.ScalaFutures
@@ -15,7 +14,7 @@ import uitest.pages.{LoginPage, MainPage, MessagesPage, PasswordResetPage}
 
 import scala.util.Try
 
-class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
+class BaseUiSpec extends FunSuite with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
   val RegUser = "reguser"
   val RegPass = "regpass"
   val RegMail = "reguser@regmail.pl"
@@ -27,19 +26,14 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
   var passwordRestPage: PasswordResetPage = _
   var mainPage: MainPage = _
   var beans: Beans = _
-
-  override protected def setResourceBase(context: WebAppContext): Unit = {
-    val webappDirInsideJar = context.getClass.getClassLoader.getResource("webapp").toExternalForm
-    context.setWar(webappDirInsideJar)
-  }
-
-  val embeddedJettyConfig = new EmbeddedJettyConfig {
-    def rootConfig = ConfigFactory.load()
-  }
+  var binding: ServerBinding = _
 
   override def beforeAll() {
-    startJetty()
-    beans = context.getAttribute("appObject").asInstanceOf[Beans]
+    val (startFuture, _beans) = new Main().start()
+    beans = _beans
+
+    binding = startFuture.futureValue
+
     registerUserIfNotExists(RegUser, RegMail, RegPass)
     registerUserIfNotExists("1" + RegUser, "1" + RegMail, RegPass)
     emailService = beans.emailService.asInstanceOf[DummyEmailService]
@@ -89,7 +83,8 @@ class BaseUiSpec extends FunSuite with EmbeddedJetty with BeforeAndAfterAll with
   }
 
   override def afterAll() {
-    stopJetty()
+    binding.unbind().futureValue
+    beans.system.shutdown()
   }
 
   def createPage[T](clazz: Class[T]): T = PageFactory.initElements(driver, clazz)
