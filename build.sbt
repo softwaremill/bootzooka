@@ -7,8 +7,8 @@ import Keys._
 import scala.util.Try
 import scalariform.formatter.preferences._
 
-val slf4jVersion = "1.7.9"
-val logBackVersion = "1.1.2"
+val slf4jVersion = "1.7.12"
+val logBackVersion = "1.1.3"
 val scalaLoggingVersion = "3.1.0"
 val json4sVersion = "3.2.11"
 val seleniumVersion = "2.46.0"
@@ -20,7 +20,7 @@ val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
 val bugsnag = "com.bugsnag" % "bugsnag" % "1.2.8"
 
-val typesafeConfig = "com.typesafe" % "config" % "1.2.1"
+val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
 
 val jodaTime = "joda-time" % "joda-time" % "2.6"
 val jodaConvert = "org.joda" % "joda-convert" % "1.7"
@@ -28,19 +28,19 @@ val jodaDependencies = Seq(jodaTime, jodaConvert)
 
 val json4s = "org.json4s" %% "json4s-native" % json4sVersion
 
-val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.5.3"
+val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.5.4"
 
 val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.6.3" % "test"
 
-val slick = "com.typesafe.slick" %% "slick" % "3.0.0"
+val slick = "com.typesafe.slick" %% "slick" % "3.0.2"
 val h2 = "com.h2database" % "h2" % "1.3.176"
 val postgres = "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
-val hikari = "com.zaxxer" % "HikariCP-java6" % "2.3.8"
-val flyway = "org.flywaydb" % "flyway-core" % "3.1"
+val hikari = "com.zaxxer" % "HikariCP-java6" % "2.3.9"
+val flyway = "org.flywaydb" % "flyway-core" % "3.2.1"
 val slickStack = Seq(slick, h2, postgres, hikari, flyway)
 
 val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
-val scalatest = "org.scalatest" %% "scalatest" % "2.2.3" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "2.2.5" % "test"
 val unitTestingStack = Seq(mockito, scalatest)
 
 val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
@@ -67,7 +67,7 @@ lazy val commonSettings = scalariformSettings ++ Seq(
     .setPreference(SpacesAroundMultiImports, false),
   organization := "com.softwaremill",
   version := "0.0.1-SNAPSHOT",
-  scalaVersion := "2.11.6",
+  scalaVersion := "2.11.7",
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   libraryDependencies ++= commonDependencies
 )
