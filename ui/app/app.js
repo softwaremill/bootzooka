@@ -31,12 +31,12 @@ profile.config(function ($stateProvider, $urlRouterProvider) {
         })
         .state('recover-lost-password', {
             url: '/recover-lost-password',
-            controller: 'PasswordRecoveryCtrl',
+            controller: 'PasswordResetCtrl',
             templateUrl: 'profile/password/recover-lost-password.html'
         })
         .state('password-reset', {
             url: '/password-reset?code',
-            controller: 'PasswordRecoveryCtrl',
+            controller: 'PasswordResetCtrl',
             templateUrl: 'profile/password/password-reset.html'
         })
         .state('profile', {

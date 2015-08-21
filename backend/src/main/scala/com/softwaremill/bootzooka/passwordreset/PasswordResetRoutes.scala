@@ -10,7 +10,7 @@ trait PasswordResetRoutes extends RoutesSupport {
 
   def passwordResetService: PasswordResetService
 
-  val passwordResetRoutes = pathPrefix("passwordrecovery") {
+  val passwordResetRoutes = pathPrefix("passwordreset") {
     post {
       entity(as[JValue]) { body =>
         path(Segment) { code =>

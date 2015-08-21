@@ -19,7 +19,7 @@ import org.scalatest.mock.MockitoSugar
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
+class PasswordResetServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
     with IntegrationPatience with UserTestHelpers {
   val invalidLogin = "user2"
   val validLogin = "user"
@@ -31,13 +31,13 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
     val codeDao = mock[PasswordResetCodeDao]
     val emailService = mock[EmailService]
     val emailTemplatingEngine = mock[EmailTemplatingEngine]
-    val passwordRecoveryService = new PasswordResetService(userDao, codeDao, emailService, emailTemplatingEngine,
+    val passwordresetService = new PasswordResetService(userDao, codeDao, emailService, emailTemplatingEngine,
       new CoreConfig {
         override def rootConfig = null
         override lazy val resetLinkPattern = "%s"
       })
 
-    test(userDao, codeDao, emailService, passwordRecoveryService, emailTemplatingEngine)
+    test(userDao, codeDao, emailService, passwordresetService, emailTemplatingEngine)
   }
 
   def prepareUserDaoMock = {
@@ -50,66 +50,66 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
   }
 
   "sendResetCodeToUser" should "search for user using provided login" in {
-    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordresetService, emailTemplatingEngine) => {
       // given
       given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
       given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future.successful(()))
       // when
-      passwordRecoveryService.sendResetCodeToUser(invalidLogin).futureValue
+      passwordresetService.sendResetCodeToUser(invalidLogin).futureValue
       // then
       verify(userDao).findByLoginOrEmail(invalidLogin)
     })
   }
 
   "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
-    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordresetService, emailTemplatingEngine) => {
       // given
       given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
       // when
-      passwordRecoveryService.sendResetCodeToUser(invalidLogin).futureValue
+      passwordresetService.sendResetCodeToUser(invalidLogin).futureValue
       // then
       verify(emailSendingService, never()).scheduleEmail(anyString, any[EmailContentWithSubject])
     })
   }
 
   "sendResetCodeToUser" should "store generated code for reuse" in {
-    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordresetService, emailTemplatingEngine) => {
       // given
       given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
       given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future.successful(()))
       // when
-      passwordRecoveryService.sendResetCodeToUser(validLogin).futureValue
+      passwordresetService.sendResetCodeToUser(validLogin).futureValue
       // then
       verify(codeDao).add(any[PasswordResetCode])
     })
   }
 
   "sendResetCodeToUser" should "send e-mail to user containing link to reset page with generated reset code" in {
-    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordresetService, emailTemplatingEngine) => {
       // given
       given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
       given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future.successful(()))
       // when
-      passwordRecoveryService.sendResetCodeToUser(validLogin).futureValue
+      passwordresetService.sendResetCodeToUser(validLogin).futureValue
       // then
       verify(emailSendingService).scheduleEmail(Matchers.eq("user@sml.pl"), any[EmailContentWithSubject])
     })
   }
 
   "sendResetCodeToUser" should "use template to generate e-mail" in {
-    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordresetService, emailTemplatingEngine) => {
       // given
       given(codeDao.add(any[PasswordResetCode])).willReturn(Future.successful(()))
       given(emailSendingService.scheduleEmail(any[String], any[EmailContentWithSubject])).willReturn(Future.successful(()))
       // when
-      passwordRecoveryService.sendResetCodeToUser(validLogin).futureValue
+      passwordresetService.sendResetCodeToUser(validLogin).futureValue
       // then
       verify(emailTemplatingEngine).passwordReset(Matchers.eq(validLogin), anyString)
     })
   }
 
   "sendResetCodeToUser" should "change password for user" in {
-    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordresetService, emailTemplatingEngine) => {
       // given
       val code = "validCode"
       val login = "login"
@@ -123,7 +123,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       given(codeDao.remove(resetCode)).willReturn(Future.successful(()))
 
       // when
-      val result = passwordRecoveryService.performPasswordReset(code, password).futureValue
+      val result = passwordresetService.performPasswordReset(code, password).futureValue
 
       // then
       assert(result.isRight)
@@ -135,7 +135,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
   }
 
   "sendResetCodeToUser" should "do nothing but delete expired code" in {
-    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordresetService, emailTemplatingEngine) => {
       //Given
       val code = "validCode"
       val login = "login"
@@ -148,7 +148,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       given(codeDao.remove(resetCode)).willReturn(Future.successful(()))
 
       //When
-      val result = passwordRecoveryService.performPasswordReset(code, password).futureValue
+      val result = passwordresetService.performPasswordReset(code, password).futureValue
 
       //Then
       assert(result.isLeft)
@@ -160,7 +160,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
   }
 
   "sendResetCodeToUser" should "not change password when code is past it's valid date" in {
-    withCleanMocks((userDao, codeDao, emailSendingService, passwordRecoveryService, emailTemplatingEngine) => {
+    withCleanMocks((userDao, codeDao, emailSendingService, passwordresetService, emailTemplatingEngine) => {
       //Given
       val password = "password"
       val code = "validCode"
@@ -170,7 +170,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       given(codeDao.remove(mockCode)).willReturn(Future.successful(()))
 
       //When
-      val result = passwordRecoveryService.performPasswordReset(code, password).futureValue
+      val result = passwordresetService.performPasswordReset(code, password).futureValue
 
       //Then
       assert(result.isLeft)

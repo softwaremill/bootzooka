@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', function PasswordRecoveryCtrl($scope, PasswordRecoveryService, FlashService, $state, $stateParams, NotificationsService) {
+angular.module('smlBootzooka.profile').controller('PasswordResetCtrl', function PasswordResetCtrl($scope, PasswordResetService, FlashService, $state, $stateParams, NotificationsService) {
 
     $scope.login = '';
     $scope.password = '';
@@ -10,7 +10,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
         $scope.passwordResetRequestForm.login.$dirty = true;
 
         if ($scope.passwordResetRequestForm.$valid) {
-            PasswordRecoveryService.beginResetProcess($scope.login).then(beginResetProcessSuccess, NotificationsService.showError);
+            PasswordResetService.beginResetProcess($scope.login).then(beginResetProcessSuccess, NotificationsService.showError);
         }
     };
 
@@ -25,7 +25,7 @@ angular.module('smlBootzooka.profile').controller('PasswordRecoveryCtrl', functi
 
         if ($scope.changePasswordForm.$valid && !$scope.changePasswordForm.repeatPassword.$error.repeat) {
             if ($stateParams.code) {
-                PasswordRecoveryService.changePassword($stateParams.code, $scope.password).then(onChangeSuccess, onChangeFailure);
+                PasswordResetService.changePassword($stateParams.code, $scope.password).then(onChangeSuccess, onChangeFailure);
             } else {
                 onChangeFailure('Wrong or malformed password recovery code.');
             }

@@ -27,7 +27,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec {
     val routes = createRoutes(passwordResetService)
 
     // when
-    Post("/passwordrecovery", Map("login" -> "mylogin")) ~> routes ~> check {
+    Post("/passwordreset", Map("login" -> "mylogin")) ~> routes ~> check {
       valueFromWrapper(responseAs[JValue]) should be ("success")
 
       verify(passwordResetService).sendResetCodeToUser("mylogin")
@@ -41,7 +41,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec {
     val routes = createRoutes(passwordResetService)
 
     // when
-    Post("/passwordrecovery/123", Map("password" -> "validPassword")) ~> routes ~> check {
+    Post("/passwordreset/123", Map("password" -> "validPassword")) ~> routes ~> check {
       valueFromWrapper(responseAs[JValue]) should be ("ok")
       verify(passwordResetService).performPasswordReset("123", "validPassword")
     }
@@ -53,7 +53,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec {
     val routes = createRoutes(passwordResetService)
 
     // when
-    Post("/passwordrecovery/123") ~> routes ~> check {
+    Post("/passwordreset/123") ~> routes ~> check {
       valueFromWrapper(responseAs[JValue]) should be ("missingpassword")
       status should be (StatusCodes.BadRequest)
       verify(passwordResetService, never()).performPasswordReset(Matchers.eq("123"), anyString)
@@ -67,7 +67,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec {
     val routes = createRoutes(passwordResetService)
 
     // when
-    Post("/passwordrecovery/123", Map("password" -> "validPassword")) ~> routes ~> check {
+    Post("/passwordreset/123", Map("password" -> "validPassword")) ~> routes ~> check {
       valueFromWrapper(responseAs[JValue]) should be ("Error")
       status should be (StatusCodes.Forbidden)
     }
