@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.common.logging.bugsnag
 
 import ch.qos.logback.classic.spi.ILoggingEvent
 import com.bugsnag.{Client, MetaData}
-import com.softwaremill.bootzooka.common.config.ConfigWithDefault
+import com.softwaremill.bootzooka.common.ConfigWithDefault
 import com.softwaremill.bootzooka.common.logging.{DummyErrorReporter, ErrorReporter}
 import com.typesafe.scalalogging.StrictLogging
 

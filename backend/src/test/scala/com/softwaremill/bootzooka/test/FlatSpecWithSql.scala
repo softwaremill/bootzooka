@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.test
 
 import com.softwaremill.bootzooka.common.RealTimeClock
-import com.softwaremill.bootzooka.dao.sql.SqlDatabase
+import com.softwaremill.bootzooka.sql.SqlDatabase
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 

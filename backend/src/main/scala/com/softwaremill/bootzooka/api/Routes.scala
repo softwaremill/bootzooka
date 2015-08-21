@@ -3,6 +3,8 @@ package com.softwaremill.bootzooka.api
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.ExceptionHandler
+import com.softwaremill.bootzooka.passwordreset.PasswordResetRoutes
+import com.softwaremill.bootzooka.user.UsersRoutes
 
 trait Routes extends UsersRoutes
     with PasswordResetRoutes

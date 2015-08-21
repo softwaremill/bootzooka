@@ -6,8 +6,9 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
 import akka.stream.ActorMaterializer
-import com.softwaremill.bootzooka.api.{Routes, Session}
+import com.softwaremill.bootzooka.api.Routes
 import com.softwaremill.bootzooka.common.logging.AsyncErrorReportingLogAppender
+import com.softwaremill.bootzooka.user.Session
 import com.softwaremill.session.{SessionConfig, SessionManager}
 import com.typesafe.scalalogging.StrictLogging
 
@@ -48,7 +49,8 @@ object Main extends App with StrictLogging {
   val host = modules.config.serverHost
   val port = modules.config.serverPort
 
-  import modules.ec
+  val system = modules.system
+  import system.dispatcher
 
   startFuture.onComplete {
     case Success(b) =>

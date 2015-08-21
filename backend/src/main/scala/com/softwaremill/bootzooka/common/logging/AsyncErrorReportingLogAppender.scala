@@ -7,7 +7,7 @@ import ch.qos.logback.classic.{Level, Logger, LoggerContext}
 import ch.qos.logback.core.AppenderBase
 import ch.qos.logback.core.filter.Filter
 import ch.qos.logback.core.spi.FilterReply
-import com.softwaremill.bootzooka.common.config.ConfigWithDefault
+import com.softwaremill.bootzooka.common.ConfigWithDefault
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, Future}

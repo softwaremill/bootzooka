@@ -10,8 +10,7 @@ import akka.http.scaladsl.server.{Route, Directive1, AuthorizationFailedRejectio
 import akka.http.scaladsl.unmarshalling.{Unmarshaller, FromEntityUnmarshaller}
 import akka.stream.Materializer
 import com.softwaremill.bootzooka.common.StringJsonWrapper
-import com.softwaremill.bootzooka.service.data.UserJson
-import com.softwaremill.bootzooka.service.user.UserService
+import com.softwaremill.bootzooka.user.{UserJson, Session, UserService}
 import com.softwaremill.session.{RememberMeStorage, SessionManager}
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
@@ -84,7 +83,7 @@ trait SessionSupport {
   def userService: UserService
 
   def userFromSession: Directive1[UserJson] = userIdFromSession.flatMap { userId =>
-    onSuccess(userService.load(userId)).flatMap {
+    onSuccess(userService.findById(userId)).flatMap {
       case None => reject(AuthorizationFailedRejection)
       case Some(user) => provide(user)
     }

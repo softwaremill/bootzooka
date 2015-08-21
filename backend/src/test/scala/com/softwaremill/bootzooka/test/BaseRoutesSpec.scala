@@ -1,7 +1,8 @@
 package com.softwaremill.bootzooka.test
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.softwaremill.bootzooka.api.{JsonSupport, Session}
+import com.softwaremill.bootzooka.api.JsonSupport
+import com.softwaremill.bootzooka.user.Session
 import com.softwaremill.session.{SessionManager, SessionConfig}
 import com.typesafe.config.ConfigFactory
 import org.json4s.JsonAST.JValue

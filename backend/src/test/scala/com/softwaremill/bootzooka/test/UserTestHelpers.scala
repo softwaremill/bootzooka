@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.test
 
-import com.softwaremill.bootzooka.domain.User
+import com.softwaremill.bootzooka.user.User
 import org.joda.time.{DateTimeZone, DateTime}
 
 trait UserTestHelpers {

@@ -3,8 +3,9 @@ package uitest
 import java.util.concurrent.TimeUnit
 
 import akka.http.scaladsl.Http.ServerBinding
-import com.softwaremill.bootzooka.dao.{SqlPasswordResetCodeSchema, SqlUserSchema}
-import com.softwaremill.bootzooka.service.email.DummyEmailService
+import com.softwaremill.bootzooka.email.DummyEmailService
+import com.softwaremill.bootzooka.passwordreset.SqlPasswordResetCodeSchema
+import com.softwaremill.bootzooka.user.SqlUserSchema
 import com.softwaremill.bootzooka.{Beans, Main}
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
