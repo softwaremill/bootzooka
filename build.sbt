@@ -20,7 +20,7 @@ val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
 val bugsnag = "com.bugsnag" % "bugsnag" % "1.2.8"
 
-val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
+val typesafeConfig = "com.typesafe" % "config" % "1.2.1" // can't update to 1.3.0 to keep java <8 compat
 
 val jodaTime = "joda-time" % "joda-time" % "2.8.2"
 val jodaConvert = "org.joda" % "joda-convert" % "1.7"
