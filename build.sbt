@@ -22,7 +22,7 @@ val bugsnag = "com.bugsnag" % "bugsnag" % "1.2.8"
 
 val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
 
-val jodaTime = "joda-time" % "joda-time" % "2.6"
+val jodaTime = "joda-time" % "joda-time" % "2.8.2"
 val jodaConvert = "org.joda" % "joda-convert" % "1.7"
 val jodaDependencies = Seq(jodaTime, jodaConvert)
 
