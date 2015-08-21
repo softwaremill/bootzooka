@@ -91,14 +91,14 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
         }
       } ~
       patch {
-        userFromSession { user =>
+        userIdFromSession { userId =>
           entity(as[JValue]) { body =>
             val loginOpt = (body \ "login").extractOpt[String]
             val emailOpt = (body \ "email").extractOpt[String]
 
             val updateAction = (loginOpt, emailOpt) match {
-              case (Some(login), _) => userService.changeLogin(user.login, login)
-              case (_, Some(email)) => userService.changeEmail(user.email, email)
+              case (Some(login), _) => userService.changeLogin(userId, login)
+              case (_, Some(email)) => userService.changeEmail(userId, email)
               case _ => Future.successful(Left("You have to provide new login or email"))
             }
 

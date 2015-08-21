@@ -178,7 +178,7 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
     val newLogin = "changedUser1"
 
     // When
-    userDao.changeLogin(u.login, newLogin).futureValue
+    userDao.changeLogin(u.id, newLogin).futureValue
     val postModifyUser = userDao.findByLowerCasedLogin(newLogin).futureValue
 
     // Then
@@ -192,7 +192,7 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
     val u = user.get
 
     // When
-    userDao.changeEmail(u.email, newEmail).futureValue
+    userDao.changeEmail(u.id, newEmail).futureValue
 
     // Then
     userDao.findByEmail(newEmail).futureValue should equal(Some(u.copy(email = newEmail)))

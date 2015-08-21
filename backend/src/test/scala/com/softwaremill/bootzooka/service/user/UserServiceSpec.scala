@@ -123,9 +123,8 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
 
   "changeEmail" should "change email for specified user" in {
     val user = userDao.findByLowerCasedLogin("admin").futureValue
-    val userEmail = user.get.email
     val newEmail = "new@email.com"
-    userService.changeEmail(userEmail, newEmail).futureValue should be ('right)
+    userService.changeEmail(user.get.id, newEmail).futureValue should be ('right)
     userDao.findByEmail(newEmail).futureValue match {
       case Some(cu) =>
       case None => fail("User not found. Maybe e-mail wasn't really changed?")
@@ -133,14 +132,13 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
   }
 
   "changeEmail" should "not change email if already used by someone else" in {
-    userService.changeEmail("admin@sml.com", "admin2@sml.com").futureValue should be ('left)
+    userService.changeEmail(UUID.randomUUID(), "admin2@sml.com").futureValue should be ('left)
   }
 
   "changeLogin" should "change login for specified user" in {
     val user = userDao.findByLowerCasedLogin("admin").futureValue
-    val userLogin = user.get.login
     val newLogin = "newadmin"
-    userService.changeLogin(userLogin, newLogin).futureValue should be ('right)
+    userService.changeLogin(user.get.id, newLogin).futureValue should be ('right)
     userDao.findByLowerCasedLogin(newLogin).futureValue match {
       case Some(cu) =>
       case None => fail("User not found. Maybe login wasn't really changed?")
@@ -148,7 +146,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
   }
 
   "changeLogin" should "not change login if already used by someone else" in {
-    userService.changeLogin("admin", "admin2").futureValue should be ('left)
+    userService.changeLogin(UUID.randomUUID(), "admin2").futureValue should be ('left)
   }
 
   "changePassword" should "change password if current is correct and new is present" in {

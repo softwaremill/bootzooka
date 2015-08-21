@@ -61,15 +61,15 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
     db.run(users.filter(_.id === userId).map(_.password).update(newPassword)).mapToUnit
   }
 
-  def changeLogin(currentLogin: String, newLogin: String): Future[Unit] = {
-    val action = users.filter(_.loginLowerCase === currentLogin.toLowerCase).map { user =>
+  def changeLogin(userId: UserId, newLogin: String): Future[Unit] = {
+    val action = users.filter(_.id === userId).map { user =>
       (user.login, user.loginLowerCase)
     }.update((newLogin, newLogin.toLowerCase))
     db.run(action).mapToUnit
   }
 
-  def changeEmail(currentEmail: String, newEmail: String): Future[Unit] = {
-    db.run(users.filter(_.email.toLowerCase === currentEmail.toLowerCase).map(_.email).update(newEmail)).mapToUnit
+  def changeEmail(userId: UserId, newEmail: String): Future[Unit] = {
+    db.run(users.filter(_.id === userId).map(_.email).update(newEmail)).mapToUnit
   }
 }
 

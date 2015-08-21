@@ -60,21 +60,21 @@ class UserService(
     }
   }
 
-  def changeLogin(currentLogin: String, newLogin: String): Future[Either[String, Unit]] = {
+  def changeLogin(userId: UUID, newLogin: String): Future[Either[String, Unit]] = {
     findByLogin(newLogin).flatMap {
       case Some(u) => Future {
         Left("Login is already taken")
       }
-      case None => userDao.changeLogin(currentLogin, newLogin).map(Right(_))
+      case None => userDao.changeLogin(userId, newLogin).map(Right(_))
     }
   }
 
-  def changeEmail(currentEmail: String, newEmail: String): Future[Either[String, Unit]] = {
+  def changeEmail(userId: UUID, newEmail: String): Future[Either[String, Unit]] = {
     findByEmail(newEmail).flatMap {
       case Some(u) => Future {
         Left("E-mail used by another user")
       }
-      case None => userDao.changeEmail(currentEmail, newEmail).map(Right(_))
+      case None => userDao.changeEmail(userId, newEmail).map(Right(_))
     }
   }
 
