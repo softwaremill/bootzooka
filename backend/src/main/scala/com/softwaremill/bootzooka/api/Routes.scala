@@ -36,10 +36,11 @@ trait Routes extends UsersRoutes
       }
     }
 
+  val rejectionHandler = RejectionHandler.default
   def logDuration(inner: Route): Route = { ctx =>
     val start = System.currentTimeMillis()
     // handling rejections here so that we get proper status codes
-    val innerRejectionsHandled = handleRejections(RejectionHandler.default)(inner)
+    val innerRejectionsHandled = handleRejections(rejectionHandler)(inner)
     mapResponse { resp =>
       val d = System.currentTimeMillis() - start
       logger.info(s"[${resp.status.intValue()}] ${ctx.request.method.name} ${ctx.request.uri} took: ${d}ms")
