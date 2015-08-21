@@ -29,11 +29,11 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
     dao.add(code).futureValue
 
     // Then
-    dao.load(code.code).futureValue.map(_.code) should be(Some(code.code))
+    dao.findByCode(code.code).futureValue.map(_.code) should be(Some(code.code))
   }
 
   it should "not load when not added" in {
-    dao.load("code1").futureValue should be (None)
+    dao.findByCode("code1").futureValue should be (None)
   }
 
   it should "remove code" in {
@@ -51,8 +51,8 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
 
     //Then
     whenReady(bgActions) { _ =>
-      dao.load("code1").futureValue should be (None)
-      dao.load("code2").futureValue should be ('defined)
+      dao.findByCode("code1").futureValue should be (None)
+      dao.findByCode("code2").futureValue should be ('defined)
     }
   }
 
@@ -69,7 +69,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
 
     // Then
     whenReady(bgActions) { _ =>
-      userDao.load(user.id).futureValue should be (Some(user))
+      userDao.findById(user.id).futureValue should be (Some(user))
     }
   }
 

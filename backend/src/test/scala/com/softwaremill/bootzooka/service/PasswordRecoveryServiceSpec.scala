@@ -120,7 +120,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       val user = newUser(login, s"$login@example.com", password, salt)
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().plusHours(1))
 
-      given(codeDao.load(code)) willReturn Future { Some(resetCode) }
+      given(codeDao.findByCode(code)) willReturn Future { Some(resetCode) }
       given(userDao.changePassword(any[UserDao#UserId], any[String])).willReturn(Future.successful(()))
       given(codeDao.remove(resetCode)).willReturn(Future.successful(()))
 
@@ -130,7 +130,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       // then
       assert(result.isRight)
       assert(result.right.get)
-      verify(codeDao).load(code)
+      verify(codeDao).findByCode(code)
       verify(userDao).changePassword(Matchers.eq(user.id), Matchers.eq(User.encryptPassword(password, salt)))
       verify(codeDao).remove(resetCode)
     })
@@ -146,7 +146,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       val user = newUser(login, s"$login@example.com", password, salt)
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().minusHours(1))
 
-      given(codeDao.load(code)) willReturn Future { Some(resetCode) }
+      given(codeDao.findByCode(code)) willReturn Future { Some(resetCode) }
       given(codeDao.remove(resetCode)).willReturn(Future.successful(()))
 
       //When
@@ -155,7 +155,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       //Then
       assert(result.isLeft)
       assert(result.left.get == "Your reset code is invalid. Please try again.")
-      verify(codeDao).load(code)
+      verify(codeDao).findByCode(code)
       verify(userDao, never).changePassword(Matchers.eq(user.id), Matchers.eq(User.encryptPassword(password, salt)))
       verify(codeDao).remove(resetCode)
     })
@@ -168,7 +168,7 @@ class PasswordRecoveryServiceSpec extends FlatSpec with scalatest.Matchers with 
       val code = "validCode"
       val mockCode = mock[PasswordResetCode]
       given(mockCode.validTo) willReturn new DateTime().minusDays(2)
-      given(codeDao.load(code)) willReturn Future { Some(mockCode) }
+      given(codeDao.findByCode(code)) willReturn Future { Some(mockCode) }
       given(codeDao.remove(mockCode)).willReturn(Future.successful(()))
 
       //When

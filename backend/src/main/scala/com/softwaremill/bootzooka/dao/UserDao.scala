@@ -33,7 +33,7 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
       users += user
   }
 
-  def load(userId: UserId): Future[Option[User]] =
+  def findById(userId: UserId): Future[Option[User]] =
     findOneWhere(_.id === userId)
 
   private def findOneWhereAction(condition: Users => Rep[Boolean]) = {

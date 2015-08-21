@@ -20,7 +20,7 @@ class PasswordResetCodeDao(protected val database: SqlDatabase)(implicit ec: Exe
     db.run(passwordResetCodes += SqlPasswordResetCode(code)).mapToUnit
   }
 
-  def load(code: String): Future[Option[PasswordResetCode]] = findFirstMatching(_.code === code)
+  def findByCode(code: String): Future[Option[PasswordResetCode]] = findFirstMatching(_.code === code)
 
   private def findFirstMatching(condition: PasswordResetCodes => Rep[Boolean]): Future[Option[PasswordResetCode]] = {
     val q = for {

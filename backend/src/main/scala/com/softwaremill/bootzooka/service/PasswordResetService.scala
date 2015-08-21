@@ -54,7 +54,7 @@ class PasswordResetService(
 
   def performPasswordReset(code: String, newPassword: String): Future[Either[String, Boolean]] = {
     logger.debug("Performing password reset")
-    codeDao.load(code).flatMap {
+    codeDao.findByCode(code).flatMap {
       case Some(c) =>
         if (c.validTo.isAfter(new DateTime())) {
           for {

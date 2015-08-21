@@ -20,7 +20,7 @@ class UserService(
 
   // format: ON
   def load(userId: userDao.UserId) = {
-    userDao.load(userId).map(toUserJson)
+    userDao.findById(userId).map(toUserJson)
   }
 
   def registerNewUser(login: String, email: String, password: String): Future[Unit] = {
@@ -79,7 +79,7 @@ class UserService(
   }
 
   def changePassword(userId: UUID, currentPassword: String, newPassword: String): Future[Either[String, Unit]] = {
-    userDao.load(userId).flatMap {
+    userDao.findById(userId).flatMap {
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
         userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)).map(Right(_))
       }
