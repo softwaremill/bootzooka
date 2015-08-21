@@ -20,7 +20,7 @@ Current (user visible) features:
 * unit & integration backend tests
 * frontend JS tests
 * ui tests using Selenium
-* fat-jar and .war deployments
+* fat-jar deployment
 
 This may not sound "cool", but in fact Bootzooka is really helpful when bootstrapping a new project. This is because it contains the whole required setup and automation of build processes both for frontend and backend. You get it out of the box which means significantly less time spent on setting up infrastructure and tools and more time spent on actual coding features in project.
 

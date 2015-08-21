@@ -8,7 +8,7 @@ When picking Bootzooka's technology stack we wanted to use modern, but reasonabl
 Bootzooka's stack consists of the following technologies/tools:
 
 *	Scala (JVM based language)
-*	Scalatra (simple web framework to expose JSON API)
+*	Akka HTTP (lightweight HTTP library with elegant routing DSL)
 *	SQL database, by default H2 DB (persistence)
 *	Slick (query SQL database using strictly typed DSL)
 *   Flyway (easy schema evolution)
@@ -24,9 +24,9 @@ A lot of the projects that we develop at [Softwaremill](http://softwaremill.com)
 
 Angular the most popular JavaScript framework right now, developed and supported by Google and we use it frequently at [SoftwareMill](http://softwaremill.com) (also because it's really good). It offers a complete solution to build dynamic and modern HTML5 based web applications.
 
-### Why Scalatra?
+### Why Akka HTTP?
 
-It's quite simple and easy to jump into Scalatra both for Java and Scala developers. The syntax of the flow directives is straightforward and it was easy to integrate support for JSON into it. And it's written in Scala from scratch, hence seamlessly integrates with other Scala based libraries.
+Akka HTTP is the successor to the popular [Spray.io library](http://spray.io), offers a lightweight HTTP server as well as an elegant, easy-to-learn, flexible DSL for defining routes. Moreover, Akka HTTP is a library, not a framework, so it leaves a lot of freedom when choosing other components.
 
 ### Why SBT and Grunt?
 

@@ -5,7 +5,7 @@ title:  "Development tips"
 
 Generally during development you'll need two processes:
 
-* sbt running the backend server (e.g. using `~;container:start; container:reload /`)
+* sbt running the backend server 
 * grunt server which automatically picks up any changes
 
 ## Cloning
@@ -23,9 +23,7 @@ You can use either [IntelliJ IDEA](http://www.jetbrains.com/idea/) or [Scala Ecl
 * `test` - run all the tests
 * `project <sub-project-name>` - switch context to the given sub-project, then all the commands will be executed only for
 that sub-project, this can be also achieved with e.g.: `<sub-project-name>/test`
-* `container:start` - starts the embedded Jetty container (backend)
-* `~;container:start; container:reload /` - runs container (backend) and waits for source code changes to automatically
-compile changed file and to reload it
+* `~backend/re-start` - runs the backend server and waits for source code changes to automatically compile changed file and to reload it
 
 ## Database schema evolution
 
