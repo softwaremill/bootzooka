@@ -51,8 +51,9 @@ class BaseUiSpec extends FunSuite with BeforeAndAfterAll with BeforeAndAfter wit
     if (userService.findByLogin(login).futureValue.isEmpty) {
       userService.registerNewUser(login, email, pass).futureValue
       true
+    } else {
+      false
     }
-    false
   }
 
   lazy val schema = new SqlPasswordResetCodeSchema with SqlUserSchema {
