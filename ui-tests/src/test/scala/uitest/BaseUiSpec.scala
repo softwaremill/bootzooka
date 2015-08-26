@@ -47,9 +47,8 @@ class BaseUiSpec extends FunSuite with BeforeAndAfterAll with BeforeAndAfter wit
    *         if new user was created or an existing user was found
    */
   protected def registerUserIfNotExists(login: String, email: String, pass: String): Try[Boolean] = Try {
-    val userService = beans.userService
-    if (userService.findByLogin(login).futureValue.isEmpty) {
-      userService.registerNewUser(login, email, pass).futureValue
+    if (beans.userDao.findByLowerCasedLogin(login).futureValue.isEmpty) {
+      beans.userService.registerNewUser(login, email, pass).futureValue
       true
     } else {
       false
