@@ -17,16 +17,25 @@ class UserService(
     userDao.findById(userId).map(toUserJson)
   }
 
-  def registerNewUser(login: String, email: String, password: String): Future[Unit] = {
-    val salt = Utils.randomString(128)
-    val now = clock.nowUtc
-    val userCreatation: Future[Unit] = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now))
-    userCreatation.onSuccess {
-      case _ =>
-        val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
-        emailService.scheduleEmail(email, confirmationEmail)
+  def registerNewUser(login: String, email: String, password: String): Future[UserRegisterResult] = {
+    if (!RegisterDataValidator.isDataValid(login, email, password)) {
+      Future.successful(UserRegisterResult.InvalidData)
     }
-    userCreatation
+    else {
+      checkUserExistenceFor(login, email).flatMap {
+        case Left(msg) => Future.successful(UserRegisterResult.UserExists(msg))
+        case Right(_) =>
+          val salt = Utils.randomString(128)
+          val now = clock.nowUtc
+          val userAddResult = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now))
+          userAddResult.onSuccess {
+            case _ =>
+              val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
+              emailService.scheduleEmail(email, confirmationEmail)
+          }
+          userAddResult.map(_ => UserRegisterResult.Success)
+      }
+    }
   }
 
   def authenticate(login: String, nonEncryptedPassword: String): Future[Option[UserJson]] = {
@@ -34,15 +43,11 @@ class UserService(
       toUserJson(userOpt.filter(u => User.passwordsMatch(nonEncryptedPassword, u))))
   }
 
-  def findByLogin(login: String): Future[Option[UserJson]] = userDao.findByLowerCasedLogin(login).map(toUserJson)
-
-  def findByEmail(email: String): Future[Option[UserJson]] = userDao.findByEmail(email.toLowerCase).map(toUserJson)
-
   private def toUserJson(userOpt: Option[User]) = userOpt.map(UserJson(_))
 
-  def checkUserExistenceFor(userLogin: String, userEmail: String): Future[Either[String, Unit]] = {
-    val existingLoginFuture = findByLogin(userLogin)
-    val existingEmailFuture = findByEmail(userEmail)
+  def checkUserExistenceFor(login: String, email: String): Future[Either[String, Unit]] = {
+    val existingLoginFuture = userDao.findByLowerCasedLogin(login)
+    val existingEmailFuture = userDao.findByEmail(email).map(toUserJson)
 
     for {
       existingLoginOpt <- existingLoginFuture
@@ -55,19 +60,15 @@ class UserService(
   }
 
   def changeLogin(userId: UUID, newLogin: String): Future[Either[String, Unit]] = {
-    findByLogin(newLogin).flatMap {
-      case Some(u) => Future {
-        Left("Login is already taken")
-      }
+    userDao.findByLowerCasedLogin(newLogin).flatMap {
+      case Some(_) => Future.successful(Left("Login is already taken"))
       case None => userDao.changeLogin(userId, newLogin).map(Right(_))
     }
   }
 
   def changeEmail(userId: UUID, newEmail: String): Future[Either[String, Unit]] = {
-    findByEmail(newEmail).flatMap {
-      case Some(u) => Future {
-        Left("E-mail used by another user")
-      }
+    userDao.findByEmail(newEmail).flatMap {
+      case Some(_) => Future.successful(Left("E-mail used by another user"))
       case None => userDao.changeEmail(userId, newEmail).map(Right(_))
     }
   }
@@ -87,5 +88,11 @@ class UserService(
       }
     }
   }
+}
 
+sealed trait UserRegisterResult
+object UserRegisterResult {
+  case object InvalidData extends UserRegisterResult
+  case class UserExists(msg: String) extends UserRegisterResult
+  case object Success extends UserRegisterResult
 }

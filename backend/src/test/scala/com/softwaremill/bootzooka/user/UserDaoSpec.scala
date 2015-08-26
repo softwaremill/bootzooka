@@ -12,10 +12,9 @@ import scala.language.implicitConversions
 class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelpers with Matchers {
   behavior of "UserDao"
 
-  var userDao: UserDao = new UserDao(sqlDatabase)
-  def generateRandomId = UUID.randomUUID()
+  val userDao = new UserDao(sqlDatabase)
 
-  lazy val randomIds: List[UUID] = List.fill(3)(generateRandomId)
+  lazy val randomIds = List.fill(3)(UUID.randomUUID())
 
   override def beforeEach() {
     super.beforeEach()
@@ -49,9 +48,7 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
     userDao.add(newUser(login, "somePrefix" + email, "somePass", "someSalt")).futureValue
 
     // When & then
-    userDao.add(newUser(login, email, "pass", "salt")).failed.futureValue.getMessage should equal(
-      "User with given e-mail or login already exists"
-    )
+    userDao.add(newUser(login, email, "pass", "salt")).failed.futureValue
   }
 
   it should "fail with exception when trying to add user with existing email" in {
@@ -62,9 +59,7 @@ class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelper
     userDao.add(newUser("somePrefixed" + login, email, "somePass", "someSalt")).futureValue
 
     // When & then
-    userDao.add(newUser(login, email, "pass", "salt")).failed.futureValue.getMessage should equal(
-      "User with given e-mail or login already exists"
-    )
+    userDao.add(newUser(login, email, "pass", "salt")).failed.futureValue
   }
 
   it should "find by email" in {

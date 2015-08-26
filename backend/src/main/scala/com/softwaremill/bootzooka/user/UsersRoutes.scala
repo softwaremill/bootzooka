@@ -35,17 +35,10 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
             val email = (body \ "email").extract[String]
             val password = (body \ "password").extract[String]
 
-            if (!RegisterDataValidator.isDataValid(loginEscaped, email, password)) {
-              complete(StatusCodes.BadRequest, StringJsonWrapper("Wrong user data!"))
-            }
-            else {
-              onSuccess(userService.checkUserExistenceFor(loginEscaped, email)) {
-                case Left(error) => complete(StatusCodes.Conflict, StringJsonWrapper(error))
-                case _ =>
-                  onSuccess(userService.registerNewUser(loginEscaped, email, password)) {
-                    complete(StringJsonWrapper("success"))
-                  }
-              }
+            onSuccess(userService.registerNewUser(loginEscaped, email, password)) {
+              case UserRegisterResult.InvalidData => complete(StatusCodes.BadRequest, StringJsonWrapper("Wrong user data!"))
+              case UserRegisterResult.UserExists(msg) => complete(StatusCodes.Conflict, StringJsonWrapper(msg))
+              case UserRegisterResult.Success => complete(StringJsonWrapper("success"))
             }
           }
         }

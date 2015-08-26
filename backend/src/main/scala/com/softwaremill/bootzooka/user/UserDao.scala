@@ -15,45 +15,19 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
 
   type UserId = UUID
 
-  def add(user: User): Future[Unit] = {
-    val action = (for {
-      userByLoginOpt <- findByLowerCasedLoginAction(user.login)
-      userByEmailOpt <- findByEmailAction(user.email)
-      _ <- addOrFailOnExistingAction(userByLoginOpt, userByEmailOpt, user)
-    } yield ()).transactionally
+  def add(user: User): Future[Unit] = db.run(users += user).mapToUnit
 
-    db.run(action)
-  }
+  def findById(userId: UserId): Future[Option[User]] = findOneWhere(_.id === userId)
 
-  private def addOrFailOnExistingAction(userByLoginOpt: Option[User], userByEmailOpt: Option[User], user: User) = {
-    if (userByLoginOpt.isDefined || userByEmailOpt.isDefined)
-      DBIO.failed(new IllegalArgumentException("User with given e-mail or login already exists"))
-    else
-      users += user
-  }
+  private def findOneWhere(condition: Users => Rep[Boolean]) = db.run(users.filter(condition).result.headOption)
 
-  def findById(userId: UserId): Future[Option[User]] =
-    findOneWhere(_.id === userId)
+  def findByEmail(email: String): Future[Option[User]] = findOneWhere(_.email.toLowerCase === email.toLowerCase)
 
-  private def findOneWhereAction(condition: Users => Rep[Boolean]) = {
-    users.filter(condition).result.headOption
-  }
+  def findByLowerCasedLogin(login: String): Future[Option[User]] = findOneWhere(_.loginLowerCase === login.toLowerCase)
 
-  private def findByEmailAction(email: String) = findOneWhereAction(_.email.toLowerCase === email.toLowerCase)
-
-  private def findByLowerCasedLoginAction(login: String) = findOneWhereAction(_.loginLowerCase === login.toLowerCase)
-
-  private def findOneWhere(condition: Users => Rep[Boolean]): Future[Option[User]] = {
-    db.run(findOneWhereAction(condition))
-  }
-
-  def findByEmail(email: String) = db.run(findByEmailAction(email))
-
-  def findByLowerCasedLogin(login: String) = db.run(findByLowerCasedLoginAction(login))
-
-  def findByLoginOrEmail(loginOrEmail: String) = {
+  def findByLoginOrEmail(loginOrEmail: String): Future[Option[User]] = {
     findByLowerCasedLogin(loginOrEmail).flatMap(userOpt =>
-      userOpt.map(user => Future { Some(user) }).getOrElse(findByEmail(loginOrEmail)))
+      userOpt.map(user => Future.successful(Some(user))).getOrElse(findByEmail(loginOrEmail)))
   }
 
   def changePassword(userId: UserId, newPassword: String): Future[Unit] = {

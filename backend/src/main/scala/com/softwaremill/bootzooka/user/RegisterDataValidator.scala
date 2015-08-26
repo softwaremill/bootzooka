@@ -8,8 +8,7 @@ object RegisterDataValidator {
       validEmail(email.trim) &&
       validPassword(password.trim)
 
-  private def validLogin(login: String) =
-    login.length >= MinLoginLength
+  private def validLogin(login: String) = login.length >= MinLoginLength
 
   private val emailRegex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 

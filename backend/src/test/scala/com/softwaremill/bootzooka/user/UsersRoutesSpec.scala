@@ -19,7 +19,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
 
   "POST /register" should "register new user" in {
     Post("/users/register", Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")) ~> routes ~> check {
-      userService.findByLogin("newUser").futureValue should be ('defined)
+      userDao.findByLowerCasedLogin("newUser").futureValue should be ('defined)
       status should be (StatusCodes.OK)
     }
   }
@@ -49,7 +49,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
   "POST /register" should "use escaped Strings" in {
     Post("/users/register", Map("login" -> "<script>alert('haxor');</script>", "email" -> "newUser@sml.com", "password" -> "secret")) ~> routes ~> check {
       status should be (StatusCodes.OK)
-      userService.findByEmail("newUser@sml.com").futureValue.map(_.login) should be (Some("&lt;script&gt;alert('haxor');&lt;/script&gt;"))
+      userDao.findByEmail("newUser@sml.com").futureValue.map(_.login) should be (Some("&lt;script&gt;alert('haxor');&lt;/script&gt;"))
     }
   }
 
@@ -83,7 +83,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
 
     withLoggedInUser("user5", "pass") { transform =>
       Patch("/users", Map("email" -> email)) ~> transform ~> routes ~> check {
-        userService.findByLogin("user5").futureValue.map(_.email) should be(Some(email))
+        userDao.findByLowerCasedLogin("user5").futureValue.map(_.email) should be(Some(email))
         status should be(StatusCodes.OK)
       }
     }
@@ -95,7 +95,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
 
     withLoggedInUser("user6", "pass") { transform =>
       Patch("/users", Map("login" -> login)) ~> transform ~> routes ~> check {
-        userService.findByLogin(login).futureValue should be ('defined)
+        userDao.findByLowerCasedLogin(login).futureValue should be ('defined)
         status should be(StatusCodes.OK)
       }
     }

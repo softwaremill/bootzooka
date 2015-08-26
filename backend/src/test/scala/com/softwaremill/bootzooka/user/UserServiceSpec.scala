@@ -15,38 +15,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with MockitoSugar with UserTestHelpers {
-
-  def prepareUserDaoMock: UserDao = {
-    val dao = new UserDao(sqlDatabase)
-    Future.sequence(Seq(
-      dao.add(newUser("Admin", "admin@sml.com", "pass", "salt")),
-      dao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt"))
-    )).futureValue
-    dao
-  }
-
   val emailService = mock[EmailService]
   val emailTemplatingEngine = mock[EmailTemplatingEngine]
-  var userDao: UserDao = _
-  var userService: UserService = _
+
+  val userDao = new UserDao(sqlDatabase)
+  val userService = new UserService(userDao, emailService, emailTemplatingEngine)
 
   override protected def beforeEach() = {
     super.beforeEach()
-    userDao = prepareUserDaoMock
-    userService = new UserService(userDao, emailService, emailTemplatingEngine)
-  }
 
-  // this test is silly :\
-  "findByEmail" should "return user for admin@sml.pl" in {
-    val userOpt = userService.findByEmail("admin@sml.com").futureValue
-
-    userOpt.map(_.login) should be (Some("Admin"))
-  }
-
-  "findByEmail" should "return user for uppercased ADMIN@SML.PL" in {
-    val userOpt = userService.findByEmail("ADMIN@SML.COM").futureValue
-
-    userOpt.map(_.login) should be (Some("Admin"))
+    userDao.add(newUser("Admin", "admin@sml.com", "pass", "salt")).futureValue
+    userDao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt")).futureValue
   }
 
   "checkExistence" should "don't find given user login and e-mail" in {
@@ -92,10 +71,12 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
     given(emailService.scheduleEmail(any(), any())).willReturn(Future {})
 
     // When
-    userService.registerNewUser("John", "newUser@sml.com", "password").futureValue
+    val result = userService.registerNewUser("John", "newUser@sml.com", "password").futureValue
 
     // Then
-    val userOpt: Option[User] = userDao.findByLowerCasedLogin("John").futureValue
+    result should be (UserRegisterResult.Success)
+
+    val userOpt = userDao.findByLowerCasedLogin("John").futureValue
     userOpt.isDefined should be (true)
     val user = userOpt.get
 
