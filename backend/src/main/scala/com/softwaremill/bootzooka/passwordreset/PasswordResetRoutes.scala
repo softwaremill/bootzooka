@@ -20,10 +20,8 @@ trait PasswordResetRoutes extends RoutesSupport {
           }
         }
       } ~ entity(as[ForgotPasswordInput]) { in =>
-        {
-          onSuccess(passwordResetService.sendResetCodeToUser(in.login)) {
-            complete(StringJsonWrapper("success"))
-          }
+        onSuccess(passwordResetService.sendResetCodeToUser(in.login)) {
+          complete(StringJsonWrapper("success"))
         }
       }
     }
