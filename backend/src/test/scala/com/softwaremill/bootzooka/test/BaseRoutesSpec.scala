@@ -19,8 +19,6 @@ trait BaseRoutesSpec extends FlatSpec with ScalatestRouteTest with Matchers with
     parse(string)
   }
 
-  def valueFromWrapper(w: JValue) = (w \ "value").extract[String]
-
   lazy val sessionConfig = SessionConfig.fromConfig(ConfigFactory.load()).withClientSessionEncryptData(true)
 
   trait TestRoutesSupport {

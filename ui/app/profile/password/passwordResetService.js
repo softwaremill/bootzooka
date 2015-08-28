@@ -5,8 +5,8 @@ angular.module('smlBootzooka.profile').factory('PasswordResetService', function 
 
     passwordresetService.beginResetProcess = function (login) {
         return $http.post('api/passwordreset', {login: login}).then(function (response) {
-            if (response.data.value !== 'success') {
-                return $q.reject(response.data.value);
+            if (response.data !== 'success') {
+                return $q.reject(response.data);
             }
             return response;
         });

@@ -6,10 +6,9 @@ import akka.http.scaladsl.marshalling._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.CacheDirectives.{`no-cache`, `no-store`, `must-revalidate`, `max-age`, `public`}
 import akka.http.scaladsl.model.headers.{`Last-Modified`, `Cache-Control`, `Expires`}
-import akka.http.scaladsl.server.{Route, Directive1, AuthorizationFailedRejection}
+import akka.http.scaladsl.server.{Directive1, AuthorizationFailedRejection}
 import akka.http.scaladsl.unmarshalling.{Unmarshaller, FromEntityUnmarshaller}
 import akka.stream.Materializer
-import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.bootzooka.user.{UserJson, Session, UserService}
 import com.softwaremill.session.{RememberMeStorage, SessionManager}
 import org.joda.time.DateTime
@@ -22,7 +21,7 @@ import com.softwaremill.session.SessionDirectives._
 import scala.concurrent.ExecutionContext
 
 trait RoutesSupport extends JsonSupport with SessionSupport {
-  def completeOk = complete(StringJsonWrapper("ok"))
+  def completeOk = complete("ok")
 }
 
 trait JsonSupport {
@@ -39,7 +38,7 @@ trait JsonSupport {
   implicit def materializer: Materializer
 
   // from https://github.com/hseeberger/akka-http-json/blob/master/akka-http-json4s/src/main/scala/de/heikoseeberger/akkahttpjson4s/Json4sSupport.scala
-  implicit def json4sUnmarshaller[A: Manifest]: FromEntityUnmarshaller[A] =
+  implicit def json4sUnmarshaller[A <: Product: Manifest]: FromEntityUnmarshaller[A] =
     Unmarshaller.byteStringUnmarshaller
       .forContentTypes(MediaTypes.`application/json`)
       .mapWithCharset { (data, charset) =>
@@ -67,8 +66,6 @@ trait JsonSupport {
     implicit def listCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[List[T]] = null
     implicit def setCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Set[T]] = null
     implicit def optionCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Option[T]] = null
-
-    implicit val stringJsonWrapperCanBeSerialized: CanBeSerialized[StringJsonWrapper] = null
   }
 }
 

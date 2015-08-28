@@ -4,7 +4,6 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.AuthorizationFailedRejection
 import akka.http.scaladsl.server.Directives._
 import com.softwaremill.bootzooka.api.RoutesSupport
-import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.session.SessionDirectives._
 import com.typesafe.scalalogging.StrictLogging
 
@@ -30,9 +29,9 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
         post {
           entity(as[RegistrationInput]) { in =>
             onSuccess(userService.registerNewUser(in.loginEscaped, in.email, in.password)) {
-              case UserRegisterResult.InvalidData => complete(StatusCodes.BadRequest, StringJsonWrapper("Wrong user data!"))
-              case UserRegisterResult.UserExists(msg) => complete(StatusCodes.Conflict, StringJsonWrapper(msg))
-              case UserRegisterResult.Success => complete(StringJsonWrapper("success"))
+              case UserRegisterResult.InvalidData => complete(StatusCodes.BadRequest, "Wrong user data!")
+              case UserRegisterResult.UserExists(msg) => complete(StatusCodes.Conflict, msg)
+              case UserRegisterResult.Success => complete("success")
             }
           }
         }
@@ -42,7 +41,7 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
           userFromSession { user =>
             entity(as[ChangePasswordInput]) { in =>
               onSuccess(userService.changePassword(user.id, in.currentPassword, in.newPassword)) {
-                case Left(msg) => complete(StatusCodes.Forbidden, StringJsonWrapper(msg))
+                case Left(msg) => complete(StatusCodes.Forbidden, msg)
                 case Right(_) => completeOk
               }
             }

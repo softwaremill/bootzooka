@@ -6,7 +6,7 @@ angular.module('smlBootzooka.profile').factory('RegisterService', function ($htt
 
     registerService.register = function (user) {
         return $http.post('api/users/register', angular.toJson(user)).then(function (response) {
-            if (response.data.value === 'success') {
+            if (response.data === 'success') {
                 FlashService.set('User registered successfully! Please check your e-mail for confirmation.');
                 return response.data;
             } else {

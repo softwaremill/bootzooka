@@ -34,7 +34,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
     userDao.add(newUser("user1", "user1@sml.com", "pass", "salt")).futureValue
     Post("/users/register", Map("login" -> "user1", "email" -> "newUser@sml.com", "password" -> "secret")) ~> routes ~> check {
       status should be (StatusCodes.Conflict)
-      valueFromWrapper(entityAs[JValue]) should be ("Login already in use!")
+      entityAs[String] should be ("Login already in use!")
     }
   }
 
@@ -42,7 +42,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
     userDao.add(newUser("user2", "user2@sml.com", "pass", "salt")).futureValue
     Post("/users/register", Map("login" -> "newUser", "email" -> "user2@sml.com", "password" -> "secret")) ~> routes ~> check {
       status should be (StatusCodes.Conflict)
-      valueFromWrapper(entityAs[JValue]) should be ("E-mail already in use!")
+      entityAs[String] should be ("E-mail already in use!")
     }
   }
 

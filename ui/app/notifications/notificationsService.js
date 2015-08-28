@@ -5,8 +5,8 @@ angular.module('smlBootzooka.notifications')
         var messages = [];
 
         function unwrapResponseError(response) {
-            if (angular.isDefined(response.data) && angular.isDefined(response.data.value)) {
-                return response.data.value;
+            if (angular.isDefined(response.data)) {
+                return response.data;
             } else {
                 return response;
             }
