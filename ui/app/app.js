@@ -78,18 +78,6 @@ smlBootzooka.config(function ($stateProvider, $urlRouterProvider) {
 
 smlBootzooka.config(['$httpProvider', function ($httpProvider) {
     var interceptor = ['$rootScope', '$q', '$injector', '$log', 'NotificationsService', function ($rootScope, $q, $injector, $log, NotificationsService) {
-
-        function redirectToState(stateName) {
-            // Because $httpProvider is a factory for $http which is used by $state we can't inject it directly
-            // (this way we will get circular dependency error).
-            // Using $injector.get will lead to having two instances of $http in our app.
-            // By calling $injector.invoke we can delay injection to the moment when application is up & running,
-            // therefore we will be injecting existing (and properly configured) $http instance.
-            $injector.invoke(function ($state) {
-                $state.go(stateName);
-            });
-        }
-
         function success(response) {
             return response;
         }
