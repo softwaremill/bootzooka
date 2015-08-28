@@ -1,9 +1,6 @@
 package uitest
 
 import com.softwaremill.bootzooka.version.BuildInfo._
-import org.fest.assertions.Assertions
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class MainPageUiSpec extends BaseUiSpec {
 
@@ -12,6 +9,6 @@ class MainPageUiSpec extends BaseUiSpec {
     mainPage.open()
 
     // then
-    Assertions.assertThat(mainPage.getVersionString).isEqualTo(s"Build $buildSha, $buildDate")
+    mainPage.getVersionString should be (s"Build $buildSha, $buildDate")
   }
 }

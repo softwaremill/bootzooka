@@ -30,8 +30,6 @@ val json4s = "org.json4s" %% "json4s-native" % json4sVersion
 
 val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.5.4"
 
-val awaitility = "com.jayway.awaitility" % "awaitility-scala" % "1.6.3" % "test"
-
 val slick = "com.typesafe.slick" %% "slick" % "3.0.2"
 val h2 = "com.h2database" % "h2" % "1.3.176"
 val postgres = "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
@@ -45,8 +43,7 @@ val unitTestingStack = Seq(mockito, scalatest)
 
 val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
 val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVersion % "test"
-val fest = "org.easytesting" % "fest-assert" % "1.4" % "test"
-val seleniumStack = Seq(seleniumJava, seleniumFirefox, fest)
+val seleniumStack = Seq(seleniumJava, seleniumFirefox)
 
 val akkaHttpVersion = "1.0"
 val akkaHttp = "com.typesafe.akka" %% "akka-http-experimental" % akkaHttpVersion
@@ -132,7 +129,7 @@ lazy val uiTests = (project in file("ui-tests"))
   .settings(commonSettings: _*)
   .settings(
     parallelExecution := false,
-    libraryDependencies ++= seleniumStack ++ Seq(awaitility),
+    libraryDependencies ++= seleniumStack,
     test in Test <<= (test in Test) dependsOn gruntTask("build")
   ) dependsOn backend
 

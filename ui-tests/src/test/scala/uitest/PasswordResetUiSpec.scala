@@ -1,7 +1,6 @@
 package uitest
 
 import com.softwaremill.bootzooka.passwordreset.PasswordResetCode
-import org.fest.assertions.Assertions._
 
 class PasswordResetUiSpec extends BaseUiSpec {
 
@@ -22,27 +21,27 @@ class PasswordResetUiSpec extends BaseUiSpec {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "asd")
 
-    assertThat(messagesPage.getInfoText) contains "Your password has been changed"
+    messagesPage.getInfoText should include ("Your password has been changed")
   }
 
   test("password-reset should not reset password due to missing code") {
     passwordRestPage.openPasswordResetPage("")
     passwordRestPage.resetPassword("asd", "asd")
 
-    assertThat(messagesPage.getErrorText) contains "Wrong or malformed password recovery code."
+    messagesPage.getErrorText should include ("Wrong or malformed password recovery code.")
   }
 
   test("password-reset should not reset password due to invalid code") {
     passwordRestPage.openPasswordResetPage(invalidCode)
     passwordRestPage.resetPassword("asd", "asd")
 
-    assertThat(messagesPage.getErrorText) contains "Your reset code is invalid. Please try again."
+    messagesPage.getErrorText should include ("Your reset code is invalid. Please try again.")
   }
 
   test("password-reset should do nothing if password & its repetition differ") {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "notMatching")
-    assertThat(passwordRestPage.getErrorText) contains "Passwords don't match!"
+    passwordRestPage.getErrorText should include ("Passwords don't match!")
   }
 
 }

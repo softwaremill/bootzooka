@@ -10,12 +10,12 @@ import com.softwaremill.bootzooka.{Beans, Main}
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
+import org.scalatest.{Matchers, BeforeAndAfter, BeforeAndAfterAll, FunSuite}
 import uitest.pages.{LoginPage, MainPage, MessagesPage, PasswordResetPage}
 
 import scala.util.Try
 
-class BaseUiSpec extends FunSuite with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
+class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfter with ScalaFutures {
   val RegUser = "reguser"
   val RegPass = "regpass"
   val RegMail = "reguser@regmail.pl"

@@ -1,12 +1,10 @@
 package uitest
 
-import com.jayway.awaitility.scala.AwaitilitySupport
 import com.softwaremill.bootzooka.common.Utils
-import org.fest.assertions.Assertions._
 import org.scalatest.BeforeAndAfterEach
 import uitest.pages.RegistrationPage
 
-class RegisterUiSpec extends BaseUiSpec with AwaitilitySupport with BeforeAndAfterEach {
+class RegisterUiSpec extends BaseUiSpec with BeforeAndAfterEach {
 
   val Login = Utils.randomString(5)
   val Email = Login + "@example.org"
@@ -27,8 +25,8 @@ class RegisterUiSpec extends BaseUiSpec with AwaitilitySupport with BeforeAndAft
     registrationPage.register(Login, Email, Password)
 
     //then
-    assertThat(messagesPage.getInfoText) contains "User registered successfully"
-    assertThat(emailService.wasEmailSent(Email, EmailSubject))
+    messagesPage.getInfoText should include ("User registered successfully")
+    emailService.wasEmailSent(Email, EmailSubject) should be (true)
   }
 
   test("register - fail due to not matching passwords") {
@@ -39,8 +37,8 @@ class RegisterUiSpec extends BaseUiSpec with AwaitilitySupport with BeforeAndAft
     registrationPage.register(Login, Email, Password, Some(Password + "FooBarBaz"))
 
     //then
-    assertThat(registrationPage.getPassErrorText) contains "Passwords don't match!"
-    assertThat(emailService.wasEmailSent(Email, EmailSubject)).isFalse()
+    registrationPage.getPassErrorText should include ("Passwords don't match!")
+    emailService.wasEmailSent(Email, EmailSubject) should be (false)
   }
 
 }
