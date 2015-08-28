@@ -107,7 +107,7 @@ trait CacheSupport {
   )
   private val cacheSeconds = 60L * 60L * 24L * 30L
   private val cacheResponse = respondWithHeaders(
-    `Expires`(DateTime(System.currentTimeMillis() + cacheSeconds * 100L)),
+    `Expires`(DateTime(System.currentTimeMillis() + cacheSeconds * 1000L)),
     `Cache-Control`(`public`, `max-age`(cacheSeconds))
   )
 
