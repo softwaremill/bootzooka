@@ -23,8 +23,6 @@ import scala.concurrent.ExecutionContext
 
 trait RoutesSupport extends JsonSupport with SessionSupport {
   def completeOk = complete(StringJsonWrapper("ok"))
-
-  def delay(r: => Route): Route = ctx => r(ctx)
 }
 
 trait JsonSupport {

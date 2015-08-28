@@ -50,7 +50,8 @@ class BaseUiSpec extends FunSuite with BeforeAndAfterAll with BeforeAndAfter wit
     if (beans.userDao.findByLowerCasedLogin(login).futureValue.isEmpty) {
       beans.userService.registerNewUser(login, email, pass).futureValue
       true
-    } else {
+    }
+    else {
       false
     }
   }

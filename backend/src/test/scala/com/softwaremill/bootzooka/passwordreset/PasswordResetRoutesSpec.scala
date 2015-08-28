@@ -14,10 +14,10 @@ import scala.concurrent.Future
 class PasswordResetRoutesSpec extends BaseRoutesSpec {
 
   def createRoutes(_passwordResetService: PasswordResetService): Route = {
-    new PasswordResetRoutes with TestRoutesSupport {
+    Route.seal(new PasswordResetRoutes with TestRoutesSupport {
       override val userService = null
       override val passwordResetService = _passwordResetService
-    }.passwordResetRoutes
+    }.passwordResetRoutes)
   }
 
   "POST /" should "send e-mail to user" in {
@@ -54,7 +54,6 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec {
 
     // when
     Post("/passwordreset/123") ~> routes ~> check {
-      valueFromWrapper(responseAs[JValue]) should be ("missingpassword")
       status should be (StatusCodes.BadRequest)
       verify(passwordResetService, never()).performPasswordReset(Matchers.eq("123"), anyString)
     }

@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.user
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{Cookie, `Set-Cookie`}
-import akka.http.scaladsl.server.AuthorizationFailedRejection
+import akka.http.scaladsl.server.{Route, AuthorizationFailedRejection}
 import com.softwaremill.bootzooka.email.{DummyEmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, FlatSpecWithSql, UserTestHelpers}
 import org.json4s.{DefaultFormats, JValue}
@@ -13,9 +13,9 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
   val userDao = new UserDao(sqlDatabase)
   val userService = new UserService(userDao, new DummyEmailService(), new EmailTemplatingEngine)
 
-  val routes = new UsersRoutes with TestRoutesSupport {
+  val routes = Route.seal(new UsersRoutes with TestRoutesSupport {
     override val userService = spec.userService
-  }.usersRoutes
+  }.usersRoutes)
 
   "POST /register" should "register new user" in {
     Post("/users/register", Map("login" -> "newUser", "email" -> "newUser@sml.com", "password" -> "secret")) ~> routes ~> check {
@@ -26,7 +26,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
 
   "POST /register with invalid data" should "result in an error" in {
     Post("/users/register") ~> routes ~> check {
-      status should be (StatusCodes.InternalServerError)
+      status should be (StatusCodes.BadRequest)
     }
   }
 
@@ -73,7 +73,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
   "POST /" should "not log in given invalid credentials" in {
     userDao.add(newUser("user4", "user4@sml.com", "pass", "salt")).futureValue
     Post("/users", Map("login" -> "user4", "password" -> "hacker")) ~> routes ~> check {
-      rejection should be (AuthorizationFailedRejection)
+      status should be (StatusCodes.Forbidden)
     }
   }
 
@@ -84,7 +84,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
     withLoggedInUser("user5", "pass") { transform =>
       Patch("/users", Map("email" -> email)) ~> transform ~> routes ~> check {
         userDao.findByLowerCasedLogin("user5").futureValue.map(_.email) should be(Some(email))
-        status should be(StatusCodes.OK)
+        status should be (StatusCodes.OK)
       }
     }
   }
@@ -103,7 +103,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
 
   "PATCH /" should "result in an error when user is not authenticated" in {
     Patch("/users", Map("email" -> "?")) ~> routes ~> check {
-      rejection should be (AuthorizationFailedRejection)
+      status should be (StatusCodes.Forbidden)
     }
   }
 

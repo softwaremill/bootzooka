@@ -7,7 +7,6 @@ import com.softwaremill.bootzooka.api.RoutesSupport
 import com.softwaremill.bootzooka.common.StringJsonWrapper
 import com.softwaremill.session.SessionDirectives._
 import com.typesafe.scalalogging.StrictLogging
-import org.json4s._
 
 import scala.concurrent.Future
 
@@ -29,13 +28,8 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
     } ~
       path("register") {
         post {
-          entity(as[JValue]) { body =>
-            val login = (body \ "login").extract[String]
-            val loginEscaped = scala.xml.Utility.escape(login)
-            val email = (body \ "email").extract[String]
-            val password = (body \ "password").extract[String]
-
-            onSuccess(userService.registerNewUser(loginEscaped, email, password)) {
+          entity(as[RegistrationInput]) { in =>
+            onSuccess(userService.registerNewUser(in.loginEscaped, in.email, in.password)) {
               case UserRegisterResult.InvalidData => complete(StatusCodes.BadRequest, StringJsonWrapper("Wrong user data!"))
               case UserRegisterResult.UserExists(msg) => complete(StatusCodes.Conflict, StringJsonWrapper(msg))
               case UserRegisterResult.Success => complete(StringJsonWrapper("success"))
@@ -46,11 +40,8 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
       path("changepassword") {
         post {
           userFromSession { user =>
-            entity(as[JValue]) { body =>
-              val currentPassword = (body \ "currentPassword").extract[String]
-              val newPassword = (body \ "newPassword").extract[String]
-
-              onSuccess(userService.changePassword(user.id, currentPassword, newPassword)) {
+            entity(as[ChangePasswordInput]) { in =>
+              onSuccess(userService.changePassword(user.id, in.currentPassword, in.newPassword)) {
                 case Left(msg) => complete(StatusCodes.Forbidden, StringJsonWrapper(msg))
                 case Right(_) => completeOk
               }
@@ -59,16 +50,12 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
         }
       } ~
       post {
-        entity(as[JValue]) { body =>
-          val login = (body \ "login").extract[String]
-          val password = (body \ "password").extract[String]
-          val rememberMe = (body \ "rememberMe").extractOpt[Boolean].getOrElse(false)
-
-          onSuccess(userService.authenticate(login, password)) {
+        entity(as[LoginInput]) { in =>
+          onSuccess(userService.authenticate(in.login, in.password)) {
             case None => reject(AuthorizationFailedRejection)
             case Some(user) =>
               val session = Session(user.id)
-              (if (rememberMe) {
+              (if (in.rememberMe.getOrElse(false)) {
                 setPersistentSession(session)
               }
               else {
@@ -84,11 +71,8 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
       } ~
       patch {
         userIdFromSession { userId =>
-          entity(as[JValue]) { body =>
-            val loginOpt = (body \ "login").extractOpt[String]
-            val emailOpt = (body \ "email").extractOpt[String]
-
-            val updateAction = (loginOpt, emailOpt) match {
+          entity(as[PatchUserInput]) { in =>
+            val updateAction = (in.login, in.email) match {
               case (Some(login), _) => userService.changeLogin(userId, login)
               case (_, Some(email)) => userService.changeEmail(userId, email)
               case _ => Future.successful(Left("You have to provide new login or email"))
@@ -103,3 +87,13 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
       }
   }
 }
+
+case class RegistrationInput(login: String, email: String, password: String) {
+  def loginEscaped = scala.xml.Utility.escape(login)
+}
+
+case class ChangePasswordInput(currentPassword: String, newPassword: String)
+
+case class LoginInput(login: String, password: String, rememberMe: Option[Boolean])
+
+case class PatchUserInput(login: Option[String], email: Option[String])

@@ -12,19 +12,16 @@ trait PasswordResetRoutes extends RoutesSupport {
 
   val passwordResetRoutes = pathPrefix("passwordreset") {
     post {
-      entity(as[JValue]) { body =>
-        path(Segment) { code =>
-          (body \ "password").extractOpt[String] match {
-            case None => complete(StatusCodes.BadRequest, StringJsonWrapper("missingpassword"))
-            case Some(password) =>
-              onSuccess(passwordResetService.performPasswordReset(code, password)) {
-                case Left(e) => complete(StatusCodes.Forbidden, StringJsonWrapper(e))
-                case _ => completeOk
-              }
+      path(Segment) { code =>
+        entity(as[PasswordResetInput]) { in =>
+          onSuccess(passwordResetService.performPasswordReset(code, in.password)) {
+            case Left(e) => complete(StatusCodes.Forbidden, StringJsonWrapper(e))
+            case _ => completeOk
           }
-        } ~ delay {
-          val loginOrEmail = (body \ "login").extract[String]
-          onSuccess(passwordResetService.sendResetCodeToUser(loginOrEmail)) {
+        }
+      } ~ entity(as[ForgotPasswordInput]) { in =>
+        {
+          onSuccess(passwordResetService.sendResetCodeToUser(in.login)) {
             complete(StringJsonWrapper("success"))
           }
         }
@@ -32,3 +29,7 @@ trait PasswordResetRoutes extends RoutesSupport {
     }
   }
 }
+
+case class PasswordResetInput(password: String)
+
+case class ForgotPasswordInput(login: String)
