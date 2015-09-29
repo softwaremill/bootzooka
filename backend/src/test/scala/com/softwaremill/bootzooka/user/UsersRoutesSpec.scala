@@ -30,6 +30,12 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
     }
   }
 
+  "POST /users/whatever" should "not be bound to /users login - reject unmatchedPath request" in {
+    Post("/users/whatever") ~> routes ~> check {
+      status should be (StatusCodes.NotFound)
+    }
+  }
+
   "POST /register with an existing login" should "return 409 with an error message" in {
     userDao.add(newUser("user1", "user1@sml.com", "pass", "salt")).futureValue
     Post("/users/register", Map("login" -> "user1", "email" -> "newUser@sml.com", "password" -> "secret")) ~> routes ~> check {
