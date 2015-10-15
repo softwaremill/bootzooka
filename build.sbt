@@ -10,6 +10,7 @@ import scalariform.formatter.preferences._
 val slf4jVersion = "1.7.12"
 val logBackVersion = "1.1.3"
 val scalaLoggingVersion = "3.1.0"
+val slickVersion = "3.1.0"
 val json4sVersion = "3.2.11"
 val seleniumVersion = "2.46.0"
 
@@ -30,12 +31,12 @@ val json4s = "org.json4s" %% "json4s-native" % json4sVersion
 
 val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.5.4"
 
-val slick = "com.typesafe.slick" %% "slick" % "3.0.2"
+val slick = "com.typesafe.slick" %% "slick" % slickVersion
+val slickHikari = "com.typesafe.slick" %% "slick-hikaricp" % slickVersion
 val h2 = "com.h2database" % "h2" % "1.3.176"
 val postgres = "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
-val hikari = "com.zaxxer" % "HikariCP-java6" % "2.3.9"
 val flyway = "org.flywaydb" % "flyway-core" % "3.2.1"
-val slickStack = Seq(slick, h2, postgres, hikari, flyway)
+val slickStack = Seq(slick, h2, postgres, slickHikari, flyway)
 
 val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
 val scalatest = "org.scalatest" %% "scalatest" % "2.2.5" % "test"
