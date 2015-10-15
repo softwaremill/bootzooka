@@ -5,10 +5,8 @@ import akka.http.scaladsl.model.headers.{Cookie, `Set-Cookie`}
 import akka.http.scaladsl.server.{Route, AuthorizationFailedRejection}
 import com.softwaremill.bootzooka.email.{DummyEmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, FlatSpecWithSql, UserTestHelpers}
-import org.json4s.{DefaultFormats, JValue}
 
 class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestHelpers { spec =>
-  implicit val formats = DefaultFormats
 
   val userDao = new UserDao(sqlDatabase)
   val userService = new UserService(userDao, new DummyEmailService(), new EmailTemplatingEngine)
@@ -40,7 +38,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
     userDao.add(newUser("user1", "user1@sml.com", "pass", "salt")).futureValue
     Post("/users/register", Map("login" -> "user1", "email" -> "newUser@sml.com", "password" -> "secret")) ~> routes ~> check {
       status should be (StatusCodes.Conflict)
-      entityAs[String] should be ("Login already in use!")
+      entityAs[String] should be ("\"Login already in use!\"")
     }
   }
 
@@ -48,7 +46,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
     userDao.add(newUser("user2", "user2@sml.com", "pass", "salt")).futureValue
     Post("/users/register", Map("login" -> "newUser", "email" -> "user2@sml.com", "password" -> "secret")) ~> routes ~> check {
       status should be (StatusCodes.Conflict)
-      entityAs[String] should be ("E-mail already in use!")
+      entityAs[String] should be ("\"E-mail already in use!\"")
     }
   }
 
@@ -116,7 +114,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
   "PATCH /" should "result in an error in neither email nor login is given" in {
     userDao.add(newUser("user7", "user7@sml.com", "pass", "salt")).futureValue
     withLoggedInUser("user7", "pass") { transform =>
-      Patch("/users") ~> transform ~> routes ~> check {
+      Patch("/users", Map.empty[String, String]) ~> transform ~> routes ~> check {
         status should be (StatusCodes.Conflict)
       }
     }
