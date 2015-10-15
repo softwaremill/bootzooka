@@ -11,8 +11,8 @@ val slf4jVersion = "1.7.12"
 val logBackVersion = "1.1.3"
 val scalaLoggingVersion = "3.1.0"
 val slickVersion = "3.1.0"
-val json4sVersion = "3.2.11"
 val seleniumVersion = "2.46.0"
+val circeVersion = "0.1.1"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
 val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -27,7 +27,11 @@ val jodaTime = "joda-time" % "joda-time" % "2.8.2"
 val jodaConvert = "org.joda" % "joda-convert" % "1.7"
 val jodaDependencies = Seq(jodaTime, jodaConvert)
 
-val json4s = "org.json4s" %% "json4s-native" % json4sVersion
+val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
+val circeCore = "io.circe" %% "circe-core" % circeVersion
+val circeGeneric = "io.circe" %% "circe-generic" % circeVersion
+val circeJawn = "io.circe" %% "circe-jawn" % circeVersion
+val circe = Seq(circeCore, circeGeneric, circeJawn)
 
 val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.5.4"
 
@@ -100,7 +104,7 @@ lazy val backend: Project = (project in file("backend"))
   .settings(DeployToHeroku.settings)
   .settings(Revolver.settings)
   .settings(
-    libraryDependencies ++= jodaDependencies ++ slickStack ++ akkaStack ++ Seq(json4s, javaxMailSun, typesafeConfig, bugsnag),
+    libraryDependencies ++= jodaDependencies ++ slickStack ++ akkaStack ++ circe ++ Seq(scalaXml, javaxMailSun, typesafeConfig, bugsnag),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](

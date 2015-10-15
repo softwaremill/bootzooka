@@ -3,17 +3,17 @@ package com.softwaremill.bootzooka.user
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.AuthorizationFailedRejection
 import akka.http.scaladsl.server.Directives._
-import com.softwaremill.bootzooka.api.RoutesSupport
+import com.softwaremill.bootzooka.api.{encoders, RoutesSupport}
 import com.softwaremill.session.SessionDirectives._
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.Future
+import io.circe.generic.auto._
+import encoders._
 
 trait UsersRoutes extends RoutesSupport with StrictLogging {
 
   def userService: UserService
-
-  implicit val userJsonCbs = CanBeSerialized[UserJson]
 
   val usersRoutes = pathPrefix("users") {
     path("logout") {
