@@ -9,7 +9,7 @@ import io.circe.syntax._
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 
-object encoders {
+trait CirceEncoders {
 
   val dateTimeFormat = ISODateTimeFormat.basicDateTime()
 

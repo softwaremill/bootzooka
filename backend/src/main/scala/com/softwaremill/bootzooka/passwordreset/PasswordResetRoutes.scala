@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.passwordreset
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import com.softwaremill.bootzooka.api.RoutesSupport
-import io.circe.generic.auto._
 
 trait PasswordResetRoutes extends RoutesSupport {
 

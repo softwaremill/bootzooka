@@ -15,7 +15,6 @@ import com.softwaremill.session.SessionDirectives._
 import com.softwaremill.session.{RememberMeStorage, SessionManager}
 import cats.data.Xor
 import io.circe._
-import io.circe.generic.auto._
 import io.circe.jawn.decode
 
 import scala.concurrent.ExecutionContext
@@ -23,7 +22,7 @@ trait RoutesSupport extends JsonSupport with SessionSupport {
   def completeOk = complete("ok")
 }
 
-trait JsonSupport {
+trait JsonSupport extends CirceSupport {
 
   implicit def materializer: Materializer
 
