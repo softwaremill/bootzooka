@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.user
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{Cookie, `Set-Cookie`}
-import akka.http.scaladsl.server.{Route, AuthorizationFailedRejection}
+import akka.http.scaladsl.server.Route
 import com.softwaremill.bootzooka.email.{DummyEmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, FlatSpecWithSql, UserTestHelpers}
 
@@ -38,7 +38,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
     userDao.add(newUser("user1", "user1@sml.com", "pass", "salt")).futureValue
     Post("/users/register", Map("login" -> "user1", "email" -> "newUser@sml.com", "password" -> "secret")) ~> routes ~> check {
       status should be (StatusCodes.Conflict)
-      entityAs[String] should be ("\"Login already in use!\"")
+      entityAs[String] should be ("Login already in use!")
     }
   }
 
@@ -46,7 +46,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
     userDao.add(newUser("user2", "user2@sml.com", "pass", "salt")).futureValue
     Post("/users/register", Map("login" -> "newUser", "email" -> "user2@sml.com", "password" -> "secret")) ~> routes ~> check {
       status should be (StatusCodes.Conflict)
-      entityAs[String] should be ("\"E-mail already in use!\"")
+      entityAs[String] should be ("E-mail already in use!")
     }
   }
 

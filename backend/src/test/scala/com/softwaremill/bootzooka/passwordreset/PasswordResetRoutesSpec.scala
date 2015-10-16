@@ -27,7 +27,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec {
 
     // when
     Post("/passwordreset", Map("login" -> "mylogin")) ~> routes ~> check {
-      responseAs[String] should be ("\"success\"")
+      responseAs[String] should be ("success")
 
       verify(passwordResetService).sendResetCodeToUser("mylogin")
     }
@@ -41,7 +41,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec {
 
     // when
     Post("/passwordreset/123", Map("password" -> "validPassword")) ~> routes ~> check {
-      responseAs[String] should be ("\"ok\"")
+      responseAs[String] should be ("ok")
       verify(passwordResetService).performPasswordReset("123", "validPassword")
     }
   }
@@ -66,7 +66,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec {
 
     // when
     Post("/passwordreset/123", Map("password" -> "validPassword")) ~> routes ~> check {
-      responseAs[String] should be ("\"Error\"")
+      responseAs[String] should be ("Error")
       status should be (StatusCodes.Forbidden)
     }
   }
