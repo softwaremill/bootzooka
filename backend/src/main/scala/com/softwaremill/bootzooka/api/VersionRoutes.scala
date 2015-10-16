@@ -5,6 +5,8 @@ import akka.http.scaladsl.server.Directives._
 
 trait VersionRoutes extends RoutesSupport {
 
+  implicit val versionJsonCbs = CanBeSerialized[VersionJson]
+
   val versionRoutes = path("version") {
     complete {
       VersionJson(buildSha, buildDate)

@@ -37,10 +37,23 @@ trait JsonSupport extends CirceSupport {
         }
       }
 
-  implicit def circeMarshaller[A <: AnyRef](implicit e: Encoder[A]): ToEntityMarshaller[A] = {
+  implicit def circeMarshaller[A <: AnyRef](implicit e: Encoder[A], cbs: CanBeSerialized[A]): ToEntityMarshaller[A] = {
     Marshaller.StringMarshaller.wrap(ContentTypes.`application/json`) {
       e(_).noSpaces
     }
+  }
+
+  /**
+   * To limit what data can be serialized to the client, only classes of type `T` for which an implicit
+   * `CanBeSerialized[T]` value is in scope will be allowed. You only need to provide an implicit for the base value,
+   * any containers like `List` or `Option` will be automatically supported.
+   */
+  trait CanBeSerialized[T]
+  object CanBeSerialized {
+    def apply[T] = new CanBeSerialized[T] {}
+    implicit def listCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[List[T]] = null
+    implicit def setCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Set[T]] = null
+    implicit def optionCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Option[T]] = null
   }
 }
 

@@ -12,6 +12,8 @@ trait BaseRoutesSpec extends FlatSpec with ScalatestRouteTest with Matchers with
 
   lazy val sessionConfig = SessionConfig.fromConfig(ConfigFactory.load()).withClientSessionEncryptData(true)
 
+  implicit def mapCbs = CanBeSerialized[Map[String, String]]
+
   trait TestRoutesSupport {
     lazy val sessionConfig = spec.sessionConfig
     implicit def materializer = spec.materializer
