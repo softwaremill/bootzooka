@@ -26,7 +26,7 @@ Bootzooka already includes the Postgres driver and properly recognizes the `DATA
 Now you can deploy your app. Bootzooka includes an sbt task which will build the fat-jar and upload it:
 
 ````
-sbt backend/deployHeroku
+sbt deployHeroku
 ````
 
 After that's done you can visit your application's URL. If anything goes wrong, `heroku logs` will show you your application's output.
