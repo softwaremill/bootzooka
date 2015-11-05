@@ -96,6 +96,10 @@ def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
 
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
+  .settings(
+    herokuFatJar in Compile := Some((assemblyOutputPath in backend in assembly).value),
+    deployHeroku in Compile <<= (deployHeroku in Compile) dependsOn (assembly in backend)
+  )
   .aggregate(backend, ui)
 
 lazy val backend: Project = (project in file("backend"))
@@ -122,9 +126,7 @@ lazy val backend: Project = (project in file("backend"))
       (unmanagedResourceDirectories in Compile).value ++ List(baseDirectory.value.getParentFile / ui.base.getName / "dist")
     },
     assemblyJarName in assembly := "bootzooka.jar",
-    assembly <<= assembly dependsOn gruntTask("build"),
-    herokuFatJar in Compile := Some((assemblyOutputPath in assembly).value),
-    deployHeroku in Compile <<= (deployHeroku in Compile) dependsOn assembly
+    assembly <<= assembly dependsOn gruntTask("build")
   )
 
 lazy val ui = (project in file("ui"))
