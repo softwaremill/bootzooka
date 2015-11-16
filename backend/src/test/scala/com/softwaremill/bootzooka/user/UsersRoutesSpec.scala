@@ -63,7 +63,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestH
 
       val Some(sessionCookie) = header[`Set-Cookie`]
 
-      body(addHeader(Cookie(sessionConfig.clientSessionCookieConfig.name, sessionCookie.cookie.value)))
+      body(addHeader(Cookie(sessionConfig.sessionCookieConfig.name, sessionCookie.cookie.value)))
     }
   }
 

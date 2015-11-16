@@ -5,21 +5,21 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
 import com.softwaremill.bootzooka.user.Session
-import com.softwaremill.session.{RememberMeData, RememberMeLookupResult, RememberMeStorage}
+import com.softwaremill.session.{RefreshTokenData, RefreshTokenLookupResult, RefreshTokenStorage}
 import org.joda.time.DateTime
 
 import scala.concurrent.duration.{Duration, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 
-class RememberMeStorageImpl(dao: RememberMeTokenDao, system: ActorSystem)(implicit ec: ExecutionContext)
-    extends RememberMeStorage[Session] {
+class RefreshTokenStorageImpl(dao: RememberMeTokenDao, system: ActorSystem)(implicit ec: ExecutionContext)
+    extends RefreshTokenStorage[Session] {
 
   override def lookup(selector: String) = {
     dao.findBySelector(selector).map(_.map(t =>
-      RememberMeLookupResult(t.tokenHash, t.validTo.getMillis, () => Session(t.userId))))
+      RefreshTokenLookupResult(t.tokenHash, t.validTo.getMillis, () => Session(t.userId))))
   }
 
-  override def store(data: RememberMeData[Session]) =
+  override def store(data: RefreshTokenData[Session]) =
     dao.add(RememberMeToken(UUID.randomUUID(), data.selector, data.tokenHash, data.forSession.userId,
       new DateTime(data.expires)))
 

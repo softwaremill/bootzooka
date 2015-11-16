@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.config.{ServerConfig, CoreConfig}
 import com.softwaremill.bootzooka.email.{EmailTemplatingEngine, EmailConfig, SmtpEmailService, DummyEmailService}
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetCodeDao, PasswordResetService}
 import com.softwaremill.bootzooka.sql.{DatabaseConfig, SqlDatabase}
-import com.softwaremill.bootzooka.user.rememberme.{RememberMeTokenDao, RememberMeStorageImpl}
+import com.softwaremill.bootzooka.user.rememberme.{RememberMeTokenDao, RefreshTokenStorageImpl}
 import com.softwaremill.bootzooka.user.{UserDao, UserService}
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
@@ -58,5 +58,5 @@ trait Beans extends StrictLogging {
 
   lazy val errorReporter = BugsnagErrorReporter(config)
 
-  lazy val rememberMeStorage = new RememberMeStorageImpl(rememberMeTokenDao, system)
+  lazy val refreshTokenStorage = new RefreshTokenStorageImpl(rememberMeTokenDao, system)
 }

@@ -10,7 +10,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 trait BaseRoutesSpec extends FlatSpec with ScalatestRouteTest with Matchers with MockitoSugar with JsonSupport { spec =>
 
-  lazy val sessionConfig = SessionConfig.fromConfig(ConfigFactory.load()).withClientSessionEncryptData(true)
+  lazy val sessionConfig = SessionConfig.fromConfig(ConfigFactory.load()).copy(sessionEncryptData = true)
 
   implicit def mapCbs = CanBeSerialized[Map[String, String]]
 
@@ -19,6 +19,6 @@ trait BaseRoutesSpec extends FlatSpec with ScalatestRouteTest with Matchers with
     implicit def materializer = spec.materializer
     implicit def ec = spec.executor
     implicit def sessionManager = new SessionManager[Session](sessionConfig)
-    implicit def rememberMeStorage = null
+    implicit def refreshTokenStorage = null
   }
 }

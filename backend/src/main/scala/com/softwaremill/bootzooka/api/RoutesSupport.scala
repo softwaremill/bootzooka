@@ -12,7 +12,7 @@ import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 import akka.stream.Materializer
 import com.softwaremill.bootzooka.user.{Session, UserJson, UserService}
 import com.softwaremill.session.SessionDirectives._
-import com.softwaremill.session.{RememberMeStorage, SessionManager}
+import com.softwaremill.session.{RefreshTokenStorage, SessionManager}
 import cats.data.Xor
 import io.circe._
 import io.circe.jawn.decode
@@ -60,7 +60,7 @@ trait JsonSupport extends CirceSupport {
 trait SessionSupport {
 
   implicit def sessionManager: SessionManager[Session]
-  implicit def rememberMeStorage: RememberMeStorage[Session]
+  implicit def refreshTokenStorage: RefreshTokenStorage[Session]
   implicit def ec: ExecutionContext
 
   def userService: UserService
@@ -72,7 +72,7 @@ trait SessionSupport {
     }
   }
 
-  def userIdFromSession: Directive1[UUID] = persistentSession().flatMap {
+  def userIdFromSession: Directive1[UUID] = session(refreshable, usingCookies).flatMap {
     _.toOption match {
       case None => reject(AuthorizationFailedRejection)
       case Some(s) => provide(s.userId)
