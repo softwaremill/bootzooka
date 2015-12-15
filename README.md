@@ -1,5 +1,7 @@
 # Bootzooka 
 
+[![Dependencies](https://app.updateimpact.com/badge/634276070333485056/bootzooka.svg?config=compile)](https://app.updateimpact.com/latest/634276070333485056/bootzooka)
+
 Bootzooka is a simple application scaffolding project to allow quick start of development for modern web based
 applications.
 
