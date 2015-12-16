@@ -71,8 +71,7 @@ lazy val commonSettings = scalariformSettings ++ Seq(
   version := "0.0.1-SNAPSHOT",
   scalaVersion := "2.11.7",
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
-  libraryDependencies ++= commonDependencies,
-  com.updateimpact.Plugin.apiKey in ThisBuild := sys.env.getOrElse("UPDATEIMPACT_API_KEY", (com.updateimpact.Plugin.apiKey in ThisBuild).value)
+  libraryDependencies ++= commonDependencies
 )
 
 def haltOnCmdResultError(result: Int) {
