@@ -9,7 +9,7 @@ trait VersionRoutes extends RoutesSupport {
 
   val versionRoutes = path("version") {
     complete {
-      VersionJson(buildSha, buildDate)
+      VersionJson(buildSha.substring(0, 6), buildDate)
     }
   }
 }
