@@ -39,7 +39,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
       .futureValue
 
     userExistence.isLeft should be (true)
-    userExistence.left.get.equals("Login already in use!")
+    userExistence.left.get should be("Login already in use!")
   }
 
   "checkExistence" should "find duplicated login written as upper cased string" in {
@@ -47,7 +47,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
       .futureValue
 
     userExistence.isLeft should be (true)
-    userExistence.left.get.equals("Login already in use!")
+    userExistence.left.get should be("Login already in use!")
   }
 
   "checkExistence" should "find duplicated email" in {
@@ -55,7 +55,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
       .futureValue
 
     userExistence.isLeft should be (true)
-    userExistence.left.get.equals("E-mail already in use!")
+    userExistence.left.get should be("E-mail already in use!")
   }
 
   "checkExistence" should "find duplicated email written as upper cased string" in {
@@ -63,7 +63,7 @@ class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with Mocki
       .futureValue
 
     userExistence.isLeft should be (true)
-    userExistence.left.get.equals("E-mail already in use!")
+    userExistence.left.get should be("E-mail already in use!")
   }
 
   "registerNewUser" should "add user with unique lowercased login info" in {
