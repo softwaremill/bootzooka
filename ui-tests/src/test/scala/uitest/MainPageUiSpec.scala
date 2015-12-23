@@ -9,6 +9,6 @@ class MainPageUiSpec extends BaseUiSpec {
     mainPage.open()
 
     // then
-    mainPage.getVersionString should be (s"Build $buildSha, $buildDate")
+    mainPage.getVersionString should be (s"Build ${buildSha.substring(0, 6)}, $buildDate")
   }
 }

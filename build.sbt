@@ -11,7 +11,7 @@ val slf4jVersion = "1.7.12"
 val logBackVersion = "1.1.3"
 val scalaLoggingVersion = "3.1.0"
 val slickVersion = "3.1.0"
-val seleniumVersion = "2.46.0"
+val seleniumVersion = "2.48.2"
 val circeVersion = "0.1.1"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
