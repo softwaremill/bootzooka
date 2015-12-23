@@ -11,132 +11,132 @@ var smlBootzooka = angular.module('smlBootzooka', ['smlBootzooka.templates', 'sm
 var profile = angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'smlBootzooka.common', 'smlBootzooka.notifications']);
 
 profile.config(function ($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.when('', '/');
-    $stateProvider
-        .state('login', {
-            url: '/login',
-            controller: 'LoginCtrl',
-            templateUrl: 'profile/login/login.html',
-            params: {
-                // these are used to redirect to a secure page if the user is not logged in
-                // see the $stateChangeStart handler below and LoginCtrl
-                targetState: null,
-                targetParams: null
-            }
-        })
-        .state('register', {
-            url: '/register',
-            controller: 'RegisterCtrl',
-            templateUrl: 'profile/register/register.html'
-        })
-        .state('recover-lost-password', {
-            url: '/recover-lost-password',
-            controller: 'PasswordResetCtrl',
-            templateUrl: 'profile/password/recover-lost-password.html'
-        })
-        .state('password-reset', {
-            url: '/password-reset?code',
-            controller: 'PasswordResetCtrl',
-            templateUrl: 'profile/password/password-reset.html'
-        })
-        .state('profile', {
-            url: '/profile',
-            controller: 'ProfileCtrl',
-            templateUrl: 'profile/profile/profile.html',
-            resolve: {
-                //this is a kind of constructor injection to controller, since ProfileCtrl require logged user.
-                user: function (UserSessionService) {
-                    return UserSessionService.getLoggedUserPromise();
-                }
-            },
-            data: {
-                auth: true
-            }
-        });
+  $urlRouterProvider.when('', '/');
+  $stateProvider
+    .state('login', {
+      url: '/login',
+      controller: 'LoginCtrl',
+      templateUrl: 'profile/login/login.html',
+      params: {
+        // these are used to redirect to a secure page if the user is not logged in
+        // see the $stateChangeStart handler below and LoginCtrl
+        targetState: null,
+        targetParams: null
+      }
+    })
+    .state('register', {
+      url: '/register',
+      controller: 'RegisterCtrl',
+      templateUrl: 'profile/register/register.html'
+    })
+    .state('recover-lost-password', {
+      url: '/recover-lost-password',
+      controller: 'PasswordResetCtrl',
+      templateUrl: 'profile/password/recover-lost-password.html'
+    })
+    .state('password-reset', {
+      url: '/password-reset?code',
+      controller: 'PasswordResetCtrl',
+      templateUrl: 'profile/password/password-reset.html'
+    })
+    .state('profile', {
+      url: '/profile',
+      controller: 'ProfileCtrl',
+      templateUrl: 'profile/profile/profile.html',
+      resolve: {
+        //this is a kind of constructor injection to controller, since ProfileCtrl require logged user.
+        user: function (UserSessionService) {
+          return UserSessionService.getLoggedUserPromise();
+        }
+      },
+      data: {
+        auth: true
+      }
+    });
 });
 
 smlBootzooka.config(function ($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/error404');
+  $urlRouterProvider.otherwise('/error404');
 
-    $stateProvider
-        .state('error404', {
-            url: '/error404',
-            templateUrl: 'common/errorpages/error404.html'
-        })
-        .state('main', {
-            url: '/main',
-            templateUrl: 'common/private.html',
-            data: {
-                auth: true
-            }
-        })
-        .state('home', {
-            url: '/',
-            templateUrl: 'common/public.html'
-        });
+  $stateProvider
+    .state('error404', {
+      url: '/error404',
+      templateUrl: 'common/errorpages/error404.html'
+    })
+    .state('main', {
+      url: '/main',
+      templateUrl: 'common/private.html',
+      data: {
+        auth: true
+      }
+    })
+    .state('home', {
+      url: '/',
+      templateUrl: 'common/public.html'
+    });
 });
 
 smlBootzooka.config(['$httpProvider', function ($httpProvider) {
-    var interceptor = ['$rootScope', '$q', '$injector', '$log', 'NotificationsService', function ($rootScope, $q, $injector, $log, NotificationsService) {
-        function success(response) {
-            return response;
-        }
+  var interceptor = ['$rootScope', '$q', '$injector', '$log', 'NotificationsService', function ($rootScope, $q, $injector, $log, NotificationsService) {
+    function success(response) {
+      return response;
+    }
 
-        function error(response) {
-            if (response.status === 401) { // user is not logged in
-                $rootScope.$emit('401');
-            } else if (response.status === 403) {
-                $log.warn(response.data);
-                // do nothing, user is trying to modify data without privileges
-            } else if (response.status === 404) {
-                $log.warn(response.data);
-            } else if (response.status === 409) {
-                NotificationsService.showError(response);
-            } else {
-                NotificationsService.showError('Something went wrong..', 'Unexpected error');
-            }
-            return $q.reject(response);
-        }
+    function error(response) {
+      if (response.status === 401) { // user is not logged in
+        $rootScope.$emit('401');
+      } else if (response.status === 403) {
+        $log.warn(response.data);
+        // do nothing, user is trying to modify data without privileges
+      } else if (response.status === 404) {
+        $log.warn(response.data);
+      } else if (response.status === 409) {
+        NotificationsService.showError(response);
+      } else {
+        NotificationsService.showError('Something went wrong..', 'Unexpected error');
+      }
+      return $q.reject(response);
+    }
 
-        return {
-            response: success,
-            responseError: error
-        };
+    return {
+      response: success,
+      responseError: error
+    };
 
-    }];
-    $httpProvider.interceptors.push(interceptor);
+  }];
+  $httpProvider.interceptors.push(interceptor);
 }]);
 
 smlBootzooka.run(function ($rootScope, UserSessionService, FlashService, $state) {
 
-    function requireAuth(targetState) {
-        return targetState && targetState.data && targetState.data.auth;
+  function requireAuth(targetState) {
+    return targetState && targetState.data && targetState.data.auth;
+  }
+
+  $rootScope.$on('$stateChangeStart', function (ev, targetState, targetParams) {
+    if (requireAuth(targetState) && UserSessionService.isNotLogged()) {
+      ev.preventDefault();
+      UserSessionService.getLoggedUserPromise().then(function () {
+        $state.go(targetState, targetParams);
+      }, function () {
+        UserSessionService.saveTarget(targetState, targetParams);
+        $state.go('login');
+      });
     }
+  });
 
-    $rootScope.$on('$stateChangeStart', function (ev, targetState, targetParams) {
-        if (requireAuth(targetState) && UserSessionService.isNotLogged()) {
-            ev.preventDefault();
-            UserSessionService.getLoggedUserPromise().then(function () {
-                $state.go(targetState, targetParams);
-            }, function () {
-                UserSessionService.saveTarget(targetState, targetParams);
-                $state.go('login');
-            });
-        }
-    });
-
-    $rootScope.$on('401', function () {
-        if (UserSessionService.isLogged()) {
-            UserSessionService.resetLoggedUser();
-            FlashService.set('Your session timed out. Please login again.');
-        }
-    });
+  $rootScope.$on('401', function () {
+    if (UserSessionService.isLogged()) {
+      UserSessionService.resetLoggedUser();
+      FlashService.set('Your session timed out. Please login again.');
+    }
+  });
 });
 
 smlBootzooka.run(function ($rootScope, $timeout, FlashService, NotificationsService) {
-    $rootScope.$on('$stateChangeSuccess', function () {
-        var message = FlashService.get();
-        NotificationsService.showInfo(message);
-    });
+  $rootScope.$on('$stateChangeSuccess', function () {
+    var message = FlashService.get();
+    NotificationsService.showInfo(message);
+  });
 });
 
