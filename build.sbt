@@ -7,12 +7,13 @@ import Keys._
 import scala.util.Try
 import scalariform.formatter.preferences._
 
-val slf4jVersion = "1.7.12"
+val slf4jVersion = "1.7.13"
 val logBackVersion = "1.1.3"
 val scalaLoggingVersion = "3.1.0"
-val slickVersion = "3.1.0"
+val slickVersion = "3.1.1"
 val seleniumVersion = "2.48.2"
 val circeVersion = "0.1.1"
+val akkaHttpVersion = "2.0.1"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
 val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -23,8 +24,8 @@ val bugsnag = "com.bugsnag" % "bugsnag" % "1.2.8"
 
 val typesafeConfig = "com.typesafe" % "config" % "1.2.1" // can't update to 1.3.0 to keep java <8 compat
 
-val jodaTime = "joda-time" % "joda-time" % "2.8.2"
-val jodaConvert = "org.joda" % "joda-convert" % "1.7"
+val jodaTime = "joda-time" % "joda-time" % "2.9.1"
+val jodaConvert = "org.joda" % "joda-convert" % "1.8.1"
 val jodaDependencies = Seq(jodaTime, jodaConvert)
 
 val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
@@ -33,12 +34,12 @@ val circeGeneric = "io.circe" %% "circe-generic" % circeVersion
 val circeJawn = "io.circe" %% "circe-jawn" % circeVersion
 val circe = Seq(circeCore, circeGeneric, circeJawn)
 
-val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.5.4"
+val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.5.5"
 
 val slick = "com.typesafe.slick" %% "slick" % slickVersion
 val slickHikari = "com.typesafe.slick" %% "slick-hikaricp" % slickVersion
-val h2 = "com.h2database" % "h2" % "1.3.176"
-val postgres = "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
+val h2 = "com.h2database" % "h2" % "1.4.190"
+val postgres = "org.postgresql" % "postgresql" % "9.4.1207"
 val flyway = "org.flywaydb" % "flyway-core" % "3.2.1"
 val slickStack = Seq(slick, h2, postgres, slickHikari, flyway)
 
@@ -50,10 +51,9 @@ val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion
 val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVersion % "test"
 val seleniumStack = Seq(seleniumJava, seleniumFirefox)
 
-val akkaHttpVersion = "2.0-M2"
 val akkaHttp = "com.typesafe.akka" %% "akka-http-experimental" % akkaHttpVersion
 val akkaHttpTestkit = "com.typesafe.akka" %% "akka-http-testkit-experimental" % akkaHttpVersion % "test"
-val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.2.2"
+val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.2.3"
 val akkaStack = Seq(akkaHttp, akkaHttpTestkit, akkaHttpSession)
 
 val commonDependencies = unitTestingStack ++ loggingStack

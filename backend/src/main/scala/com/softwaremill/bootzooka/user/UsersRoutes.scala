@@ -7,6 +7,7 @@ import com.softwaremill.bootzooka.api.RoutesSupport
 import com.softwaremill.session.SessionDirectives._
 import com.typesafe.scalalogging.StrictLogging
 import scala.concurrent.Future
+import com.softwaremill.session.SessionOptions._
 
 trait UsersRoutes extends RoutesSupport with StrictLogging {
 

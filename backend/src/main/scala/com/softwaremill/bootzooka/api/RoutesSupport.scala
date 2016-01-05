@@ -16,6 +16,7 @@ import com.softwaremill.session.{RefreshTokenStorage, SessionManager}
 import cats.data.Xor
 import io.circe._
 import io.circe.jawn.decode
+import com.softwaremill.session.SessionOptions._
 
 import scala.concurrent.ExecutionContext
 trait RoutesSupport extends JsonSupport with SessionSupport {
@@ -38,7 +39,7 @@ trait JsonSupport extends CirceSupport {
       }
 
   implicit def circeMarshaller[A <: AnyRef](implicit e: Encoder[A], cbs: CanBeSerialized[A]): ToEntityMarshaller[A] = {
-    Marshaller.StringMarshaller.wrap(ContentTypes.`application/json`) {
+    Marshaller.StringMarshaller.wrap(MediaTypes.`application/json`) {
       e(_).noSpaces
     }
   }
