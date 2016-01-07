@@ -1,17 +1,31 @@
 {
   "name": "bootzooka-ui-deps",
   "dependencies": {
-    "angular": "~1.3.15",
-    "angular-cookies": "~1.3.15",
-    "angular-mocks": "~1.3.15",
-    "angular-resource": "~1.3.15",
-    "angular-route": "~1.3.15",
-    "angular-sanitize": "~1.3.15",
+    "lodash": "~3.10.1",
+    "angular": "~1.4.8",
+    "angular-cookies": "~1.4.8",
+    "angular-formly": "~7.3.4",
+    "angular-formly-templates-bootstrap": "~6.2.0",
+    "angular-mocks": "~1.4.8",
+    "angular-resource": "~1.4.8",
+    "angular-route": "~1.4.8",
+    "angular-sanitize": "~1.4.8",
     "angular-ui-router": "~0.2.14",
-    "jquery": "2.1.4",
-    "bootstrap": "3.3.4"
+    "api-check": "~7.5.5",
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.1.4",
+    "ng-currency": "~0.8.12"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/js/bootstrap.js",
+        "dist/css/bootstrap.css",
+        "less/bootstrap.less"
+      ]
+    }
   },
   "resolutions": {
-    "angular": "~1.3.15"
+    "angular": "~1.4.8"
   }
 }

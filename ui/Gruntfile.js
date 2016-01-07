@@ -222,7 +222,7 @@ module.exports = function (grunt) {
       }
     },
 
-    bowerInstall: {
+    wiredep: {
       target: {
         src: ['app/index.html'],
         exclude: ['bower_components/angular-mocks/angular-mocks.js']
@@ -256,7 +256,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:tmp',
-      'bowerInstall',
+      'wiredep',
       'html2js',
       'copy:local',
       'angularFileLoader:local',
@@ -269,7 +269,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'bowerInstall',
+    'wiredep',
     'test:teamcity',
     'html2js',
     'copy:assets',
@@ -286,7 +286,7 @@ module.exports = function (grunt) {
   grunt.registerTask('test', function (target) {
     var tasks = [
       'clean:tmp',
-      'bowerInstall',
+      'wiredep',
       'html2js',
       'jshint'
     ];
@@ -300,7 +300,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('autotest', [
     'clean:tmp',
-    'bowerInstall',
+    'wiredep',
     'html2js',
     'karma:autotest',
     'jshint'
