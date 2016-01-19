@@ -1,41 +1,34 @@
 'use strict';
 
-angular.module('smlBootzooka.notifications')
-    .directive('bsNotificationEntry', function ($timeout) {
+angular.module('smlBootzooka.notifications').directive('bsNotificationEntry', $timeout => {
 
-        function setUpElementAttributes(element, typeOrUndefined) {
-            var type = typeOrUndefined || 'info';
-            element.addClass('alert');
-            element.addClass('alert-dismissible');
-            element.addClass('alert-' + type);
-            element.attr('role', 'alert');
-        }
+  function setUpElementAttributes(element, typeOrUndefined) {
+    var type = typeOrUndefined || 'info';
+    element.addClass('alert');
+    element.addClass('alert-dismissible');
+    element.addClass('alert-' + type);
+    element.attr('role', 'alert');
+  }
 
-        return {
-            restrict: 'A',
-            templateUrl: 'notifications/notificationEntry.html',
-            link: function (scope, element) {
-                var alertFadeOutPromise = $timeout(function () {
-                    element.fadeOut(2000, function () {
-                        element.remove();
-                    });
-                }, 3000);
+  return {
+    restrict: 'A',
+    templateUrl: 'notifications/notificationEntry.html',
+    link: function (scope, element) {
+      let alertFadeOutPromise = $timeout(() => {
+        element.fadeOut(2000, () => element.remove());
+      }, 3000);
 
-                setUpElementAttributes(element, scope.message.type);
+      setUpElementAttributes(element, scope.message.type);
 
-                element.fadeOut(0, function () {
-                    element.fadeIn(300);
-                });
+      element.fadeOut(0, () => element.fadeIn(300));
 
-                // enforce scope destroy after message is closed by the user.
-                element.on('$destroy', function () {
-                    scope.$destroy();
-                });
+      // enforce scope destroy after message is closed by the user.
+      element.on('$destroy', () => scope.$destroy());
 
-                scope.$on('$destroy', function () {
-                    $timeout.cancel(alertFadeOutPromise);
-                    scope.notificationsSource.dismiss(scope.message);
-                });
-            }
-        };
-    });
+      scope.$on('$destroy', () => {
+        $timeout.cancel(alertFadeOutPromise);
+        scope.notificationsSource.dismiss(scope.message);
+      });
+    }
+  };
+});

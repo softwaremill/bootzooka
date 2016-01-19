@@ -38,7 +38,7 @@ describe('Profile Controller', function () {
         };
     };
 
-    it('should get logged user', function () {
+    it('should get logged user', () => {
         expect(scope.user.login).toBe(userSessionService.getLoggedUser().login);
         expect(scope.user.email).toBe(userSessionService.getLoggedUser().email);
     });

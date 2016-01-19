@@ -1,20 +1,18 @@
 'use strict';
 
-angular.module('smlBootzooka.profile').factory('PasswordResetService', function ($q, $http) {
-    var passwordresetService = {};
+angular.module('smlBootzooka.profile').factory('PasswordResetService', ($q, $http) => {
+  let passwordresetService = {};
 
-    passwordresetService.beginResetProcess = function (login) {
-        return $http.post('api/passwordreset', {login: login}).then(function (response) {
-            if (response.data !== 'success') {
-                return $q.reject(response.data);
-            }
-            return response;
-        });
-    };
+  passwordresetService.beginResetProcess = login =>
+    $http.post('api/passwordreset', {login: login}).then(response => {
+      if (response.data !== 'success') {
+        return $q.reject(response.data);
+      }
+      return response;
+    });
 
-    passwordresetService.changePassword = function (code, password) {
-        return $http.post('api/passwordreset/' + code, {code: code, password: password});
-    };
+  passwordresetService.changePassword = (code, password) =>
+    $http.post('api/passwordreset/' + code, {code: code, password: password});
 
-    return passwordresetService;
+  return passwordresetService;
 });

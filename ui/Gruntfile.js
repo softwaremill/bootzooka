@@ -1,12 +1,11 @@
 'use strict';
 
-module.exports = function (grunt) {
+module.exports =  grunt => {
 
   var proxyRequests = require('grunt-connect-proxy/lib/utils').proxyRequest;
   var liveReload = require('connect-livereload')({port: 9988});
 
   grunt.initConfig({
-
     common: {
       staticDirs: ['app', '.tmp']
     },
@@ -24,7 +23,7 @@ module.exports = function (grunt) {
           'app/common/styles/*.css',
           'app/*.html'
         ],
-        tasks: ['copy:local', 'angularFileLoader:local']
+        tasks: ['babel', 'copy:local', 'angularFileLoader:local']
       },
       watchAndLivereload: {
         files: [
@@ -157,7 +156,7 @@ module.exports = function (grunt) {
       local: {
         expand: true,
         cwd: 'app/',
-        src: ['**/*.js', 'index.html', 'assets/img/**', '**/*.css'],
+        src: ['index.html', 'assets/img/**', '**/*.css'],
         dest: '.tmp/'
       }
     },
@@ -178,7 +177,8 @@ module.exports = function (grunt) {
         "node": true,
         "trailing": true,
         "undef": true,
-        "unused": true
+        "unused": true,
+        "esnext": true
       },
       app: {
         options: {
@@ -238,18 +238,40 @@ module.exports = function (grunt) {
       },
       default_options: {
         options: {
-          scripts: ['app/**/*.js', '.tmp/scripts/**/*.js']
+          scripts: ['.tmp/**/*.js']
         },
         src: 'dist/webapp/index.html'
+      }
+    },
+
+    babel: {
+      options: {
+        sourceMap: false,
+        presets: ['es2015']
+      },
+      dist: {
+        files: [{
+          expand: true,
+          cwd: 'app/',
+          src: ['**/*.js'],
+          dest: '.tmp/'
+        }]
+      },
+      distSpecs: {
+        files: [{
+          expand: true,
+          cwd: 'test',
+          src: ['**/*.js'],
+          dest: '.tmp/test',
+          ext:'.js'
+        }]
       }
     }
   });
 
-  require('matchdep').filterDev('grunt-*').forEach(function (dep) {
-    grunt.loadNpmTasks(dep);
-  });
+  require('matchdep').filterDev('grunt-*').forEach(dep => grunt.loadNpmTasks(dep));
 
-  grunt.registerTask('server', function (target) {
+  grunt.registerTask('server', target => {
     if (target === 'dist') {
       return grunt.task.run(['build', 'configureProxies', 'connect:dist']);
     }
@@ -258,6 +280,7 @@ module.exports = function (grunt) {
       'clean:tmp',
       'wiredep',
       'html2js',
+      'babel', //must be before copy
       'copy:local',
       'angularFileLoader:local',
       'configureProxies',
@@ -274,6 +297,7 @@ module.exports = function (grunt) {
     'html2js',
     'copy:assets',
     'copy:index',
+    'babel', // must be before concat
     'angularFileLoader',
     'useminPrepare',
     'concat:generated',
@@ -288,6 +312,7 @@ module.exports = function (grunt) {
       'clean:tmp',
       'wiredep',
       'html2js',
+      'babel',
       'jshint'
     ];
     if (target === 'teamcity') {

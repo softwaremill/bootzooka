@@ -1,7 +1,5 @@
 'use strict';
 
-angular.module('smlBootzooka.common.directives').directive('focusOn', function () {
-    return function (scope, elem) {
-        elem[0].focus();
-    };
-});
+angular.module('smlBootzooka.common.directives').directive('focusOn', () =>
+  (scope, elem) =>  elem[0].focus()
+);

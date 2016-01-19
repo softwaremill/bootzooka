@@ -1,19 +1,20 @@
 'use strict';
 
-angular.module('smlBootzooka.version').factory('Version', function () {
+angular.module('smlBootzooka.version').factory('Version', () => {
 
-  var Version = function (data) {
-    this.buildSha = data.build;
-    this.buildDate = data.date;
-  };
+  class Version {
+    constructor(data) {
+      this.buildSha = data.build;
+      this.buildDate = data.date;
+    }
+    getBuildSha(){
+      return this.buildSha;
+    }
 
-  Version.prototype.getBuildSha = function () {
-    return this.buildSha;
-  };
-
-  Version.prototype.getBuildDate = function () {
-    return this.buildDate;
-  };
+    getBuildDate(){
+      return this.buildDate;
+    }
+  }
 
   return Version;
 });

@@ -1,12 +1,9 @@
 'use strict';
 
-angular.module('smlBootzooka.session').controller('UserSessionCtrl', function UserSessionCtrl($scope, UserSessionService) {
+angular.module('smlBootzooka.session').controller('UserSessionCtrl', ($scope, UserSessionService) => {
 
-    $scope.getLoggedUserName = function () {
-        return UserSessionService.getLoggedUserName();
-    };
+  $scope.getLoggedUserName = () => UserSessionService.getLoggedUserName();
 
-    $scope.logout = function () {
-        UserSessionService.logout();
-    };
+  $scope.logout = () => UserSessionService.logout();
+
 });

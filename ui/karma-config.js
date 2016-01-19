@@ -1,30 +1,24 @@
 'use strict';
 
-module.exports = function (config) {
+module.exports = config => {
 
   var files = [];
 
-  [
-    'bower_components/jquery/dist/jquery.js',
-    'bower_components/blockui/jquery.blockUI.js',
+  ['bower_components/jquery/dist/jquery.js',
     'bower_components/bootstrap/dist/js/bootstrap.js',
     'bower_components/angular/angular.js',
-    'bower_components/angular-resource/angular-resource.js',
-    'bower_components/angular-ui-router/release/angular-ui-router.js',
     'bower_components/angular-cookies/angular-cookies.js',
-    'bower_components/angular-sanitize/angular-sanitize.js',
     'bower_components/angular-mocks/angular-mocks.js',
-    'bower_components/underscore/underscore.js',
-    'bower_components/moment/moment.js'
-  ].forEach(function (file) {
-    files.push(file);
-  });
+    'bower_components/angular-resource/angular-resource.js',
+    'bower_components/angular-sanitize/angular-sanitize.js',
+    'bower_components/angular-ui-router/release/angular-ui-router.js'
+  ].forEach(file => files.push(file));
 
-  files.push('app/app.js');
-  files.push('app/**/*.js');
-  files.push('app/**/**/*.js');
-  files.push('tmp/scripts/**/*.js');
-  files.push('test/**/*.js');
+  files.push('.tmp/app.js');
+  files.push('.tmp/**/*.js');
+  files.push('.tmp/**/**/*.js');
+  files.push('.tmp/scripts/**/*.js');
+  files.push('.tmp/test/**/*.js');
 
   config.set({
     basePath: '',

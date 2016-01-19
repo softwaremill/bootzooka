@@ -7,10 +7,10 @@ angular.module('smlBootzooka.common', ['smlBootzooka.common.filters', 'smlBootzo
 angular.module('smlBootzooka.notifications', []);
 angular.module('smlBootzooka.version', []);
 angular.module('smlBootzooka.session', ['ngCookies', 'ngResource']);
-var smlBootzooka = angular.module('smlBootzooka', ['smlBootzooka.templates', 'smlBootzooka.profile', 'smlBootzooka.session', 'smlBootzooka.common', 'smlBootzooka.notifications', 'smlBootzooka.version', 'ngSanitize', 'ui.router']);
-var profile = angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'smlBootzooka.common', 'smlBootzooka.notifications']);
+let smlBootzooka = angular.module('smlBootzooka', ['smlBootzooka.templates', 'smlBootzooka.profile', 'smlBootzooka.session', 'smlBootzooka.common', 'smlBootzooka.notifications', 'smlBootzooka.version', 'ngSanitize', 'ui.router']);
+let profile = angular.module('smlBootzooka.profile', ['ui.router', 'smlBootzooka.session', 'smlBootzooka.common', 'smlBootzooka.notifications']);
 
-profile.config(function ($stateProvider, $urlRouterProvider) {
+profile.config(($stateProvider, $urlRouterProvider) => {
   $urlRouterProvider.when('', '/');
   $stateProvider
     .state('login', {
@@ -45,9 +45,7 @@ profile.config(function ($stateProvider, $urlRouterProvider) {
       templateUrl: 'profile/profile/profile.html',
       resolve: {
         //this is a kind of constructor injection to controller, since ProfileCtrl require logged user.
-        user: function (UserSessionService) {
-          return UserSessionService.getLoggedUserPromise();
-        }
+        user: UserSessionService => UserSessionService.getLoggedUserPromise()
       },
       data: {
         auth: true
@@ -55,7 +53,7 @@ profile.config(function ($stateProvider, $urlRouterProvider) {
     });
 });
 
-smlBootzooka.config(function ($stateProvider, $urlRouterProvider) {
+smlBootzooka.config(($stateProvider, $urlRouterProvider) => {
   $urlRouterProvider.otherwise('/error404');
 
   $stateProvider
@@ -76,8 +74,8 @@ smlBootzooka.config(function ($stateProvider, $urlRouterProvider) {
     });
 });
 
-smlBootzooka.config(['$httpProvider', function ($httpProvider) {
-  var interceptor = ['$rootScope', '$q', '$injector', '$log', 'NotificationsService', function ($rootScope, $q, $injector, $log, NotificationsService) {
+smlBootzooka.config(['$httpProvider', $httpProvider => {
+  let interceptor = ['$rootScope', '$q', '$injector', '$log', 'NotificationsService', function ($rootScope, $q, $injector, $log, NotificationsService) {
     function success(response) {
       return response;
     }
@@ -113,19 +111,19 @@ smlBootzooka.run(function ($rootScope, UserSessionService, FlashService, $state)
     return targetState && targetState.data && targetState.data.auth;
   }
 
-  $rootScope.$on('$stateChangeStart', function (ev, targetState, targetParams) {
+  $rootScope.$on('$stateChangeStart', (ev, targetState, targetParams) => {
     if (requireAuth(targetState) && UserSessionService.isNotLogged()) {
       ev.preventDefault();
-      UserSessionService.getLoggedUserPromise().then(function () {
+      UserSessionService.getLoggedUserPromise().then(() => {
         $state.go(targetState, targetParams);
-      }, function () {
+      }, () => {
         UserSessionService.saveTarget(targetState, targetParams);
         $state.go('login');
       });
     }
   });
 
-  $rootScope.$on('401', function () {
+  $rootScope.$on('401', () => {
     if (UserSessionService.isLogged()) {
       UserSessionService.resetLoggedUser();
       FlashService.set('Your session timed out. Please login again.');
@@ -134,8 +132,8 @@ smlBootzooka.run(function ($rootScope, UserSessionService, FlashService, $state)
 });
 
 smlBootzooka.run(function ($rootScope, $timeout, FlashService, NotificationsService) {
-  $rootScope.$on('$stateChangeSuccess', function () {
-    var message = FlashService.get();
+  $rootScope.$on('$stateChangeSuccess', () => {
+    let message = FlashService.get();
     NotificationsService.showInfo(message);
   });
 });

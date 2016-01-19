@@ -1,15 +1,12 @@
 'use strict';
 
-angular.module('smlBootzooka.common.services').factory('FlashService', function () {
+angular.module('smlBootzooka.common.services').factory('FlashService', () => {
 
-    var queue = [];
+  let queue = [];
 
-    return {
-        set: function (message) {
-            queue.push(message);
-        },
-        get: function () {
-            return queue.shift();
-        }
-    };
+  return {
+    set: message => queue.push(message),
+
+    get: () => queue.shift()
+  };
 });

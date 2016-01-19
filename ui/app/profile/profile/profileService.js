@@ -1,31 +1,31 @@
 angular.module('smlBootzooka.profile').factory('ProfileService', function ($resource, $cookies) {
-    var profileService = {};
+  const profileService = {};
 
-    this.profileResource = $resource('api/users', {}, {
-        'changeLogin': {method: 'PATCH'},
-        'changeEmail': {method: 'PATCH'},
-        'changePassword': {method: 'PATCH'}
-    }, {});
+  this.profileResource = $resource('api/users', {}, {
+    'changeLogin': {method: 'PATCH'},
+    'changeEmail': {method: 'PATCH'},
+    'changePassword': {method: 'PATCH'}
+  }, {});
 
-    this.changePasswordResource = $resource('api/users/changepassword', {}, {
-        'changePassword': {method: 'POST'}
-    }, {});
+  this.changePasswordResource = $resource('api/users/changepassword', {}, {
+    'changePassword': {method: 'POST'}
+  }, {});
 
-    var self = this;
+  profileService.changeLogin = newLogin =>
+    this.profileResource.changeLogin({login: newLogin}).$promise.then(() => {
+      $cookies['scentry.auth.default.user'] = newLogin;
+    });
 
-    profileService.changeLogin = function (newLogin) {
-        return self.profileResource.changeLogin({login: newLogin}).$promise.then(function () {
-            $cookies['scentry.auth.default.user'] = newLogin;
-        });
-    };
+  profileService.changeEmail = newEmail =>
+    this.profileResource.changeEmail({email: newEmail}).$promise;
 
-    profileService.changeEmail = function (newEmail) {
-        return self.profileResource.changeEmail({email: newEmail}).$promise;
-    };
 
-    profileService.changePassword = function (currentPassword, newPassword) {
-        return self.changePasswordResource.changePassword({currentPassword: currentPassword, newPassword: newPassword}).$promise;
-    };
+  profileService.changePassword = (currentPassword, newPassword) => {
+    return this.changePasswordResource.changePassword({
+      currentPassword: currentPassword,
+      newPassword: newPassword
+    }).$promise;
+  };
 
-    return profileService;
+  return profileService;
 });
