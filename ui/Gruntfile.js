@@ -162,8 +162,8 @@ module.exports =  grunt => {
     },
 
     clean: {
-      dist: ['dist', '.tmp'],
-      tmp: '.tmp'
+      dist: ['dist', '.tmp', '.test'],
+      tmp: ['.tmp', '.test']
     },
 
     jshint: {
@@ -262,7 +262,7 @@ module.exports =  grunt => {
           expand: true,
           cwd: 'test',
           src: ['**/*.js'],
-          dest: '.tmp/test',
+          dest: '.test',
           ext:'.js'
         }]
       }
@@ -326,6 +326,7 @@ module.exports =  grunt => {
   grunt.registerTask('autotest', [
     'clean:tmp',
     'wiredep',
+    'babel',
     'html2js',
     'karma:autotest',
     'jshint'

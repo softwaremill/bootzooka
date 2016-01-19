@@ -18,7 +18,7 @@ module.exports = config => {
   files.push('.tmp/**/*.js');
   files.push('.tmp/**/**/*.js');
   files.push('.tmp/scripts/**/*.js');
-  files.push('.tmp/test/**/*.js');
+  files.push('.test/**/*.js');
 
   config.set({
     basePath: '',
