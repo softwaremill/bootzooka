@@ -47,7 +47,7 @@ class UserService(
 
   def checkUserExistenceFor(login: String, email: String): Future[Either[String, Unit]] = {
     val existingLoginFuture = userDao.findByLowerCasedLogin(login)
-    val existingEmailFuture = userDao.findByEmail(email).map(toUserJson)
+    val existingEmailFuture = userDao.findByEmail(email)
 
     for {
       existingLoginOpt <- existingLoginFuture
