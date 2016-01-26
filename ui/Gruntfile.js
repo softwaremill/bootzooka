@@ -2,6 +2,9 @@
 
 module.exports =  grunt => {
 
+  // Time how long tasks take. Can help when optimizing build times
+  require('time-grunt')(grunt);
+
   var proxyRequests = require('grunt-connect-proxy/lib/utils').proxyRequest;
   var liveReload = require('connect-livereload')({port: 9988});
 
