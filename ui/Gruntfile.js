@@ -2,11 +2,13 @@
 
 module.exports =  grunt => {
 
+  const serveStatic = require('serve-static');
+
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
-  var proxyRequests = require('grunt-connect-proxy/lib/utils').proxyRequest;
-  var liveReload = require('connect-livereload')({port: 9988});
+  const proxyRequests = require('grunt-connect-proxy/lib/utils').proxyRequest;
+  const liveReload = require('connect-livereload')({port: 9988});
 
   grunt.initConfig({
     common: {
@@ -48,35 +50,25 @@ module.exports =  grunt => {
       livereload: {
         options: {
           open: true,
-          middleware: function (connect) {
-
-            var middlewares = [
+          middleware: connect =>  [
+              serveStatic('.tmp'),
               proxyRequests,
 
               // Add the bit of JS to the page that connects to livereload server with WebSocket
               // and listenes for events.
               liveReload,
 
-              connect().use('/bower_components', connect.static('./bower_components'))
-            ];
-            middlewares.push(connect.static('.tmp'));
-            return middlewares;
-          }
+              connect().use('/bower_components', serveStatic('./bower_components'))
+            ]
         }
       },
       dist: {
         options: {
           open: true,
-          middleware: function (connect) {
-            return [
-              proxyRequests,
-              connect.static('dist/webapp')
-            ];
-          },
+          middleware: connect =>[proxyRequests, serveStatic('dist/webapp')],
           keepalive: true
         }
       }
-
     },
 
     html2js: {
@@ -302,7 +294,7 @@ module.exports =  grunt => {
   ]);
 
   grunt.registerTask('test', function (target) {
-    var tasks = [
+    let tasks = [
       'clean:tmp',
       'wiredep',
       'html2js',
