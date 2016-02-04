@@ -14,13 +14,29 @@ module.exports = config => {
     'bower_components/angular-ui-router/release/angular-ui-router.js'
   ].forEach(file => files.push(file));
 
-  files.push('.tmp/app.js');
-  files.push('.tmp/**/*.js');
-  files.push('.tmp/**/**/*.js');
+  files.push('app/app.js');
+  files.push('app/**/*.js');
+  files.push('app/**/**/*.js');
   files.push('.tmp/scripts/**/*.js');
-  files.push('.test/**/*.js');
+  files.push('test/**/*.js');
 
   config.set({
+    preprocessors: {
+      'app/**/*.js': ['babel'],
+      'test/**/*.js': ['babel']
+    },
+    babelPreprocessor: {
+      options: {
+        presets: ['es2015'],
+        sourceMap: 'inline'
+      },
+      filename: function (file) {
+        return file.originalPath.replace(/\.js$/, '.es5.js');
+      },
+      sourceFileName: function (file) {
+        return file.originalPath;
+      }
+    },
     basePath: '',
     frameworks: ['jasmine'],
     files: files,
@@ -28,15 +44,6 @@ module.exports = config => {
     port: 7070,
     logLevel: config.LOG_INFO,
     autoWatch: false,
-
-    // Start these browsers, currently available:
-    // - Chrome
-    // - ChromeCanary
-    // - Firefox
-    // - Opera
-    // - Safari (only Mac)
-    // - PhantomJS
-    // - IE (only Windows)
     browsers: ['PhantomJS']
   });
 };

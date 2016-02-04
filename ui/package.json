@@ -38,7 +38,8 @@
     "matchdep": "^1.0.0",
     "phantomjs": "^1.9.19",
     "time-grunt": "^1.3.0",
-    "tiny-lr": "^0.2.1"
+    "tiny-lr": "^0.2.1",
+    "karma-babel-preprocessor": "^6.0.1"
   },
   "scripts": {
     "postinstall": "node_modules/.bin/bower install"

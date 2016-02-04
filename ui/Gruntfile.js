@@ -259,15 +259,6 @@ module.exports =  grunt => {
           src: ['**/*.js'],
           dest: '.tmp/'
         }]
-      },
-      distSpecs: {
-        files: [{
-          expand: true,
-          cwd: 'test',
-          src: ['**/*.js'],
-          dest: '.test',
-          ext:'.js'
-        }]
       }
     }
   });
