@@ -15,10 +15,11 @@ describe('Profile Controller', function () {
             email: 'user1@sml.com'
         };
         $httpBackend = _$httpBackend_;
-        $httpBackend.expectGET('api/users').respond(user);
-        $httpBackend.flush();
-        userSessionService = UserSessionService;
-        scope = $rootScope.$new();
+      userSessionService = UserSessionService;
+      userSessionService.getUser();
+      $httpBackend.expectGET('api/users').respond(user);
+      $httpBackend.flush();
+      scope = $rootScope.$new();
         ctrl = $controller('ProfileCtrl', {$scope: scope, user: user});
     }));
 
@@ -39,8 +40,8 @@ describe('Profile Controller', function () {
     };
 
     it('should get logged user', () => {
-        expect(scope.user.login).toBe(userSessionService.getLoggedUser().login);
-        expect(scope.user.email).toBe(userSessionService.getLoggedUser().email);
+        expect(scope.user.login).toBe(userSessionService.getUser().login);
+        expect(scope.user.email).toBe(userSessionService.getUser().email);
     });
 
     describe('when changing login', function () {

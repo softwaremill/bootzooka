@@ -8,7 +8,7 @@ describe('User Session Controller', function () {
     var userSessionService;
 
     var testWindow;
-    
+
     beforeEach(function() {
         testWindow = {location: "dummy" };
 
@@ -46,6 +46,7 @@ describe('User Session Controller', function () {
                 login: 'User1',
                 email: 'test@test.pl'
             };
+            userSessionService.getUser();
             $httpBackend.expectGET('api/users').respond(user);
             $httpBackend.flush();
         }));

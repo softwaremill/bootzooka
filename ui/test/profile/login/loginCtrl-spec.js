@@ -24,8 +24,6 @@ describe('Login Controller', function () {
             $scope: scope,
             $state: state
         });
-        $httpBackend.expectGET('api/users').respond(401);
-        $httpBackend.flush();
         scope.loginForm = {
             login: {
                 $dirty: false
@@ -44,7 +42,7 @@ describe('Login Controller', function () {
         // When
         scope.login();
         $httpBackend.flush();
-        
+
         //then
         expect(state.current).toBe('main');
     });
