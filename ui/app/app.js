@@ -45,7 +45,7 @@ profile.config(($stateProvider, $urlRouterProvider) => {
       templateUrl: 'profile/profile/profile.html',
       resolve: {
         //this is a kind of constructor injection to controller, since ProfileCtrl require logged user.
-        user: UserSessionService => UserSessionService.getUser()
+        user: UserSessionService => UserSessionService.getLoggedUserPromise()
       },
       data: {
         auth: true
@@ -114,7 +114,7 @@ smlBootzooka.run(function ($rootScope, UserSessionService, FlashService, $state)
   $rootScope.$on('$stateChangeStart', (ev, targetState, targetParams) => {
     if (requireAuth(targetState) && UserSessionService.isNotLogged()) {
       ev.preventDefault();
-      UserSessionService.getUser().then(() => {
+      UserSessionService.getLoggedUserPromise().then(() => {
         $state.go(targetState, targetParams);
       }, () => {
         UserSessionService.saveTarget(targetState, targetParams);

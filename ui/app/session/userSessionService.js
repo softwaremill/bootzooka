@@ -5,20 +5,16 @@ angular.module('smlBootzooka.session').factory('UserSessionService', ($http, $ro
   let loggedUser = null;
   let target = null;
 
+  let loggedUserPromise = $http.get('api/users').then(response => {
+    loggedUser = response.data;
+    return loggedUser;
+  });
+
   let userSessionService = {};
 
   userSessionService.getLoggedUser = () => loggedUser;
 
-  userSessionService.getUser = () => {
-    if (loggedUser == null) {
-      return $http.get('api/users').then(response => {
-        loggedUser = response.data;
-        return loggedUser;
-      });
-    } else {
-      return loggedUser;
-    }
-  };
+  userSessionService.getLoggedUserPromise = () => loggedUserPromise;
 
   userSessionService.isLogged = () => angular.isObject(loggedUser);
 
