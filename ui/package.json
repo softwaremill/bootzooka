@@ -1,9 +1,6 @@
 {
   "name": "bootzooka",
   "version": "0.0.1-SNAPSHOT",
-  "engines": {
-    "node": ">=4.0.0"
-  },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
     "bower": "^1.3.5",
@@ -11,6 +8,7 @@
     "grunt": "0.4.5",
     "grunt-angular-file-loader": "1.1.5",
     "grunt-babel": "^6.0.0",
+    "grunt-cli": "^0.1.13",
     "grunt-connect-proxy": "0.2.0",
     "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-concat": "0.5.1",
@@ -44,8 +42,5 @@
   },
   "scripts": {
     "postinstall": "node_modules/.bin/bower install"
-  },
-  "peerDependencies": {
-    "grunt-cli": "^0.1.13"
   }
 }
