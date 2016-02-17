@@ -13,7 +13,7 @@ val scalaLoggingVersion = "3.1.0"
 val slickVersion = "3.1.1"
 val seleniumVersion = "2.48.2"
 val circeVersion = "0.1.1"
-val akkaHttpVersion = "2.0.1"
+val akkaVersion = "2.4.2"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
 val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -51,10 +51,11 @@ val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion
 val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVersion % "test"
 val seleniumStack = Seq(seleniumJava, seleniumFirefox)
 
-val akkaHttp = "com.typesafe.akka" %% "akka-http-experimental" % akkaHttpVersion
-val akkaHttpTestkit = "com.typesafe.akka" %% "akka-http-testkit-experimental" % akkaHttpVersion % "test"
-val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.2.3"
-val akkaStack = Seq(akkaHttp, akkaHttpTestkit, akkaHttpSession)
+val akkaHttpCore = "com.typesafe.akka" %% "akka-http-core" % akkaVersion
+val akkaHttpExperimental = "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion
+val akkaHttpTestkit = "com.typesafe.akka" %% "akka-http-testkit" % akkaVersion % "test"
+val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.2.4"
+val akkaStack = Seq(akkaHttpCore, akkaHttpExperimental, akkaHttpTestkit, akkaHttpSession)
 
 val commonDependencies = unitTestingStack ++ loggingStack
 
