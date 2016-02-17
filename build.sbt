@@ -7,8 +7,8 @@ import Keys._
 import scala.util.Try
 import scalariform.formatter.preferences._
 
-val slf4jVersion = "1.7.13"
-val logBackVersion = "1.1.3"
+val slf4jVersion = "1.7.16"
+val logBackVersion = "1.1.5"
 val scalaLoggingVersion = "3.1.0"
 val slickVersion = "3.1.1"
 val seleniumVersion = "2.48.2"
@@ -20,9 +20,9 @@ val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
 val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
 val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
-val bugsnag = "com.bugsnag" % "bugsnag" % "1.2.8"
+val bugsnag = "com.bugsnag" % "bugsnag" % "1.3.0"
 
-val typesafeConfig = "com.typesafe" % "config" % "1.2.1" // can't update to 1.3.0 to keep java <8 compat
+val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
 
 val jodaTime = "joda-time" % "joda-time" % "2.9.1"
 val jodaConvert = "org.joda" % "joda-convert" % "1.8.1"
@@ -44,7 +44,7 @@ val flyway = "org.flywaydb" % "flyway-core" % "3.2.1"
 val slickStack = Seq(slick, h2, postgres, slickHikari, flyway)
 
 val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
-val scalatest = "org.scalatest" %% "scalatest" % "2.2.5" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 val unitTestingStack = Seq(mockito, scalatest)
 
 val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
