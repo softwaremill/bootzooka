@@ -57,13 +57,13 @@ object Main extends App with StrictLogging {
       logger.info(s"Server started on $host:$port")
       sys.addShutdownHook {
         b.unbind()
-        modules.system.shutdown()
+        modules.system.terminate()
         logger.info("Server stopped")
       }
     case Failure(e) =>
       logger.error(s"Cannot start server on $host:$port", e)
       sys.addShutdownHook {
-        modules.system.shutdown()
+        modules.system.terminate()
         logger.info("Server stopped")
       }
   }
