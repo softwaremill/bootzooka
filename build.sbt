@@ -57,9 +57,8 @@ val commonDependencies = unitTestingStack ++ loggingStack
 
 name := "bootzooka"
 
-// factor out common settings into a sequence
-lazy val commonSettings = scalariformSettings ++ Seq(
-  ScalariformKeys.preferences := ScalariformKeys.preferences.value
+lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
+  scalariformPreferences := scalariformPreferences.value
     .setPreference(DoubleIndentClassDeclaration, true)
     .setPreference(PreserveSpaceBeforeArguments, true)
     .setPreference(CompactControlReadability, true)
