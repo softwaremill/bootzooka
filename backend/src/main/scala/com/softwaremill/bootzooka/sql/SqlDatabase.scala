@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka.sql
 
 import java.net.URI
+import java.time.{ZoneOffset, OffsetDateTime}
 import DatabaseConfig._
 import com.typesafe.config.ConfigValueFactory._
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.StrictLogging
 import org.flywaydb.core.Flyway
-import org.joda.time.{DateTime, DateTimeZone}
 import slick.driver.JdbcProfile
 import slick.jdbc.JdbcBackend._
 
@@ -18,9 +18,9 @@ case class SqlDatabase(
 
   import driver.api._
 
-  implicit val dateTimeColumnType = MappedColumnType.base[DateTime, java.sql.Timestamp](
-    dt => new java.sql.Timestamp(dt.getMillis),
-    t => new DateTime(t.getTime).withZone(DateTimeZone.UTC)
+  implicit val offsetDateTimeColumnType = MappedColumnType.base[OffsetDateTime, java.sql.Timestamp](
+    dt => new java.sql.Timestamp(dt.toInstant.toEpochMilli),
+    t => t.toInstant.atOffset(ZoneOffset.UTC)
   )
 
   def updateSchema() {

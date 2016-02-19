@@ -1,10 +1,10 @@
 package com.softwaremill.bootzooka.user.rememberme
 
+import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.softwaremill.bootzooka.common.FutureHelpers._
 import com.softwaremill.bootzooka.sql.SqlDatabase
-import org.joda.time.DateTime
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,7 +36,7 @@ trait SqlRememberMeSchema {
     def selector = column[String]("selector")
     def tokenHash = column[String]("token_hash")
     def userId = column[UUID]("user_id")
-    def validTo = column[DateTime]("valid_to")
+    def validTo = column[OffsetDateTime]("valid_to")
 
     def * = (id, selector, tokenHash, userId, validTo) <> (RememberMeToken.tupled, RememberMeToken.unapply)
   }

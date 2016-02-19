@@ -1,20 +1,20 @@
 package com.softwaremill.bootzooka.api
 
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 import akka.http.scaladsl.model.StatusCodes.ClientError
 import io.circe._
 import io.circe.generic.auto._
 import io.circe.syntax._
-import org.joda.time.DateTime
-import org.joda.time.format.ISODateTimeFormat
 
 trait CirceEncoders {
 
-  val dateTimeFormat = ISODateTimeFormat.basicDateTime()
+  val dateTimeFormat = DateTimeFormatter.ISO_DATE_TIME
 
-  implicit object DateTimeEncoder extends Encoder[DateTime] {
-    override def apply(dt: DateTime): Json = dateTimeFormat.print(dt).asJson
+  implicit object DateTimeEncoder extends Encoder[OffsetDateTime] {
+    override def apply(dt: OffsetDateTime): Json = dateTimeFormat.format(dt).asJson
   }
 
   implicit object UuidEncoder extends Encoder[UUID] {

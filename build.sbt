@@ -24,10 +24,6 @@ val bugsnag = "com.bugsnag" % "bugsnag" % "1.3.0"
 
 val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
 
-val jodaTime = "joda-time" % "joda-time" % "2.9.1"
-val jodaConvert = "org.joda" % "joda-convert" % "1.8.1"
-val jodaDependencies = Seq(jodaTime, jodaConvert)
-
 val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
 val circeCore = "io.circe" %% "circe-core" % circeVersion
 val circeGeneric = "io.circe" %% "circe-generic" % circeVersion
@@ -108,7 +104,7 @@ lazy val backend: Project = (project in file("backend"))
   .settings(commonSettings)
   .settings(Revolver.settings)
   .settings(
-    libraryDependencies ++= jodaDependencies ++ slickStack ++ akkaStack ++ circe ++ Seq(scalaXml, javaxMailSun, typesafeConfig, bugsnag),
+    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(scalaXml, javaxMailSun, typesafeConfig, bugsnag),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](

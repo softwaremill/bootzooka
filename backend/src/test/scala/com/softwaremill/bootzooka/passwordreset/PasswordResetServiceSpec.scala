@@ -1,12 +1,13 @@
 package com.softwaremill.bootzooka.passwordreset
 
+import java.time.temporal.ChronoUnit
+import java.time.{Instant, ZoneOffset}
 import java.util.UUID
 
 import com.softwaremill.bootzooka.config.CoreConfig
 import com.softwaremill.bootzooka.email.{EmailContentWithSubject, EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.test.UserTestHelpers
 import com.softwaremill.bootzooka.user.{User, UserDao}
-import org.joda.time.DateTime
 import org.mockito.BDDMockito._
 import org.mockito.Matchers
 import org.mockito.Matchers._
@@ -116,7 +117,7 @@ class PasswordResetServiceSpec extends FlatSpec with scalatest.Matchers with Moc
       val password = "password"
       val salt = "salt"
       val user = newUser(login, s"$login@example.com", password, salt)
-      val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().plusHours(1))
+      val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, Instant.now().plus(1, ChronoUnit.HOURS).atOffset(ZoneOffset.UTC))
 
       given(codeDao.findByCode(code)) willReturn Future { Some(resetCode) }
       given(userDao.changePassword(any[UserDao#UserId], any[String])).willReturn(Future.successful(()))
@@ -142,7 +143,7 @@ class PasswordResetServiceSpec extends FlatSpec with scalatest.Matchers with Moc
       val password = "password"
       val salt = "salt"
       val user = newUser(login, s"$login@example.com", password, salt)
-      val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, new DateTime().minusHours(1))
+      val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, Instant.now().minus(1, ChronoUnit.HOURS).atOffset(ZoneOffset.UTC))
 
       given(codeDao.findByCode(code)) willReturn Future { Some(resetCode) }
       given(codeDao.remove(resetCode)).willReturn(Future.successful(()))
@@ -165,7 +166,7 @@ class PasswordResetServiceSpec extends FlatSpec with scalatest.Matchers with Moc
       val password = "password"
       val code = "validCode"
       val mockCode = mock[PasswordResetCode]
-      given(mockCode.validTo) willReturn new DateTime().minusDays(2)
+      given(mockCode.validTo) willReturn Instant.now().minus(2, ChronoUnit.DAYS).atOffset(ZoneOffset.UTC)
       given(codeDao.findByCode(code)) willReturn Future { Some(mockCode) }
       given(codeDao.remove(mockCode)).willReturn(Future.successful(()))
 

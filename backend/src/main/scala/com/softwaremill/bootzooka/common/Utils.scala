@@ -1,12 +1,8 @@
 package com.softwaremill.bootzooka.common
 
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 import java.util.Random
 
 object Utils {
-
-  val DateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 
   def randomString(length: Int) = {
     val sb = new StringBuffer()

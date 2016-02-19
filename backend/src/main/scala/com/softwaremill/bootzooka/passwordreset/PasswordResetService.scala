@@ -1,11 +1,12 @@
 package com.softwaremill.bootzooka.passwordreset
 
+import java.time.Instant
+
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.config.CoreConfig
 import com.softwaremill.bootzooka.email.{EmailTemplatingEngine, EmailService}
 import com.softwaremill.bootzooka.user.{UserDao, User}
 import com.typesafe.scalalogging.StrictLogging
-import org.joda.time.DateTime
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,7 +55,7 @@ class PasswordResetService(
     logger.debug("Performing password reset")
     codeDao.findByCode(code).flatMap {
       case Some(c) =>
-        if (c.validTo.isAfter(new DateTime())) {
+        if (c.validTo.toInstant().isAfter(Instant.now())) {
           for {
             _ <- changePassword(c, newPassword)
             _ <- invalidateResetCode(c)

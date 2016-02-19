@@ -1,11 +1,11 @@
 package com.softwaremill.bootzooka.user
 
+import java.time.OffsetDateTime
 import java.util.UUID
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
 import com.softwaremill.bootzooka.common.Utils
-import org.joda.time.DateTime
 
 case class User(
   id: UUID,
@@ -14,7 +14,7 @@ case class User(
   email: String,
   password: String,
   salt: String,
-  createdOn: DateTime
+  createdOn: OffsetDateTime
 )
 
 object User {
@@ -24,7 +24,7 @@ object User {
     email: String,
     plainPassword: String,
     salt: String,
-    createdOn: DateTime
+    createdOn: OffsetDateTime
   ) = User(UUID.randomUUID(), login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, createdOn)
 
   def encryptPassword(password: String, salt: String): String = {

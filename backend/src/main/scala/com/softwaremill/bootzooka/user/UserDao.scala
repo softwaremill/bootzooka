@@ -1,10 +1,10 @@
 package com.softwaremill.bootzooka.user
 
+import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.softwaremill.bootzooka.common.FutureHelpers._
 import com.softwaremill.bootzooka.sql.SqlDatabase
-import org.joda.time.DateTime
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -67,7 +67,7 @@ trait SqlUserSchema {
     def email           = column[String]("email")
     def password        = column[String]("password")
     def salt            = column[String]("salt")
-    def createdOn       = column[DateTime]("created_on")
+    def createdOn       = column[OffsetDateTime]("created_on")
 
     def * = (id, login, loginLowerCase, email, password, salt, createdOn) <> ((User.apply _).tupled, User.unapply)
     // format: ON

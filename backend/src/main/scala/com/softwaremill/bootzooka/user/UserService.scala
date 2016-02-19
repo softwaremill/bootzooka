@@ -1,8 +1,9 @@
 package com.softwaremill.bootzooka.user
 
+import java.time.{ZoneOffset, Instant}
 import java.util.UUID
 
-import com.softwaremill.bootzooka.common.{Clock, Utils}
+import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.email.{EmailTemplatingEngine, EmailService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -11,7 +12,7 @@ class UserService(
     userDao: UserDao,
     emailService: EmailService,
     emailTemplatingEngine: EmailTemplatingEngine
-)(implicit ec: ExecutionContext, clock: Clock) {
+)(implicit ec: ExecutionContext) {
 
   def findById(userId: userDao.UserId) = {
     userDao.findById(userId).map(toUserJson)
@@ -26,7 +27,7 @@ class UserService(
         case Left(msg) => Future.successful(UserRegisterResult.UserExists(msg))
         case Right(_) =>
           val salt = Utils.randomString(128)
-          val now = clock.nowUtc
+          val now = Instant.now().atOffset(ZoneOffset.UTC)
           val userAddResult = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now))
           userAddResult.onSuccess {
             case _ =>

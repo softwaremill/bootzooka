@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka
 
 import akka.actor.ActorSystem
-import com.softwaremill.bootzooka.common.RealTimeClock
 import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.config.{ServerConfig, CoreConfig}
 import com.softwaremill.bootzooka.email.{EmailTemplatingEngine, EmailConfig, SmtpEmailService, DummyEmailService}
@@ -37,8 +36,6 @@ trait Beans extends StrictLogging {
     logger.info("Starting with fake email sending service. No emails will be sent.")
     new DummyEmailService
   }
-
-  implicit lazy val clock = RealTimeClock
 
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
 

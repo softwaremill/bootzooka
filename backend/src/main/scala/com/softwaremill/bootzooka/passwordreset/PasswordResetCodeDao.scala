@@ -1,11 +1,11 @@
 package com.softwaremill.bootzooka.passwordreset
 
+import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.softwaremill.bootzooka.common.FutureHelpers._
 import com.softwaremill.bootzooka.sql.SqlDatabase
 import com.softwaremill.bootzooka.user.{SqlUserSchema, User}
-import org.joda.time.DateTime
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
@@ -53,9 +53,9 @@ trait SqlPasswordResetCodeSchema {
 
   protected val passwordResetCodes = TableQuery[PasswordResetCodes]
 
-  protected case class SqlPasswordResetCode(id: UUID, code: String, userId: UUID, validTo: DateTime)
+  protected case class SqlPasswordResetCode(id: UUID, code: String, userId: UUID, validTo: OffsetDateTime)
 
-  protected object SqlPasswordResetCode extends ((UUID, String, UUID, DateTime) => SqlPasswordResetCode) {
+  protected object SqlPasswordResetCode extends ((UUID, String, UUID, OffsetDateTime) => SqlPasswordResetCode) {
     def apply(rc: PasswordResetCode): SqlPasswordResetCode =
       SqlPasswordResetCode(rc.id, rc.code, rc.user.id, rc.validTo)
   }
@@ -65,7 +65,7 @@ trait SqlPasswordResetCodeSchema {
     def id        = column[UUID]("id", O.PrimaryKey)
     def code      = column[String]("code")
     def userId    = column[UUID]("user_id")
-    def validTo   = column[DateTime]("valid_to")
+    def validTo   = column[OffsetDateTime]("valid_to")
 
     def *         = (id, code, userId, validTo) <> (SqlPasswordResetCode.tupled, SqlPasswordResetCode.unapply)
 
