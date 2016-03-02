@@ -18,7 +18,7 @@ Bootzooka's stack consists of the following technologies/tools:
 
 ### Why Scala?
 
-A lot of the projects that we develop at [Softwaremill](http://softwaremill.com) are written in Scala. It's our default go-to language for server-side. Softwaremill is also a [Typesafe](http://typesafe.com/) partner.
+A lot of the projects that we develop at [Softwaremill](http://softwaremill.com) are written in Scala. It's our default go-to language for server-side. Softwaremill is also a [Lightbend](http://lightbend.com/) (former Typesafe) partner.
 
 ### Why AngularJS?
 
