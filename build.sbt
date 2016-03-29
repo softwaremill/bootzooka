@@ -7,8 +7,8 @@ import Keys._
 import scala.util.Try
 import scalariform.formatter.preferences._
 
-val slf4jVersion = "1.7.16"
-val logBackVersion = "1.1.5"
+val slf4jVersion = "1.7.19"
+val logBackVersion = "1.1.6"
 val scalaLoggingVersion = "3.1.0"
 val slickVersion = "3.1.1"
 val seleniumVersion = "2.48.2"
@@ -65,7 +65,7 @@ lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
     .setPreference(SpacesAroundMultiImports, false),
   organization := "com.softwaremill",
   version := "0.0.1-SNAPSHOT",
-  scalaVersion := "2.11.7",
+  scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   libraryDependencies ++= commonDependencies
 )
