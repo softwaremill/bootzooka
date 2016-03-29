@@ -32,5 +32,9 @@ class DummyEmailService extends EmailService with StrictLogging {
   def wasEmailSent(address: String, subject: String): Boolean = this.synchronized {
     sentEmails.exists(email => email.emails.contains(address) && email.subject == subject)
   }
+
+  def wasEmailSentTo(address: String): Boolean = this.synchronized {
+    sentEmails.exists(email => email.emails.contains(address))
+  }
 }
 

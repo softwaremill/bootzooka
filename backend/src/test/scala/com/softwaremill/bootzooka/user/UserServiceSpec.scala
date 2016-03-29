@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.user
 import java.util.UUID
 
 import com.softwaremill.bootzooka.email.{EmailContentWithSubject, EmailService, EmailTemplatingEngine}
-import com.softwaremill.bootzooka.test.{FlatSpecWithSql, UserTestHelpers}
+import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpers}
 import org.mockito.BDDMockito._
 import org.mockito.Matchers
 import org.mockito.Matchers._
@@ -14,7 +14,7 @@ import org.scalatest.mock.MockitoSugar
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserServiceSpec extends FlatSpecWithSql with scalatest.Matchers with MockitoSugar with UserTestHelpers {
+class UserServiceSpec extends FlatSpecWithDb with scalatest.Matchers with MockitoSugar with TestHelpers {
   val emailService = mock[EmailService]
   val emailTemplatingEngine = mock[EmailTemplatingEngine]
 

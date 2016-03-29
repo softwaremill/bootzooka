@@ -1,29 +1,20 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import com.softwaremill.bootzooka.test.{FlatSpecWithSql, UserTestHelpers}
+import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
 import com.softwaremill.bootzooka.user.UserDao
-import org.scalatest.Matchers
-import org.scalatest.concurrent.IntegrationPatience
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.language.postfixOps
-import scala.util.Random
 
-class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTestHelpers with IntegrationPatience {
+class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {
   behavior of "PasswordResetCodeDao"
 
   val dao = new PasswordResetCodeDao(sqlDatabase)
   val userDao = new UserDao(sqlDatabase)
 
-  def generateRandomUser = {
-    val randomLogin = s"${Random.nextInt() * Random.nextPrintableChar()}"
-    newUser(randomLogin, s"$randomLogin@example.com", "pass", "someSalt")
-  }
-
   it should "add and load code" in {
     // Given
-    val code = PasswordResetCode(code = "code", user = generateRandomUser)
-    userDao.add(code.user).futureValue
+    val user = newRandomStoredUser()
+    val code = PasswordResetCode(code = "code", user = user)
 
     // When
     dao.add(code).futureValue
@@ -38,12 +29,13 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
 
   it should "remove code" in {
     //Given
-    val code1: PasswordResetCode = PasswordResetCode(code = "code1", user = generateRandomUser)
-    val code2: PasswordResetCode = PasswordResetCode(code = "code2", user = generateRandomUser)
+    val user1 = newRandomStoredUser()
+    val user2 = newRandomStoredUser()
+
+    val code1 = PasswordResetCode(code = "code1", user = user1)
+    val code2 = PasswordResetCode(code = "code2", user = user2)
 
     val bgActions = for {
-      _ <- userDao.add(code1.user)
-      _ <- userDao.add(code2.user)
       _ <- dao.add(code1)
       _ <- dao.add(code2)
     } //When
@@ -58,11 +50,10 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithSql with Matchers with UserTe
 
   it should "not delete user on code removal" in {
     // Given
-    val user = generateRandomUser
+    val user = newRandomStoredUser()
     val code = PasswordResetCode(code = "code", user = user)
 
     val bgActions = for {
-      _ <- userDao.add(user)
       _ <- dao.add(code)
     } // When
     yield dao.remove(code)

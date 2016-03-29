@@ -35,7 +35,7 @@ object User {
     Utils.toHex(bytes)
   }
 
-  def passwordsMatch(plainPassword: String, user: User) = {
+  def passwordsMatch(plainPassword: String, user: User): Boolean = {
     user.password.equals(encryptPassword(plainPassword, user.salt))
   }
 }

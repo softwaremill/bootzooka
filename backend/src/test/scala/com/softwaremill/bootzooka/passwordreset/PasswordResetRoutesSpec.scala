@@ -2,72 +2,68 @@ package com.softwaremill.bootzooka.passwordreset
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
-import com.softwaremill.bootzooka.test.BaseRoutesSpec
-import org.mockito.BDDMockito._
-import org.mockito.Matchers
-import org.mockito.Matchers._
-import org.mockito.Mockito._
+import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpersWithDb}
+import com.softwaremill.bootzooka.user.User
 
-import scala.concurrent.Future
+class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { spec =>
 
-class PasswordResetRoutesSpec extends BaseRoutesSpec {
+  val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
+  val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
 
-  def createRoutes(_passwordResetService: PasswordResetService): Route = {
-    Route.seal(new PasswordResetRoutes with TestRoutesSupport {
-      override val userService = null
-      override val passwordResetService = _passwordResetService
-    }.passwordResetRoutes)
-  }
+  val routes = Route.seal(new PasswordResetRoutes with TestRoutesSupport {
+    override val userService = spec.userService
+    override val passwordResetService = spec.passwordResetService
+  }.passwordResetRoutes)
 
   "POST /" should "send e-mail to user" in {
     // given
-    val passwordResetService = mock[PasswordResetService]
-    given(passwordResetService.sendResetCodeToUser(any[String])).willReturn(Future.successful(()))
-    val routes = createRoutes(passwordResetService)
+    val user = newRandomStoredUser()
 
     // when
-    Post("/passwordreset", Map("login" -> "mylogin")) ~> routes ~> check {
-      responseAs[String] should be ("success")
-
-      verify(passwordResetService).sendResetCodeToUser("mylogin")
+    Post("/passwordreset", Map("login" -> user.login)) ~> routes ~> check {
+      emailService.wasEmailSentTo(user.email) should be (true)
     }
   }
 
   "POST /123 with password" should "change the password" in {
     // given
-    val passwordResetService = mock[PasswordResetService]
-    given(passwordResetService.performPasswordReset(any[String], any[String])).willReturn(Future.successful(Right(true)))
-    val routes = createRoutes(passwordResetService)
+    val user = newRandomStoredUser()
+    val code = PasswordResetCode(randomString(), user)
+    passwordResetCodeDao.add(code).futureValue
+
+    val newPassword = randomString()
 
     // when
-    Post("/passwordreset/123", Map("password" -> "validPassword")) ~> routes ~> check {
+    Post(s"/passwordreset/${code.code}", Map("password" -> newPassword)) ~> routes ~> check {
       responseAs[String] should be ("ok")
-      verify(passwordResetService).performPasswordReset("123", "validPassword")
+      User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be (true)
     }
   }
 
   "POST /123 without password" should "result in an error" in {
     // given
-    val passwordResetService = mock[PasswordResetService]
-    val routes = createRoutes(passwordResetService)
+    val user = newRandomStoredUser()
+    val code = PasswordResetCode(randomString(), user)
+    passwordResetCodeDao.add(code).futureValue
 
     // when
     Post("/passwordreset/123") ~> routes ~> check {
       status should be (StatusCodes.BadRequest)
-      verify(passwordResetService, never()).performPasswordReset(Matchers.eq("123"), anyString)
     }
   }
 
   "POST /123 with password but with invalid code" should "result in an error" in {
     // given
-    val passwordResetService = mock[PasswordResetService]
-    given(passwordResetService.performPasswordReset(any[String], any[String])).willReturn(Future.successful(Left("Error")))
-    val routes = createRoutes(passwordResetService)
+    val user = newRandomStoredUser()
+    val code = PasswordResetCode(randomString(), user)
+    passwordResetCodeDao.add(code).futureValue
+
+    val newPassword = randomString()
 
     // when
-    Post("/passwordreset/123", Map("password" -> "validPassword")) ~> routes ~> check {
-      responseAs[String] should be ("Error")
+    Post("/passwordreset/123", Map("password" -> newPassword)) ~> routes ~> check {
       status should be (StatusCodes.Forbidden)
+      User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be (false)
     }
   }
 }

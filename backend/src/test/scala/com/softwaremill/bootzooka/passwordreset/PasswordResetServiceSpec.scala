@@ -6,8 +6,8 @@ import java.util.UUID
 
 import com.softwaremill.bootzooka.config.CoreConfig
 import com.softwaremill.bootzooka.email.{EmailContentWithSubject, EmailService, EmailTemplatingEngine}
-import com.softwaremill.bootzooka.test.UserTestHelpers
-import com.softwaremill.bootzooka.user.{User, UserDao}
+import com.softwaremill.bootzooka.test.TestHelpers
+import com.softwaremill.bootzooka.user.{User, UserDao, UserId}
 import org.mockito.BDDMockito._
 import org.mockito.Matchers
 import org.mockito.Matchers._
@@ -21,7 +21,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PasswordResetServiceSpec extends FlatSpec with scalatest.Matchers with MockitoSugar with ScalaFutures
-    with IntegrationPatience with UserTestHelpers {
+    with IntegrationPatience with TestHelpers {
   val invalidLogin = "user2"
   val validLogin = "user"
 
@@ -120,7 +120,7 @@ class PasswordResetServiceSpec extends FlatSpec with scalatest.Matchers with Moc
       val resetCode = PasswordResetCode(UUID.randomUUID(), code, user, Instant.now().plus(1, ChronoUnit.HOURS).atOffset(ZoneOffset.UTC))
 
       given(codeDao.findByCode(code)) willReturn Future { Some(resetCode) }
-      given(userDao.changePassword(any[UserDao#UserId], any[String])).willReturn(Future.successful(()))
+      given(userDao.changePassword(any[UserId], any[String])).willReturn(Future.successful(()))
       given(codeDao.remove(resetCode)).willReturn(Future.successful(()))
 
       // when

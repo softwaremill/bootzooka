@@ -3,13 +3,9 @@ package com.softwaremill.bootzooka.user
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{Cookie, `Set-Cookie`}
 import akka.http.scaladsl.server.Route
-import com.softwaremill.bootzooka.email.{DummyEmailService, EmailTemplatingEngine}
-import com.softwaremill.bootzooka.test.{BaseRoutesSpec, FlatSpecWithSql, UserTestHelpers}
+import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpers}
 
-class UsersRoutesSpec extends BaseRoutesSpec with FlatSpecWithSql with UserTestHelpers { spec =>
-
-  val userDao = new UserDao(sqlDatabase)
-  val userService = new UserService(userDao, new DummyEmailService(), new EmailTemplatingEngine)
+class UsersRoutesSpec extends BaseRoutesSpec with TestHelpers { spec =>
 
   val routes = Route.seal(new UsersRoutes with TestRoutesSupport {
     override val userService = spec.userService

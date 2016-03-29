@@ -2,14 +2,14 @@ package com.softwaremill.bootzooka.user
 
 import java.util.UUID
 
-import com.softwaremill.bootzooka.test.{FlatSpecWithSql, UserTestHelpers}
+import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpers}
 import com.typesafe.scalalogging.StrictLogging
 import org.scalatest.Matchers
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 
-class UserDaoSpec extends FlatSpecWithSql with StrictLogging with UserTestHelpers with Matchers {
+class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers with Matchers {
   behavior of "UserDao"
 
   val userDao = new UserDao(sqlDatabase)
