@@ -4,8 +4,8 @@ import java.time.Instant
 
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.config.CoreConfig
-import com.softwaremill.bootzooka.email.{EmailTemplatingEngine, EmailService}
-import com.softwaremill.bootzooka.user.{UserDao, User}
+import com.softwaremill.bootzooka.email.{EmailContentWithSubject, EmailService, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.user.{User, UserDao}
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -19,8 +19,7 @@ class PasswordResetService(
 )(implicit ec: ExecutionContext) extends StrictLogging {
 
   def sendResetCodeToUser(login: String): Future[Unit] = {
-    logger.debug("Preparing to generate and send reset code to user")
-    logger.debug("Searching for user")
+    logger.debug(s"Preparing to generate and send reset code to user $login")
     val userFut = userDao.findByLoginOrEmail(login)
     userFut.flatMap {
       case Some(user) =>
@@ -36,17 +35,16 @@ class PasswordResetService(
   private def randomPass(user: User): PasswordResetCode = PasswordResetCode(Utils.randomString(32), user)
 
   private def storeCode(code: PasswordResetCode): Future[Unit] = {
-    logger.debug("Storing code")
+    logger.debug(s"Storing reset code for user ${code.user.login}")
     codeDao.add(code)
   }
 
   private def sendCode(code: PasswordResetCode): Future[Unit] = {
-    logger.debug("Scheduling e-mail with reset code")
+    logger.debug(s"Scheduling e-mail with reset code for user ${code.user.login}")
     emailService.scheduleEmail(code.user.email, prepareResetEmail(code.user, code))
   }
 
-  private def prepareResetEmail(user: User, code: PasswordResetCode) = {
-    logger.debug("Preparing content for password reset e-mail")
+  private def prepareResetEmail(user: User, code: PasswordResetCode): EmailContentWithSubject = {
     val resetLink = String.format(config.resetLinkPattern, code.code)
     emailTemplatingEngine.passwordReset(user.login, resetLink)
   }
@@ -55,7 +53,7 @@ class PasswordResetService(
     logger.debug("Performing password reset")
     codeDao.findByCode(code).flatMap {
       case Some(c) =>
-        if (c.validTo.toInstant().isAfter(Instant.now())) {
+        if (c.validTo.toInstant.isAfter(Instant.now())) {
           for {
             _ <- changePassword(c, newPassword)
             _ <- invalidateResetCode(c)
@@ -70,11 +68,11 @@ class PasswordResetService(
     }
   }
 
-  private def changePassword(code: PasswordResetCode, newPassword: String) = {
+  private def changePassword(code: PasswordResetCode, newPassword: String): Future[Unit] = {
     userDao.changePassword(code.user.id, User.encryptPassword(newPassword, code.user.salt))
   }
 
-  private def invalidateResetCode(code: PasswordResetCode) = {
+  private def invalidateResetCode(code: PasswordResetCode): Future[Unit] = {
     codeDao.remove(code)
   }
 }
