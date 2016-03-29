@@ -6,7 +6,6 @@ import java.util.UUID
 
 import akka.http.scaladsl.model.StatusCodes.ClientError
 import io.circe._
-import io.circe.generic.auto._
 import io.circe.syntax._
 
 trait CirceEncoders {

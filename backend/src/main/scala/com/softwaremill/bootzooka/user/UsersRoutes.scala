@@ -7,6 +7,7 @@ import com.softwaremill.bootzooka.api.RoutesSupport
 import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.session.SessionDirectives._
 import com.typesafe.scalalogging.StrictLogging
+import io.circe.generic.auto._
 
 import scala.concurrent.Future
 import com.softwaremill.session.SessionOptions._

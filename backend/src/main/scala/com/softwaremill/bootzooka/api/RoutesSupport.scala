@@ -23,7 +23,7 @@ trait RoutesSupport extends JsonSupport with SessionSupport {
   def completeOk = complete("ok")
 }
 
-trait JsonSupport extends CirceSupport {
+trait JsonSupport extends CirceEncoders {
 
   implicit def materializer: Materializer
 
