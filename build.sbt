@@ -36,9 +36,8 @@ val postgres = "org.postgresql" % "postgresql" % "9.4.1208"
 val flyway = "org.flywaydb" % "flyway-core" % "4.0"
 val slickStack = Seq(slick, h2, postgres, slickHikari, flyway)
 
-val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
 val scalatest = "org.scalatest" %% "scalatest" % "2.2.6" % "test"
-val unitTestingStack = Seq(mockito, scalatest)
+val unitTestingStack = Seq(scalatest)
 
 val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
 val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVersion % "test"
@@ -51,8 +50,6 @@ val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.2.4"
 val akkaStack = Seq(akkaHttpCore, akkaHttpExperimental, akkaHttpTestkit, akkaHttpSession)
 
 val commonDependencies = unitTestingStack ++ loggingStack
-
-name := "bootzooka"
 
 lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
   scalariformPreferences := scalariformPreferences.value
@@ -90,6 +87,7 @@ def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
   .settings(
+    name := "bootzooka",
     herokuFatJar in Compile := Some((assemblyOutputPath in backend in assembly).value),
     deployHeroku in Compile <<= (deployHeroku in Compile) dependsOn (assembly in backend)
   )
