@@ -20,8 +20,6 @@ val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
 val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
 val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
-val bugsnag = "com.bugsnag" % "bugsnag" % "1.3.0"
-
 val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
 
 val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
@@ -103,7 +101,7 @@ lazy val backend: Project = (project in file("backend"))
   .settings(commonSettings)
   .settings(Revolver.settings)
   .settings(
-    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(scalaXml, javaxMailSun, typesafeConfig, bugsnag),
+    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(scalaXml, javaxMailSun, typesafeConfig),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](

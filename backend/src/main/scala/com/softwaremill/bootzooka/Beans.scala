@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka
 
 import akka.actor.ActorSystem
-import com.softwaremill.bootzooka.common.logging.bugsnag.BugsnagErrorReporter
 import com.softwaremill.bootzooka.config.{ServerConfig, CoreConfig}
 import com.softwaremill.bootzooka.email.{EmailTemplatingEngine, EmailConfig, SmtpEmailService, DummyEmailService}
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetCodeDao, PasswordResetService}
@@ -52,8 +51,6 @@ trait Beans extends StrictLogging {
     emailTemplatingEngine,
     config
   )
-
-  lazy val errorReporter = BugsnagErrorReporter(config)
 
   lazy val refreshTokenStorage = new RefreshTokenStorageImpl(rememberMeTokenDao, system)
 }

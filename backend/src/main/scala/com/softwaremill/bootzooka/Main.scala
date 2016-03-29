@@ -7,7 +7,6 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
 import akka.stream.ActorMaterializer
 import com.softwaremill.bootzooka.api.Routes
-import com.softwaremill.bootzooka.common.logging.AsyncErrorReportingLogAppender
 import com.softwaremill.bootzooka.user.Session
 import com.softwaremill.session.{SessionConfig, SessionManager}
 import com.typesafe.scalalogging.StrictLogging
@@ -33,9 +32,6 @@ class Main() extends StrictLogging {
     }
 
     logger.info("Server secret: " + modules.sessionConfig.serverSecret.take(3) + "...")
-
-    // Initialize error reporting client.
-    AsyncErrorReportingLogAppender(modules.config, modules.errorReporter).init()
 
     modules.sqlDatabase.updateSchema()
 
