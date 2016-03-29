@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.email
 
-import com.softwaremill.bootzooka.email.sender.EmailDescription
+import SmtpEmailSender.EmailDescription
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.collection.mutable.ListBuffer
@@ -29,7 +29,7 @@ class DummyEmailService extends EmailService with StrictLogging {
     Future.successful(())
   }
 
-  def wasEmailSent(address: String, subject: String): Boolean = {
+  def wasEmailSent(address: String, subject: String): Boolean = this.synchronized {
     sentEmails.exists(email => email.emails.contains(address) && email.subject == subject)
   }
 }

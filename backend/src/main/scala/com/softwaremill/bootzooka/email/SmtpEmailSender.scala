@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.email.sender
+package com.softwaremill.bootzooka.email
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.util.{Date, Properties}
@@ -12,7 +12,7 @@ import com.typesafe.scalalogging.StrictLogging
  * Copied from softwaremill-common:
  * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
  */
-object EmailSender extends StrictLogging {
+object SmtpEmailSender extends StrictLogging {
 
   def send(
     smtpHost: String,
@@ -47,7 +47,7 @@ object EmailSender extends StrictLogging {
     m.setSubject(emailDescription.subject, encoding)
     m.setSentDate(new Date())
 
-    if (attachmentDescriptions.length > 0) {
+    if (attachmentDescriptions.nonEmpty) {
       addAttachments(m, emailDescription.message, encoding, attachmentDescriptions: _*)
     }
     else {
@@ -102,13 +102,7 @@ object EmailSender extends StrictLogging {
   }
 
   private def convertStringEmailsToAddresses(emails: Array[String]): Array[Address] = {
-    val addresses = new Array[Address](emails.length)
-
-    for (i <- 0 until emails.length) {
-      addresses(i) = new InternetAddress(emails(i))
-    }
-
-    addresses
+    emails.map(new InternetAddress(_))
   }
 
   private def addAttachments(mimeMessage: MimeMessage, msg: String, encoding: String,
@@ -149,4 +143,19 @@ object EmailSender extends StrictLogging {
 
     mimeMessage.setContent(multiPart)
   }
+
+  case class EmailDescription(
+      emails: Array[String],
+      message: String,
+      subject: String,
+      replyToEmails: Array[String],
+      ccEmails: Array[String],
+      bccEmails: Array[String]
+  ) {
+
+    def this(emails: List[String], message: String, subject: String) =
+      this(emails.toArray, message, subject, Array(), Array(), Array())
+  }
+
+  case class AttachmentDescription(content: Array[Byte], filename: String, contentType: String)
 }
