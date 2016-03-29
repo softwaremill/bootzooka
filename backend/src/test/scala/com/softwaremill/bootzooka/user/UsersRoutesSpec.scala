@@ -3,9 +3,9 @@ package com.softwaremill.bootzooka.user
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{Cookie, `Set-Cookie`}
 import akka.http.scaladsl.server.Route
-import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpers}
+import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpersWithDb}
 
-class UsersRoutesSpec extends BaseRoutesSpec with TestHelpers { spec =>
+class UsersRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { spec =>
 
   val routes = Route.seal(new UsersRoutes with TestRoutesSupport {
     override val userService = spec.userService

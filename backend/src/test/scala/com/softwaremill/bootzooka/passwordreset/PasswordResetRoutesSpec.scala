@@ -25,7 +25,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
     }
   }
 
-  "POST /123 with password" should "change the password" in {
+  "POST /[code] with password" should "change the password" in {
     // given
     val user = newRandomStoredUser()
     val code = PasswordResetCode(randomString(), user)
@@ -40,7 +40,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
     }
   }
 
-  "POST /123 without password" should "result in an error" in {
+  "POST /[code] without password" should "result in an error" in {
     // given
     val user = newRandomStoredUser()
     val code = PasswordResetCode(randomString(), user)
@@ -52,7 +52,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
     }
   }
 
-  "POST /123 with password but with invalid code" should "result in an error" in {
+  "POST /[code] with password but with invalid code" should "result in an error" in {
     // given
     val user = newRandomStoredUser()
     val code = PasswordResetCode(randomString(), user)

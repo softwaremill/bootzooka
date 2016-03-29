@@ -1,15 +1,11 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
-import com.softwaremill.bootzooka.user.UserDao
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {
   behavior of "PasswordResetCodeDao"
 
   val dao = new PasswordResetCodeDao(sqlDatabase)
-  val userDao = new UserDao(sqlDatabase)
 
   it should "add and load code" in {
     // Given
