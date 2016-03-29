@@ -10,7 +10,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{AuthorizationFailedRejection, Directive1}
 import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 import akka.stream.Materializer
-import com.softwaremill.bootzooka.user.{Session, UserJson, UserService}
+import com.softwaremill.bootzooka.user.{BasicUserData, Session, UserService}
 import com.softwaremill.session.SessionDirectives._
 import com.softwaremill.session.{RefreshTokenStorage, SessionManager}
 import cats.data.Xor
@@ -67,7 +67,7 @@ trait SessionSupport {
 
   def userService: UserService
 
-  def userFromSession: Directive1[UserJson] = userIdFromSession.flatMap { userId =>
+  def userFromSession: Directive1[BasicUserData] = userIdFromSession.flatMap { userId =>
     onSuccess(userService.findById(userId)).flatMap {
       case None => reject(AuthorizationFailedRejection)
       case Some(user) => provide(user)

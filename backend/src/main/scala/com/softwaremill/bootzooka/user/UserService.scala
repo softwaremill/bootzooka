@@ -15,7 +15,7 @@ class UserService(
 )(implicit ec: ExecutionContext) {
 
   def findById(userId: userDao.UserId) = {
-    userDao.findById(userId).map(toUserJson)
+    userDao.findById(userId).map(toBasicUserData)
   }
 
   def registerNewUser(login: String, email: String, password: String): Future[UserRegisterResult] = {
@@ -39,12 +39,12 @@ class UserService(
     }
   }
 
-  def authenticate(login: String, nonEncryptedPassword: String): Future[Option[UserJson]] = {
+  def authenticate(login: String, nonEncryptedPassword: String): Future[Option[BasicUserData]] = {
     userDao.findByLoginOrEmail(login).map(userOpt =>
-      toUserJson(userOpt.filter(u => User.passwordsMatch(nonEncryptedPassword, u))))
+      toBasicUserData(userOpt.filter(u => User.passwordsMatch(nonEncryptedPassword, u))))
   }
 
-  private def toUserJson(userOpt: Option[User]) = userOpt.map(UserJson(_))
+  private def toBasicUserData(userOpt: Option[User]) = userOpt.map(BasicUserData(_))
 
   def checkUserExistenceFor(login: String, email: String): Future[Either[String, Unit]] = {
     val existingLoginFuture = userDao.findByLowerCasedLogin(login)

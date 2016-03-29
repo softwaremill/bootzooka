@@ -16,7 +16,7 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
 
   def userService: UserService
 
-  implicit val userJsonCbs = CanBeSerialized[UserJson]
+  implicit val basicUserDataCbs = CanBeSerialized[BasicUserData]
 
   val usersRoutes = pathPrefix("users") {
     path("logout") {
