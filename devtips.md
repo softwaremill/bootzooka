@@ -10,11 +10,7 @@ Generally during development you'll need two processes:
 
 ## Cloning
 
-If you are planning to use Bootzooka as scaffolding for your own project, consider cloning the repo with `git clone --depth 1` in order to start the history with last commit. You can now switch to your origin repository of choice with: `git remote set-url origin https://repo.com/OTHERREPOSITORY.git`  
-
-## IDE
-
-You can use either [IntelliJ IDEA](http://www.jetbrains.com/idea/) or [Scala Eclipse IDE](http://scala-ide.org). 
+If you are planning to use Bootzooka as scaffolding for your own project, consider cloning the repo with `git clone --depth 1` in order to start the history with last commit. You can now switch to your origin repository of choice with: `git remote set-url origin https://repo.com/OTHERREPOSITORY.git`
 
 ## Useful sbt commands
 
@@ -43,3 +39,13 @@ proxies: [ {
     }
 } ]
 ```
+
+## JSON
+
+For serializing data to JSON the [Circe](https://github.com/travisbrown/circe) library is used. It relies on compile-time codec generation, instead of run-time reflection. If in your endpoint, you want to send a response to the client which corresponds to a case class, you need to:
+
+1. make sure that the content of `JsonSupport` is in scope (e.g. by extending the trait itself or the more general `RoutesSupport`)
+2. `import io.circe.generic.auto._` which will automatically generate a codec from the case class at compile-time
+3. define an implicit `CanBeSerialized[T]` instance for the type `T` that you want to send. This is a feature of Bootzooka, not normally required, but included to make sure that you only send data that indeed should be sent (to avoid automatically serializing e.g. a list of `User` instances which contains the password hashes)
+
+Of course, the existing endpoints (for managing users, getting the version) have all of that ready.
