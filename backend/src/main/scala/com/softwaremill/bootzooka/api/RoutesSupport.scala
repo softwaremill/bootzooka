@@ -19,6 +19,7 @@ import io.circe.jawn.decode
 import com.softwaremill.session.SessionOptions._
 
 import scala.concurrent.ExecutionContext
+
 trait RoutesSupport extends JsonSupport with SessionSupport {
   def completeOk = complete("ok")
 }
@@ -95,9 +96,10 @@ trait CacheSupport {
     `Cache-Control`(`public`, `max-age`(cacheSeconds))
   )
 
-  private def extensionTest(ext: String) = pathSuffixTest((".*\\." + ext + "$").r)
+  private def extensionTest(ext: String): Directive1[String] = pathSuffixTest((".*\\." + ext + "$").r)
+  private def extensionsTest(exts: String*): Directive1[String] = exts.map(extensionTest).reduceLeft(_ | _)
 
   val cacheImages =
-    (extensionTest("png") | extensionTest("svg") | extensionTest("gif") | extensionTest("woff") | extensionTest("jpg")).flatMap { _ => cacheResponse } |
+    extensionsTest("png", "svg", "gif", "woff", "jpg").flatMap { _ => cacheResponse } |
       doNotCacheResponse
 }
