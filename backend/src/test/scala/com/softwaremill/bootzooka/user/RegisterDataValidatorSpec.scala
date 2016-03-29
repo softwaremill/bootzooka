@@ -1,9 +1,8 @@
 package com.softwaremill.bootzooka.user
 
 import org.scalatest.{FlatSpec, Matchers}
-import org.scalatest.mock.MockitoSugar
 
-class RegisterDataValidatorSpec extends FlatSpec with Matchers with MockitoSugar {
+class RegisterDataValidatorSpec extends FlatSpec with Matchers {
 
   "isDataValid()" should "accept valid data" in {
     val dataIsValid: Boolean = RegisterDataValidator.isDataValid("login", "admin@sml.com", "password")
