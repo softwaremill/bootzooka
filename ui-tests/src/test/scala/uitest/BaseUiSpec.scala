@@ -86,7 +86,7 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
 
   override def afterAll() {
     binding.unbind().futureValue
-    beans.system.shutdown()
+    beans.system.terminate()
   }
 
   def createPage[T](clazz: Class[T]): T = PageFactory.initElements(driver, clazz)
