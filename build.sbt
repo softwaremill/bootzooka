@@ -36,7 +36,7 @@ val slick = "com.typesafe.slick" %% "slick" % slickVersion
 val slickHikari = "com.typesafe.slick" %% "slick-hikaricp" % slickVersion
 val h2 = "com.h2database" % "h2" % "1.3.176" //watch out! 1.4.190 is beta
 val postgres = "org.postgresql" % "postgresql" % "9.4.1207"
-val flyway = "org.flywaydb" % "flyway-core" % "3.2.1"
+val flyway = "org.flywaydb" % "flyway-core" % "4.0"
 val slickStack = Seq(slick, h2, postgres, slickHikari, flyway)
 
 val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test"
