@@ -4,8 +4,10 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.AuthorizationFailedRejection
 import akka.http.scaladsl.server.Directives._
 import com.softwaremill.bootzooka.api.RoutesSupport
+import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.session.SessionDirectives._
 import com.typesafe.scalalogging.StrictLogging
+
 import scala.concurrent.Future
 import com.softwaremill.session.SessionOptions._
 
@@ -90,7 +92,7 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
 }
 
 case class RegistrationInput(login: String, email: String, password: String) {
-  def loginEscaped = scala.xml.Utility.escape(login)
+  def loginEscaped = Utils.escapeHtml(login)
 }
 
 case class ChangePasswordInput(currentPassword: String, newPassword: String)

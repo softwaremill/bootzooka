@@ -22,7 +22,6 @@ val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
 val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
 
-val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
 val circeCore = "io.circe" %% "circe-core" % circeVersion
 val circeGeneric = "io.circe" %% "circe-generic" % circeVersion
 val circeJawn = "io.circe" %% "circe-jawn" % circeVersion
@@ -101,7 +100,7 @@ lazy val backend: Project = (project in file("backend"))
   .settings(commonSettings)
   .settings(Revolver.settings)
   .settings(
-    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(scalaXml, javaxMailSun, typesafeConfig),
+    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(javaxMailSun, typesafeConfig),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](
