@@ -257,6 +257,10 @@ module.exports =  grunt => {
 
   require('matchdep').filterDev('grunt-*').forEach(dep => grunt.loadNpmTasks(dep));
 
+  grunt.registerTask('default', () =>{
+    grunt.task.run(['server']);
+  });
+
   grunt.registerTask('server', target => {
     if (target === 'dist') {
       return grunt.task.run(['build', 'configureProxies', 'connect:dist']);
