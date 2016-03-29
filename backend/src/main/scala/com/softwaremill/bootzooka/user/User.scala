@@ -8,7 +8,7 @@ import javax.crypto.spec.PBEKeySpec
 import com.softwaremill.bootzooka.common.Utils
 
 case class User(
-  id: UUID,
+  id: UserId,
   login: String,
   loginLowerCased: String,
   email: String,

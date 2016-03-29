@@ -14,7 +14,7 @@ class UserService(
     emailTemplatingEngine: EmailTemplatingEngine
 )(implicit ec: ExecutionContext) {
 
-  def findById(userId: userDao.UserId) = {
+  def findById(userId: UserId) = {
     userDao.findById(userId).map(toBasicUserData)
   }
 

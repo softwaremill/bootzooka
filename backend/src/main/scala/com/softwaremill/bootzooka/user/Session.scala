@@ -6,7 +6,7 @@ import com.softwaremill.session.{MultiValueSessionSerializer, SessionSerializer}
 
 import scala.util.Try
 
-case class Session(userId: UUID)
+case class Session(userId: UserId)
 
 object Session {
   implicit val serializer: SessionSerializer[Session, String] = new MultiValueSessionSerializer[Session](

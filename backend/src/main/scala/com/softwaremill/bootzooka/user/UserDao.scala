@@ -13,8 +13,6 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
   import database._
   import database.driver.api._
 
-  type UserId = UUID
-
   def add(user: User): Future[Unit] = db.run(users += user).mapToUnit
 
   def findById(userId: UserId): Future[Option[User]] = findOneWhere(_.id === userId)

@@ -1,7 +1,5 @@
 package com.softwaremill.bootzooka.api
 
-import java.util.UUID
-
 import akka.http.scaladsl.marshalling._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.CacheDirectives.{`max-age`, `must-revalidate`, `no-cache`, `no-store`, `public`}
@@ -10,7 +8,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{AuthorizationFailedRejection, Directive1}
 import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 import akka.stream.Materializer
-import com.softwaremill.bootzooka.user.{BasicUserData, Session, UserService}
+import com.softwaremill.bootzooka.user.{BasicUserData, Session, UserId, UserService}
 import com.softwaremill.session.SessionDirectives._
 import com.softwaremill.session.{RefreshTokenStorage, SessionManager}
 import cats.data.Xor
@@ -74,7 +72,7 @@ trait SessionSupport {
     }
   }
 
-  def userIdFromSession: Directive1[UUID] = session(refreshable, usingCookies).flatMap {
+  def userIdFromSession: Directive1[UserId] = session(refreshable, usingCookies).flatMap {
     _.toOption match {
       case None => reject(AuthorizationFailedRejection)
       case Some(s) => provide(s.userId)
