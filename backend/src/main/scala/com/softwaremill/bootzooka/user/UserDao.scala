@@ -17,6 +17,9 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
 
   def findById(userId: UserId): Future[Option[User]] = findOneWhere(_.id === userId)
 
+  def findBasicDataById(userId: UserId): Future[Option[BasicUserData]] =
+    db.run(users.filter(_.id === userId).map(_.basic).result.headOption)
+
   private def findOneWhere(condition: Users => Rep[Boolean]) = db.run(users.filter(condition).result.headOption)
 
   def findByEmail(email: String): Future[Option[User]] = findOneWhere(_.email.toLowerCase === email.toLowerCase)
@@ -68,6 +71,7 @@ trait SqlUserSchema {
     def createdOn       = column[OffsetDateTime]("created_on")
 
     def * = (id, login, loginLowerCase, email, password, salt, createdOn) <> ((User.apply _).tupled, User.unapply)
+    def basic = (id, login, email, createdOn) <> ((BasicUserData.apply _).tupled, BasicUserData.unapply)
     // format: ON
   }
 

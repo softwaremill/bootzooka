@@ -14,8 +14,8 @@ class UserService(
     emailTemplatingEngine: EmailTemplatingEngine
 )(implicit ec: ExecutionContext) {
 
-  def findById(userId: UserId) = {
-    userDao.findById(userId).map(toBasicUserData)
+  def findById(userId: UserId): Future[Option[BasicUserData]] = {
+    userDao.findBasicDataById(userId)
   }
 
   def registerNewUser(login: String, email: String, password: String): Future[UserRegisterResult] = {
@@ -41,12 +41,10 @@ class UserService(
 
   def authenticate(login: String, nonEncryptedPassword: String): Future[Option[BasicUserData]] = {
     userDao.findByLoginOrEmail(login).map(userOpt =>
-      toBasicUserData(userOpt.filter(u => User.passwordsMatch(nonEncryptedPassword, u))))
+      userOpt.filter(u => User.passwordsMatch(nonEncryptedPassword, u)).map(BasicUserData.fromUser))
   }
 
-  private def toBasicUserData(userOpt: Option[User]) = userOpt.map(BasicUserData(_))
-
-  def checkUserExistenceFor(login: String, email: String): Future[Either[String, Unit]] = {
+  protected[user] def checkUserExistenceFor(login: String, email: String): Future[Either[String, Unit]] = {
     val existingLoginFuture = userDao.findByLowerCasedLogin(login)
     val existingEmailFuture = userDao.findByEmail(email)
 
@@ -79,14 +77,9 @@ class UserService(
       case Some(u) => if (User.passwordsMatch(currentPassword, u)) {
         userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)).map(Right(_))
       }
-      else {
-        Future {
-          Left("Current password is invalid")
-        }
-      }
-      case None => Future {
-        Left("User not found hence cannot change password")
-      }
+      else Future.successful(Left("Current password is invalid"))
+
+      case None => Future.successful(Left("User not found hence cannot change password"))
     }
   }
 }

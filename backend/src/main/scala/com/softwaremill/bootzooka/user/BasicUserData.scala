@@ -6,5 +6,5 @@ import java.util.UUID
 case class BasicUserData(id: UserId, login: String, email: String, createdOn: OffsetDateTime)
 
 object BasicUserData {
-  def apply(user: User) = new BasicUserData(user.id, user.login, user.email, user.createdOn)
+  def fromUser(user: User) = new BasicUserData(user.id, user.login, user.email, user.createdOn)
 }
