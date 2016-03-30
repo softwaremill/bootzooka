@@ -32,7 +32,7 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
         post {
           entity(as[RegistrationInput]) { in =>
             onSuccess(userService.registerNewUser(in.loginEscaped, in.email, in.password)) {
-              case UserRegisterResult.InvalidData => complete(StatusCodes.BadRequest, "Wrong user data!")
+              case UserRegisterResult.InvalidData(msg) => complete(StatusCodes.BadRequest, msg)
               case UserRegisterResult.UserExists(msg) => complete(StatusCodes.Conflict, msg)
               case UserRegisterResult.Success => complete("success")
             }

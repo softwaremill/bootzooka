@@ -39,3 +39,9 @@ object User {
     user.password.equals(encryptPassword(plainPassword, user.salt))
   }
 }
+
+case class BasicUserData(id: UserId, login: String, email: String, createdOn: OffsetDateTime)
+
+object BasicUserData {
+  def fromUser(user: User) = new BasicUserData(user.id, user.login, user.email, user.createdOn)
+}

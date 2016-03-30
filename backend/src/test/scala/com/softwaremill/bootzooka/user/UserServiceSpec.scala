@@ -14,35 +14,6 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
     userDao.add(newUser("Admin2", "admin2@sml.com", "pass", "salt")).futureValue
   }
 
-  "checkExistence" should "not find given user login and e-mail" in {
-    val userExistence = userService.checkUserExistenceFor("newUser", "newUser@sml.com").futureValue
-    userExistence should be ('right)
-  }
-
-  "checkExistence" should "find duplicated login" in {
-    val userExistence = userService.checkUserExistenceFor("Admin", "newUser@sml.com").futureValue
-
-    userExistence should be(Left("Login already in use!"))
-  }
-
-  "checkExistence" should "find duplicated login written as upper cased string" in {
-    val userExistence = userService.checkUserExistenceFor("ADMIN", "newUser@sml.com").futureValue
-
-    userExistence should be(Left("Login already in use!"))
-  }
-
-  "checkExistence" should "find duplicated email" in {
-    val userExistence = userService.checkUserExistenceFor("newUser", "admin@sml.com").futureValue
-
-    userExistence should be(Left("E-mail already in use!"))
-  }
-
-  "checkExistence" should "find duplicated email written as upper cased string" in {
-    val userExistence = userService.checkUserExistenceFor("newUser", "ADMIN@sml.com").futureValue
-
-    userExistence should be(Left("E-mail already in use!"))
-  }
-
   "registerNewUser" should "add user with unique lowercase login info" in {
     // When
     val result = userService.registerNewUser("John", "newUser@sml.com", "password").futureValue
@@ -58,6 +29,21 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
     user.loginLowerCased should be ("john")
 
     emailService.wasEmailSentTo("newUser@sml.com") should be (true)
+  }
+
+  "registerNewUser" should "not register a user if a user with the given login/e-mail exists" in {
+    // when
+    val resultInitial = userService.registerNewUser("John", "newUser@sml.com", "password").futureValue
+    val resultSameLogin = userService.registerNewUser("John", "newUser2@sml.com", "password").futureValue
+    val resultSameEmail = userService.registerNewUser("John2", "newUser@sml.com", "password").futureValue
+
+    // then
+    resultInitial should be (UserRegisterResult.Success)
+    resultSameLogin should matchPattern { case UserRegisterResult.UserExists(_) => }
+    resultSameEmail should matchPattern { case UserRegisterResult.UserExists(_) => }
+
+    userDao.findByLoginOrEmail("newUser2@sml.com").futureValue should be (None)
+    userDao.findByLoginOrEmail("John2").futureValue should be (None)
   }
 
   "registerNewUser" should "not schedule an email on existing login" in {
