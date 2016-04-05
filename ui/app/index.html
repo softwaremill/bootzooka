@@ -7,7 +7,7 @@
 
     <!-- build:css(app) styles/index-all.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css" />
     <!-- endbower -->
     <link href="common/styles/application.css" rel="stylesheet">
     <!-- endbuild -->
@@ -17,30 +17,8 @@
     <!-- Workaround for IE to provide console object -->
 
     <script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
-
-    <!-- build:js({app}) scripts/vendor-all.js -->
-    <!-- bower:js -->
-    <script src="../bower_components/jquery/dist/jquery.js"></script>
-    <script src="../bower_components/lodash/lodash.js"></script>
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="../bower_components/api-check/dist/api-check.js"></script>
-    <script src="../bower_components/angular-formly/dist/formly.js"></script>
-    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="../bower_components/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap.js"></script>
-    <script src="../bower_components/angular-resource/angular-resource.js"></script>
-    <script src="../bower_components/angular-route/angular-route.js"></script>
-    <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="../bower_components/ng-currency/dist/ng-currency.min.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-
-    <!-- logic -->
-    <!-- build:js scripts/bootzooka-all.js -->
-    <!-- angular -->
-    <!-- endangular -->
-    <!-- endbuild -->
+    <script src="vendor.bundle.js"></script>
+    <script src="bootzooka.bundle.js"></script>
 </head>
 <body ng-app="smlBootzooka">
 

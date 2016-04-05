@@ -4,14 +4,18 @@ var autoprefixer = require('autoprefixer');
 
 var config = {
   context: __dirname + '/app',
-  entry: './app.js',
+  entry: {
+    app: './app.js',
+    vendor: './vendor.js'  
+  },
   output: {
     path: __dirname + '/dist',
-    filename: 'bundle.js'
+    filename: 'bootzooka.bundle.js'
   },
 
   plugins: [
-      new ExtractTextPlugin('styles.css')
+      new ExtractTextPlugin('styles.css'),
+      new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')
   ],
 
   module: {
