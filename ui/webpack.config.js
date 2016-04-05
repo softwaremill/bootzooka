@@ -4,7 +4,7 @@ var autoprefixer = require('autoprefixer');
 
 var config = {
   context: __dirname + '/app',
-  entry: './index.js',
+  entry: './app.js',
   output: {
     path: __dirname + '/dist',
     filename: 'bundle.js'
