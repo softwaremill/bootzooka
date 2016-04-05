@@ -5,14 +5,12 @@
     "build": "NODE_ENV=production webpack && cp app/index.html dist/index.html"
   },
   "devDependencies": {
-    "angular": "^1.5.0",
-    "angular-ui-router": "^0.2.18",
+    "angular-mocks": "~1.5.0",
     "babel-core": "^6.4.5",
     "babel-loader": "^6.2.1",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-stage-2": "^6.5.0",
-    "bootstrap": "^3.3.6",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
@@ -23,6 +21,20 @@
     "stylus-loader": "^1.5.0",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
+  },
+  "dependencies": {
+    "lodash": "~4.3.0",
+    "angular": "~1.5.0",
+    "angular-cookies": "~1.5.0",
+    "angular-formly": "~7.3.4",
+    "angular-formly-templates-bootstrap": "~6.2.0",
+    "angular-resource": "~1.5.0",
+    "angular-sanitize": "~1.5.0",
+    "angular-ui-router": "~0.2.18",
+    "api-check": "~7.5.5",
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.1.4",
+    "ng-currency": "~0.8.8"
   },
   "babel": {
     "presets": [
