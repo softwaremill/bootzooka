@@ -1,4 +1,6 @@
 var webpack = require('webpack');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var autoprefixer = require('autoprefixer');
 
 var config = {
   context: __dirname + '/app',
@@ -8,7 +10,9 @@ var config = {
     filename: 'bundle.js'
   },
 
-  plugins: [],
+  plugins: [
+      new ExtractTextPlugin('styles.css')
+  ],
 
   module: {
     loaders: [
@@ -19,9 +23,16 @@ var config = {
       },
       {test: /.html$/, loader: 'raw', exclude: /(node_modules)/},
       {test: /.css$/, loader: 'style!css'},
-      {test: /.styl$/, loader: 'style!css!stylus', exclude: /(node_modules)/},
+      {
+          test: /.styl$/, 
+          loader: ExtractTextPlugin.extract('style-loader', 
+          'css-loader!stylus!postcss-loader'), exclude: /(node_modules)/
+      },
       {test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/, loader: 'file'}
     ]
+  },
+  postcss: function () {
+    return [autoprefixer({browsers: ['last 2 versions']})];
   }
 };
 
