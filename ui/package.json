@@ -1,8 +1,8 @@
 {
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node node_modules/.bin/webpack-dev-server --content-base app",
-    "build": "NODE_ENV=production webpack && cp app/index.html dist/index.html"
+    "start": "webpack-dev-server",
+    "build": "NODE_ENV=production webpack"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0",
