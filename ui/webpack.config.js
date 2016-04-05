@@ -4,7 +4,7 @@ var config = {
   context: __dirname + '/app',
   entry: './index.js',
   output: {
-    path: __dirname + '/app',
+    path: __dirname + '/dist',
     filename: 'bundle.js'
   },
 
