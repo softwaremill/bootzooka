@@ -14,7 +14,7 @@ module.exports = config => {
     'bower_components/angular-ui-router/release/angular-ui-router.js'
   ].forEach(file => files.push(file));
 
-  files.push('app/app.js');
+  files.push('app/index.js');
   files.push('app/**/*.js');
   files.push('app/**/**/*.js');
   files.push('.tmp/scripts/**/*.js');

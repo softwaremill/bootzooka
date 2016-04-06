@@ -5,20 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SML Bootzooka</title>
 
-    <!-- build:css(app) styles/index-all.css -->
-    <!-- bower:css -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css" />
-    <!-- endbower -->
     <link href="app/common/styles/application.css" rel="stylesheet">
-    <!-- endbuild -->
 
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
 
-    <!-- Workaround for IE to provide console object -->
 
-    <script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
-    <script src="dist/vendor.bundle.js"></script>
-    <script src="dist/bootzooka.bundle.js"></script>
 </head>
 <body ng-app="smlBootzooka">
 
@@ -75,6 +67,7 @@
     <div id="loading-indicator" class="alert alert-info" role="alert" bs-http-request-tracker>
         <span><img src="assets/img/busy.gif" border="0">Loading ...</span>
     </div>
-
+    <script src="vendor.bundle.js"></script>
+    <script src="bootzooka.bundle.js"></script>
 </body>
 </html>

@@ -6,11 +6,11 @@ const path = require('path');
 var config = {
   context: path.join(__dirname, 'app'),
   entry: {
-    app: './app.js',
-    vendor: './vendor.js'  
+    app: './index.js',
+    vendor: './vendor.js'
   },
   output: {
-    path: __dirname + '/dist',
+    path: __dirname + '/app',
     filename: 'bootzooka.bundle.js'
   },
   plugins: [
@@ -28,8 +28,8 @@ var config = {
       {test: /.html$/, loader: 'raw', exclude: /(node_modules)/},
       {test: /.css$/, loader: 'style!css'},
       {
-          test: /.styl$/, 
-          loader: ExtractTextPlugin.extract('style-loader', 
+          test: /.styl$/,
+          loader: ExtractTextPlugin.extract('style-loader',
           'css-loader!stylus!postcss-loader'), exclude: /(node_modules)/
       },
       {test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/, loader: 'file'}
@@ -41,6 +41,7 @@ var config = {
 };
 
 if (process.env.NODE_ENV === 'production') {
+  config.output.path = __dirname + '/dist';
   config.plugins.push(new webpack.optimize.UglifyJsPlugin());
 } else {
   config.devtool = 'eval'
