@@ -11,14 +11,17 @@ header(ngModule);
 
 import footer from './component/footer';
 footer(ngModule);
-//
-// import kcdDirective from './directives/kcd';
-// kcdDirective(ngModule);
-//
-// import mainCtrl from './features/main';
-// mainCtrl(ngModule);
-//
-// import homeCtrl from './features/home';
-// homeCtrl(ngModule);
-//
+
+import sessionCtrl from './component/session';
+sessionCtrl(ngModule);
+
+import notifyCtrl from './component/notifications';
+notifyCtrl(ngModule);
+
+import versionCtrl from './component/version';
+versionCtrl(ngModule);
+
+import homeCtrl from './component/home';
+homeCtrl(ngModule);
+
 
