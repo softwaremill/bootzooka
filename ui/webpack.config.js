@@ -21,7 +21,6 @@ var config = {
       jQuery: "jquery"
     })
   ],
-
   module: {
     loaders: [
       {
@@ -41,6 +40,13 @@ var config = {
   },
   postcss: function () {
     return [autoprefixer({browsers: ['last 2 versions']})];
+  },
+  devServer: {
+    proxy: {
+      '/api/*': {
+        target: 'http://localhost:8080'
+      }
+    }
   }
 };
 

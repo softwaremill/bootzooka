@@ -17,7 +17,10 @@ export default ngModule => {
 
     userSessionService.isLogged = () => angular.isObject(loggedUser);
 
-    userSessionService.isNotLogged = () => !userSessionService.isLogged();
+    userSessionService.isNotLogged = () => {
+      // console.log("isNotLogged");
+      return !userSessionService.isLogged()
+    };
 
     userSessionService.login = user => $http.post('api/users', angular.toJson(user)).then(response => {
       loggedUser = response.data;

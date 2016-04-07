@@ -6,12 +6,6 @@ import uirouter from 'angular-ui-router';
 
 const ngModule = angular.module('smlBootzooka', [uirouter]);//.config(routing);
 
-import header from './component/header';
-header(ngModule);
-
-import footer from './component/footer';
-footer(ngModule);
-
 import sessionCtrl from './component/session';
 sessionCtrl(ngModule);
 
@@ -24,4 +18,8 @@ versionCtrl(ngModule);
 import homeCtrl from './component/home';
 homeCtrl(ngModule);
 
+import header from './component/header';
+header(ngModule);
 
+import footer from './component/footer';
+footer(ngModule);
