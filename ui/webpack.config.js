@@ -1,9 +1,10 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var autoprefixer = require('autoprefixer');
+const path = require('path');
 
 var config = {
-  context: __dirname + '/app',
+  context: path.join(__dirname, 'app'),
   entry: {
     app: './app.js',
     vendor: './vendor.js'  
