@@ -13,7 +13,6 @@ var config = {
     path: __dirname + '/dist',
     filename: 'bootzooka.bundle.js'
   },
-
   plugins: [
       new ExtractTextPlugin('styles.css'),
       new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')
@@ -43,6 +42,8 @@ var config = {
 
 if (process.env.NODE_ENV === 'production') {
   config.plugins.push(new webpack.optimize.UglifyJsPlugin());
+} else {
+  config.devtool = 'eval'
 }
 
 module.exports = config;
