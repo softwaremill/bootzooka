@@ -1,7 +1,5 @@
-'use strict';
-
-angular.module('smlBootzooka.profile')
-  .controller('LoginCtrl', ($scope, UserSessionService, $state, $stateParams, NotificationsService) => {
+export default ngModule => {
+  ngModule.controller('LoginCtrl', ($scope, UserSessionService, $state, $stateParams, NotificationsService) => {
 
     $scope.user = {};
     $scope.user.login = '';
@@ -30,4 +28,5 @@ angular.module('smlBootzooka.profile')
     function loginFailed() {
       NotificationsService.showError('Invalid login and/or password.');
     }
-  });
+  })
+}
