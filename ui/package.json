@@ -2,7 +2,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --content-base app --port 9090",
-    "build": "NODE_ENV=production webpack && cp app/index.html dist/index.html"
+    "build": "NODE_ENV=production webpack && cp app/index.html dist/index.html",
+    "dist": "npm run build && hs dist -p 9090"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0",
@@ -14,6 +15,7 @@
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
+    "http-server": "^0.9.0",
     "ng-annotate-loader": "^0.1.0",
     "postcss-loader": "^0.8.2",
     "raw-loader": "^0.5.1",
