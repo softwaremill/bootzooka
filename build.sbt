@@ -133,3 +133,5 @@ lazy val uiTests = (project in file("ui-tests"))
   ) dependsOn backend
 
 RenameProject.settings
+
+fork in run := true
