@@ -67,6 +67,7 @@ export function stateChangeSuccess($rootScope, FlashService, NotificationsServic
 
 routing.$inject = ['$urlRouterProvider', '$stateProvider'];
 export function routing($urlRouterProvider, $stateProvider) {
+  $urlRouterProvider.when('', '/');
   $urlRouterProvider.otherwise('/error404');
 
   $stateProvider

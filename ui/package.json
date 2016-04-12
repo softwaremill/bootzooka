@@ -2,8 +2,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --content-base app --port 9090",
-    "build": "NODE_ENV=production webpack && cp app/index.html dist/index.html",
-    "dist": "npm run build && hs dist -p 9090"
+    "build": "NODE_ENV=production webpack && cp app/index.html dist/webapp/index.html && cp -R app/assets dist/webapp",
+    "dist": "npm run build && hs dist/webapp -p 9090 -P http://localhost:8080"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0",

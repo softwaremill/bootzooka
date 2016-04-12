@@ -4,8 +4,11 @@ import angular from 'angular'
 import uirouter from 'angular-ui-router';
 import sanitize from 'angular-sanitize';
 import {intercept, stateChangeSuccess, stateChangeStart, routing} from './app.config'
+import ngResource from 'angular-resource'
+import ngCookies from 'angular-cookies'
 
-const ngModule = angular.module('smlBootzooka', [uirouter, sanitize])
+
+const ngModule = angular.module('smlBootzooka', [uirouter, sanitize, ngResource, ngCookies])
   .config(routing)
   .config(intercept)
   .run(stateChangeStart)

@@ -1,5 +1,5 @@
 var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var autoprefixer = require('autoprefixer');
 const path = require('path');
 
@@ -52,7 +52,7 @@ var config = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  config.output.path = __dirname + '/dist';
+  config.output.path = __dirname + '/dist/webapp';
   config.plugins.push(new webpack.optimize.UglifyJsPlugin());
 } else {
   config.devtool = 'eval'

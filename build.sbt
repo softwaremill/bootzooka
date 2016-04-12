@@ -84,6 +84,16 @@ def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
   haltOnCmdResultError(buildGrunt())
 } dependsOn updateNpm
 
+def npmTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
+  val localNpmCommand = "npm " + taskName
+  def buildWebpack() = {
+    Process(localNpmCommand, bd / ".." / "ui").!
+  }
+  println("Building with Webpack : " + taskName)
+  haltOnCmdResultError(buildWebpack())
+} dependsOn updateNpm
+
+
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
   .settings(
@@ -117,19 +127,19 @@ lazy val backend: Project = (project in file("backend"))
       (unmanagedResourceDirectories in Compile).value ++ List(baseDirectory.value.getParentFile / ui.base.getName / "dist")
     },
     assemblyJarName in assembly := "bootzooka.jar",
-    assembly <<= assembly dependsOn gruntTask("build")
+    assembly <<= assembly dependsOn npmTask("run build")
   )
 
 lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
-  .settings(test in Test <<= (test in Test) dependsOn gruntTask("test"))
+  .settings(test in Test <<= (test in Test) /*dependsOn gruntTask("test")*/)
 
 lazy val uiTests = (project in file("ui-tests"))
   .settings(commonSettings: _*)
   .settings(
     parallelExecution := false,
     libraryDependencies ++= seleniumStack,
-    test in Test <<= (test in Test) dependsOn gruntTask("build")
+    test in Test <<= (test in Test) dependsOn npmTask("run build")
   ) dependsOn backend
 
 RenameProject.settings

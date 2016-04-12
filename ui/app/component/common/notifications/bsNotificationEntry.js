@@ -11,7 +11,7 @@ export default ngModule => {
 
     return {
       restrict: 'A',
-      templateUrl: 'notifications/notificationEntry.html',
+      template: require('./notificationEntry.html'),
       link: function (scope, element) {
         let alertFadeOutPromise = $timeout(() => {
           element.fadeOut(2000, () => element.remove());
