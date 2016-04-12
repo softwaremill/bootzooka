@@ -16,9 +16,10 @@ var config = {
   plugins: [
     new ExtractTextPlugin('styles.css'),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js'),
-    new webpack.ProvidePlugin({
+    new webpack.ProvidePlugin({ //https://webpack.github.io/docs/shimming-modules.html
       $: "jquery",
-      jQuery: "jquery"
+      jQuery: "jquery",
+      "window.jQuery": "jquery"
     })
   ],
   module: {
