@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports =  grunt => {
+module.exports = grunt => {
 
   const serveStatic = require('serve-static');
 
