@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('smlBootzooka.common.directives', []);
-angular.module('smlBootzooka.common.filters', []);
 angular.module('smlBootzooka.common.services', []);
 angular.module('smlBootzooka.common', ['smlBootzooka.common.filters', 'smlBootzooka.common.directives', 'smlBootzooka.common.services']);
 angular.module('smlBootzooka.notifications', []);
