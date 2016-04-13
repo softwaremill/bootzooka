@@ -2,11 +2,11 @@
 
 describe('Flash Service', function () {
 
-    beforeEach(module('smlBootzooka.notifications'));
+    beforeEach(angular.mock.module('smlBootzooka.notifications'));
 
     var scope, NotificationsService;
 
-    beforeEach(inject(function ($rootScope, $injector) {
+    beforeEach(angular.mock.inject(function ($rootScope, $injector) {
         scope = $rootScope.$new();
         NotificationsService = $injector.get('NotificationsService');
     }));

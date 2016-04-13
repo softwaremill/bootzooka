@@ -2,8 +2,8 @@
 
 describe('User Session Controller', function () {
 
-    beforeEach(module('smlBootzooka.session'));
-    beforeEach(module('smlBootzooka.common.services'));
+    beforeEach(angular.mock.module('smlBootzooka.session'));
+    beforeEach(angular.mock.module('smlBootzooka.common.services'));
 
     var userSessionService;
 
@@ -12,10 +12,10 @@ describe('User Session Controller', function () {
     beforeEach(function() {
         testWindow = {location: "dummy" };
 
-        module(function($provide) {
+        angular.mock.module(function($provide) {
             $provide.value('$window', testWindow);
         });
-        inject(function($injector) {
+        angular.mock.inject(function($injector) {
             userSessionService = $injector.get('UserSessionService');
         });
     });
@@ -23,7 +23,7 @@ describe('User Session Controller', function () {
     describe('without logged user', function () {
         var scope, ctrl;
 
-        beforeEach(inject(function ($rootScope, $controller, FlashService) {
+        beforeEach(angular.mock.inject(function ($rootScope, $controller, FlashService) {
             scope = $rootScope.$new();
             ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: FlashService});
         }));
@@ -36,7 +36,7 @@ describe('User Session Controller', function () {
     describe('with user logged in', function () {
         var scope, ctrl, $httpBackend, $cookies;
 
-        beforeEach(inject(function ($rootScope, $controller, _$cookies_, _$httpBackend_, $location, FlashService) {
+        beforeEach(angular.mock.inject(function ($rootScope, $controller, _$cookies_, _$httpBackend_, $location, FlashService) {
             scope = $rootScope.$new();
             ctrl = $controller('UserSessionCtrl', {$scope: scope, FlashService: FlashService});
             $cookies = _$cookies_;

@@ -4,9 +4,9 @@ describe('Match directive', function () {
 
     var scope, form, elm;
 
-    beforeEach(module('smlBootzooka.common.directives'));
+    beforeEach(angular.mock.module('smlBootzooka.common.directives'));
 
-    beforeEach(inject(function ($rootScope, $compile) {
+    beforeEach(angular.mock.inject(function ($rootScope, $compile) {
         elm = angular.element(
             '<form name="registerForm" novalidate>' +
             '<input type="password" name="password" ng-model="model.password1">' +
