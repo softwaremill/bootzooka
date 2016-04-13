@@ -7,13 +7,11 @@ module.exports = config => {
     files: [
       'app/vendor.js',
       'app/index.js',
-      'app/app.js',
       'test/tests.webpack.js'
     ],
     preprocessors: {
       'app/vendor.js': ['webpack'],
       'app/index.js': ['webpack'],
-      'app/app.js': ['webpack'],
       'test/tests.webpack.js': ['webpack']
     },
     webpack: {
