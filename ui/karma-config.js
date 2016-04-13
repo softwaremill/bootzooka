@@ -1,49 +1,45 @@
 'use strict';
 
+var webpack = require('webpack');
+
 module.exports = config => {
-
-  var files = [];
-
-  ['bower_components/jquery/dist/jquery.js',
-    'bower_components/bootstrap/dist/js/bootstrap.js',
-    'bower_components/angular/angular.js',
-    'bower_components/angular-cookies/angular-cookies.js',
-    'bower_components/angular-mocks/angular-mocks.js',
-    'bower_components/angular-resource/angular-resource.js',
-    'bower_components/angular-sanitize/angular-sanitize.js',
-    'bower_components/angular-ui-router/release/angular-ui-router.js'
-  ].forEach(file => files.push(file));
-
-  files.push('app/index.js');
-  files.push('app/**/*.js');
-  files.push('app/**/**/*.js');
-  files.push('.tmp/scripts/**/*.js');
-  files.push('test/**/*.js');
-
   config.set({
+    files: [
+      'app/vendor.js',
+      'app/index.js',
+      'app/app.js',
+      'test/tests.webpack.js'
+    ],
     preprocessors: {
-      'app/**/*.js': ['babel'],
-      'test/**/*.js': ['babel']
+      'app/vendor.js': ['webpack'],
+      'app/index.js': ['webpack'],
+      'app/app.js': ['webpack'],
+      'test/tests.webpack.js': ['webpack']
     },
-    babelPreprocessor: {
-      options: {
-        presets: ['es2015'],
-        sourceMap: 'inline'
-      },
-      filename: function (file) {
-        return file.originalPath.replace(/\.js$/, '.es5.js');
-      },
-      sourceFileName: function (file) {
-        return file.originalPath;
+    webpack: {
+      devtool: 'inline-source-map',
+      plugins: [
+          new webpack.ProvidePlugin({ //https://webpack.github.io/docs/shimming-modules.html
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery"
+        })
+      ],
+      module: {
+        loaders: [
+          {test: /\.js$/, loader: 'babel-loader', exclude: /(node_modules)/},
+          {test: /.html$/, loader: 'raw', exclude: /(node_modules)/},
+          {test: /.css$/, loader: 'style!css'},
+          {test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/, loader: 'file'}
+        ]
       }
     },
-    basePath: '',
     frameworks: ['jasmine'],
-    files: files,
     exclude: [],
     port: 7070,
     logLevel: config.LOG_INFO,
     autoWatch: false,
-    browsers: ['PhantomJS']
+    singleRun: true,
+    browsers: ['Chrome']
   });
 };

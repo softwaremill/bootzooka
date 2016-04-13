@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "karma start karma-config.js",
     "start": "webpack-dev-server --content-base app --port 9090",
     "build": "NODE_ENV=production webpack && cp app/index.html dist/webapp/index.html && cp -R app/assets dist/webapp",
     "dist": "npm run build && hs dist/webapp -p 9090 -P http://localhost:8080"
@@ -16,6 +16,8 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "http-server": "^0.9.0",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-webpack": "^1.7.0",
     "ng-annotate-loader": "^0.1.0",
     "postcss-loader": "^0.8.2",
     "raw-loader": "^0.5.1",
