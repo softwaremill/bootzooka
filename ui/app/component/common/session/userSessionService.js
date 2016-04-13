@@ -4,16 +4,20 @@ export default ngModule => {
     let loggedUser = null;
     let target = null;
 
-    let loggedUserPromise = $http.get('api/users').then(response => {
-      loggedUser = response.data;
-      return loggedUser;
-    });
+    let loggedUserPromise = usersHttpGet();
 
     let userSessionService = {};
 
     userSessionService.getLoggedUser = () => loggedUser;
 
-    userSessionService.getLoggedUserPromise = () => loggedUserPromise;
+    function usersHttpGet() {
+      return $http.get('api/users').then(response => {
+        loggedUser = response.data;
+        return loggedUser;
+      });
+    }
+
+    userSessionService.getLoggedUserPromise = usersHttpGet;
 
     userSessionService.isLogged = () => angular.isObject(loggedUser);
 
