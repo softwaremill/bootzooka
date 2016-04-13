@@ -7,6 +7,7 @@ import bsNotif from './notifications/bsNotifications';
 import bsNotifEntry from './notifications/bsNotificationEntry';
 import flash from './flash';
 import filters from './filters';
+import form from './form';
 
 export default ngModule => {
   header(ngModule);
@@ -18,4 +19,5 @@ export default ngModule => {
   bsNotifEntry(ngModule);
   flash(ngModule);
   filters(ngModule);
+  form(ngModule);
 };
