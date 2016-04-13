@@ -4,7 +4,7 @@ describe('Blur directive', function () {
 
     var scope, form, elm;
 
-    beforeEach(angular.mock.module('smlBootzooka.common.directives'));
+    beforeEach(angular.mock.module('smlBootzooka'));
 
     beforeEach(angular.mock.inject(function ($rootScope, $compile) {
         elm = angular.element(

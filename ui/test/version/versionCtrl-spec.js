@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Version Controller', () => {
-  beforeEach(angular.mock.module('smlBootzooka.version'));
+  beforeEach(angular.mock.module('smlBootzooka'));
 
   let scope, $httpBackend;
 
