@@ -22,7 +22,6 @@ export default ngModule => {
     userSessionService.isLogged = () => angular.isObject(loggedUser);
 
     userSessionService.isNotLogged = () => {
-      // console.log("isNotLogged");
       return !userSessionService.isLogged()
     };
 
