@@ -14,22 +14,25 @@ import scala.concurrent.ExecutionContext
 
 trait Beans extends StrictLogging {
   def system: ActorSystem
-  implicit def ec: ExecutionContext
 
   lazy val config = new CoreConfig with EmailConfig with DatabaseConfig with ServerConfig {
     override def rootConfig = ConfigFactory.load()
   }
 
-  lazy val userDao = new UserDao(sqlDatabase)
+  lazy val daoExecutionContext = system.dispatchers.lookup("dao-dispatcher")
 
-  lazy val codeDao = new PasswordResetCodeDao(sqlDatabase)
+  lazy val userDao = new UserDao(sqlDatabase)(daoExecutionContext)
 
-  lazy val rememberMeTokenDao = new RememberMeTokenDao(sqlDatabase)
+  lazy val codeDao = new PasswordResetCodeDao(sqlDatabase)(daoExecutionContext)
+
+  lazy val rememberMeTokenDao = new RememberMeTokenDao(sqlDatabase)(daoExecutionContext)
 
   lazy val sqlDatabase = SqlDatabase.create(config)
 
+  lazy val serviceExecutionContext = system.dispatchers.lookup("service-dispatcher")
+
   lazy val emailService = if (config.emailEnabled) {
-    new SmtpEmailService(config)
+    new SmtpEmailService(config)(serviceExecutionContext)
   }
   else {
     logger.info("Starting with fake email sending service. No emails will be sent.")
@@ -42,7 +45,7 @@ trait Beans extends StrictLogging {
     userDao,
     emailService,
     emailTemplatingEngine
-  )
+  )(serviceExecutionContext)
 
   lazy val passwordResetService = new PasswordResetService(
     userDao,
@@ -50,7 +53,7 @@ trait Beans extends StrictLogging {
     emailService,
     emailTemplatingEngine,
     config
-  )
+  )(serviceExecutionContext)
 
-  lazy val refreshTokenStorage = new RefreshTokenStorageImpl(rememberMeTokenDao, system)
+  lazy val refreshTokenStorage = new RefreshTokenStorageImpl(rememberMeTokenDao, system)(serviceExecutionContext)
 }

@@ -23,6 +23,7 @@ class Main() extends StrictLogging {
     import _system.dispatcher
 
     val modules = new Beans with Routes {
+
       lazy val sessionConfig = SessionConfig.fromConfig(config.rootConfig).copy(sessionEncryptData = true)
 
       implicit lazy val ec = _system.dispatcher
