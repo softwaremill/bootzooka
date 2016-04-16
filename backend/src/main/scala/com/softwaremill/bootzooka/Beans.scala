@@ -10,8 +10,6 @@ import com.softwaremill.bootzooka.user.{UserDao, UserService}
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
 
-import scala.concurrent.ExecutionContext
-
 trait Beans extends StrictLogging {
   def system: ActorSystem
 
