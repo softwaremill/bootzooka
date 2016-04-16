@@ -26,7 +26,7 @@ class Main() extends StrictLogging {
 
       lazy val sessionConfig = SessionConfig.fromConfig(config.rootConfig).copy(sessionEncryptData = true)
 
-      implicit lazy val ec = _system.dispatchers.lookup("akka-http-routes")
+      implicit lazy val ec = _system.dispatchers.lookup("akka-http-routes-dispatcher")
       implicit lazy val sessionManager: SessionManager[Session] = new SessionManager[Session](sessionConfig)
       implicit lazy val materializer = _materializer
       lazy val system = _system
