@@ -2,11 +2,13 @@
 
 describe('Match directive', function () {
 
-    var scope, form, elm;
+    var scope, form, elm, $httpBackend;
 
     beforeEach(angular.mock.module('smlBootzooka'));
 
-    beforeEach(angular.mock.inject(function ($rootScope, $compile) {
+    beforeEach(angular.mock.inject(function ($rootScope, $compile, _$httpBackend_) {
+        $httpBackend = _$httpBackend_;
+        $httpBackend.expectGET('api/users').respond('anything');
         elm = angular.element(
             '<form name="registerForm" novalidate>' +
             '<input type="password" name="password" ng-model="model.password1">' +
@@ -17,6 +19,7 @@ describe('Match directive', function () {
         $compile(elm)(scope);
         scope.$digest();
         form = scope.registerForm;
+        $httpBackend.flush();
     }));
 
     it('should be valid initially', function () {

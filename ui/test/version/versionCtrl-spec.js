@@ -13,6 +13,7 @@ describe('Version Controller', () => {
 
   it('should retrieve application version', ()=> {
     // given
+    $httpBackend.expectGET('api/users').respond('anything');
     $httpBackend.expectGET('api/version').respond({build: 'foo', date: 'bar'});
 
     // when
