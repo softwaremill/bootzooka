@@ -13,7 +13,7 @@ Bootzooka's stack consists of the following technologies/tools:
 *	Slick (query SQL database using strictly typed DSL)
 *   Flyway (easy schema evolution)
 *	AngularJS + HTML5 (frontend)
-*	SBT & Grunt.js (build tools)
+*	SBT & Webpack (build tools)
 *   Swagger (interactive API docs)
 
 ### Why Scala?
@@ -28,6 +28,6 @@ Angular the most popular JavaScript framework right now, developed and supported
 
 Akka HTTP is the successor to the popular [Spray.io library](http://spray.io), offers a lightweight HTTP server as well as an elegant, easy-to-learn, flexible DSL for defining routes. Moreover, Akka HTTP is a library, not a framework, so it leaves a lot of freedom when choosing other components.
 
-### Why SBT and Grunt?
+### Why SBT and Webpack?
 
-To put it simply, SBT is the build tool of choice for Scala, Grunt - for JavaScript.
+To put it simply, SBT is the build tool of choice for Scala, Webpack - for JavaScript.
