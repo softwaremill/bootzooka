@@ -11,8 +11,8 @@ val slf4jVersion = "1.7.21"
 val logBackVersion = "1.1.7"
 val scalaLoggingVersion = "3.1.0"
 val slickVersion = "3.1.1"
-val seleniumVersion = "2.48.2"
-val circeVersion = "0.4.0"
+val seleniumVersion = "2.53.0"
+val circeVersion = "0.4.0-RC1"
 val akkaVersion = "2.4.3"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
@@ -75,14 +75,15 @@ val updateNpm = baseDirectory map { bd =>
   haltOnCmdResultError(Process("npm install", bd / ".." / "ui") !)
 }
 
-def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
-  val localGruntCommand = "./node_modules/.bin/grunt " + taskName
-  def buildGrunt() = {
-    Process(localGruntCommand, bd / ".." / "ui").!
+def npmTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
+  val localNpmCommand = "npm " + taskName
+  def buildWebpack() = {
+    Process(localNpmCommand, bd / ".." / "ui").!
   }
-  println("Building with Grunt.js : " + taskName)
-  haltOnCmdResultError(buildGrunt())
+  println("Building with Webpack : " + taskName)
+  haltOnCmdResultError(buildWebpack())
 } dependsOn updateNpm
+
 
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
@@ -117,19 +118,19 @@ lazy val backend: Project = (project in file("backend"))
       (unmanagedResourceDirectories in Compile).value ++ List(baseDirectory.value.getParentFile / ui.base.getName / "dist")
     },
     assemblyJarName in assembly := "bootzooka.jar",
-    assembly <<= assembly dependsOn gruntTask("build")
+    assembly <<= assembly dependsOn npmTask("run build")
   )
 
 lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
-  .settings(test in Test <<= (test in Test) dependsOn gruntTask("test"))
+  .settings(test in Test <<= (test in Test) dependsOn npmTask("run test"))
 
 lazy val uiTests = (project in file("ui-tests"))
   .settings(commonSettings: _*)
   .settings(
     parallelExecution := false,
     libraryDependencies ++= seleniumStack,
-    test in Test <<= (test in Test) dependsOn gruntTask("build")
+    test in Test <<= (test in Test) dependsOn npmTask("run build")
   ) dependsOn backend
 
 RenameProject.settings

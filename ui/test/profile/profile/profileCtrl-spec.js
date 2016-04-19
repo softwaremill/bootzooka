@@ -1,15 +1,15 @@
 'use strict';
 
 describe('Profile Controller', function () {
-    beforeEach(module('smlBootzooka.profile'));
-    afterEach(inject(function (_$httpBackend_) {
+    beforeEach(angular.mock.module('smlBootzooka.profile'));
+    afterEach(angular.mock.inject(function (_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();
         _$httpBackend_.verifyNoOutstandingRequest();
     }));
 
     var $httpBackend, ctrl, scope, userSessionService;
 
-    beforeEach(inject(function ($rootScope, $controller, _$httpBackend_, UserSessionService) {
+    beforeEach(angular.mock.inject(function ($rootScope, $controller, _$httpBackend_, UserSessionService) {
         var user = {
             login: 'user1',
             email: 'user1@sml.com'
