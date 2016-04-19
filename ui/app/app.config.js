@@ -74,12 +74,5 @@ export function routing($urlRouterProvider, $stateProvider) {
     .state('error404', {
       url: '/error404',
       template: require('./common/errorpages/error404.html')
-    })
-    .state('main', {
-      url: '/main',
-      template: require('./common/private.html'),
-      data: {
-        auth: true
-      }
     });
 }

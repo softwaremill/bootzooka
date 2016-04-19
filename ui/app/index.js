@@ -10,7 +10,7 @@ import {intercept, stateChangeSuccess, stateChangeStart, routing} from './app.co
 import common from './component/common';
 import profile from './component/profile';
 import bsTracker from './component/directives/bsHttpRequestTracker';
-import homeCtrl from './component/home';
+import homeComponent from './component/home';
 
 const commonModule = angular.module('smlBootzooka.common', [ngCookies]);
 common(commonModule);
@@ -22,10 +22,12 @@ const bsTrackerModule = angular.module('smlBootzooka.bsTracker', []);
 bsTracker(bsTrackerModule);
 
 const homeModule = angular.module('smlBootzooka.home', [uirouter]);
-homeCtrl(homeModule);
+homeComponent(homeModule);
+
+require('./component/main')(angular.module('smlBootzooka.main', [uirouter]));
 
 const ngModule = angular.module('smlBootzooka',
-    [uirouter, sanitize, 'smlBootzooka.common', 'smlBootzooka.profile', 'smlBootzooka.bsTracker', 'smlBootzooka.home'])
+    [uirouter, sanitize, 'smlBootzooka.common', 'smlBootzooka.profile', 'smlBootzooka.bsTracker', 'smlBootzooka.home', 'smlBootzooka.main'])
   .config(routing)
   .config(intercept)
   .run(stateChangeStart)
