@@ -75,15 +75,6 @@ val updateNpm = baseDirectory map { bd =>
   haltOnCmdResultError(Process("npm install", bd / ".." / "ui") !)
 }
 
-def gruntTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
-  val localGruntCommand = "./node_modules/.bin/grunt " + taskName
-  def buildGrunt() = {
-    Process(localGruntCommand, bd / ".." / "ui").!
-  }
-  println("Building with Grunt.js : " + taskName)
-  haltOnCmdResultError(buildGrunt())
-} dependsOn updateNpm
-
 def npmTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
   val localNpmCommand = "npm " + taskName
   def buildWebpack() = {
@@ -132,7 +123,7 @@ lazy val backend: Project = (project in file("backend"))
 
 lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
-  .settings(test in Test <<= (test in Test) /*dependsOn gruntTask("test")*/)
+  .settings(test in Test <<= (test in Test) dependsOn npmTask("run test"))
 
 lazy val uiTests = (project in file("ui-tests"))
   .settings(commonSettings: _*)
