@@ -11,7 +11,7 @@ Thanks to great tools existing in JavaScript ecosystem it is fully automated and
 
 ## Installing Node.js
 
-To work with the `ui` module you need to have `node.js` installed in version 0.10.13 or newer. Make sure you have both `node` and `npm` commands available on `PATH`.
+To work with the `ui` module you need to have `node.js` installed in version 4.0 or newer. Make sure you have both `node` and `npm` commands available on `PATH`.
 
 ## Installing Webpack
 
