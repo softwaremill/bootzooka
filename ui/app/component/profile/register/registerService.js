@@ -3,7 +3,7 @@ export default ngModule => {
     return {
       register: user => $http.post('api/users/register', angular.toJson(user)).then(response => {
         if (response.data === 'success') {
-          FlashService.set('DUser registered successfully! Please check your e-mail for confirmation.');
+          FlashService.set('User registered successfully! Please check your e-mail for confirmation.');
           return response.data;
         } else {
           return $q.reject(response);
