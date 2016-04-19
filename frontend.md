@@ -15,19 +15,19 @@ To work with the `ui` module you need to have `node.js` installed in version 4.0
 
 ## Installing Webpack
 
-Bootzooka frontend project uses `nodejs` based build tool called [Webpack](https://webpack.github.io/) to automate build stuff. Bootzooka has Webpack already in dependencies so you don't need to install it globally. Every file from `./node_modules/.bin/` is on `PATH` in you `package.json` script so you don't need to provide full paths to executables. In case you would like call webpack from command line you can type `node ./node_modules/.bin/webpack`
+Bootzooka frontend project uses a `node.js`-based build tool called [Webpack](https://webpack.github.io/) to automate build stuff. Bootzooka has Webpack already in its dependencies so you don't need to install it globally. When referring to executables in your `package.json` you can also use those from `./node_modules/.bin/`, e.g. simply `webpack`, without referencing the whole path. 
 
+In case you would like call webpack from command line you can always use `node ./node_modules/.bin/webpack`.
 
 ### Why Webpack AND npm?
 
-Webpack is a new generation module bundler and eliminates the need to use bower for frontend dependencies. Npm is a package manager; We use npm to manage the build dependencies (node modules: webpack plugins, karma test framework etc.).
+Webpack is a next generation module bundler. Npm is a package manager; we use it to manage the build dependencies (via `devDependencies`, node modules such as: webpack plugins, karma test framework etc.) and application dependencies (via `dependencies`, for example `angular`).
 
 ## First run
 
 If this is your first attempt to run `ui`, please go to `ui` project and run
 
 	npm install
-
 
 This will install all required dependencies for this project. If all is well you can start your development version of frontend by issuing `npm start` from command line (or running the provided `frontend-start` script in the main directory). It should start your browser and point you to [Bootzooka home page](http://0.0.0.0:9090/#/).
 
@@ -65,4 +65,4 @@ This task runs tests and watches for changes in files. When change is detected i
 
 ## Distribution and deployment
 
-Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist/webapp` (which are genereated during `npm run build`) are used by `backend` to build the final fat-jar application or `.war` package. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components. You can drop it into your web container (as usual).
+Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist/webapp` (which are genereated during `npm run build`) are used by `backend` to build the final fat-jar application. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components.
