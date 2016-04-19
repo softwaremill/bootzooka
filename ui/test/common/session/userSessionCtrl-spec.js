@@ -2,7 +2,7 @@
 
 describe('User Session Controller', function () {
 
-    beforeEach(angular.mock.module('smlBootzooka'));
+    beforeEach(angular.mock.module('smlBootzooka.common'));
 
     var userSessionService;
 

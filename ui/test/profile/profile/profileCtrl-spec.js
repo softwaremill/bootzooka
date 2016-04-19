@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Profile Controller', function () {
-    beforeEach(angular.mock.module('smlBootzooka'));
+    beforeEach(angular.mock.module('smlBootzooka.profile'));
     afterEach(angular.mock.inject(function (_$httpBackend_) {
         _$httpBackend_.verifyNoOutstandingExpectation();
         _$httpBackend_.verifyNoOutstandingRequest();

@@ -1,6 +1,6 @@
 describe('Register Controller', function () {
 
-  beforeEach(angular.mock.module('smlBootzooka'));
+  beforeEach(angular.mock.module('smlBootzooka.profile'));
 
   afterEach(angular.mock.inject(function (_$httpBackend_) {
     _$httpBackend_.verifyNoOutstandingExpectation();
@@ -11,7 +11,6 @@ describe('Register Controller', function () {
 
   beforeEach(angular.mock.inject(function (_$httpBackend_, $rootScope, $controller) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('api/users').respond('any');
     scope = $rootScope.$new();
     ctrl = $controller('RegisterCtrl', {$scope: scope});
 
@@ -39,7 +38,6 @@ describe('Register Controller', function () {
       $invalid: false,
       $valid: true
     };
-    $httpBackend.flush();
   }));
 
   it('Should call register rest service when form is valid', function () {

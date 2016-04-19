@@ -2,7 +2,7 @@
 
 describe('Flash Service', function () {
 
-    beforeEach(angular.mock.module('smlBootzooka'));
+    beforeEach(angular.mock.module('smlBootzooka.common'));
 
     var scope, srv;
 

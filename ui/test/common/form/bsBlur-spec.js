@@ -2,11 +2,9 @@ describe('Blur directive', function () {
 
   var scope, form, elm, $httpBackend;
 
-  beforeEach(angular.mock.module('smlBootzooka'));
+  beforeEach(angular.mock.module('smlBootzooka.common'));
 
-  beforeEach(angular.mock.inject(function ($rootScope, $compile, _$httpBackend_) {
-    $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('api/users').respond('any');
+  beforeEach(angular.mock.inject(function ($rootScope, $compile) {
     elm = angular.element(
       '<form name="form"><input type="text" ng-model="model.login" name="login" bs-blur="changeLogin()"></form>');
     scope = $rootScope;
@@ -19,7 +17,6 @@ describe('Blur directive', function () {
     $compile(elm)(scope);
     scope.$digest();
     form = scope.form;
-    $httpBackend.flush();
   }));
 
   it('should not call bound function for different events', function () {
