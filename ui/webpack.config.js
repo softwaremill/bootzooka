@@ -31,11 +31,6 @@ var config = {
       },
       {test: /.html$/, loader: 'raw', exclude: /(node_modules)/},
       {test: /.css$/, loader: 'style!css'},
-      {
-        test: /.styl$/,
-        loader: ExtractTextPlugin.extract('style-loader',
-          'css-loader!stylus!postcss-loader'), exclude: /(node_modules)/
-      },
       {test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/, loader: 'file'}
     ]
   },
