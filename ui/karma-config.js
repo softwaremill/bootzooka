@@ -38,6 +38,6 @@ module.exports = config => {
     logLevel: config.LOG_INFO,
     autoWatch: false,
     singleRun: true,
-    browsers: ['Chrome']
+    browsers: ['PhantomJS']
   });
 };
