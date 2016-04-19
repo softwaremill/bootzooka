@@ -2,19 +2,23 @@ package com.softwaremill.bootzooka.api
 
 import akka.http.scaladsl.marshalling._
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.CacheDirectives.{`max-age`, `must-revalidate`, `no-cache`, `no-store`, `public`}
-import akka.http.scaladsl.model.headers.{`Cache-Control`, `Expires`, `Last-Modified`}
+import akka.http.scaladsl.model.headers.CacheDirectives._
+import akka.http.scaladsl.model.headers.{`Cache-Control`, `Last-Modified`, _}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{AuthorizationFailedRejection, Directive1}
 import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 import akka.stream.Materializer
+import cats.data.Xor
+import com.softwaremill.bootzooka.http.model.headers.`X-Content-Type-Options`.`nosniff`
+import com.softwaremill.bootzooka.http.model.headers.`X-Frame-Options`.`DENY`
+import com.softwaremill.bootzooka.http.model.headers.`X-XSS-Protection`.`1; mode=block`
+import com.softwaremill.bootzooka.http.model.headers.{`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`}
 import com.softwaremill.bootzooka.user.{BasicUserData, Session, UserId, UserService}
 import com.softwaremill.session.SessionDirectives._
+import com.softwaremill.session.SessionOptions._
 import com.softwaremill.session.{RefreshTokenStorage, SessionManager}
-import cats.data.Xor
 import io.circe._
 import io.circe.jawn.decode
-import com.softwaremill.session.SessionOptions._
 
 import scala.concurrent.ExecutionContext
 
@@ -100,4 +104,12 @@ trait CacheSupport {
   val cacheImages =
     extensionsTest("png", "svg", "gif", "woff", "jpg").flatMap { _ => cacheResponse } |
       doNotCacheResponse
+}
+
+trait SecuritySupport {
+  val addSecurityHeaders = respondWithHeaders(
+    `X-Frame-Options`(`DENY`),
+    `X-Content-Type-Options`(`nosniff`),
+    `X-XSS-Protection`(`1; mode=block`)
+  )
 }

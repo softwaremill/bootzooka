@@ -2,14 +2,32 @@ package com.softwaremill.bootzooka.api
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{RejectionHandler, Route, ExceptionHandler}
+import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler, Route}
 import com.softwaremill.bootzooka.passwordreset.PasswordResetRoutes
 import com.softwaremill.bootzooka.user.UsersRoutes
+import com.typesafe.scalalogging.StrictLogging
 
-trait Routes extends UsersRoutes
+trait Routes extends RoutesBase
+    with UsersRoutes
     with PasswordResetRoutes
-    with VersionRoutes
-    with CacheSupport {
+    with VersionRoutes {
+
+  lazy val routes = base {
+    pathPrefix("api") {
+      passwordResetRoutes ~
+        usersRoutes ~
+        versionRoutes
+    } ~
+      getFromResourceDirectory("webapp") ~
+      path("") {
+        getFromResource("webapp/index.html")
+      }
+  }
+}
+
+trait RoutesBase extends CacheSupport
+    with SecuritySupport
+    with StrictLogging {
 
   private val exceptionHandler = ExceptionHandler {
     case e: Exception =>
@@ -28,20 +46,12 @@ trait Routes extends UsersRoutes
     } & handleRejections(rejectionHandler)
   }
 
-  val routes =
+  def base(route: Route) =
     logDuration {
       handleExceptions(exceptionHandler) {
-        cacheImages {
+        (cacheImages & addSecurityHeaders) {
           encodeResponse {
-            pathPrefix("api") {
-              passwordResetRoutes ~
-                usersRoutes ~
-                versionRoutes
-            } ~
-              getFromResourceDirectory("webapp") ~
-              path("") {
-                getFromResource("webapp/index.html")
-              }
+            route
           }
         }
       }
