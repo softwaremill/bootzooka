@@ -4,32 +4,32 @@ import akka.http.scaladsl.model.headers.{ModeledCustomHeader, ModeledCustomHeade
 
 import scala.util.Try
 
-private[headers] sealed trait HeaderDirective[H] {
+// https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+// https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet
+private[http] sealed trait SecurityHeaderDirective[H] {
   def value: String
 }
 
-private[headers] sealed trait RequestHeaderDirective[H] extends HeaderDirective[H]
+private[http] sealed trait RequestSecurityHeaderDirective[H] extends SecurityHeaderDirective[H]
 
-private[headers] sealed trait ResponseHeaderDirective[H] extends HeaderDirective[H]
+private[http] sealed trait ResponseSecurityHeaderDirective[H] extends SecurityHeaderDirective[H]
 
-// https://www.owasp.org/index.php/List_of_useful_HTTP_headers
-// https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet
 object `X-Frame-Options` extends ModeledCustomHeaderCompanion[`X-Frame-Options`] {
   override val name = "X-Frame-Options"
 
   override def parse(value: String) = Try(new `X-Frame-Options`(value))
 
-  def apply(value: ResponseHeaderDirective[`X-Frame-Options`]) = new `X-Frame-Options`(value.value)
+  def apply(value: ResponseSecurityHeaderDirective[`X-Frame-Options`]) = new `X-Frame-Options`(value.value)
 
-  case object `DENY` extends ResponseHeaderDirective[`X-Frame-Options`] {
+  case object `DENY` extends ResponseSecurityHeaderDirective[`X-Frame-Options`] {
     override def value: String = "DENY"
   }
 
-  case object `SAMEORIGIN` extends ResponseHeaderDirective[`X-Frame-Options`] {
+  case object `SAMEORIGIN` extends ResponseSecurityHeaderDirective[`X-Frame-Options`] {
     override def value: String = "SAMEORIGIN"
   }
 
-  final case class `ALLOW-FROM`(uri: String) extends ResponseHeaderDirective[`X-Frame-Options`] {
+  final case class `ALLOW-FROM`(uri: String) extends ResponseSecurityHeaderDirective[`X-Frame-Options`] {
     override def value: String = s"ALLOW-FROM $uri"
   }
 }
@@ -45,9 +45,9 @@ object `X-Content-Type-Options` extends ModeledCustomHeaderCompanion[`X-Content-
 
   override def parse(value: String) = Try(new `X-Content-Type-Options`(value))
 
-  def apply(value: ResponseHeaderDirective[`X-Content-Type-Options`]) = new `X-Content-Type-Options`(value.value)
+  def apply(value: ResponseSecurityHeaderDirective[`X-Content-Type-Options`]) = new `X-Content-Type-Options`(value.value)
 
-  case object `nosniff` extends ResponseHeaderDirective[`X-Content-Type-Options`] {
+  case object `nosniff` extends ResponseSecurityHeaderDirective[`X-Content-Type-Options`] {
     override def value: String = "nosniff"
   }
 }
@@ -63,17 +63,17 @@ object `X-XSS-Protection` extends ModeledCustomHeaderCompanion[`X-XSS-Protection
 
   override def parse(value: String) = Try(new `X-XSS-Protection`(value))
 
-  def apply(value: ResponseHeaderDirective[`X-XSS-Protection`]) = new `X-XSS-Protection`(value.value)
+  def apply(value: ResponseSecurityHeaderDirective[`X-XSS-Protection`]) = new `X-XSS-Protection`(value.value)
 
-  case object `0` extends ResponseHeaderDirective[`X-XSS-Protection`] {
+  case object `0` extends ResponseSecurityHeaderDirective[`X-XSS-Protection`] {
     override def value: String = "0"
   }
 
-  case object `1; mode=block` extends ResponseHeaderDirective[`X-XSS-Protection`] {
+  case object `1; mode=block` extends ResponseSecurityHeaderDirective[`X-XSS-Protection`] {
     override def value: String = "1; mode=block"
   }
 
-  final case class `1; report=`(uri: String) extends ResponseHeaderDirective[`X-XSS-Protection`] {
+  final case class `1; report=`(uri: String) extends ResponseSecurityHeaderDirective[`X-XSS-Protection`] {
     override def value: String = s"1; report=$uri"
   }
 }

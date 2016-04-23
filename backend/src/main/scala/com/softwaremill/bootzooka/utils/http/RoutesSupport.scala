@@ -12,7 +12,6 @@ import cats.data.Xor
 import `X-Content-Type-Options`.`nosniff`
 import `X-Frame-Options`.`DENY`
 import `X-XSS-Protection`.`1; mode=block`
-import com.softwaremill.bootzooka.http.model.headers.`X-XSS-Protection`
 import com.softwaremill.bootzooka.user.{BasicUserData, Session, UserId, UserService}
 import com.softwaremill.session.SessionDirectives._
 import com.softwaremill.session.SessionOptions._
