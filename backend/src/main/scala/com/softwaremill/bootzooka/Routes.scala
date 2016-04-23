@@ -6,11 +6,11 @@ import com.softwaremill.bootzooka.passwordreset.PasswordResetRoutes
 import com.softwaremill.bootzooka.user.UsersRoutes
 
 trait Routes extends RoutesRequestWrapper
-  with UsersRoutes
-  with PasswordResetRoutes
-  with VersionRoutes {
+    with UsersRoutes
+    with PasswordResetRoutes
+    with VersionRoutes {
 
-  lazy val routes = base {
+  lazy val routes = requestWrapper {
     pathPrefix("api") {
       passwordResetRoutes ~
         usersRoutes ~

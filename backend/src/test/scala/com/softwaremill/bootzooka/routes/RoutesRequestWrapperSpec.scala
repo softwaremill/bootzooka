@@ -9,10 +9,10 @@ import com.softwaremill.bootzooka.http.model.headers.`X-XSS-Protection`.`1; mode
 import com.softwaremill.bootzooka.http.model.headers.{`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`}
 import org.scalatest.{FlatSpec, Matchers}
 
-class RoutesBaseSpec extends FlatSpec with Matchers with ScalatestRouteTest {
+class RoutesRequestWrapperSpec extends FlatSpec with Matchers with ScalatestRouteTest {
 
   it should "return a response wirth security headers" in {
-    val routes = new RoutesRequestWrapper {}.base {
+    val routes = new RoutesRequestWrapper {}.requestWrapper {
       get {
         complete("ok")
       }

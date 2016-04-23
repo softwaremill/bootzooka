@@ -26,14 +26,9 @@ trait RoutesRequestWrapper extends CacheSupport
     } & handleRejections(rejectionHandler)
   }
 
-  def base(route: Route) =
-    logDuration {
-      handleExceptions(exceptionHandler) {
-        (cacheImages & addSecurityHeaders) {
-          encodeResponse {
-            route
-          }
-        }
-      }
-    }
+  val requestWrapper = logDuration &
+    handleExceptions(exceptionHandler) &
+    cacheImages &
+    addSecurityHeaders &
+    encodeResponse
 }
