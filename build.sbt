@@ -13,7 +13,7 @@ val scalaLoggingVersion = "3.1.0"
 val slickVersion = "3.1.1"
 val seleniumVersion = "2.53.0"
 val circeVersion = "0.4.0"
-val akkaVersion = "2.4.3"
+val akkaVersion = "2.4.4"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
 val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -83,7 +83,6 @@ def npmTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
   println("Building with Webpack : " + taskName)
   haltOnCmdResultError(buildWebpack())
 } dependsOn updateNpm
-
 
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
