@@ -10,7 +10,7 @@ import com.softwaremill.bootzooka.user.{UserDao, UserService}
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
 
-trait Beans extends StrictLogging {
+trait BusinessLogic extends StrictLogging {
   def system: ActorSystem
 
   lazy val config = new CoreConfig with EmailConfig with DatabaseConfig with ServerConfig {

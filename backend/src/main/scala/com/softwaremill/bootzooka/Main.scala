@@ -14,14 +14,14 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class Main() extends StrictLogging {
-  def start(): (Future[ServerBinding], Beans) = {
+  def start(): (Future[ServerBinding], BusinessLogic) = {
     Locale.setDefault(Locale.US) // set default locale to prevent from sending cookie expiration date in polish format
 
     implicit val _system = ActorSystem("main")
     implicit val _materializer = ActorMaterializer()
     import _system.dispatcher
 
-    val modules = new Beans with Routes {
+    val modules = new BusinessLogic with Routes {
 
       lazy val sessionConfig = SessionConfig.fromConfig(config.rootConfig).copy(sessionEncryptData = true)
 
@@ -40,12 +40,12 @@ class Main() extends StrictLogging {
 }
 
 object Main extends App with StrictLogging {
-  val (startFuture, modules) = new Main().start()
+  val (startFuture, bl) = new Main().start()
 
-  val host = modules.config.serverHost
-  val port = modules.config.serverPort
+  val host = bl.config.serverHost
+  val port = bl.config.serverPort
 
-  val system = modules.system
+  val system = bl.system
   import system.dispatcher
 
   startFuture.onComplete {
@@ -53,13 +53,13 @@ object Main extends App with StrictLogging {
       logger.info(s"Server started on $host:$port")
       sys.addShutdownHook {
         b.unbind()
-        modules.system.terminate()
+        bl.system.terminate()
         logger.info("Server stopped")
       }
     case Failure(e) =>
       logger.error(s"Cannot start server on $host:$port", e)
       sys.addShutdownHook {
-        modules.system.terminate()
+        bl.system.terminate()
         logger.info("Server stopped")
       }
   }

@@ -6,7 +6,7 @@ import akka.http.scaladsl.Http.ServerBinding
 import com.softwaremill.bootzooka.email.DummyEmailService
 import com.softwaremill.bootzooka.passwordreset.SqlPasswordResetCodeSchema
 import com.softwaremill.bootzooka.user.SqlUserSchema
-import com.softwaremill.bootzooka.{Beans, Main}
+import com.softwaremill.bootzooka.{BusinessLogic, Main}
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.concurrent.ScalaFutures
@@ -26,18 +26,18 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
   var messagesPage: MessagesPage = _
   var passwordRestPage: PasswordResetPage = _
   var mainPage: MainPage = _
-  var beans: Beans = _
+  var businessLogic: BusinessLogic = _
   var binding: ServerBinding = _
 
   override def beforeAll() {
     val (startFuture, _beans) = new Main().start()
-    beans = _beans
+    businessLogic = _beans
 
     binding = startFuture.futureValue
 
     registerUserIfNotExists(RegUser, RegMail, RegPass)
     registerUserIfNotExists("1" + RegUser, "1" + RegMail, RegPass)
-    emailService = beans.emailService.asInstanceOf[DummyEmailService]
+    emailService = businessLogic.emailService.asInstanceOf[DummyEmailService]
   }
 
   /**
@@ -47,8 +47,8 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
    *         if new user was created or an existing user was found
    */
   protected def registerUserIfNotExists(login: String, email: String, pass: String): Try[Boolean] = Try {
-    if (beans.userDao.findByLowerCasedLogin(login).futureValue.isEmpty) {
-      beans.userService.registerNewUser(login, email, pass).futureValue
+    if (businessLogic.userDao.findByLowerCasedLogin(login).futureValue.isEmpty) {
+      businessLogic.userService.registerNewUser(login, email, pass).futureValue
       true
     }
     else {
@@ -57,7 +57,7 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
   }
 
   lazy val schema = new SqlPasswordResetCodeSchema with SqlUserSchema {
-    override protected val database = beans.sqlDatabase
+    override protected val database = businessLogic.sqlDatabase
 
     import database.driver.api._
 
@@ -86,7 +86,7 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
 
   override def afterAll() {
     binding.unbind().futureValue
-    beans.system.terminate()
+    businessLogic.system.terminate()
   }
 
   def createPage[T](clazz: Class[T]): T = PageFactory.initElements(driver, clazz)
