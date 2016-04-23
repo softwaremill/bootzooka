@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.routes
 
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.softwaremill.bootzooka.api.RoutesBase
+import com.softwaremill.bootzooka.api.RoutesRequestWrapper
 import com.softwaremill.bootzooka.http.model.headers.`X-Content-Type-Options`.`nosniff`
 import com.softwaremill.bootzooka.http.model.headers.`X-Frame-Options`.`DENY`
 import com.softwaremill.bootzooka.http.model.headers.`X-XSS-Protection`.`1; mode=block`
@@ -12,7 +12,7 @@ import org.scalatest.{FlatSpec, Matchers}
 class RoutesBaseSpec extends FlatSpec with Matchers with ScalatestRouteTest {
 
   it should "return a response wirth security headers" in {
-    val routes = new RoutesBase {}.base {
+    val routes = new RoutesRequestWrapper {}.base {
       get {
         complete("ok")
       }
