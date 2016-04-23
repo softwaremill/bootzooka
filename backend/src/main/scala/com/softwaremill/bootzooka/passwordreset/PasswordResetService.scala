@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.passwordreset
 
 import java.time.Instant
 
-import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.utils.Utils
 import com.softwaremill.bootzooka.config.CoreConfig
 import com.softwaremill.bootzooka.email.{EmailContentWithSubject, EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.user.{User, UserDao}

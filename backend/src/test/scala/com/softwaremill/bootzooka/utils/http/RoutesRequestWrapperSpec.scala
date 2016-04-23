@@ -1,12 +1,10 @@
-package com.softwaremill.bootzooka.routes
+package com.softwaremill.bootzooka.utils.http
 
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.softwaremill.bootzooka.common.http.{RoutesRequestWrapper, `X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`}
-import `X-Content-Type-Options`.`nosniff`
-import `X-Frame-Options`.`DENY`
-import `X-XSS-Protection`.`1; mode=block`
-import com.softwaremill.bootzooka.http.model.headers.`X-XSS-Protection`
+import com.softwaremill.bootzooka.utils.http.`X-Content-Type-Options`.`nosniff`
+import com.softwaremill.bootzooka.utils.http.`X-Frame-Options`.`DENY`
+import com.softwaremill.bootzooka.utils.http.`X-XSS-Protection`.`1; mode=block`
 import org.scalatest.{FlatSpec, Matchers}
 
 class RoutesRequestWrapperSpec extends FlatSpec with Matchers with ScalatestRouteTest {

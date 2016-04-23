@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.common
+package com.softwaremill.bootzooka.utils
 
 import scala.concurrent.{ExecutionContext, Future}
 

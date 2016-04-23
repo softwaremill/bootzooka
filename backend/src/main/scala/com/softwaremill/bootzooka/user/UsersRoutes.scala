@@ -3,8 +3,8 @@ package com.softwaremill.bootzooka.user
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.AuthorizationFailedRejection
 import akka.http.scaladsl.server.Directives._
-import com.softwaremill.bootzooka.common.Utils
-import com.softwaremill.bootzooka.common.http.RoutesSupport
+import com.softwaremill.bootzooka.utils.Utils
+import com.softwaremill.bootzooka.utils.http.RoutesSupport
 import com.softwaremill.session.SessionDirectives._
 import com.typesafe.scalalogging.StrictLogging
 import io.circe.generic.auto._

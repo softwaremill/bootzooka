@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.user
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import com.softwaremill.bootzooka.common.FutureHelpers._
+import com.softwaremill.bootzooka.utils.FutureHelpers._
 import com.softwaremill.bootzooka.sql.SqlDatabase
 
 import scala.concurrent.{ExecutionContext, Future}

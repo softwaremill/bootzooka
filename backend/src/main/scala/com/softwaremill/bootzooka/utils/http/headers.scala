@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.common.http
+package com.softwaremill.bootzooka.utils.http
 
 import akka.http.scaladsl.model.headers.{ModeledCustomHeader, ModeledCustomHeaderCompanion}
 

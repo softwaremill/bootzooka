@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.config
 
-import com.softwaremill.bootzooka.common.ConfigWithDefault
+import com.softwaremill.bootzooka.utils.ConfigWithDefault
 import com.typesafe.config.Config
 
 trait CoreConfig extends ConfigWithDefault {

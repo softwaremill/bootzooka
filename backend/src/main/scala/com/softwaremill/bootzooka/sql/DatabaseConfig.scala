@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.sql
 
-import com.softwaremill.bootzooka.common.ConfigWithDefault
+import com.softwaremill.bootzooka.utils.ConfigWithDefault
 import com.softwaremill.bootzooka.sql.DatabaseConfig._
 import com.typesafe.config.Config
 

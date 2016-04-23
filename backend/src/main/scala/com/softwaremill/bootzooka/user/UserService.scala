@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.user
 import java.time.{ZoneOffset, Instant}
 import java.util.UUID
 
-import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.utils.Utils
 import com.softwaremill.bootzooka.email.{EmailTemplatingEngine, EmailService}
 
 import scala.concurrent.{ExecutionContext, Future}
