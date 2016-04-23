@@ -1,8 +1,8 @@
-package com.softwaremill.bootzooka.api
+package com.softwaremill.bootzooka.common.http
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler, Route}
+import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler}
 import com.typesafe.scalalogging.StrictLogging
 
 trait RoutesRequestWrapper extends CacheSupport

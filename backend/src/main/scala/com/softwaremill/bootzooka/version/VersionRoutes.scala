@@ -1,7 +1,8 @@
-package com.softwaremill.bootzooka.api
+package com.softwaremill.bootzooka.version
 
-import com.softwaremill.bootzooka.version.BuildInfo._
 import akka.http.scaladsl.server.Directives._
+import com.softwaremill.bootzooka.common.http.RoutesSupport
+import com.softwaremill.bootzooka.version.BuildInfo._
 import io.circe.generic.auto._
 
 trait VersionRoutes extends RoutesSupport {

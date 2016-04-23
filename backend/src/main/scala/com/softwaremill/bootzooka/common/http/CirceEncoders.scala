@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.api
+package com.softwaremill.bootzooka.common.http
 
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter

@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka.api
+package com.softwaremill.bootzooka.common.http
 
 import akka.http.scaladsl.marshalling._
 import akka.http.scaladsl.model._
@@ -9,10 +9,10 @@ import akka.http.scaladsl.server.{AuthorizationFailedRejection, Directive1}
 import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 import akka.stream.Materializer
 import cats.data.Xor
-import com.softwaremill.bootzooka.http.model.headers.`X-Content-Type-Options`.`nosniff`
-import com.softwaremill.bootzooka.http.model.headers.`X-Frame-Options`.`DENY`
-import com.softwaremill.bootzooka.http.model.headers.`X-XSS-Protection`.`1; mode=block`
-import com.softwaremill.bootzooka.http.model.headers.{`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`}
+import `X-Content-Type-Options`.`nosniff`
+import `X-Frame-Options`.`DENY`
+import `X-XSS-Protection`.`1; mode=block`
+import com.softwaremill.bootzooka.http.model.headers.`X-XSS-Protection`
 import com.softwaremill.bootzooka.user.{BasicUserData, Session, UserId, UserService}
 import com.softwaremill.session.SessionDirectives._
 import com.softwaremill.session.SessionOptions._
