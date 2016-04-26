@@ -12,7 +12,7 @@ module.exports = config => {
     preprocessors: {
       'app/vendor.js': ['webpack'],
       'app/index.js': ['webpack'],
-      'test/tests.webpack.js': ['webpack']
+      'test/tests.webpack.js': ['webpack', 'sourcemap']
     },
     webpack: {
       devtool: 'inline-source-map',
