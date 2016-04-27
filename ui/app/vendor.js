@@ -1,12 +1,13 @@
 import 'jquery';
 import 'lodash';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap';
 import 'angular';
 import 'angular-cookies';
-import 'api-check';
-import 'angular-formly';
-import 'bootstrap';
-import 'angular-formly-templates-bootstrap';
 import 'angular-resource';
 import 'angular-sanitize';
 import 'angular-ui-router';
+import 'api-check';
+import 'angular-formly';
+import 'angular-formly-templates-bootstrap';
 import 'ng-currency';

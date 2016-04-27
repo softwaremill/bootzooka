@@ -2,7 +2,7 @@
   "scripts": {
     "test": "karma start karma-config.js",
     "start": "webpack-dev-server --content-base app --port 9090 --inline --hot",
-    "build": "NODE_ENV=production webpack && cp app/index.html dist/webapp/index.html && cp -R app/assets dist/webapp",
+    "build": "rm -rf dist && NODE_ENV=production webpack && cp app/index.html dist/webapp/index.html && cp -R app/assets dist/webapp",
     "dist": "npm run build && hs dist/webapp -p 9090 -P http://localhost:8080"
   },
   "devDependencies": {
