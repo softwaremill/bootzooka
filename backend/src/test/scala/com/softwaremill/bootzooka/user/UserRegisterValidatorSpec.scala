@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.user
 
+import com.softwaremill.bootzooka.user.worker.UserRegistrator.UserRegisterValidator
 import org.scalatest.{FlatSpec, Matchers}
 
 class UserRegisterValidatorSpec extends FlatSpec with Matchers {

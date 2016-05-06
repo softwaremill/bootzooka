@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.passwordreset
 
+import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpersWithDb}
@@ -11,8 +12,9 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
   val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
 
   val routes = Route.seal(new PasswordResetRoutes with TestRoutesSupport {
-    override val userService = spec.userService
     override val passwordResetService = spec.passwordResetService
+    override val userFinder = spec.userFinder
+    val system = actorSystem
   }.passwordResetRoutes)
 
   "POST /" should "send e-mail to user" in {

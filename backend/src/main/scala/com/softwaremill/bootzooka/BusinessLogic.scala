@@ -6,7 +6,8 @@ import com.softwaremill.bootzooka.email.{EmailTemplatingEngine, EmailConfig, Smt
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetCodeDao, PasswordResetService}
 import com.softwaremill.bootzooka.sql.{DatabaseConfig, SqlDatabase}
 import com.softwaremill.bootzooka.user.rememberme.{RememberMeTokenDao, RefreshTokenStorageImpl}
-import com.softwaremill.bootzooka.user.{UserDao, UserService}
+import com.softwaremill.bootzooka.user.worker.{UserChanger, UserFinder, UserRegistrator}
+import com.softwaremill.bootzooka.user.UserDao
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
 
@@ -39,12 +40,6 @@ trait BusinessLogic extends StrictLogging {
 
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
 
-  lazy val userService = new UserService(
-    userDao,
-    emailService,
-    emailTemplatingEngine
-  )(serviceExecutionContext)
-
   lazy val passwordResetService = new PasswordResetService(
     userDao,
     codeDao,
@@ -54,4 +49,8 @@ trait BusinessLogic extends StrictLogging {
   )(serviceExecutionContext)
 
   lazy val refreshTokenStorage = new RefreshTokenStorageImpl(rememberMeTokenDao, system)(serviceExecutionContext)
+
+  lazy val userFinder = new UserFinder(userDao)
+  lazy val userChanger = new UserChanger(userDao)
+  lazy val userRegistrator = new UserRegistrator(userDao, emailService, emailTemplatingEngine)
 }

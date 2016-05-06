@@ -3,7 +3,8 @@ package com.softwaremill.bootzooka.test
 import com.softwaremill.bootzooka.config.CoreConfig
 import com.softwaremill.bootzooka.email.{DummyEmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.sql.SqlDatabase
-import com.softwaremill.bootzooka.user.{User, UserDao, UserService}
+import com.softwaremill.bootzooka.user.worker.{UserChanger, UserFinder, UserRegistrator}
+import com.softwaremill.bootzooka.user.{User, UserDao}
 import com.typesafe.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 
@@ -14,7 +15,10 @@ trait TestHelpersWithDb extends TestHelpers with ScalaFutures {
   lazy val emailService = new DummyEmailService()
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
   lazy val userDao = new UserDao(sqlDatabase)
-  lazy val userService = new UserService(userDao, emailService, emailTemplatingEngine)
+
+  lazy val userFinder = new UserFinder(userDao)
+  lazy val userChanger = new UserChanger(userDao)
+  lazy val userRegistrator = new UserRegistrator(userDao, emailService, emailTemplatingEngine)
   lazy val config = new CoreConfig {
     override def rootConfig = ConfigFactory.load()
   }
