@@ -14,7 +14,7 @@ Reference configuration is stored in the `reference.conf` file. You can either m
 If you want to use Bootzooka as a scaffolding for your own project, use the `renameProject` command with sbt, for example:  
 
 ````
-sbt renameProject com.mycompany foobar
+sbt "renameProject com.mycompany foobar"
 ````  
 
 This should rename your project to **Foobar**, move all sources to top-level package `com.mycompany.foobar`.
