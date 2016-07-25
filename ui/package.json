@@ -31,7 +31,6 @@
     "webpack-dev-server": "^1.14.0"
   },
   "dependencies": {
-    "lodash": "~4.11.1",
     "angular": "~1.5.0",
     "angular-cookies": "~1.5.0",
     "angular-formly": "~8.2.0",
@@ -40,8 +39,10 @@
     "angular-sanitize": "~1.5.0",
     "angular-ui-router": "~0.2.18",
     "api-check": "~7.5.5",
+    "autoprefixer": "^6.3.7",
     "bootstrap": "~3.3.6",
     "jquery": "~2.2.3",
+    "lodash": "~4.11.1",
     "ng-currency": "~0.8.8"
   },
   "babel": {
