@@ -31,7 +31,7 @@ trait JsonSupport extends CirceEncoders {
 
   implicit def materializer: Materializer
 
-  implicit def circeUnmarshaller[A <: Product : Manifest](implicit d: Decoder[A]): FromEntityUnmarshaller[A] =
+  implicit def circeUnmarshaller[A <: Product: Manifest](implicit d: Decoder[A]): FromEntityUnmarshaller[A] =
     Unmarshaller.byteStringUnmarshaller
       .forContentTypes(MediaTypes.`application/json`)
       .mapWithCharset { (data, charset) =>
@@ -49,10 +49,10 @@ trait JsonSupport extends CirceEncoders {
   }
 
   /**
-    * To limit what data can be serialized to the client, only classes of type `T` for which an implicit
-    * `CanBeSerialized[T]` value is in scope will be allowed. You only need to provide an implicit for the base value,
-    * any containers like `List` or `Option` will be automatically supported.
-    */
+   * To limit what data can be serialized to the client, only classes of type `T` for which an implicit
+   * `CanBeSerialized[T]` value is in scope will be allowed. You only need to provide an implicit for the base value,
+   * any containers like `List` or `Option` will be automatically supported.
+   */
   trait CanBeSerialized[T]
 
   object CanBeSerialized {

@@ -21,12 +21,12 @@ import com.typesafe.scalalogging.StrictLogging
 import scala.concurrent.{ExecutionContext, Future}
 
 class PasswordResetService(
-                            userDao: UserDao,
-                            codeDao: PasswordResetCodeDao,
-                            emailService: EmailService,
-                            emailTemplatingEngine: EmailTemplatingEngine,
-                            config: PasswordResetConfig
-                          )(implicit ec: ExecutionContext) extends StrictLogging {
+    userDao: UserDao,
+    codeDao: PasswordResetCodeDao,
+    emailService: EmailService,
+    emailTemplatingEngine: EmailTemplatingEngine,
+    config: PasswordResetConfig
+)(implicit ec: ExecutionContext) extends StrictLogging {
 
   def sendResetCodeToUser(login: String): Future[Unit] = {
     logger.debug(s"Preparing to generate and send reset code to user $login")

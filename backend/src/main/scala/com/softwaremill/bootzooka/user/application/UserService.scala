@@ -19,10 +19,10 @@ import com.softwaremill.bootzooka.user.domain.{BasicUserData, User}
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService(
-                   userDao: UserDao,
-                   emailService: EmailService,
-                   emailTemplatingEngine: EmailTemplatingEngine
-                 )(implicit ec: ExecutionContext) {
+    userDao: UserDao,
+    emailService: EmailService,
+    emailTemplatingEngine: EmailTemplatingEngine
+)(implicit ec: ExecutionContext) {
 
   def findById(userId: UserId): Future[Option[BasicUserData]] = {
     userDao.findBasicDataById(userId)

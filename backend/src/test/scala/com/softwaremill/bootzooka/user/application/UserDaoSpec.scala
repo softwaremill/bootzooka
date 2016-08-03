@@ -1,21 +1,28 @@
-package com.softwaremill.bootzooka.user
+/*
+ * COPYRIGHT (c) 2016 VOCADO, LLC.  ALL RIGHTS RESERVED.  THIS SOFTWARE CONTAINS
+ * TRADE SECRETS AND/OR CONFIDENTIAL INFORMATION PROPRIETARY TO VOCADO, LLC AND/OR
+ * ITS LICENSORS. ACCESS TO AND USE OF THIS INFORMATION IS STRICTLY LIMITED AND
+ * CONTROLLED BY VOCADO, LLC.  THIS SOFTWARE MAY NOT BE COPIED, MODIFIED, DISTRIBUTED,
+ * DISPLAYED, DISCLOSED OR USED IN ANY WAY NOT EXPRESSLY AUTHORIZED BY VOCADO, LLC IN WRITING.
+ */
+
+package com.softwaremill.bootzooka.user.application
 
 import java.util.UUID
 
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpers}
-import com.softwaremill.bootzooka.user.application.UserDao
 import com.softwaremill.bootzooka.user.domain.User
 import com.typesafe.scalalogging.StrictLogging
 import org.scalatest.Matchers
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 
 class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers with Matchers {
   behavior of "UserDao"
 
-  val userDao = new UserDao(sqlDatabase)
+  implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
 
+  val userDao = new UserDao(sqlDatabase)
   lazy val randomIds = List.fill(3)(UUID.randomUUID())
 
   override def beforeEach() {
