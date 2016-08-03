@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import akka.http.scaladsl.Http.ServerBinding
 import com.softwaremill.bootzooka.email.DummyEmailService
-import com.softwaremill.bootzooka.passwordreset.SqlPasswordResetCodeSchema
+import com.softwaremill.bootzooka.passwordreset.application.SqlPasswordResetCodeSchema
 import com.softwaremill.bootzooka.user.application.SqlUserSchema
 import com.softwaremill.bootzooka.{BusinessLogic, Main}
 import org.openqa.selenium.firefox.FirefoxDriver

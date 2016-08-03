@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.test
 
+import com.softwaremill.bootzooka.CoreConfig
 import com.softwaremill.bootzooka.common.sql.SqlDatabase
-import com.softwaremill.bootzooka.config.CoreConfig
 import com.softwaremill.bootzooka.email.{DummyEmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.user.domain.User
 import com.softwaremill.bootzooka.user.application.{UserDao, UserService}

@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka.passwordreset
 
+import com.softwaremill.bootzooka.passwordreset.application.PasswordResetCodeDao
+import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
 
 class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {

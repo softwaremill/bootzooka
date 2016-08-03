@@ -4,6 +4,8 @@ import java.time.temporal.ChronoUnit
 import java.time.{Instant, ZoneOffset}
 import java.util.UUID
 
+import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetService}
+import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
 import com.softwaremill.bootzooka.user.domain.User
 

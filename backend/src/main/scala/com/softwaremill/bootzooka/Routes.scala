@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka
 
 import akka.http.scaladsl.server.Directives._
 import com.softwaremill.bootzooka.common.api.RoutesRequestWrapper
-import com.softwaremill.bootzooka.passwordreset.PasswordResetRoutes
+import com.softwaremill.bootzooka.passwordreset.api.PasswordResetRoutes
 import com.softwaremill.bootzooka.user.api.UsersRoutes
 import com.softwaremill.bootzooka.version.VersionRoutes
 
