@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.sql
 
+import com.softwaremill.bootzooka.common.sql.{DatabaseConfig, SqlDatabase}
 import com.typesafe.config.ConfigFactory
 
 object H2BrowserConsole extends App {

@@ -1,18 +1,28 @@
-package com.softwaremill.bootzooka.user
+/*
+ * COPYRIGHT (c) 2016 VOCADO, LLC.  ALL RIGHTS RESERVED.  THIS SOFTWARE CONTAINS
+ * TRADE SECRETS AND/OR CONFIDENTIAL INFORMATION PROPRIETARY TO VOCADO, LLC AND/OR
+ * ITS LICENSORS. ACCESS TO AND USE OF THIS INFORMATION IS STRICTLY LIMITED AND
+ * CONTROLLED BY VOCADO, LLC.  THIS SOFTWARE MAY NOT BE COPIED, MODIFIED, DISTRIBUTED,
+ * DISPLAYED, DISCLOSED OR USED IN ANY WAY NOT EXPRESSLY AUTHORIZED BY VOCADO, LLC IN WRITING.
+ */
+
+package com.softwaremill.bootzooka.user.api
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.AuthorizationFailedRejection
 import akka.http.scaladsl.server.Directives._
-import com.softwaremill.bootzooka.utils.Utils
-import com.softwaremill.bootzooka.utils.http.RoutesSupport
+import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.common.api.RoutesSupport
+import com.softwaremill.bootzooka.user.application.{Session, UserRegisterResult, UserService}
+import com.softwaremill.bootzooka.user.domain.BasicUserData
 import com.softwaremill.session.SessionDirectives._
+import com.softwaremill.session.SessionOptions._
 import com.typesafe.scalalogging.StrictLogging
 import io.circe.generic.auto._
 
 import scala.concurrent.Future
-import com.softwaremill.session.SessionOptions._
 
-trait UsersRoutes extends RoutesSupport with StrictLogging {
+trait UsersRoutes extends RoutesSupport with StrictLogging with SessionSupport {
 
   def userService: UserService
 
@@ -63,7 +73,9 @@ trait UsersRoutes extends RoutesSupport with StrictLogging {
                 }
                 else {
                   setSession(oneOff, usingCookies, session)
-                }) { complete(user) }
+                }) {
+                  complete(user)
+                }
             }
           }
         } ~

@@ -3,6 +3,8 @@ package com.softwaremill.bootzooka.user
 import java.util.UUID
 
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
+import com.softwaremill.bootzooka.user.application.UserRegisterResult
+import com.softwaremill.bootzooka.user.domain.User
 import org.scalatest.Matchers
 
 class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithDb {

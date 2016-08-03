@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.test
 
 import java.time.{OffsetDateTime, ZoneOffset}
 
-import com.softwaremill.bootzooka.user.User
+import com.softwaremill.bootzooka.user.domain.User
 
 import scala.util.Random
 

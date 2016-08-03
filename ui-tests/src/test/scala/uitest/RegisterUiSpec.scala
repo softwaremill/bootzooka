@@ -1,6 +1,6 @@
 package uitest
 
-import com.softwaremill.bootzooka.utils.Utils
+import com.softwaremill.bootzooka.common.Utils
 import org.scalatest.BeforeAndAfterEach
 import uitest.pages.RegistrationPage
 

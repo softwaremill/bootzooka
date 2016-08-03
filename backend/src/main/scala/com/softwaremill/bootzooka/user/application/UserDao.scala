@@ -1,10 +1,20 @@
-package com.softwaremill.bootzooka.user
+/*
+ * COPYRIGHT (c) 2016 VOCADO, LLC.  ALL RIGHTS RESERVED.  THIS SOFTWARE CONTAINS
+ * TRADE SECRETS AND/OR CONFIDENTIAL INFORMATION PROPRIETARY TO VOCADO, LLC AND/OR
+ * ITS LICENSORS. ACCESS TO AND USE OF THIS INFORMATION IS STRICTLY LIMITED AND
+ * CONTROLLED BY VOCADO, LLC.  THIS SOFTWARE MAY NOT BE COPIED, MODIFIED, DISTRIBUTED,
+ * DISPLAYED, DISCLOSED OR USED IN ANY WAY NOT EXPRESSLY AUTHORIZED BY VOCADO, LLC IN WRITING.
+ */
+
+package com.softwaremill.bootzooka.user.application
 
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import com.softwaremill.bootzooka.utils.FutureHelpers._
-import com.softwaremill.bootzooka.sql.SqlDatabase
+import com.softwaremill.bootzooka.common.FutureHelpers._
+import com.softwaremill.bootzooka.common.sql.SqlDatabase
+import com.softwaremill.bootzooka.user._
+import com.softwaremill.bootzooka.user.domain.{BasicUserData, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 

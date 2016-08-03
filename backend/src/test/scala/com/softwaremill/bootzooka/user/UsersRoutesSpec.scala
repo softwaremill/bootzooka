@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{Cookie, `Set-Cookie`}
 import akka.http.scaladsl.server.Route
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpersWithDb}
+import com.softwaremill.bootzooka.user.api.UsersRoutes
 
 class UsersRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { spec =>
 

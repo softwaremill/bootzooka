@@ -1,27 +1,29 @@
-package com.softwaremill.bootzooka.utils.http
+/*
+ * COPYRIGHT (c) 2016 VOCADO, LLC.  ALL RIGHTS RESERVED.  THIS SOFTWARE CONTAINS
+ * TRADE SECRETS AND/OR CONFIDENTIAL INFORMATION PROPRIETARY TO VOCADO, LLC AND/OR
+ * ITS LICENSORS. ACCESS TO AND USE OF THIS INFORMATION IS STRICTLY LIMITED AND
+ * CONTROLLED BY VOCADO, LLC.  THIS SOFTWARE MAY NOT BE COPIED, MODIFIED, DISTRIBUTED,
+ * DISPLAYED, DISCLOSED OR USED IN ANY WAY NOT EXPRESSLY AUTHORIZED BY VOCADO, LLC IN WRITING.
+ */
+
+package com.softwaremill.bootzooka.common.api
 
 import akka.http.scaladsl.marshalling._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.CacheDirectives._
 import akka.http.scaladsl.model.headers.{`Cache-Control`, `Last-Modified`, _}
+import akka.http.scaladsl.server.Directive1
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{AuthorizationFailedRejection, Directive1}
 import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 import akka.stream.Materializer
 import cats.data.Xor
-import `X-Content-Type-Options`.`nosniff`
-import `X-Frame-Options`.`DENY`
-import `X-XSS-Protection`.`1; mode=block`
-import com.softwaremill.bootzooka.user.{BasicUserData, Session, UserId, UserService}
-import com.softwaremill.session.SessionDirectives._
-import com.softwaremill.session.SessionOptions._
-import com.softwaremill.session.{RefreshTokenStorage, SessionManager}
+import com.softwaremill.bootzooka.common.api.`X-Content-Type-Options`.`nosniff`
+import com.softwaremill.bootzooka.common.api.`X-Frame-Options`.`DENY`
+import com.softwaremill.bootzooka.common.api.`X-XSS-Protection`.`1; mode=block`
 import io.circe._
 import io.circe.jawn.decode
 
-import scala.concurrent.ExecutionContext
-
-trait RoutesSupport extends JsonSupport with SessionSupport {
+trait RoutesSupport extends JsonSupport {
   def completeOk = complete("ok")
 }
 
@@ -29,7 +31,7 @@ trait JsonSupport extends CirceEncoders {
 
   implicit def materializer: Materializer
 
-  implicit def circeUnmarshaller[A <: Product: Manifest](implicit d: Decoder[A]): FromEntityUnmarshaller[A] =
+  implicit def circeUnmarshaller[A <: Product : Manifest](implicit d: Decoder[A]): FromEntityUnmarshaller[A] =
     Unmarshaller.byteStringUnmarshaller
       .forContentTypes(MediaTypes.`application/json`)
       .mapWithCharset { (data, charset) =>
@@ -47,43 +49,23 @@ trait JsonSupport extends CirceEncoders {
   }
 
   /**
-   * To limit what data can be serialized to the client, only classes of type `T` for which an implicit
-   * `CanBeSerialized[T]` value is in scope will be allowed. You only need to provide an implicit for the base value,
-   * any containers like `List` or `Option` will be automatically supported.
-   */
+    * To limit what data can be serialized to the client, only classes of type `T` for which an implicit
+    * `CanBeSerialized[T]` value is in scope will be allowed. You only need to provide an implicit for the base value,
+    * any containers like `List` or `Option` will be automatically supported.
+    */
   trait CanBeSerialized[T]
+
   object CanBeSerialized {
     def apply[T] = new CanBeSerialized[T] {}
     implicit def listCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[List[T]] = null
     implicit def setCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Set[T]] = null
     implicit def optionCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Option[T]] = null
   }
-}
 
-trait SessionSupport {
-
-  implicit def sessionManager: SessionManager[Session]
-  implicit def refreshTokenStorage: RefreshTokenStorage[Session]
-  implicit def ec: ExecutionContext
-
-  def userService: UserService
-
-  def userFromSession: Directive1[BasicUserData] = userIdFromSession.flatMap { userId =>
-    onSuccess(userService.findById(userId)).flatMap {
-      case None => reject(AuthorizationFailedRejection)
-      case Some(user) => provide(user)
-    }
-  }
-
-  def userIdFromSession: Directive1[UserId] = session(refreshable, usingCookies).flatMap {
-    _.toOption match {
-      case None => reject(AuthorizationFailedRejection)
-      case Some(s) => provide(s.userId)
-    }
-  }
 }
 
 trait CacheSupport {
+
   import akka.http.scaladsl.model.DateTime
 
   private val doNotCacheResponse = respondWithHeaders(
@@ -98,6 +80,7 @@ trait CacheSupport {
   )
 
   private def extensionTest(ext: String): Directive1[String] = pathSuffixTest((".*\\." + ext + "$").r)
+
   private def extensionsTest(exts: String*): Directive1[String] = exts.map(extensionTest).reduceLeft(_ | _)
 
   val cacheImages =

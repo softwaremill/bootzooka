@@ -5,7 +5,7 @@ import java.time.{Instant, ZoneOffset}
 import java.util.UUID
 
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
-import com.softwaremill.bootzooka.user.User
+import com.softwaremill.bootzooka.user.domain.User
 
 class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
 

@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.passwordreset
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpersWithDb}
-import com.softwaremill.bootzooka.user.User
+import com.softwaremill.bootzooka.user.domain.User
 
 class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { spec =>
 

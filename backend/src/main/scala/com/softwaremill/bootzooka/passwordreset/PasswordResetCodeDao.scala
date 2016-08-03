@@ -3,9 +3,10 @@ package com.softwaremill.bootzooka.passwordreset
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import com.softwaremill.bootzooka.utils.FutureHelpers._
-import com.softwaremill.bootzooka.sql.SqlDatabase
-import com.softwaremill.bootzooka.user.{SqlUserSchema, User}
+import com.softwaremill.bootzooka.common.FutureHelpers._
+import com.softwaremill.bootzooka.common.sql.SqlDatabase
+import com.softwaremill.bootzooka.user.application.SqlUserSchema
+import com.softwaremill.bootzooka.user.domain.User
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions

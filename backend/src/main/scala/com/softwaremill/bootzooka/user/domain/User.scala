@@ -1,11 +1,20 @@
-package com.softwaremill.bootzooka.user
+/*
+ * COPYRIGHT (c) 2016 VOCADO, LLC.  ALL RIGHTS RESERVED.  THIS SOFTWARE CONTAINS
+ * TRADE SECRETS AND/OR CONFIDENTIAL INFORMATION PROPRIETARY TO VOCADO, LLC AND/OR
+ * ITS LICENSORS. ACCESS TO AND USE OF THIS INFORMATION IS STRICTLY LIMITED AND
+ * CONTROLLED BY VOCADO, LLC.  THIS SOFTWARE MAY NOT BE COPIED, MODIFIED, DISTRIBUTED,
+ * DISPLAYED, DISCLOSED OR USED IN ANY WAY NOT EXPRESSLY AUTHORIZED BY VOCADO, LLC IN WRITING.
+ */
+
+package com.softwaremill.bootzooka.user.domain
 
 import java.time.OffsetDateTime
 import java.util.UUID
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
-import com.softwaremill.bootzooka.utils.Utils
+import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.user._
 
 case class User(
   id: UserId,

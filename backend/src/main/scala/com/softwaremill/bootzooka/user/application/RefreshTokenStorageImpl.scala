@@ -1,11 +1,19 @@
-package com.softwaremill.bootzooka.user.rememberme
+/*
+ * COPYRIGHT (c) 2016 VOCADO, LLC.  ALL RIGHTS RESERVED.  THIS SOFTWARE CONTAINS
+ * TRADE SECRETS AND/OR CONFIDENTIAL INFORMATION PROPRIETARY TO VOCADO, LLC AND/OR
+ * ITS LICENSORS. ACCESS TO AND USE OF THIS INFORMATION IS STRICTLY LIMITED AND
+ * CONTROLLED BY VOCADO, LLC.  THIS SOFTWARE MAY NOT BE COPIED, MODIFIED, DISTRIBUTED,
+ * DISPLAYED, DISCLOSED OR USED IN ANY WAY NOT EXPRESSLY AUTHORIZED BY VOCADO, LLC IN WRITING.
+ */
 
-import java.time.{ZoneOffset, Instant}
+package com.softwaremill.bootzooka.user.application
+
+import java.time.{Instant, ZoneOffset}
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
-import com.softwaremill.bootzooka.user.Session
+import com.softwaremill.bootzooka.user.domain.RememberMeToken
 import com.softwaremill.session.{RefreshTokenData, RefreshTokenLookupResult, RefreshTokenStorage}
 
 import scala.concurrent.duration.{Duration, FiniteDuration}

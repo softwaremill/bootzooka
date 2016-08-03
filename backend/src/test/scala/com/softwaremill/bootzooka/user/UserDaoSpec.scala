@@ -3,6 +3,8 @@ package com.softwaremill.bootzooka.user
 import java.util.UUID
 
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpers}
+import com.softwaremill.bootzooka.user.application.UserDao
+import com.softwaremill.bootzooka.user.domain.User
 import com.typesafe.scalalogging.StrictLogging
 import org.scalatest.Matchers
 

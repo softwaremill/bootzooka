@@ -1,4 +1,12 @@
-package com.softwaremill.bootzooka.utils.http
+/*
+ * COPYRIGHT (c) 2016 VOCADO, LLC.  ALL RIGHTS RESERVED.  THIS SOFTWARE CONTAINS
+ * TRADE SECRETS AND/OR CONFIDENTIAL INFORMATION PROPRIETARY TO VOCADO, LLC AND/OR
+ * ITS LICENSORS. ACCESS TO AND USE OF THIS INFORMATION IS STRICTLY LIMITED AND
+ * CONTROLLED BY VOCADO, LLC.  THIS SOFTWARE MAY NOT BE COPIED, MODIFIED, DISTRIBUTED,
+ * DISPLAYED, DISCLOSED OR USED IN ANY WAY NOT EXPRESSLY AUTHORIZED BY VOCADO, LLC IN WRITING.
+ */
+
+package com.softwaremill.bootzooka.common.api
 
 import akka.http.scaladsl.model.headers.{ModeledCustomHeader, ModeledCustomHeaderCompanion}
 
@@ -6,13 +14,13 @@ import scala.util.Try
 
 // https://www.owasp.org/index.php/List_of_useful_HTTP_headers
 // https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet
-private[http] sealed trait SecurityHeaderDirective[H] {
+private[api] sealed trait SecurityHeaderDirective[H] {
   def value: String
 }
 
-private[http] sealed trait RequestSecurityHeaderDirective[H] extends SecurityHeaderDirective[H]
+private[api] sealed trait RequestSecurityHeaderDirective[H] extends SecurityHeaderDirective[H]
 
-private[http] sealed trait ResponseSecurityHeaderDirective[H] extends SecurityHeaderDirective[H]
+private[api] sealed trait ResponseSecurityHeaderDirective[H] extends SecurityHeaderDirective[H]
 
 object `X-Frame-Options` extends ModeledCustomHeaderCompanion[`X-Frame-Options`] {
   override val name = "X-Frame-Options"

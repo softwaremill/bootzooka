@@ -1,9 +1,10 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import java.time.{Instant, ZoneOffset, OffsetDateTime}
+import java.time.{Instant, OffsetDateTime, ZoneOffset}
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import com.softwaremill.bootzooka.user.User
+
+import com.softwaremill.bootzooka.user.domain.User
 
 /**
  * Code used in the process of password reset.
