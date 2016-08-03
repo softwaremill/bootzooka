@@ -2,14 +2,19 @@ package com.softwaremill.bootzooka.passwordreset
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
+import com.softwaremill.bootzooka.CoreConfig
 import com.softwaremill.bootzooka.passwordreset.api.PasswordResetRoutes
-import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetService}
+import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetConfig, PasswordResetService}
 import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpersWithDb}
 import com.softwaremill.bootzooka.user.domain.User
+import com.typesafe.config.ConfigFactory
 
 class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { spec =>
 
+  lazy val config = new PasswordResetConfig {
+    override def rootConfig = ConfigFactory.load()
+  }
   val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
   val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
 

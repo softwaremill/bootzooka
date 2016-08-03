@@ -6,13 +6,6 @@
  * DISPLAYED, DISCLOSED OR USED IN ANY WAY NOT EXPRESSLY AUTHORIZED BY VOCADO, LLC IN WRITING.
  */
 
-package com.softwaremill.bootzooka
+package com.softwaremill.bootzooka.email.domain
 
-import com.softwaremill.bootzooka.common.ConfigWithDefault
-import com.typesafe.config.Config
-
-trait CoreConfig extends ConfigWithDefault {
-  def rootConfig: Config
-
-  lazy val resetLinkPattern = getString("bootzooka.reset-link-pattern", "http://localhost:8080/#/password-reset?code=%s")
-}
+case class EmailContentWithSubject(content: String, subject: String)

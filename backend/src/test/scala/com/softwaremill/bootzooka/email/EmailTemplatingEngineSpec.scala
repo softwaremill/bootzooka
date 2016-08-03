@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.email
 
+import com.softwaremill.bootzooka.email.application.EmailTemplatingEngine
 import org.scalatest.{FlatSpec, Matchers}
 
 class EmailTemplatingEngineSpec extends FlatSpec with Matchers {

@@ -2,8 +2,8 @@ package com.softwaremill.bootzooka
 
 import akka.actor.ActorSystem
 import com.softwaremill.bootzooka.common.sql.{DatabaseConfig, SqlDatabase}
-import com.softwaremill.bootzooka.email.{DummyEmailService, EmailConfig, EmailTemplatingEngine, SmtpEmailService}
-import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetService}
+import com.softwaremill.bootzooka.email.application.{DummyEmailService, EmailConfig, EmailTemplatingEngine, SmtpEmailService}
+import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetConfig, PasswordResetService}
 import com.softwaremill.bootzooka.user.application.{RefreshTokenStorageImpl, RememberMeTokenDao, UserDao, UserService}
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
@@ -11,7 +11,7 @@ import com.typesafe.scalalogging.StrictLogging
 trait BusinessLogic extends StrictLogging {
   def system: ActorSystem
 
-  lazy val config = new CoreConfig with EmailConfig with DatabaseConfig with ServerConfig {
+  lazy val config = new PasswordResetConfig with EmailConfig with DatabaseConfig with ServerConfig {
     override def rootConfig = ConfigFactory.load()
   }
 

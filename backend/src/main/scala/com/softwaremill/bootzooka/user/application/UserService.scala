@@ -12,17 +12,17 @@ import java.time.{Instant, ZoneOffset}
 import java.util.UUID
 
 import com.softwaremill.bootzooka.common.Utils
-import com.softwaremill.bootzooka.email.{EmailService, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.email.application.{EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.user._
 import com.softwaremill.bootzooka.user.domain.{BasicUserData, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService(
-    userDao: UserDao,
-    emailService: EmailService,
-    emailTemplatingEngine: EmailTemplatingEngine
-)(implicit ec: ExecutionContext) {
+                   userDao: UserDao,
+                   emailService: EmailService,
+                   emailTemplatingEngine: EmailTemplatingEngine
+                 )(implicit ec: ExecutionContext) {
 
   def findById(userId: UserId): Future[Option[BasicUserData]] = {
     userDao.findBasicDataById(userId)
@@ -95,10 +95,15 @@ class UserService(
 }
 
 sealed trait UserRegisterResult
+
 object UserRegisterResult {
+
   case class InvalidData(msg: String) extends UserRegisterResult
+
   case class UserExists(msg: String) extends UserRegisterResult
+
   case object Success extends UserRegisterResult
+
 }
 
 object UserRegisterValidator {

@@ -10,9 +10,9 @@ package com.softwaremill.bootzooka.passwordreset.application
 
 import java.time.Instant
 
-import com.softwaremill.bootzooka.CoreConfig
 import com.softwaremill.bootzooka.common.Utils
-import com.softwaremill.bootzooka.email.{EmailContentWithSubject, EmailService, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.email.application.{EmailService, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.email.domain.EmailContentWithSubject
 import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
 import com.softwaremill.bootzooka.user.application.UserDao
 import com.softwaremill.bootzooka.user.domain.User
@@ -21,12 +21,12 @@ import com.typesafe.scalalogging.StrictLogging
 import scala.concurrent.{ExecutionContext, Future}
 
 class PasswordResetService(
-    userDao: UserDao,
-    codeDao: PasswordResetCodeDao,
-    emailService: EmailService,
-    emailTemplatingEngine: EmailTemplatingEngine,
-    config: CoreConfig
-)(implicit ec: ExecutionContext) extends StrictLogging {
+                            userDao: UserDao,
+                            codeDao: PasswordResetCodeDao,
+                            emailService: EmailService,
+                            emailTemplatingEngine: EmailTemplatingEngine,
+                            config: PasswordResetConfig
+                          )(implicit ec: ExecutionContext) extends StrictLogging {
 
   def sendResetCodeToUser(login: String): Future[Unit] = {
     logger.debug(s"Preparing to generate and send reset code to user $login")

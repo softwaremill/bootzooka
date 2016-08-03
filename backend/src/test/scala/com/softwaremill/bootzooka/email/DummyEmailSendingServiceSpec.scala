@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka.email
 
+import com.softwaremill.bootzooka.email.application.DummyEmailService
+import com.softwaremill.bootzooka.email.domain.EmailContentWithSubject
 import org.scalatest.{FlatSpec, Matchers}
 
 class DummyEmailSendingServiceSpec extends FlatSpec with Matchers {

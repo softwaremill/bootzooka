@@ -4,13 +4,17 @@ import java.time.temporal.ChronoUnit
 import java.time.{Instant, ZoneOffset}
 import java.util.UUID
 
-import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetService}
+import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetConfig, PasswordResetService}
 import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
 import com.softwaremill.bootzooka.user.domain.User
+import com.typesafe.config.ConfigFactory
 
 class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
 
+  lazy val config = new PasswordResetConfig {
+    override def rootConfig = ConfigFactory.load()
+  }
   val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
   val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
 
