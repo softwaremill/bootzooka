@@ -8,7 +8,7 @@ import com.softwaremill.bootzooka.user.application.{RefreshTokenStorageImpl, Rem
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
 
-trait BusinessLogic extends StrictLogging {
+trait DependencyWiring extends StrictLogging {
   def system: ActorSystem
 
   lazy val config = new PasswordResetConfig with EmailConfig with DatabaseConfig with ServerConfig {
