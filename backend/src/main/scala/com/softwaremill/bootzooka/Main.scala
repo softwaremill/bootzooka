@@ -6,7 +6,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
 import akka.stream.ActorMaterializer
-import com.softwaremill.bootzooka.user.Session
+import com.softwaremill.bootzooka.user.application.Session
 import com.softwaremill.session.{SessionConfig, SessionManager}
 import com.typesafe.scalalogging.StrictLogging
 
@@ -14,14 +14,14 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class Main() extends StrictLogging {
-  def start(): (Future[ServerBinding], BusinessLogic) = {
+  def start(): (Future[ServerBinding], DependencyWiring) = {
     Locale.setDefault(Locale.US) // set default locale to prevent from sending cookie expiration date in polish format
 
     implicit val _system = ActorSystem("main")
     implicit val _materializer = ActorMaterializer()
     import _system.dispatcher
 
-    val modules = new BusinessLogic with Routes {
+    val modules = new DependencyWiring with Routes {
 
       lazy val sessionConfig = SessionConfig.fromConfig(config.rootConfig).copy(sessionEncryptData = true)
 

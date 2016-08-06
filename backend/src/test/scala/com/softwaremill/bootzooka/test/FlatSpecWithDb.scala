@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.test
 
-import com.softwaremill.bootzooka.sql.SqlDatabase
+import com.softwaremill.bootzooka.common.sql.SqlDatabase
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 

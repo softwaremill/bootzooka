@@ -2,9 +2,7 @@ package com.softwaremill.bootzooka.test
 
 import java.time.{OffsetDateTime, ZoneOffset}
 
-import com.softwaremill.bootzooka.user.User
-
-import scala.util.Random
+import com.softwaremill.bootzooka.user.domain.User
 
 trait TestHelpers {
 
@@ -12,6 +10,7 @@ trait TestHelpers {
 
   private val random = new scala.util.Random
   private val characters = "abcdefghijklmnopqrstuvwxyz0123456789"
+
   def randomString(length: Int = 10) = Stream.continually(random.nextInt(characters.length)).map(characters).take(length).mkString
 
   def newUser(login: String, email: String, pass: String, salt: String): User =

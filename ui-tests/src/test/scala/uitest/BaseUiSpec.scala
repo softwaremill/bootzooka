@@ -3,14 +3,14 @@ package uitest
 import java.util.concurrent.TimeUnit
 
 import akka.http.scaladsl.Http.ServerBinding
-import com.softwaremill.bootzooka.email.DummyEmailService
-import com.softwaremill.bootzooka.passwordreset.SqlPasswordResetCodeSchema
-import com.softwaremill.bootzooka.user.SqlUserSchema
-import com.softwaremill.bootzooka.{BusinessLogic, Main}
+import com.softwaremill.bootzooka.email.application.DummyEmailService
+import com.softwaremill.bootzooka.passwordreset.application.SqlPasswordResetCodeSchema
+import com.softwaremill.bootzooka.user.application.SqlUserSchema
+import com.softwaremill.bootzooka.{DependencyWiring, Main}
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{Matchers, BeforeAndAfter, BeforeAndAfterAll, FunSuite}
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite, Matchers}
 import uitest.pages.{LoginPage, MainPage, MessagesPage, PasswordResetPage}
 
 import scala.util.Try
@@ -26,7 +26,7 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
   var messagesPage: MessagesPage = _
   var passwordRestPage: PasswordResetPage = _
   var mainPage: MainPage = _
-  var businessLogic: BusinessLogic = _
+  var businessLogic: DependencyWiring = _
   var binding: ServerBinding = _
 
   override def beforeAll() {
