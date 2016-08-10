@@ -18,7 +18,7 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
   val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
 
   "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
-    passwordResetService.sendResetCodeToUser("Does not exist").futureValue
+    passwordResetService.sendResetCodeToUser("Does not exist").futureValue should be(())
   }
 
   "performPasswordReset" should "delete code after it was used once" in {

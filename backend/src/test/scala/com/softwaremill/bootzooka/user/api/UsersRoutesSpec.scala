@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{Cookie, `Set-Cookie`}
 import akka.http.scaladsl.server.Route
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpersWithDb}
+import org.scalatest.Assertion
 
 class UsersRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { spec =>
 
@@ -53,7 +54,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { spec =>
     }
   }
 
-  def withLoggedInUser(login: String, password: String)(body: RequestTransformer => Unit) = {
+  def withLoggedInUser(login: String, password: String)(body: RequestTransformer => Assertion): Assertion = {
     Post("/users", Map("login" -> login, "password" -> password)) ~> routes ~> check {
       status should be (StatusCodes.OK)
 
@@ -65,8 +66,7 @@ class UsersRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { spec =>
 
   "POST /" should "log in given valid credentials" in {
     userDao.add(newUser("user3", "user3@sml.com", "pass", "salt")).futureValue
-    withLoggedInUser("user3", "pass") { _ =>
-      // ok
+    withLoggedInUser("user3", "pass") { _ => succeed
     }
   }
 

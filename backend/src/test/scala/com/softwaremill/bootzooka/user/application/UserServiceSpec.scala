@@ -60,7 +60,7 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
     val newEmail = "new@email.com"
     userService.changeEmail(user.get.id, newEmail).futureValue should be ('right)
     userDao.findByEmail(newEmail).futureValue match {
-      case Some(cu) => // ok
+      case Some(cu) => succeed
       case None => fail("User not found. Maybe e-mail wasn't really changed?")
     }
   }
@@ -74,7 +74,7 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
     val newLogin = "newadmin"
     userService.changeLogin(user.get.id, newLogin).futureValue should be ('right)
     userDao.findByLowerCasedLogin(newLogin).futureValue match {
-      case Some(cu) =>
+      case Some(cu) => succeed
       case None => fail("User not found. Maybe login wasn't really changed?")
     }
   }

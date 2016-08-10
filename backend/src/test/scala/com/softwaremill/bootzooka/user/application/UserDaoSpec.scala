@@ -5,6 +5,7 @@ import java.util.UUID
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpers}
 import com.softwaremill.bootzooka.user.domain.User
 import com.typesafe.scalalogging.StrictLogging
+import org.h2.jdbc.JdbcSQLException
 import org.scalatest.Matchers
 
 import scala.language.implicitConversions
@@ -38,7 +39,9 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
     userDao.add(newUser(login, email, "pass", "salt")).futureValue
 
     // Then
-    userDao.findByEmail(email).futureValue should be ('defined)
+    userDao.findByEmail(email).map { userOpt =>
+      userOpt should be ('defined)
+    }
   }
 
   it should "fail with exception when trying to add user with existing login" in {
@@ -49,7 +52,10 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
     userDao.add(newUser(login, "somePrefix" + email, "somePass", "someSalt")).futureValue
 
     // When & then
-    userDao.add(newUser(login, email, "pass", "salt")).failed.futureValue
+    recoverToSucceededIf[JdbcSQLException] {
+      userDao.add(newUser(login, email, "pass", "salt"))
+    }
+
   }
 
   it should "fail with exception when trying to add user with existing email" in {
@@ -60,7 +66,9 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
     userDao.add(newUser("somePrefixed" + login, email, "somePass", "someSalt")).futureValue
 
     // When & then
-    userDao.add(newUser(login, email, "pass", "salt")).failed.futureValue
+    recoverToSucceededIf[JdbcSQLException] {
+      userDao.add(newUser(login, email, "pass", "salt"))
+    }
   }
 
   it should "find by email" in {
