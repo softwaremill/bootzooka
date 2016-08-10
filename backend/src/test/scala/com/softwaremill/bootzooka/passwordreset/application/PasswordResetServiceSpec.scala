@@ -9,13 +9,15 @@ import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
 import com.softwaremill.bootzooka.user.domain.User
 import com.typesafe.config.ConfigFactory
 
+import scala.concurrent.ExecutionContext
+
 class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
 
   lazy val config = new PasswordResetConfig {
     override def rootConfig = ConfigFactory.load()
   }
-  val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
-  val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
+  val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)(initEc)
+  val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)(initEc)
 
   "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
     passwordResetService.sendResetCodeToUser("Does not exist").futureValue should be(())

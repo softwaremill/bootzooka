@@ -6,7 +6,7 @@ import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
 class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {
   behavior of "PasswordResetCodeDao"
 
-  val dao = new PasswordResetCodeDao(sqlDatabase)
+  val dao = new PasswordResetCodeDao(sqlDatabase)(initEc)
 
   it should "add and load code" in {
     // Given
@@ -39,7 +39,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {
     yield dao.remove(code1).futureValue
 
     //Then
-    whenReady(bgActions) { _ =>
+    bgActions.map { _ =>
       dao.findByCode("code1").futureValue should be (None)
       dao.findByCode("code2").futureValue should be ('defined)
     }
@@ -56,7 +56,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {
     yield dao.remove(code)
 
     // Then
-    whenReady(bgActions) { _ =>
+    bgActions.map { _ =>
       userDao.findById(user.id).futureValue should be (Some(user))
     }
   }
