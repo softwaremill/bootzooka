@@ -6,6 +6,7 @@ import Keys._
 
 import scala.util.Try
 import scalariform.formatter.preferences._
+import complete.DefaultParsers._
 
 val slf4jVersion = "1.7.21"
 val logBackVersion = "1.1.7"
@@ -51,6 +52,9 @@ val akkaStack = Seq(akkaHttpCore, akkaHttpExperimental, akkaHttpTestkit, akkaHtt
 
 val commonDependencies = unitTestingStack ++ loggingStack
 
+lazy val updateNpm = taskKey[Unit]("Update npm")
+lazy val npmTask = inputKey[Unit]("Run npm with arguments")
+
 lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
   scalariformPreferences := scalariformPreferences.value
     .setPreference(DoubleIndentClassDeclaration, true)
@@ -61,7 +65,21 @@ lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
   version := "0.0.1-SNAPSHOT",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
-  libraryDependencies ++= commonDependencies
+  libraryDependencies ++= commonDependencies,
+  updateNpm := {
+    println("Updating npm dependencies")
+    haltOnCmdResultError(Process("npm install", baseDirectory.value / ".." / "ui") !)
+  },
+  npmTask := {
+    val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
+    updateNpm.value
+    val localNpmCommand = "npm " + taskName
+    def buildWebpack() = {
+      Process(localNpmCommand, baseDirectory.value / ".." / "ui").!
+    }
+    println("Building with Webpack : " + taskName)
+    haltOnCmdResultError(buildWebpack())
+  }
 )
 
 def haltOnCmdResultError(result: Int) {
@@ -70,26 +88,12 @@ def haltOnCmdResultError(result: Int) {
   }
 }
 
-val updateNpm = baseDirectory map { bd =>
-  println("Updating NPM dependencies")
-  haltOnCmdResultError(Process("npm install", bd / ".." / "ui") !)
-}
-
-def npmTask(taskName: String) = (baseDirectory, streams) map { (bd, s) =>
-  val localNpmCommand = "npm " + taskName
-  def buildWebpack() = {
-    Process(localNpmCommand, bd / ".." / "ui").!
-  }
-  println("Building with Webpack : " + taskName)
-  haltOnCmdResultError(buildWebpack())
-} dependsOn updateNpm
-
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
   .settings(
     name := "bootzooka",
     herokuFatJar in Compile := Some((assemblyOutputPath in backend in assembly).value),
-    deployHeroku in Compile <<= (deployHeroku in Compile) dependsOn (assembly in backend)
+    deployHeroku in Compile := (deployHeroku in Compile) dependsOn (assembly in backend)
   )
   .aggregate(backend, ui)
 
@@ -117,19 +121,19 @@ lazy val backend: Project = (project in file("backend"))
       (unmanagedResourceDirectories in Compile).value ++ List(baseDirectory.value.getParentFile / ui.base.getName / "dist")
     },
     assemblyJarName in assembly := "bootzooka.jar",
-    assembly <<= assembly dependsOn npmTask("run build")
+    assembly := assembly.dependsOn(npmTask.toTask(" run build")).value
   )
 
 lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
-  .settings(test in Test <<= (test in Test) dependsOn npmTask("run test"))
+  .settings(test in Test := (test in Test).dependsOn(npmTask.toTask(" run test")).value)
 
 lazy val uiTests = (project in file("ui-tests"))
   .settings(commonSettings: _*)
   .settings(
     parallelExecution := false,
     libraryDependencies ++= seleniumStack,
-    test in Test <<= (test in Test) dependsOn npmTask("run build")
+    test in Test := (test in Test).dependsOn(npmTask.toTask(" run build")).value
   ) dependsOn backend
 
 RenameProject.settings
