@@ -121,19 +121,19 @@ lazy val backend: Project = (project in file("backend"))
       (unmanagedResourceDirectories in Compile).value ++ List(baseDirectory.value.getParentFile / ui.base.getName / "dist")
     },
     assemblyJarName in assembly := "bootzooka.jar",
-    assembly := assembly.dependsOn(npmTask.toTask("run build")).value
+    assembly := assembly.dependsOn(npmTask.toTask(" run build")).value
   )
 
 lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
-  .settings(test in Test := (test in Test).dependsOn(npmTask.toTask("run test")).value)
+  .settings(test in Test := (test in Test).dependsOn(npmTask.toTask(" run test")).value)
 
 lazy val uiTests = (project in file("ui-tests"))
   .settings(commonSettings: _*)
   .settings(
     parallelExecution := false,
     libraryDependencies ++= seleniumStack,
-    test in Test := (test in Test).dependsOn(npmTask.toTask("run build")).value
+    test in Test := (test in Test).dependsOn(npmTask.toTask(" run build")).value
   ) dependsOn backend
 
 RenameProject.settings
