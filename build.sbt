@@ -10,7 +10,7 @@ import complete.DefaultParsers._
 
 val slf4jVersion = "1.7.21"
 val logBackVersion = "1.1.7"
-val scalaLoggingVersion = "3.1.0"
+val scalaLoggingVersion = "3.5.0"
 val slickVersion = "3.1.1"
 val seleniumVersion = "2.53.0"
 val circeVersion = "0.6.1"
@@ -22,7 +22,7 @@ val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
 val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
 val loggingStack = Seq(slf4jApi, logBackClassic, scalaLogging)
 
-val typesafeConfig = "com.typesafe" % "config" % "1.3.0"
+val typesafeConfig = "com.typesafe" % "config" % "1.3.1"
 
 val circeCore = "io.circe" %% "circe-core" % circeVersion
 val circeGeneric = "io.circe" %% "circe-generic" % circeVersion
