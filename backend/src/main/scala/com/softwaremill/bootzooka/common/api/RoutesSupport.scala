@@ -8,12 +8,12 @@ import akka.http.scaladsl.server.Directive1
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 import akka.stream.Materializer
-import cats.data.Xor
 import com.softwaremill.bootzooka.common.api.`X-Content-Type-Options`.`nosniff`
 import com.softwaremill.bootzooka.common.api.`X-Frame-Options`.`DENY`
 import com.softwaremill.bootzooka.common.api.`X-XSS-Protection`.`1; mode=block`
 import io.circe._
 import io.circe.jawn.decode
+import cats.implicits._
 
 trait RoutesSupport extends JsonSupport {
   def completeOk = complete("ok")
@@ -29,8 +29,8 @@ trait JsonSupport extends CirceEncoders {
       .mapWithCharset { (data, charset) =>
         val input = if (charset == HttpCharsets.`UTF-8`) data.utf8String else data.decodeString(charset.nioCharset.name)
         decode[A](input) match {
-          case Xor.Right(obj) => obj
-          case Xor.Left(failure) => throw new IllegalArgumentException(failure.getMessage, failure.getCause)
+          case Right(obj) => obj
+          case Left(failure) => throw new IllegalArgumentException(failure.getMessage, failure.getCause)
         }
       }
 

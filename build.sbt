@@ -13,7 +13,7 @@ val logBackVersion = "1.1.7"
 val scalaLoggingVersion = "3.1.0"
 val slickVersion = "3.1.1"
 val seleniumVersion = "2.53.0"
-val circeVersion = "0.4.0"
+val circeVersion = "0.6.1"
 val akkaVersion = "2.4.14"
 val akkaHttpVersion = "10.0.0"
 
