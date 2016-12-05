@@ -16,7 +16,7 @@ Current (user visible) features:
 
 "Developer" features:
 
-* integrated SBT + Wepack build
+* integrated SBT + Webpack build
 * unit & integration backend tests
 * frontend JS tests
 * ui tests using Selenium
