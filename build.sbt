@@ -94,7 +94,7 @@ lazy val rootProject = (project in file("."))
   .settings(
     name := "bootzooka",
     herokuFatJar in Compile := Some((assemblyOutputPath in backend in assembly).value),
-    deployHeroku in Compile := (deployHeroku in Compile) dependsOn (assembly in backend)
+    deployHeroku in Compile := ((deployHeroku in Compile) dependsOn (assembly in backend)).value
   )
   .aggregate(backend, ui)
 
