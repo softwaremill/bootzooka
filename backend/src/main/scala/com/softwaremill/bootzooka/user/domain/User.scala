@@ -37,7 +37,9 @@ object User {
   }
 
   def passwordsMatch(plainPassword: String, user: User): Boolean = {
-    user.password.equals(encryptPassword(plainPassword, user.salt))
+    Utils.constantTimeEquals(
+      user.password,
+      encryptPassword(plainPassword, user.salt))
   }
 }
 
