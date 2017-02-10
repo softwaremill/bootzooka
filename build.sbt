@@ -14,8 +14,8 @@ val scalaLoggingVersion = "3.5.0"
 val slickVersion = "3.1.1"
 val seleniumVersion = "2.53.0"
 val circeVersion = "0.6.1"
-val akkaVersion = "2.4.14"
-val akkaHttpVersion = "10.0.0"
+val akkaVersion = "2.4.16"
+val akkaHttpVersion = "10.0.3"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
 val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
