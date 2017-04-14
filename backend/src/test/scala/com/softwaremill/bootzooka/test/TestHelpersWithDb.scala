@@ -10,10 +10,10 @@ import scala.concurrent.ExecutionContext
 
 trait TestHelpersWithDb extends TestHelpers with ScalaFutures {
 
-  lazy val emailService = new DummyEmailService()
+  lazy val emailService          = new DummyEmailService()
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
-  lazy val userDao = new UserDao(sqlDatabase)
-  lazy val userService = new UserService(userDao, emailService, emailTemplatingEngine)
+  lazy val userDao               = new UserDao(sqlDatabase)
+  lazy val userService           = new UserService(userDao, emailService, emailTemplatingEngine)
 
   def sqlDatabase: SqlDatabase
 

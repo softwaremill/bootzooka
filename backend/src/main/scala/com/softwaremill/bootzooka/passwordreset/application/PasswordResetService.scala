@@ -18,7 +18,8 @@ class PasswordResetService(
     emailService: EmailService,
     emailTemplatingEngine: EmailTemplatingEngine,
     config: PasswordResetConfig
-)(implicit ec: ExecutionContext) extends StrictLogging {
+)(implicit ec: ExecutionContext)
+    extends StrictLogging {
 
   def sendResetCodeToUser(login: String): Future[Unit] = {
     logger.debug(s"Preparing to generate and send reset code to user $login")
@@ -60,8 +61,7 @@ class PasswordResetService(
             _ <- changePassword(c, newPassword)
             _ <- invalidateResetCode(c)
           } yield Right(true)
-        }
-        else {
+        } else {
           invalidateResetCode(c).map(_ => Left("Your reset code is invalid. Please try again."))
         }
       case None =>
@@ -70,11 +70,9 @@ class PasswordResetService(
     }
   }
 
-  private def changePassword(code: PasswordResetCode, newPassword: String): Future[Unit] = {
+  private def changePassword(code: PasswordResetCode, newPassword: String): Future[Unit] =
     userDao.changePassword(code.user.id, User.encryptPassword(newPassword, code.user.salt))
-  }
 
-  private def invalidateResetCode(code: PasswordResetCode): Future[Unit] = {
+  private def invalidateResetCode(code: PasswordResetCode): Future[Unit] =
     codeDao.remove(code)
-  }
 }

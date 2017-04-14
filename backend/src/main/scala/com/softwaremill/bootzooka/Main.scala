@@ -17,7 +17,7 @@ class Main() extends StrictLogging {
   def start(): (Future[ServerBinding], DependencyWiring) = {
     Locale.setDefault(Locale.US) // set default locale to prevent from sending cookie expiration date in polish format
 
-    implicit val _system = ActorSystem("main")
+    implicit val _system       = ActorSystem("main")
     implicit val _materializer = ActorMaterializer()
     import _system.dispatcher
 
@@ -25,10 +25,10 @@ class Main() extends StrictLogging {
 
       lazy val sessionConfig = SessionConfig.fromConfig(config.rootConfig).copy(sessionEncryptData = true)
 
-      implicit lazy val ec = _system.dispatchers.lookup("akka-http-routes-dispatcher")
+      implicit lazy val ec                                      = _system.dispatchers.lookup("akka-http-routes-dispatcher")
       implicit lazy val sessionManager: SessionManager[Session] = new SessionManager[Session](sessionConfig)
-      implicit lazy val materializer = _materializer
-      lazy val system = _system
+      implicit lazy val materializer                            = _materializer
+      lazy val system                                           = _system
     }
 
     logger.info("Server secret: " + modules.sessionConfig.serverSecret.take(3) + "...")

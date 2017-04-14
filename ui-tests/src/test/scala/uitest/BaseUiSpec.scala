@@ -20,14 +20,14 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
   val RegPass = "regpass"
   val RegMail = "reguser@regmail.pl"
 
-  var driver: FirefoxDriver = _
-  var emailService: DummyEmailService = _
-  var loginPage: LoginPage = _
-  var messagesPage: MessagesPage = _
+  var driver: FirefoxDriver               = _
+  var emailService: DummyEmailService     = _
+  var loginPage: LoginPage                = _
+  var messagesPage: MessagesPage          = _
   var passwordRestPage: PasswordResetPage = _
-  var mainPage: MainPage = _
-  var businessLogic: DependencyWiring = _
-  var binding: ServerBinding = _
+  var mainPage: MainPage                  = _
+  var businessLogic: DependencyWiring     = _
+  var binding: ServerBinding              = _
 
   override def beforeAll() {
     val (startFuture, _beans) = new Main().start()
@@ -41,17 +41,16 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
   }
 
   /**
-   * Register a new user if doesn't exist.
-   *
-   * @return boolean value (wrapped within scala.util.Try) indicating
-   *         if new user was created or an existing user was found
-   */
+    * Register a new user if doesn't exist.
+    *
+    * @return boolean value (wrapped within scala.util.Try) indicating
+    *         if new user was created or an existing user was found
+    */
   protected def registerUserIfNotExists(login: String, email: String, pass: String): Try[Boolean] = Try {
     if (businessLogic.userDao.findByLowerCasedLogin(login).futureValue.isEmpty) {
       businessLogic.userService.registerNewUser(login, email, pass).futureValue
       true
-    }
-    else {
+    } else {
       false
     }
   }

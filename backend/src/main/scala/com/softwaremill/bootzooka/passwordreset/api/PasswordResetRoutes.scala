@@ -17,7 +17,7 @@ trait PasswordResetRoutes extends RoutesSupport with SessionSupport {
         entity(as[PasswordResetInput]) { in =>
           onSuccess(passwordResetService.performPasswordReset(code, in.password)) {
             case Left(e) => complete(StatusCodes.Forbidden, e)
-            case _ => completeOk
+            case _       => completeOk
           }
         }
       } ~ entity(as[ForgotPasswordInput]) { in =>

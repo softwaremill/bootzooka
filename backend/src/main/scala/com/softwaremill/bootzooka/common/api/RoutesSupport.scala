@@ -27,30 +27,30 @@ trait JsonSupport extends CirceEncoders {
     Unmarshaller.byteStringUnmarshaller
       .forContentTypes(MediaTypes.`application/json`)
       .mapWithCharset { (data, charset) =>
-        val input = if (charset == HttpCharsets.`UTF-8`) data.utf8String else data.decodeString(charset.nioCharset.name)
+        val input =
+          if (charset == HttpCharsets.`UTF-8`) data.utf8String else data.decodeString(charset.nioCharset.name)
         decode[A](input) match {
-          case Right(obj) => obj
+          case Right(obj)    => obj
           case Left(failure) => throw new IllegalArgumentException(failure.getMessage, failure.getCause)
         }
       }
 
-  implicit def circeMarshaller[A <: AnyRef](implicit e: Encoder[A], cbs: CanBeSerialized[A]): ToEntityMarshaller[A] = {
+  implicit def circeMarshaller[A <: AnyRef](implicit e: Encoder[A], cbs: CanBeSerialized[A]): ToEntityMarshaller[A] =
     Marshaller.StringMarshaller.wrap(MediaTypes.`application/json`) {
       e(_).noSpaces
     }
-  }
 
   /**
-   * To limit what data can be serialized to the client, only classes of type `T` for which an implicit
-   * `CanBeSerialized[T]` value is in scope will be allowed. You only need to provide an implicit for the base value,
-   * any containers like `List` or `Option` will be automatically supported.
-   */
+    * To limit what data can be serialized to the client, only classes of type `T` for which an implicit
+    * `CanBeSerialized[T]` value is in scope will be allowed. You only need to provide an implicit for the base value,
+    * any containers like `List` or `Option` will be automatically supported.
+    */
   trait CanBeSerialized[T]
 
   object CanBeSerialized {
-    def apply[T] = new CanBeSerialized[T] {}
-    implicit def listCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[List[T]] = null
-    implicit def setCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Set[T]] = null
+    def apply[T]                                                                                        = new CanBeSerialized[T] {}
+    implicit def listCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[List[T]]     = null
+    implicit def setCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Set[T]]       = null
     implicit def optionCanBeSerialized[T](implicit cbs: CanBeSerialized[T]): CanBeSerialized[Option[T]] = null
   }
 
@@ -76,7 +76,9 @@ trait CacheSupport {
   private def extensionsTest(exts: String*): Directive1[String] = exts.map(extensionTest).reduceLeft(_ | _)
 
   val cacheImages =
-    extensionsTest("png", "svg", "gif", "woff", "jpg").flatMap { _ => cacheResponse } |
+    extensionsTest("png", "svg", "gif", "woff", "jpg").flatMap { _ =>
+      cacheResponse
+    } |
       doNotCacheResponse
 }
 

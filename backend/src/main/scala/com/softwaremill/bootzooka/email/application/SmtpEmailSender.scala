@@ -9,22 +9,22 @@ import javax.mail.{Address, Message, Session, Transport}
 import com.typesafe.scalalogging.StrictLogging
 
 /**
- * Copied from softwaremill-common:
- * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
- */
+  * Copied from softwaremill-common:
+  * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
+  */
 object SmtpEmailSender extends StrictLogging {
 
   def send(
-    smtpHost: String,
-    smtpPort: String,
-    smtpUsername: String,
-    smtpPassword: String,
-    verifySSLCertificate: Boolean,
-    sslConnection: Boolean,
-    from: String,
-    encoding: String,
-    emailDescription: EmailDescription,
-    attachmentDescriptions: AttachmentDescription*
+      smtpHost: String,
+      smtpPort: String,
+      smtpUsername: String,
+      smtpPassword: String,
+      verifySSLCertificate: Boolean,
+      sslConnection: Boolean,
+      from: String,
+      encoding: String,
+      emailDescription: EmailDescription,
+      attachmentDescriptions: AttachmentDescription*
   ) {
 
     val props = setupSmtpServerProperties(sslConnection, smtpHost, smtpPort, verifySSLCertificate)
@@ -35,10 +35,10 @@ object SmtpEmailSender extends StrictLogging {
     val m = new MimeMessage(session)
     m.setFrom(new InternetAddress(from))
 
-    val to = convertStringEmailsToAddresses(emailDescription.emails)
+    val to      = convertStringEmailsToAddresses(emailDescription.emails)
     val replyTo = convertStringEmailsToAddresses(emailDescription.replyToEmails)
-    val cc = convertStringEmailsToAddresses(emailDescription.ccEmails)
-    val bcc = convertStringEmailsToAddresses(emailDescription.bccEmails)
+    val cc      = convertStringEmailsToAddresses(emailDescription.ccEmails)
+    val bcc     = convertStringEmailsToAddresses(emailDescription.bccEmails)
 
     m.setRecipients(javax.mail.Message.RecipientType.TO, to)
     m.setRecipients(Message.RecipientType.CC, cc)
@@ -49,8 +49,7 @@ object SmtpEmailSender extends StrictLogging {
 
     if (attachmentDescriptions.nonEmpty) {
       addAttachments(m, emailDescription.message, encoding, attachmentDescriptions: _*)
-    }
-    else {
+    } else {
       m.setText(emailDescription.message, encoding, "plain")
     }
 
@@ -58,13 +57,17 @@ object SmtpEmailSender extends StrictLogging {
     try {
       connectToSmtpServer(transport, smtpUsername, smtpPassword)
       sendEmail(transport, m, emailDescription, to)
-    }
-    finally {
+    } finally {
       transport.close()
     }
   }
 
-  private def setupSmtpServerProperties(sslConnection: Boolean, smtpHost: String, smtpPort: String, verifySSLCertificate: Boolean): Properties = {
+  private def setupSmtpServerProperties(
+      sslConnection: Boolean,
+      smtpHost: String,
+      smtpPort: String,
+      verifySSLCertificate: Boolean
+  ): Properties = {
     // Setup mail server
     val props = new Properties()
     if (sslConnection) {
@@ -75,17 +78,15 @@ object SmtpEmailSender extends StrictLogging {
         props.put("mail.smtps.ssl.checkserveridentity", "false")
         props.put("mail.smtps.ssl.trust", "*")
       }
-    }
-    else {
+    } else {
       props.put("mail.smtp.host", smtpHost)
       props.put("mail.smtp.port", smtpPort)
     }
     props
   }
 
-  private def createSmtpTransportFrom(session: Session, sslConnection: Boolean): Transport = {
+  private def createSmtpTransportFrom(session: Session, sslConnection: Boolean): Transport =
     if (sslConnection) session.getTransport("smtps") else session.getTransport("smtp")
-  }
 
   private def sendEmail(transport: Transport, m: MimeMessage, emailDescription: EmailDescription, to: Array[Address]) {
     transport.sendMessage(m, m.getAllRecipients)
@@ -95,18 +96,20 @@ object SmtpEmailSender extends StrictLogging {
   private def connectToSmtpServer(transport: Transport, smtpUsername: String, smtpPassword: String) {
     if (smtpUsername != null && smtpUsername.nonEmpty) {
       transport.connect(smtpUsername, smtpPassword)
-    }
-    else {
+    } else {
       transport.connect()
     }
   }
 
-  private def convertStringEmailsToAddresses(emails: Array[String]): Array[Address] = {
+  private def convertStringEmailsToAddresses(emails: Array[String]): Array[Address] =
     emails.map(new InternetAddress(_))
-  }
 
-  private def addAttachments(mimeMessage: MimeMessage, msg: String, encoding: String,
-    attachmentDescriptions: AttachmentDescription*) {
+  private def addAttachments(
+      mimeMessage: MimeMessage,
+      msg: String,
+      encoding: String,
+      attachmentDescriptions: AttachmentDescription*
+  ) {
     val multiPart = new MimeMultipart()
 
     val textPart = new MimeBodyPart()
@@ -118,9 +121,8 @@ object SmtpEmailSender extends StrictLogging {
       multiPart.addBodyPart(binaryPart)
 
       val ds = new DataSource() {
-        def getInputStream = {
+        def getInputStream =
           new ByteArrayInputStream(attachmentDescription.content)
-        }
 
         def getOutputStream = {
           val byteStream = new ByteArrayOutputStream()
@@ -128,13 +130,11 @@ object SmtpEmailSender extends StrictLogging {
           byteStream
         }
 
-        def getContentType = {
+        def getContentType =
           attachmentDescription.contentType
-        }
 
-        def getName = {
+        def getName =
           attachmentDescription.filename
-        }
       }
       binaryPart.setDataHandler(new DataHandler(ds))
       binaryPart.setFileName(attachmentDescription.filename)

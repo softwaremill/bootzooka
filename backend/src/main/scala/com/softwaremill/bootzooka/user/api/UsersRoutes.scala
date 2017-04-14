@@ -35,8 +35,8 @@ trait UsersRoutes extends RoutesSupport with StrictLogging with SessionSupport {
           entity(as[RegistrationInput]) { in =>
             onSuccess(userService.registerNewUser(in.loginEscaped, in.email, in.password)) {
               case UserRegisterResult.InvalidData(msg) => complete(StatusCodes.BadRequest, msg)
-              case UserRegisterResult.UserExists(msg) => complete(StatusCodes.Conflict, msg)
-              case UserRegisterResult.Success => complete("success")
+              case UserRegisterResult.UserExists(msg)  => complete(StatusCodes.Conflict, msg)
+              case UserRegisterResult.Success          => complete("success")
             }
           }
         }
@@ -47,7 +47,7 @@ trait UsersRoutes extends RoutesSupport with StrictLogging with SessionSupport {
             entity(as[ChangePasswordInput]) { in =>
               onSuccess(userService.changePassword(user.id, in.currentPassword, in.newPassword)) {
                 case Left(msg) => complete(StatusCodes.Forbidden, msg)
-                case Right(_) => completeOk
+                case Right(_)  => completeOk
               }
             }
           }
@@ -61,11 +61,10 @@ trait UsersRoutes extends RoutesSupport with StrictLogging with SessionSupport {
               case Some(user) =>
                 val session = Session(user.id)
                 (if (in.rememberMe.getOrElse(false)) {
-                  setSession(refreshable, usingCookies, session)
-                }
-                else {
-                  setSession(oneOff, usingCookies, session)
-                }) {
+                   setSession(refreshable, usingCookies, session)
+                 } else {
+                   setSession(oneOff, usingCookies, session)
+                 }) {
                   complete(user)
                 }
             }
@@ -82,12 +81,12 @@ trait UsersRoutes extends RoutesSupport with StrictLogging with SessionSupport {
                 val updateAction = (in.login, in.email) match {
                   case (Some(login), _) => userService.changeLogin(userId, login)
                   case (_, Some(email)) => userService.changeEmail(userId, email)
-                  case _ => Future.successful(Left("You have to provide new login or email"))
+                  case _                => Future.successful(Left("You have to provide new login or email"))
                 }
 
                 onSuccess(updateAction) {
                   case Left(msg) => complete(StatusCodes.Conflict, msg)
-                  case Right(_) => completeOk
+                  case Right(_)  => completeOk
                 }
               }
             }

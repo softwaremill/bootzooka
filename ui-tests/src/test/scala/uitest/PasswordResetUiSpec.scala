@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
 
 class PasswordResetUiSpec extends BaseUiSpec {
 
-  private val validCode = "SOME00CODE"
+  private val validCode   = "SOME00CODE"
   private val invalidCode = validCode + "666"
 
   override def beforeAll(): Unit = {
@@ -21,27 +21,27 @@ class PasswordResetUiSpec extends BaseUiSpec {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "asd")
 
-    messagesPage.getInfoText should include ("Your password has been changed")
+    messagesPage.getInfoText should include("Your password has been changed")
   }
 
   test("password-reset should not reset password due to missing code") {
     passwordRestPage.openPasswordResetPage("")
     passwordRestPage.resetPassword("asd", "asd")
 
-    messagesPage.getErrorText should include ("Wrong or malformed password recovery code.")
+    messagesPage.getErrorText should include("Wrong or malformed password recovery code.")
   }
 
   test("password-reset should not reset password due to invalid code") {
     passwordRestPage.openPasswordResetPage(invalidCode)
     passwordRestPage.resetPassword("asd", "asd")
 
-    messagesPage.getErrorText should include ("Your reset code is invalid. Please try again.")
+    messagesPage.getErrorText should include("Your reset code is invalid. Please try again.")
   }
 
   test("password-reset should do nothing if password & its repetition differ") {
     passwordRestPage.openPasswordResetPage(validCode)
     passwordRestPage.resetPassword("asd", "notMatching")
-    passwordRestPage.getErrorText should include ("Passwords don't match!")
+    passwordRestPage.getErrorText should include("Passwords don't match!")
   }
 
 }
