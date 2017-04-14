@@ -1,14 +1,10 @@
 language: scala
 scala:
    - 2.11.8
-   - 2.12.0-M4
+   - 2.12.1
 
 jdk:
   - oraclejdk8
-
-matrix:
-  allow_failures:
-    - scala: 2.12.0-M4
 
 sudo: false
 

@@ -8,7 +8,7 @@ import com.typesafe.config.ConfigValueFactory._
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.StrictLogging
 import org.flywaydb.core.Flyway
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 import slick.jdbc.JdbcBackend._
 
 case class SqlDatabase(
@@ -93,16 +93,16 @@ object SqlDatabase extends StrictLogging {
 
   def createPostgresFromConfig(config: DatabaseConfig) = {
     val db = Database.forConfig("bootzooka.db.postgres", config.rootConfig)
-    SqlDatabase(db, slick.driver.PostgresDriver, postgresConnectionString(config))
+    SqlDatabase(db, slick.jdbc.PostgresProfile, postgresConnectionString(config))
   }
 
   private def createEmbedded(config: DatabaseConfig): SqlDatabase = {
     val db = Database.forConfig("bootzooka.db.h2")
-    SqlDatabase(db, slick.driver.H2Driver, JdbcConnectionString(embeddedConnectionStringFromConfig(config)))
+    SqlDatabase(db, slick.jdbc.H2Profile, JdbcConnectionString(embeddedConnectionStringFromConfig(config)))
   }
 
   def createEmbedded(connectionString: String): SqlDatabase = {
     val db = Database.forURL(connectionString)
-    SqlDatabase(db, slick.driver.H2Driver, JdbcConnectionString(connectionString))
+    SqlDatabase(db, slick.jdbc.H2Profile, JdbcConnectionString(connectionString))
   }
 }

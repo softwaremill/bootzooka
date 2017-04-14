@@ -11,11 +11,11 @@ import complete.DefaultParsers._
 val slf4jVersion = "1.7.21"
 val logBackVersion = "1.1.7"
 val scalaLoggingVersion = "3.5.0"
-val slickVersion = "3.1.1"
+val slickVersion = "3.2.0"
 val seleniumVersion = "2.53.0"
-val circeVersion = "0.6.1"
-val akkaVersion = "2.4.16"
-val akkaHttpVersion = "10.0.3"
+val circeVersion = "0.7.0"
+val akkaVersion = "2.5.0"
+val akkaHttpVersion = "10.0.4"
 
 val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
 val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -38,7 +38,7 @@ val postgres = "org.postgresql" % "postgresql" % "9.4.1208"
 val flyway = "org.flywaydb" % "flyway-core" % "4.0"
 val slickStack = Seq(slick, h2, postgres, slickHikari, flyway)
 
-val scalatest = "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 val unitTestingStack = Seq(scalatest)
 
 val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
@@ -48,7 +48,7 @@ val seleniumStack = Seq(seleniumJava, seleniumFirefox)
 val akkaHttpCore = "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion
 val akkaHttpExperimental = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
 val akkaHttpTestkit = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test"
-val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.3.0"
+val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.4.0"
 val akkaStack = Seq(akkaHttpCore, akkaHttpExperimental, akkaHttpTestkit, akkaHttpSession)
 
 val commonDependencies = unitTestingStack ++ loggingStack
@@ -64,7 +64,9 @@ lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
     .setPreference(SpacesAroundMultiImports, false),
   organization := "com.softwaremill",
   version := "0.0.1-SNAPSHOT",
-  scalaVersion := "2.11.8",
+  scalaVersion := "2.12.1",
+  crossScalaVersions := Seq(scalaVersion.value, "2.11.8"),
+  crossVersion := CrossVersion.binary,
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   libraryDependencies ++= commonDependencies,
   updateNpm := {
