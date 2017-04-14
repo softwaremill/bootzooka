@@ -48,7 +48,7 @@ val seleniumStack = Seq(seleniumJava, seleniumFirefox)
 val akkaHttpCore = "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion
 val akkaHttpExperimental = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
 val akkaHttpTestkit = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test"
-val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.3.0"
+val akkaHttpSession = "com.softwaremill.akka-http-session" %% "core" % "0.4.0"
 val akkaStack = Seq(akkaHttpCore, akkaHttpExperimental, akkaHttpTestkit, akkaHttpSession)
 
 val commonDependencies = unitTestingStack ++ loggingStack
