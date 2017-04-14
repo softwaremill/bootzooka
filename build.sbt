@@ -38,7 +38,7 @@ val postgres = "org.postgresql" % "postgresql" % "9.4.1208"
 val flyway = "org.flywaydb" % "flyway-core" % "4.0"
 val slickStack = Seq(slick, h2, postgres, slickHikari, flyway)
 
-val scalatest = "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 val unitTestingStack = Seq(scalatest)
 
 val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
