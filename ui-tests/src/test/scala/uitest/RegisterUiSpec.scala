@@ -6,8 +6,8 @@ import uitest.pages.RegistrationPage
 
 class RegisterUiSpec extends BaseUiSpec with BeforeAndAfterEach {
 
-  val Login = Utils.randomString(5)
-  val Email = Login + "@example.org"
+  val Login    = Utils.randomString(5)
+  val Email    = Login + "@example.org"
   val Password = "test"
 
   final val EmailSubject = s"SoftwareMill Bootzooka - registration confirmation for user $Login"
@@ -25,8 +25,8 @@ class RegisterUiSpec extends BaseUiSpec with BeforeAndAfterEach {
     registrationPage.register(Login, Email, Password)
 
     //then
-    messagesPage.getInfoText should include ("User registered successfully")
-    emailService.wasEmailSent(Email, EmailSubject) should be (true)
+    messagesPage.getInfoText should include("User registered successfully")
+    emailService.wasEmailSent(Email, EmailSubject) should be(true)
   }
 
   test("register - fail due to not matching passwords") {
@@ -37,8 +37,8 @@ class RegisterUiSpec extends BaseUiSpec with BeforeAndAfterEach {
     registrationPage.register(Login, Email, Password, Some(Password + "FooBarBaz"))
 
     //then
-    registrationPage.getPassErrorText should include ("Passwords don't match!")
-    emailService.wasEmailSent(Email, EmailSubject) should be (false)
+    registrationPage.getPassErrorText should include("Passwords don't match!")
+    emailService.wasEmailSent(Email, EmailSubject) should be(false)
   }
 
 }

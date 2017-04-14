@@ -30,14 +30,16 @@ class EmailTemplatingEngine {
   private[email] def splitToContentAndSubject(template: String): EmailContentWithSubject = {
     // First line of template is used as an email subject, rest of the template goes to content
     val emailLines = template.split('\n')
-    require(emailLines.length > 1, "Invalid email template. It should consist of at least two lines: one for subject and one for content")
+    require(
+      emailLines.length > 1,
+      "Invalid email template. It should consist of at least two lines: one for subject and one for content"
+    )
 
     EmailContentWithSubject(emailLines.tail.mkString("\n"), emailLines.head)
   }
 
   private lazy val signature = prepareEmailTemplate("emailSignature", Map())
 
-  private def addSignature(email: EmailContentWithSubject): EmailContentWithSubject = {
+  private def addSignature(email: EmailContentWithSubject): EmailContentWithSubject =
     email.copy(content = s"${email.content}\n$signature")
-  }
 }

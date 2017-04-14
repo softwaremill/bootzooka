@@ -23,14 +23,14 @@ trait SessionSupport {
 
   def userFromSession: Directive1[BasicUserData] = userIdFromSession.flatMap { userId =>
     onSuccess(userService.findById(userId)).flatMap {
-      case None => reject(AuthorizationFailedRejection)
+      case None       => reject(AuthorizationFailedRejection)
       case Some(user) => provide(user)
     }
   }
 
   def userIdFromSession: Directive1[UserId] = session(refreshable, usingCookies).flatMap {
     _.toOption match {
-      case None => reject(AuthorizationFailedRejection)
+      case None    => reject(AuthorizationFailedRejection)
       case Some(s) => provide(s.userId)
     }
   }

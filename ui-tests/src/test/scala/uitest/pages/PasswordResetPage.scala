@@ -6,7 +6,7 @@ import uitest.commands.SeleniumCommands
 
 class PasswordResetPage(driver: WebDriver) {
   private val sc: SeleniumCommands = new SeleniumCommands(driver)
-  def url(code: String) = s"${sc.URL}password-reset?code=$code"
+  def url(code: String)            = s"${sc.URL}password-reset?code=$code"
 
   @FindBy(name = "password")
   val passwordField: WebElement = null

@@ -9,10 +9,7 @@ import com.softwaremill.bootzooka.user.api.UsersRoutes
 import com.softwaremill.bootzooka.version.VersionRoutes
 import com.typesafe.config.ConfigFactory
 
-trait Routes extends RoutesRequestWrapper
-    with UsersRoutes
-    with PasswordResetRoutes
-    with VersionRoutes {
+trait Routes extends RoutesRequestWrapper with UsersRoutes with PasswordResetRoutes with VersionRoutes {
 
   def system: ActorSystem
 

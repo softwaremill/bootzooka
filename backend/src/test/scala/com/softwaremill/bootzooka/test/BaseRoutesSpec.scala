@@ -17,10 +17,10 @@ trait BaseRoutesSpec extends FlatSpecWithDb with ScalatestRouteTest with Matcher
   implicit val timeout = RouteTestTimeout(10 second span)
 
   trait TestRoutesSupport {
-    lazy val sessionConfig = spec.sessionConfig
-    implicit def materializer = spec.materializer
-    implicit def ec = spec.executor
-    implicit def sessionManager = new SessionManager[Session](sessionConfig)
+    lazy val sessionConfig           = spec.sessionConfig
+    implicit def materializer        = spec.materializer
+    implicit def ec                  = spec.executor
+    implicit def sessionManager      = new SessionManager[Session](sessionConfig)
     implicit def refreshTokenStorage = null
   }
 }

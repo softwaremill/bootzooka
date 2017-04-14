@@ -6,7 +6,7 @@ object Utils {
 
   def randomString(length: Int) = {
     val sb = new StringBuffer()
-    val r = new Random()
+    val r  = new Random()
 
     for (i <- 1 to length) {
       sb.append((r.nextInt(25) + 65).toChar) // A - Z
@@ -28,31 +28,32 @@ object Utils {
   }
 
   /**
-   * Based on scala.xml.Utility.escape.
-   * Escapes the characters &lt; &gt; &amp; and &quot; from string.
-   */
+    * Based on scala.xml.Utility.escape.
+    * Escapes the characters &lt; &gt; &amp; and &quot; from string.
+    */
   def escapeHtml(text: String): String = {
     object Escapes {
+
       /**
-       * For reasons unclear escape and unescape are a long ways from
-       * being logical inverses.
-       */
+        * For reasons unclear escape and unescape are a long ways from
+        * being logical inverses.
+        */
       val pairs = Map(
-        "lt" -> '<',
-        "gt" -> '>',
-        "amp" -> '&',
+        "lt"   -> '<',
+        "gt"   -> '>',
+        "amp"  -> '&',
         "quot" -> '"'
-      // enigmatic comment explaining why this isn't escaped --
-      // is valid xhtml but not html, and IE doesn't know it, says jweb
-      // "apos"  -> '\''
+        // enigmatic comment explaining why this isn't escaped --
+        // is valid xhtml but not html, and IE doesn't know it, says jweb
+        // "apos"  -> '\''
       )
-      val escMap = pairs map { case (s, c) => c -> ("&%s;" format s) }
+      val escMap   = pairs map { case (s, c) => c -> ("&%s;" format s) }
       val unescMap = pairs ++ Map("apos" -> '\'')
     }
 
     /**
-     * Appends escaped string to `s`.
-     */
+      * Appends escaped string to `s`.
+      */
     def escape(text: String, s: StringBuilder): StringBuilder = {
       // Implemented per XML spec:
       // http://www.w3.org/International/questions/qa-controls
@@ -62,14 +63,14 @@ object Utils {
       var pos = 0
       while (pos < len) {
         text.charAt(pos) match {
-          case '<' => s.append("&lt;")
-          case '>' => s.append("&gt;")
-          case '&' => s.append("&amp;")
-          case '"' => s.append("&quot;")
+          case '<'  => s.append("&lt;")
+          case '>'  => s.append("&gt;")
+          case '&'  => s.append("&amp;")
+          case '"'  => s.append("&quot;")
           case '\n' => s.append('\n')
           case '\r' => s.append('\r')
           case '\t' => s.append('\t')
-          case c => if (c >= ' ') s.append(c)
+          case c    => if (c >= ' ') s.append(c)
         }
 
         pos += 1
@@ -85,16 +86,14 @@ object Utils {
   // Do not change this unless you understand the security issues behind timing attacks.
   // This method intentionally runs in constant time if the two strings have the same length.
   // If it didn't, it would be vulnerable to a timing attack.
-  def constantTimeEquals(a: String, b: String): Boolean = {
+  def constantTimeEquals(a: String, b: String): Boolean =
     if (a.length != b.length) {
       false
-    }
-    else {
+    } else {
       var equal = 0
       for (i <- Array.range(0, a.length)) {
         equal |= a(i) ^ b(i)
       }
       equal == 0
     }
-  }
 }

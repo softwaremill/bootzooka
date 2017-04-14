@@ -22,8 +22,8 @@ class EmailTemplatingEngineSpec extends FlatSpec with Matchers {
     val email = engine.splitToContentAndSubject("subject\nContent\nsecond line")
 
     // Then
-    email.subject should be ("subject")
-    email.content should be ("Content\nsecond line")
+    email.subject should be("subject")
+    email.content should be("Content\nsecond line")
   }
 
   it should "generate the registration confirmation email" in {
@@ -31,8 +31,8 @@ class EmailTemplatingEngineSpec extends FlatSpec with Matchers {
     val email = engine.registrationConfirmation("adamw")
 
     // then
-    email.subject should be ("SoftwareMill Bootzooka - registration confirmation for user adamw")
-    email.content should include ("Dear adamw,")
-    email.content should include ("Regards,")
+    email.subject should be("SoftwareMill Bootzooka - registration confirmation for user adamw")
+    email.content should include("Dear adamw,")
+    email.content should include("Regards,")
   }
 }

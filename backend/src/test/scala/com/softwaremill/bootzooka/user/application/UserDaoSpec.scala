@@ -14,17 +14,17 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
 
   implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
 
-  val userDao = new UserDao(sqlDatabase)
+  val userDao        = new UserDao(sqlDatabase)
   lazy val randomIds = List.fill(3)(UUID.randomUUID())
 
   override def beforeEach() {
     super.beforeEach()
     for (i <- 1 to randomIds.size) {
-      val login = "user" + i
+      val login    = "user" + i
       val password = "pass" + i
-      val salt = "salt" + i
-      userDao.add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt,
-        createdOn))
+      val salt     = "salt" + i
+      userDao
+        .add(User(randomIds(i - 1), login, login.toLowerCase, i + "email@sml.com", password, salt, createdOn))
         .futureValue
     }
   }
@@ -38,7 +38,7 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
     userDao.add(newUser(login, email, "pass", "salt")).futureValue
 
     // Then
-    userDao.findByEmail(email).futureValue should be ('defined)
+    userDao.findByEmail(email).futureValue should be('defined)
   }
 
   it should "fail with exception when trying to add user with existing login" in {
@@ -153,23 +153,23 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
 
   it should "change password" in {
     // Given
-    val login = "user1"
+    val login    = "user1"
     val password = User.encryptPassword("pass11", "salt1")
-    val user = userDao.findByLoginOrEmail(login).futureValue.get
+    val user     = userDao.findByLoginOrEmail(login).futureValue.get
 
     // When
     userDao.changePassword(user.id, password).futureValue
     val postModifyUserOpt = userDao.findByLoginOrEmail(login).futureValue
-    val u = postModifyUserOpt.get
+    val u                 = postModifyUserOpt.get
 
     // Then
-    u should be (user.copy(password = password))
+    u should be(user.copy(password = password))
   }
 
   it should "change login" in {
     // Given
-    val user = userDao.findByLowerCasedLogin("user1")
-    val u = user.futureValue.get
+    val user     = userDao.findByLowerCasedLogin("user1")
+    val u        = user.futureValue.get
     val newLogin = "changedUser1"
 
     // When
@@ -183,8 +183,8 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
   it should "change email" in {
     // Given
     val newEmail = "newmail@sml.pl"
-    val user = userDao.findByEmail("1email@sml.com").futureValue
-    val u = user.get
+    val user     = userDao.findByEmail("1email@sml.com").futureValue
+    val u        = user.get
 
     // When
     userDao.changeEmail(u.id, newEmail).futureValue

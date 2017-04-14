@@ -28,31 +28,32 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
 
   def findByLowerCasedLogin(login: String): Future[Option[User]] = findOneWhere(_.loginLowerCase === login.toLowerCase)
 
-  def findByLoginOrEmail(loginOrEmail: String): Future[Option[User]] = {
-    findByLowerCasedLogin(loginOrEmail).flatMap(userOpt =>
-      userOpt.map(user => Future.successful(Some(user))).getOrElse(findByEmail(loginOrEmail)))
-  }
+  def findByLoginOrEmail(loginOrEmail: String): Future[Option[User]] =
+    findByLowerCasedLogin(loginOrEmail).flatMap(
+      userOpt => userOpt.map(user => Future.successful(Some(user))).getOrElse(findByEmail(loginOrEmail))
+    )
 
-  def changePassword(userId: UserId, newPassword: String): Future[Unit] = {
+  def changePassword(userId: UserId, newPassword: String): Future[Unit] =
     db.run(users.filter(_.id === userId).map(_.password).update(newPassword)).mapToUnit
-  }
 
   def changeLogin(userId: UserId, newLogin: String): Future[Unit] = {
-    val action = users.filter(_.id === userId).map { user =>
-      (user.login, user.loginLowerCase)
-    }.update((newLogin, newLogin.toLowerCase))
+    val action = users
+      .filter(_.id === userId)
+      .map { user =>
+        (user.login, user.loginLowerCase)
+      }
+      .update((newLogin, newLogin.toLowerCase))
     db.run(action).mapToUnit
   }
 
-  def changeEmail(userId: UserId, newEmail: String): Future[Unit] = {
+  def changeEmail(userId: UserId, newEmail: String): Future[Unit] =
     db.run(users.filter(_.id === userId).map(_.email).update(newEmail)).mapToUnit
-  }
 }
 
 /**
- * The schemas are in separate traits, so that if your DAO would require to access (e.g. join) multiple tables,
- * you can just mix in the necessary traits and have the `TableQuery` definitions available.
- */
+  * The schemas are in separate traits, so that if your DAO would require to access (e.g. join) multiple tables,
+  * you can just mix in the necessary traits and have the `TableQuery` definitions available.
+  */
 trait SqlUserSchema {
 
   protected val database: SqlDatabase

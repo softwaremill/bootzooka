@@ -15,7 +15,8 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
     override def rootConfig = ConfigFactory.load()
   }
   val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
-  val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
+  val passwordResetService =
+    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
 
   "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
     passwordResetService.sendResetCodeToUser("Does not exist").futureValue
@@ -34,20 +35,20 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
     val result1 = passwordResetService.performPasswordReset(code.code, newPassword1).futureValue
     val result2 = passwordResetService.performPasswordReset(code.code, newPassword2).futureValue
 
-    result1 should be ('right)
-    result2 should be ('left)
+    result1 should be('right)
+    result2 should be('left)
 
-    User.passwordsMatch(newPassword1, userDao.findById(user.id).futureValue.get) should be (true)
-    User.passwordsMatch(newPassword2, userDao.findById(user.id).futureValue.get) should be (false)
+    User.passwordsMatch(newPassword1, userDao.findById(user.id).futureValue.get) should be(true)
+    User.passwordsMatch(newPassword2, userDao.findById(user.id).futureValue.get) should be(false)
 
-    passwordResetCodeDao.findByCode(code.code).futureValue should be (None)
+    passwordResetCodeDao.findByCode(code.code).futureValue should be(None)
   }
 
   "performPasswordReset" should "delete code and do nothing if the code expired" in {
     // given
-    val user = newRandomStoredUser()
+    val user        = newRandomStoredUser()
     val previousDay = Instant.now().minus(24, ChronoUnit.HOURS).atOffset(ZoneOffset.UTC)
-    val code = PasswordResetCode(UUID.randomUUID(), randomString(), user, previousDay)
+    val code        = PasswordResetCode(UUID.randomUUID(), randomString(), user, previousDay)
     passwordResetCodeDao.add(code).futureValue
 
     val newPassword = randomString()
@@ -55,8 +56,8 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
     // when
     val result = passwordResetService.performPasswordReset(code.code, newPassword).futureValue
 
-    result should be ('left)
-    User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be (false)
-    passwordResetCodeDao.findByCode(code.code).futureValue should be (None)
+    result should be('left)
+    User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be(false)
+    passwordResetCodeDao.findByCode(code.code).futureValue should be(None)
   }
 }
