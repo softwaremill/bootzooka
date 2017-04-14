@@ -7,7 +7,7 @@ import uitest.commands.SeleniumCommands
 
 class LoginPage(driver: WebDriver) {
   private val sc: SeleniumCommands = new SeleniumCommands(driver)
-  val url = sc.URL + "login"
+  val url                          = sc.URL + "login"
 
   @FindBy(name = "login")
   val loginField: WebElement = null

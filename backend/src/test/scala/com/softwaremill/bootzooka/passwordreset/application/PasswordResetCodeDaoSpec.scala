@@ -21,7 +21,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {
   }
 
   it should "not load when not added" in {
-    dao.findByCode("code1").futureValue should be (None)
+    dao.findByCode("code1").futureValue should be(None)
   }
 
   it should "remove code" in {
@@ -40,8 +40,8 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {
 
     //Then
     whenReady(bgActions) { _ =>
-      dao.findByCode("code1").futureValue should be (None)
-      dao.findByCode("code2").futureValue should be ('defined)
+      dao.findByCode("code1").futureValue should be(None)
+      dao.findByCode("code2").futureValue should be('defined)
     }
   }
 
@@ -57,7 +57,7 @@ class PasswordResetCodeDaoSpec extends FlatSpecWithDb with TestHelpersWithDb {
 
     // Then
     whenReady(bgActions) { _ =>
-      userDao.findById(user.id).futureValue should be (Some(user))
+      userDao.findById(user.id).futureValue should be(Some(user))
     }
   }
 

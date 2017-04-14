@@ -11,9 +11,8 @@ class DummyEmailService extends EmailService with StrictLogging {
 
   private val sentEmails: ListBuffer[EmailDescription] = ListBuffer()
 
-  def emailToString(email: EmailDescription): String = {
+  def emailToString(email: EmailDescription): String =
     email.emails.mkString + ", " + email.subject + ", " + email.message
-  }
 
   def reset() {
     sentEmails.clear()
@@ -26,7 +25,9 @@ class DummyEmailService extends EmailService with StrictLogging {
       sentEmails += email
     }
 
-    logger.debug(s"Would send email to $address, if this wasn't a dummy email service implementation: ${emailData.content}")
+    logger.debug(
+      s"Would send email to $address, if this wasn't a dummy email service implementation: ${emailData.content}"
+    )
     Future.successful(())
   }
 
@@ -38,4 +39,3 @@ class DummyEmailService extends EmailService with StrictLogging {
     sentEmails.exists(email => email.emails.contains(address))
   }
 }
-

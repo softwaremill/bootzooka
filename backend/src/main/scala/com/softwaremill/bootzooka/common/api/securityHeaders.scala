@@ -35,9 +35,9 @@ object `X-Frame-Options` extends ModeledCustomHeaderCompanion[`X-Frame-Options`]
 }
 
 final case class `X-Frame-Options`(value: String) extends ModeledCustomHeader[`X-Frame-Options`] {
-  override def renderInRequests = false
+  override def renderInRequests  = false
   override def renderInResponses = true
-  override val companion = `X-Frame-Options`
+  override val companion         = `X-Frame-Options`
 }
 
 object `X-Content-Type-Options` extends ModeledCustomHeaderCompanion[`X-Content-Type-Options`] {
@@ -45,7 +45,8 @@ object `X-Content-Type-Options` extends ModeledCustomHeaderCompanion[`X-Content-
 
   override def parse(value: String) = Try(new `X-Content-Type-Options`(value))
 
-  def apply(value: ResponseSecurityHeaderDirective[`X-Content-Type-Options`]) = new `X-Content-Type-Options`(value.value)
+  def apply(value: ResponseSecurityHeaderDirective[`X-Content-Type-Options`]) =
+    new `X-Content-Type-Options`(value.value)
 
   case object `nosniff` extends ResponseSecurityHeaderDirective[`X-Content-Type-Options`] {
     override def value: String = "nosniff"
@@ -53,9 +54,9 @@ object `X-Content-Type-Options` extends ModeledCustomHeaderCompanion[`X-Content-
 }
 
 final case class `X-Content-Type-Options`(value: String) extends ModeledCustomHeader[`X-Content-Type-Options`] {
-  override def renderInRequests = false
+  override def renderInRequests  = false
   override def renderInResponses = true
-  override val companion = `X-Content-Type-Options`
+  override val companion         = `X-Content-Type-Options`
 }
 
 object `X-XSS-Protection` extends ModeledCustomHeaderCompanion[`X-XSS-Protection`] {
@@ -79,8 +80,7 @@ object `X-XSS-Protection` extends ModeledCustomHeaderCompanion[`X-XSS-Protection
 }
 
 final case class `X-XSS-Protection`(value: String) extends ModeledCustomHeader[`X-XSS-Protection`] {
-  override def renderInRequests = false
+  override def renderInRequests  = false
   override def renderInResponses = true
-  override val companion = `X-XSS-Protection`
+  override val companion         = `X-XSS-Protection`
 }
-

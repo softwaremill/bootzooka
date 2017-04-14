@@ -9,7 +9,8 @@ import com.softwaremill.bootzooka.user.domain.RememberMeToken
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RememberMeTokenDao(protected val database: SqlDatabase)(implicit ec: ExecutionContext) extends SqlRememberMeSchema {
+class RememberMeTokenDao(protected val database: SqlDatabase)(implicit ec: ExecutionContext)
+    extends SqlRememberMeSchema {
 
   import database._
   import database.driver.api._
@@ -33,11 +34,11 @@ trait SqlRememberMeSchema {
   protected val rememberMeTokens = TableQuery[RememberMeTokens]
 
   protected class RememberMeTokens(tag: Tag) extends Table[RememberMeToken](tag, "remember_me_tokens") {
-    def id = column[UUID]("id", O.PrimaryKey)
-    def selector = column[String]("selector")
+    def id        = column[UUID]("id", O.PrimaryKey)
+    def selector  = column[String]("selector")
     def tokenHash = column[String]("token_hash")
-    def userId = column[UUID]("user_id")
-    def validTo = column[OffsetDateTime]("valid_to")
+    def userId    = column[UUID]("user_id")
+    def validTo   = column[OffsetDateTime]("valid_to")
 
     def * = (id, selector, tokenHash, userId, validTo) <> (RememberMeToken.tupled, RememberMeToken.unapply)
   }

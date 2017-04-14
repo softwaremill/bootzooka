@@ -6,5 +6,5 @@ trait ServerConfig {
   def rootConfig: Config
 
   lazy val serverHost: String = rootConfig.getString("server.host")
-  lazy val serverPort: Int = rootConfig.getInt("server.port")
+  lazy val serverPort: Int    = rootConfig.getInt("server.port")
 }

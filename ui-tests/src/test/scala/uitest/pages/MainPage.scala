@@ -1,7 +1,7 @@
 package uitest.pages
 
 import org.openqa.selenium.support.FindBy
-import org.openqa.selenium.{WebElement, WebDriver}
+import org.openqa.selenium.{WebDriver, WebElement}
 import uitest.commands.SeleniumCommands
 
 class MainPage(driver: WebDriver) {

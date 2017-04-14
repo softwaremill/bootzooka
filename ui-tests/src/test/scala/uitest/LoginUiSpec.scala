@@ -5,7 +5,7 @@ class LoginUiSpec extends BaseUiSpec {
     loginPage.openLoginPage()
     loginPage.login(RegUser, RegPass)
 
-    messagesPage.isUserLogged(RegUser) should be (true)
+    messagesPage.isUserLogged(RegUser) should be(true)
     messagesPage.logout()
   }
 

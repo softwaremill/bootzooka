@@ -5,8 +5,8 @@ import org.scalatest.{FlatSpec, Matchers}
 class UserSpec extends FlatSpec with Matchers {
   "encrypt password" should "take into account the password" in {
     // given
-    val p1 = "pass1"
-    val p2 = "pass2"
+    val p1   = "pass1"
+    val p2   = "pass2"
     val salt = "salt"
 
     // when
@@ -25,7 +25,7 @@ class UserSpec extends FlatSpec with Matchers {
 
   "encrypt password" should "take into account the salt" in {
     // given
-    val pass = "pass"
+    val pass  = "pass"
     val salt1 = "salt1"
     val salt2 = "salt2"
 

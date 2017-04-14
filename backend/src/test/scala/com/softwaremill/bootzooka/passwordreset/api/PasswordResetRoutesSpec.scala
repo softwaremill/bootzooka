@@ -2,7 +2,11 @@ package com.softwaremill.bootzooka.passwordreset.api
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
-import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetConfig, PasswordResetService}
+import com.softwaremill.bootzooka.passwordreset.application.{
+  PasswordResetCodeDao,
+  PasswordResetConfig,
+  PasswordResetService
+}
 import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
 import com.softwaremill.bootzooka.test.{BaseRoutesSpec, TestHelpersWithDb}
 import com.softwaremill.bootzooka.user.domain.User
@@ -14,10 +18,11 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
     override def rootConfig = ConfigFactory.load()
   }
   val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
-  val passwordResetService = new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
+  val passwordResetService =
+    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
 
   val routes = Route.seal(new PasswordResetRoutes with TestRoutesSupport {
-    override val userService = spec.userService
+    override val userService          = spec.userService
     override val passwordResetService = spec.passwordResetService
   }.passwordResetRoutes)
 
@@ -27,7 +32,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
 
     // when
     Post("/passwordreset", Map("login" -> user.login)) ~> routes ~> check {
-      emailService.wasEmailSentTo(user.email) should be (true)
+      emailService.wasEmailSentTo(user.email) should be(true)
     }
   }
 
@@ -41,8 +46,8 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
 
     // when
     Post(s"/passwordreset/${code.code}", Map("password" -> newPassword)) ~> routes ~> check {
-      responseAs[String] should be ("ok")
-      User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be (true)
+      responseAs[String] should be("ok")
+      User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be(true)
     }
   }
 
@@ -54,7 +59,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
 
     // when
     Post("/passwordreset/123") ~> routes ~> check {
-      status should be (StatusCodes.BadRequest)
+      status should be(StatusCodes.BadRequest)
     }
   }
 
@@ -68,8 +73,8 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
 
     // when
     Post("/passwordreset/123", Map("password" -> newPassword)) ~> routes ~> check {
-      status should be (StatusCodes.Forbidden)
-      User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be (false)
+      status should be(StatusCodes.Forbidden)
+      User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be(false)
     }
   }
 }
