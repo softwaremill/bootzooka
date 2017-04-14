@@ -11,7 +11,7 @@ import complete.DefaultParsers._
 val slf4jVersion = "1.7.21"
 val logBackVersion = "1.1.7"
 val scalaLoggingVersion = "3.5.0"
-val slickVersion = "3.1.1"
+val slickVersion = "3.2.0"
 val seleniumVersion = "2.53.0"
 val circeVersion = "0.6.1"
 val akkaVersion = "2.4.16"
