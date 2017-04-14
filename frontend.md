@@ -52,7 +52,7 @@ In this task all scripts are served in non-concatenated and non-minified version
 
 ## `npm run dist` task
 
-This task is similar to the one above with one difference: it preprocessess all the files in order to create distribution (it currently includes concatenation of scripts files), runs tests and serves application from this freshly baked distribution version. This server's version doesn't watch for file changes.
+This task is similar to the one above with one difference: it preprocesses all the files in order to create distribution (it currently includes concatenation of scripts files), runs tests and serves application from this freshly baked distribution version. This server's version doesn't watch for file changes.
 
 ## `npm run build` task
 
@@ -65,4 +65,4 @@ This task runs tests and watches for changes in files. When change is detected i
 
 ## Distribution and deployment
 
-Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist/webapp` (which are genereated during `npm run build`) are used by `backend` to build the final fat-jar application. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components.
+Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist/webapp` (which are generated during `npm run build`) are used by `backend` to build the final fat-jar application. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components.
