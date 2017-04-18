@@ -49,6 +49,7 @@ val akkaHttpExperimental = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
 val akkaHttpTestkit      = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test"
 val akkaHttpSession      = "com.softwaremill.akka-http-session" %% "core" % "0.4.0"
 val akkaStack            = Seq(akkaHttpCore, akkaHttpExperimental, akkaHttpTestkit, akkaHttpSession)
+val swagger              = "com.github.swagger-akka-http" %% "swagger-akka-http" % "0.9.1"
 
 val commonDependencies = unitTestingStack ++ loggingStack
 
@@ -98,7 +99,7 @@ lazy val backend: Project = (project in file("backend"))
   .settings(commonSettings)
   .settings(Revolver.settings)
   .settings(
-    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(javaxMailSun, typesafeConfig),
+    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(javaxMailSun, typesafeConfig, swagger),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](
