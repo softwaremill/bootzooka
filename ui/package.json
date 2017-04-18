@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0",
+    "autoprefixer": "^6.3.6",
     "babel-core": "^6.4.5",
     "babel-loader": "^6.2.1",
     "babel-plugin-add-module-exports": "^0.1.2",
