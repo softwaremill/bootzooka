@@ -49,3 +49,57 @@ For serializing data to JSON the [Circe](https://github.com/travisbrown/circe) l
 3. define an implicit `CanBeSerialized[T]` instance for the type `T` that you want to send. This is a feature of Bootzooka, not normally required, but included to make sure that you only send data that indeed should be sent (to avoid automatically serializing e.g. a list of `User` instances which contains the password hashes)
 
 Of course, the existing endpoints (for managing users, getting the version) have all of that ready.
+
+## Swagger
+
+Bootzooka uses [swagger-akka-http:0.9.1](https://github.com/swagger-akka-http/swagger-akka-http) for compilation of `swagger.json` or `swagger.yaml` files on runtime. Swagger files are exposed to [http://localhost:8080/api-docs/swagger.yaml](http://localhost:8080/api-docs/swagger.yaml) or [http://localhost:8080/api-docs/swagger.json](http://localhost:8080/api-docs/swagger.json).
+
+Routes are not added and described to Swagger files automatically, they has to be annotated first.
+
+In order to describe a particular web method from backend API in Swagger you need to do next:
+ 
+ 1. extract route as def method to trait with annotations. Look at `VersionRoutes` and `VersionRoutesAnnotations` as example:
+ ```
+ trait VersionRoutesAnnotations {
+   def getVersion: StandardRoute
+ }
+ ```
+ 
+ 2. annotate routes and used entities. See documentation in [swagger-akka-http:0.9.1](https://github.com/swagger-akka-http/swagger-akka-http) for compilation of `swagger.json` or `swagger.yaml` files. Swagger files are exposed to [http://localhost:8080/api-docs/swagger.yaml](http://localhost:8080/api-docs/swagger.yaml) or [http://localhost:8080/api-docs/swagger.json](http://localhost:8080/api-docs/swagger.json):
+ ```
+ @Api(value = "Version", description = "Operations about media build version",
+   produces = "application/json", consumes = "application/json")
+ @Path("/api/version")
+ trait VersionRoutesAnnotations {
+ 
+   @ApiOperation(httpMethod = "GET", response = classOf[VersionJson], value = "Returns an object which describes running version")
+   @ApiResponses(Array(
+     new ApiResponse(code = 500, message = "Internal Server Error"),
+     new ApiResponse(code = 200, message = "OK", response = classOf[VersionJson])
+   ))
+   @Path("/")
+   def getVersion: StandardRoute
+ }
+ 
+ @ApiModel(description = "Short description of the version of an object")
+ case class VersionJson(
+   @(ApiModelProperty @field)(value = "Build number") build: String,
+   @(ApiModelProperty @field)(value = "The timestamp of the build") date: String
+ )
+```
+
+3. add annotated route to val apiTypes in SwaggerDocApi class:
+```
+class SwaggerDocService(address: String, port: Int, system: ActorSystem) extends SwaggerHttpService with HasActorSystem {
+ ...
+  override val apiTypes = Seq( // add here routes in order to add to swagger
+    ua.typeOf[VersionRoutes]
+  )
+  ...
+}
+```
+
+4. run project. Check swagger at [http://localhost:8080/api-docs/swagger.yaml](http://localhost:8080/api-docs/swagger.yaml) or [http://localhost:8080/api-docs/swagger.json](http://localhost:8080/api-docs/swagger.json).
+
+If the project is running locally, you might use [editor.swagger.io](http://editor.swagger.io/#!/) for testing purposes.
+ 
