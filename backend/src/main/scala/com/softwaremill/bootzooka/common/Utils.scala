@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka.common
 
-import java.util.Random
+import java.security.SecureRandom
 
 object Utils {
 
   def randomString(length: Int) = {
     val sb = new StringBuffer()
-    val r  = new Random()
+    val r  = new SecureRandom()
 
     for (i <- 1 to length) {
       sb.append((r.nextInt(25) + 65).toChar) // A - Z
