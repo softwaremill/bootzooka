@@ -30,7 +30,7 @@ object User {
 
   def encryptPassword(password: String, salt: String): String = {
     // 10k iterations takes about 10ms to encrypt a password on a 2013 MacBook
-    val keySpec          = new PBEKeySpec(password.toCharArray, salt.getBytes, 10000, 128)
+    val keySpec          = new PBEKeySpec((password + salt).toCharArray, salt.getBytes, 10000, 128)
     val secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
     val bytes            = secretKeyFactory.generateSecret(keySpec).getEncoded
     Utils.toHex(bytes)
