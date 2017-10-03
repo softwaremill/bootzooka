@@ -2,6 +2,7 @@ package com.softwaremill.bootzooka.user.application
 
 import java.util.UUID
 
+import com.softwaremill.bootzooka.common.Salt
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpers}
 import com.softwaremill.bootzooka.user.domain.User
 import com.typesafe.scalalogging.StrictLogging
@@ -154,16 +155,17 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
   it should "change password" in {
     // Given
     val login    = "user1"
-    val password = User.encryptPassword("pass11", "salt1")
+    val salt     = Salt.newSalt()
+    val password = User.encryptPassword("pass11", salt)
     val user     = userDao.findByLoginOrEmail(login).futureValue.get
 
     // When
-    userDao.changePassword(user.id, password).futureValue
+    userDao.changePassword(user.id, password, salt).futureValue
     val postModifyUserOpt = userDao.findByLoginOrEmail(login).futureValue
     val u                 = postModifyUserOpt.get
 
     // Then
-    u should be(user.copy(password = password))
+    u should be(user.copy(password = password, salt = salt))
   }
 
   it should "change login" in {

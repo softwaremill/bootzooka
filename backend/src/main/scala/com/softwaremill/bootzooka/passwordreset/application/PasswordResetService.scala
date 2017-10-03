@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.passwordreset.application
 
 import java.time.Instant
 
-import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.common.{Salt, Utils}
 import com.softwaremill.bootzooka.email.application.{EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.email.domain.EmailContentWithSubject
 import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
@@ -70,8 +70,10 @@ class PasswordResetService(
     }
   }
 
-  private def changePassword(code: PasswordResetCode, newPassword: String): Future[Unit] =
-    userDao.changePassword(code.user.id, User.encryptPassword(newPassword, code.user.salt))
+  private def changePassword(code: PasswordResetCode, newPassword: String): Future[Unit] = {
+    val salt = Salt.newSalt()
+    userDao.changePassword(code.user.id, User.encryptPassword(newPassword, salt), salt)
+  }
 
   private def invalidateResetCode(code: PasswordResetCode): Future[Unit] =
     codeDao.remove(code)

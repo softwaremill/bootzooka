@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.user
 
-import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.common.{Salt, Utils}
 import com.softwaremill.bootzooka.user.domain.User
 
 // Run this locally to determine the desired number of iterations in PBKDF2
@@ -20,7 +20,7 @@ object EncryptPasswordBenchmark extends App {
   }
 
   val pass = Utils.randomString(32)
-  val salt = Utils.randomString(128)
+  val salt = Salt.newSalt()
 
   timeEncryptingAndLog(pass, salt, 100) // warmup
   timeEncryptingAndLog(pass, salt, 1000)

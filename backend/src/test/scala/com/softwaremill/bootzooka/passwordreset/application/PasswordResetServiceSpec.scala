@@ -60,4 +60,22 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
     User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be(false)
     passwordResetCodeDao.findByCode(code.code).futureValue should be(None)
   }
+
+  "performPasswordReset" should "calculate different hash values for the same passwords" in {
+    // given
+    val password = randomString()
+    val user = newRandomStoredUser(Some(password))
+    val originalPasswordHash = userDao.findById(user.id).futureValue.get.password
+    val code = PasswordResetCode(randomString(), user)
+    passwordResetCodeDao.add(code).futureValue
+
+    // when
+    val result = passwordResetService.performPasswordReset(code.code, password).futureValue
+
+    result should be('right)
+
+    val newPasswordHash = userDao.findById(user.id).futureValue.get.password
+
+    originalPasswordHash should not be equal(newPasswordHash)
+  }
 }

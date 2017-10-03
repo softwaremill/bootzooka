@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.user.application
 import java.time.{Instant, ZoneOffset}
 import java.util.UUID
 
-import com.softwaremill.bootzooka.common.Utils
+import com.softwaremill.bootzooka.common.Salt
 import com.softwaremill.bootzooka.email.application.{EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.user._
 import com.softwaremill.bootzooka.user.domain.{BasicUserData, User}
@@ -40,7 +40,7 @@ class UserService(
     def registerValidData() = checkUserExistence().flatMap {
       case Left(msg) => Future.successful(UserRegisterResult.UserExists(msg))
       case Right(_) =>
-        val salt          = Utils.randomString(128)
+        val salt          = Salt.newSalt()
         val now           = Instant.now().atOffset(ZoneOffset.UTC)
         val userAddResult = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now))
         userAddResult.foreach { _ =>
@@ -79,7 +79,8 @@ class UserService(
     userDao.findById(userId).flatMap {
       case Some(u) =>
         if (User.passwordsMatch(currentPassword, u)) {
-          userDao.changePassword(u.id, User.encryptPassword(newPassword, u.salt)).map(Right(_))
+          val salt = Salt.newSalt()
+          userDao.changePassword(u.id, User.encryptPassword(newPassword, salt), salt).map(Right(_))
         } else Future.successful(Left("Current password is invalid"))
 
       case None => Future.successful(Left("User not found hence cannot change password"))
