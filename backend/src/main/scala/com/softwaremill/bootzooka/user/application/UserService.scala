@@ -7,6 +7,7 @@ import com.softwaremill.bootzooka.common.crypto.{PasswordHashing, Salt}
 import com.softwaremill.bootzooka.email.application.{EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.user._
 import com.softwaremill.bootzooka.user.domain.{BasicUserData, User}
+import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -14,7 +15,8 @@ class UserService(
     userDao: UserDao,
     emailService: EmailService,
     emailTemplatingEngine: EmailTemplatingEngine
-)(implicit ec: ExecutionContext, hashing: PasswordHashing) {
+)(implicit ec: ExecutionContext, hashing: PasswordHashing)
+    extends StrictLogging {
 
   def findById(userId: UserId): Future[Option[BasicUserData]] =
     userDao.findBasicDataById(userId)
@@ -61,7 +63,23 @@ class UserService(
   def authenticate(login: String, nonEncryptedPassword: String): Future[Option[BasicUserData]] =
     userDao
       .findByLoginOrEmail(login)
-      .map(userOpt => userOpt.filter(u => hashing.verifyPassword(u.password, nonEncryptedPassword, u.salt)).map(BasicUserData.fromUser))
+      .map(_.filter(u => hashing.verifyPassword(u.password, nonEncryptedPassword, u.salt)))
+      .flatMap {
+        case Some(u) => rehashIfRequired(u, nonEncryptedPassword)
+        case None    => Future.successful(None)
+      }
+      .map(_.map(BasicUserData.fromUser))
+
+  def rehashIfRequired(u: User, nonEncryptedPassword: String): Future[Option[User]] =
+    if (hashing.requiresRehashing(u.password)) {
+      logger.debug("Rehashing")
+      val newSalt     = Salt.newSalt()
+      val newPassword = hashing.hashPassword(nonEncryptedPassword, newSalt)
+      userDao.changePassword(u.id, newPassword, newSalt).map(_ => Some(u.copy(password = newPassword, salt = newSalt)))
+    } else {
+      logger.debug("Not rehashing")
+      Future.successful(Some(u))
+    }
 
   def changeLogin(userId: UUID, newLogin: String): Future[Either[String, Unit]] =
     userDao.findByLowerCasedLogin(newLogin).flatMap {
