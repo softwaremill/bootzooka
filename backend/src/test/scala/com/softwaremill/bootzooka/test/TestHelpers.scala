@@ -2,9 +2,12 @@ package com.softwaremill.bootzooka.test
 
 import java.time.{OffsetDateTime, ZoneOffset}
 
+import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, PasswordHashing}
 import com.softwaremill.bootzooka.user.domain.User
 
 trait TestHelpers {
+
+  implicit val hashing: PasswordHashing = new Argon2dPasswordHashing()
 
   val createdOn = OffsetDateTime.of(2015, 6, 3, 13, 25, 3, 0, ZoneOffset.UTC)
 

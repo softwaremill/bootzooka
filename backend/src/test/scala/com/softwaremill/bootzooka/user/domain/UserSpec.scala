@@ -1,8 +1,11 @@
 package com.softwaremill.bootzooka.user.domain
 
+import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, PasswordHashing}
 import org.scalatest.{FlatSpec, Matchers}
 
 class UserSpec extends FlatSpec with Matchers {
+  implicit val hashing: PasswordHashing = new Argon2dPasswordHashing()
+
   "encrypt password" should "take into account the password" in {
     // given
     val p1   = "pass1"
@@ -10,8 +13,8 @@ class UserSpec extends FlatSpec with Matchers {
     val salt = "salt"
 
     // when
-    val e1 = User.encryptPassword(p1, salt)
-    val e2 = User.encryptPassword(p2, salt)
+    val e1 = hashing.hashPassword(p1, salt)
+    val e2 = hashing.hashPassword(p2, salt)
 
     // then
     info(s"$p1 encrypted is: $e1")
@@ -30,8 +33,8 @@ class UserSpec extends FlatSpec with Matchers {
     val salt2 = "salt2"
 
     // when
-    val e1 = User.encryptPassword(pass, salt1)
-    val e2 = User.encryptPassword(pass, salt2)
+    val e1 = hashing.hashPassword(pass, salt1)
+    val e2 = hashing.hashPassword(pass, salt2)
 
     // then
     info(s"$pass encrypted with $salt1 is: $e1")

@@ -1,13 +1,14 @@
 package com.softwaremill.bootzooka.user
 
+import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, PasswordHashing}
 import com.softwaremill.bootzooka.common.{Salt, Utils}
-import com.softwaremill.bootzooka.user.domain.User
 
 object EncryptPasswordBenchmark extends App {
+  val hashing:PasswordHashing = new Argon2dPasswordHashing()
   def timeEncrypting(pass: String, salt: String, iterations: Int): Double = {
     val start = System.currentTimeMillis()
     for (i <- 1 to iterations) {
-      User.encryptPassword(pass, salt)
+      hashing.hashPassword(pass, salt)
     }
     val end = System.currentTimeMillis()
     (end - start).toDouble / iterations

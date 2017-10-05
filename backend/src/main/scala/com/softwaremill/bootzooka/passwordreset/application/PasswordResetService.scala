@@ -2,6 +2,7 @@ package com.softwaremill.bootzooka.passwordreset.application
 
 import java.time.Instant
 
+import com.softwaremill.bootzooka.common.crypto.PasswordHashing
 import com.softwaremill.bootzooka.common.{Salt, Utils}
 import com.softwaremill.bootzooka.email.application.{EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.email.domain.EmailContentWithSubject
@@ -18,7 +19,7 @@ class PasswordResetService(
     emailService: EmailService,
     emailTemplatingEngine: EmailTemplatingEngine,
     config: PasswordResetConfig
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, hashing: PasswordHashing)
     extends StrictLogging {
 
   def sendResetCodeToUser(login: String): Future[Unit] = {
@@ -72,7 +73,7 @@ class PasswordResetService(
 
   private def changePassword(code: PasswordResetCode, newPassword: String): Future[Unit] = {
     val salt = Salt.newSalt()
-    userDao.changePassword(code.user.id, User.encryptPassword(newPassword, salt), salt)
+    userDao.changePassword(code.user.id, hashing.hashPassword(newPassword, salt), salt)
   }
 
   private def invalidateResetCode(code: PasswordResetCode): Future[Unit] =

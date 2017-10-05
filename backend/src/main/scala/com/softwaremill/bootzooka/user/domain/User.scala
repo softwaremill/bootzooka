@@ -3,9 +3,8 @@ package com.softwaremill.bootzooka.user.domain
 import java.time.OffsetDateTime
 import java.util.UUID
 
+import com.softwaremill.bootzooka.common.crypto.PasswordHashing
 import com.softwaremill.bootzooka.user._
-import de.mkammerer.argon2.Argon2Factory
-import de.mkammerer.argon2.Argon2Factory.Argon2Types
 
 case class User(
     id: UserId,
@@ -28,17 +27,8 @@ object User {
       plainPassword: String,
       salt: String,
       createdOn: OffsetDateTime
-  ) = User(UUID.randomUUID(), login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, createdOn)
-
-  def encryptPassword(password: String, salt: String): String = {
-    val argon2 = Argon2Factory.create(Argon2Types.ARGON2d)
-    argon2.hash(Iterations, Memory, Parallelism, salt + password)
-  }
-
-  def passwordsMatch(plainPassword: String, user: User): Boolean = {
-    val argon2 = Argon2Factory.create(Argon2Types.ARGON2d)
-    argon2.verify(user.password, user.salt + plainPassword)
-  }
+  )(implicit hashing: PasswordHashing) =
+    User(UUID.randomUUID(), login, login.toLowerCase, email, hashing.hashPassword(plainPassword, salt), salt, createdOn)
 }
 
 case class BasicUserData(id: UserId, login: String, email: String, createdOn: OffsetDateTime)

@@ -1,18 +1,10 @@
 package com.softwaremill.bootzooka
 
 import akka.actor.ActorSystem
+import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, PasswordHashing}
 import com.softwaremill.bootzooka.common.sql.{DatabaseConfig, SqlDatabase}
-import com.softwaremill.bootzooka.email.application.{
-  DummyEmailService,
-  EmailConfig,
-  EmailTemplatingEngine,
-  SmtpEmailService
-}
-import com.softwaremill.bootzooka.passwordreset.application.{
-  PasswordResetCodeDao,
-  PasswordResetConfig,
-  PasswordResetService
-}
+import com.softwaremill.bootzooka.email.application.{DummyEmailService, EmailConfig, EmailTemplatingEngine, SmtpEmailService}
+import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetConfig, PasswordResetService}
 import com.softwaremill.bootzooka.user.application.{RefreshTokenStorageImpl, RememberMeTokenDao, UserDao, UserService}
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
@@ -23,6 +15,8 @@ trait DependencyWiring extends StrictLogging {
   lazy val config = new PasswordResetConfig with EmailConfig with DatabaseConfig with ServerConfig {
     override def rootConfig = ConfigFactory.load()
   }
+
+  lazy val passwordHashing: PasswordHashing = new Argon2dPasswordHashing()
 
   lazy val daoExecutionContext = system.dispatchers.lookup("dao-dispatcher")
 
@@ -49,7 +43,7 @@ trait DependencyWiring extends StrictLogging {
     userDao,
     emailService,
     emailTemplatingEngine
-  )(serviceExecutionContext)
+  )(serviceExecutionContext, passwordHashing)
 
   lazy val passwordResetService = new PasswordResetService(
     userDao,
@@ -57,7 +51,7 @@ trait DependencyWiring extends StrictLogging {
     emailService,
     emailTemplatingEngine,
     config
-  )(serviceExecutionContext)
+  )(serviceExecutionContext, passwordHashing)
 
   lazy val refreshTokenStorage = new RefreshTokenStorageImpl(rememberMeTokenDao, system)(serviceExecutionContext)
 }
