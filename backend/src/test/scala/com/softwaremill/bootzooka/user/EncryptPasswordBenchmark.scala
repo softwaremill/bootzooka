@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.user
 import com.softwaremill.bootzooka.common.{Salt, Utils}
 import com.softwaremill.bootzooka.user.domain.User
 
-// Run this locally to determine the desired number of iterations in PBKDF2
 object EncryptPasswordBenchmark extends App {
   def timeEncrypting(pass: String, salt: String, iterations: Int): Double = {
     val start = System.currentTimeMillis()

@@ -15,6 +15,7 @@ val seleniumVersion     = "2.53.0"
 val circeVersion        = "0.7.0"
 val akkaVersion         = "2.5.0"
 val akkaHttpVersion     = "10.0.4"
+val argon2javaVersion   = "2.2"
 
 val slf4jApi       = "org.slf4j" % "slf4j-api" % slf4jVersion
 val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
@@ -50,6 +51,8 @@ val akkaHttpTestkit      = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttp
 val akkaHttpSession      = "com.softwaremill.akka-http-session" %% "core" % "0.4.0"
 val akkaStack            = Seq(akkaHttpCore, akkaHttpExperimental, akkaHttpTestkit, akkaHttpSession)
 val swagger              = "com.github.swagger-akka-http" %% "swagger-akka-http" % "0.9.1"
+
+val argon2java = "de.mkammerer" % "argon2-jvm" % argon2javaVersion
 
 val commonDependencies = unitTestingStack ++ loggingStack
 
@@ -99,7 +102,7 @@ lazy val backend: Project = (project in file("backend"))
   .settings(commonSettings)
   .settings(Revolver.settings)
   .settings(
-    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(javaxMailSun, typesafeConfig, swagger),
+    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(javaxMailSun, typesafeConfig, swagger, argon2java),
     buildInfoPackage := "com.softwaremill.bootzooka.version",
     buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](

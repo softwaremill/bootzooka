@@ -2,11 +2,10 @@ package com.softwaremill.bootzooka.user.domain
 
 import java.time.OffsetDateTime
 import java.util.UUID
-import javax.crypto.SecretKeyFactory
-import javax.crypto.spec.PBEKeySpec
 
-import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.user._
+import de.mkammerer.argon2.Argon2Factory
+import de.mkammerer.argon2.Argon2Factory.Argon2Types
 
 case class User(
     id: UserId,
@@ -19,6 +18,9 @@ case class User(
 )
 
 object User {
+  val Iterations  = 2
+  val Memory      = 16383
+  val Parallelism = 4
 
   def withRandomUUID(
       login: String,
@@ -29,18 +31,14 @@ object User {
   ) = User(UUID.randomUUID(), login, login.toLowerCase, email, encryptPassword(plainPassword, salt), salt, createdOn)
 
   def encryptPassword(password: String, salt: String): String = {
-    // 10k iterations takes about 10ms to encrypt a password on a 2013 MacBook
-    val keySpec          = new PBEKeySpec((password + salt).toCharArray, salt.getBytes, 10000, 128)
-    val secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
-    val bytes            = secretKeyFactory.generateSecret(keySpec).getEncoded
-    Utils.toHex(bytes)
+    val argon2 = Argon2Factory.create(Argon2Types.ARGON2d)
+    argon2.hash(Iterations, Memory, Parallelism, salt + password)
   }
 
-  def passwordsMatch(plainPassword: String, user: User): Boolean =
-    Utils.constantTimeEquals(
-      user.password,
-      encryptPassword(plainPassword, user.salt)
-    )
+  def passwordsMatch(plainPassword: String, user: User): Boolean = {
+    val argon2 = Argon2Factory.create(Argon2Types.ARGON2d)
+    argon2.verify(user.password, user.salt + plainPassword)
+  }
 }
 
 case class BasicUserData(id: UserId, login: String, email: String, createdOn: OffsetDateTime)

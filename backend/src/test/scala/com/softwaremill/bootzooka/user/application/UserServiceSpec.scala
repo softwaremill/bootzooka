@@ -95,7 +95,7 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
     // Then
     changePassResult should be('right)
     userDao.findByLowerCasedLogin("admin").futureValue match {
-      case Some(cu) => cu.password should be(User.encryptPassword(newPassword, cu.salt))
+      case Some(cu) => User.passwordsMatch(newPassword, cu)
       case None     => fail("Something bad happened, maybe mocked Dao is broken?")
     }
   }
