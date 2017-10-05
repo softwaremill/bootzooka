@@ -2,8 +2,8 @@ package com.softwaremill.bootzooka.passwordreset.application
 
 import java.time.Instant
 
-import com.softwaremill.bootzooka.common.crypto.PasswordHashing
-import com.softwaremill.bootzooka.common.{Salt, Utils}
+import com.softwaremill.bootzooka.common.crypto.{PasswordHashing, Salt}
+import com.softwaremill.bootzooka.common.Utils
 import com.softwaremill.bootzooka.email.application.{EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.email.domain.EmailContentWithSubject
 import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode

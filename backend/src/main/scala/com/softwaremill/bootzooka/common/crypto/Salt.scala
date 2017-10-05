@@ -1,4 +1,6 @@
-package com.softwaremill.bootzooka.common
+package com.softwaremill.bootzooka.common.crypto
+
+import com.softwaremill.bootzooka.common.Utils
 
 object Salt {
   val DefaultSaltLength = 128

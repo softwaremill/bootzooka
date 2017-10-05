@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.user
 
-import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, PasswordHashing}
-import com.softwaremill.bootzooka.common.{Salt, Utils}
+import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, PasswordHashing, Salt}
+import com.softwaremill.bootzooka.common.Utils
 
 object EncryptPasswordBenchmark extends App {
   val hashing:PasswordHashing = new Argon2dPasswordHashing()

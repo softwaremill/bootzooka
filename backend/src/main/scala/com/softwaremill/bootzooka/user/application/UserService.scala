@@ -3,8 +3,7 @@ package com.softwaremill.bootzooka.user.application
 import java.time.{Instant, ZoneOffset}
 import java.util.UUID
 
-import com.softwaremill.bootzooka.common.Salt
-import com.softwaremill.bootzooka.common.crypto.PasswordHashing
+import com.softwaremill.bootzooka.common.crypto.{PasswordHashing, Salt}
 import com.softwaremill.bootzooka.email.application.{EmailService, EmailTemplatingEngine}
 import com.softwaremill.bootzooka.user._
 import com.softwaremill.bootzooka.user.domain.{BasicUserData, User}

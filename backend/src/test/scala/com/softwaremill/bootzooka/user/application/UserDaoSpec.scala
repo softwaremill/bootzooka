@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.user.application
 
 import java.util.UUID
 
-import com.softwaremill.bootzooka.common.Salt
+import com.softwaremill.bootzooka.common.crypto.Salt
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpers}
 import com.softwaremill.bootzooka.user.domain.User
 import com.typesafe.scalalogging.StrictLogging
