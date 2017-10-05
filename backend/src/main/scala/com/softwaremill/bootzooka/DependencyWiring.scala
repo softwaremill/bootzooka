@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka
 
 import akka.actor.ActorSystem
-import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, PasswordHashing}
+import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, CryptoConfig, PasswordHashing}
 import com.softwaremill.bootzooka.common.sql.{DatabaseConfig, SqlDatabase}
 import com.softwaremill.bootzooka.email.application.{DummyEmailService, EmailConfig, EmailTemplatingEngine, SmtpEmailService}
 import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetConfig, PasswordResetService}
@@ -12,11 +12,11 @@ import com.typesafe.scalalogging.StrictLogging
 trait DependencyWiring extends StrictLogging {
   def system: ActorSystem
 
-  lazy val config = new PasswordResetConfig with EmailConfig with DatabaseConfig with ServerConfig {
+  lazy val config = new PasswordResetConfig with EmailConfig with DatabaseConfig with ServerConfig with CryptoConfig {
     override def rootConfig = ConfigFactory.load()
   }
 
-  lazy val passwordHashing: PasswordHashing = new Argon2dPasswordHashing()
+  lazy val passwordHashing: PasswordHashing = new Argon2dPasswordHashing(config)
 
   lazy val daoExecutionContext = system.dispatchers.lookup("dao-dispatcher")
 
