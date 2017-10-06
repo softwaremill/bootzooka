@@ -156,7 +156,7 @@ class UserDaoSpec extends FlatSpecWithDb with StrictLogging with TestHelpers wit
     // Given
     val login    = "user1"
     val salt     = Salt.newSalt()
-    val password = hashing.hashPassword("pass11", salt)
+    val password = passwordHashing.hashPassword("pass11", salt)
     val user     = userDao.findByLoginOrEmail(login).futureValue.get
 
     // When

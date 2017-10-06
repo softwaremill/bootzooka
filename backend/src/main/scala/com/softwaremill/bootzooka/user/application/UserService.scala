@@ -12,10 +12,11 @@ import com.typesafe.scalalogging.StrictLogging
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService(
-    userDao: UserDao,
-    emailService: EmailService,
-    emailTemplatingEngine: EmailTemplatingEngine
-)(implicit ec: ExecutionContext, hashing: PasswordHashing)
+                   userDao: UserDao,
+                   emailService: EmailService,
+                   emailTemplatingEngine: EmailTemplatingEngine,
+                   passwordHashing: PasswordHashing
+)(implicit ec: ExecutionContext)
     extends StrictLogging {
 
   def findById(userId: UserId): Future[Option[BasicUserData]] =
@@ -44,7 +45,7 @@ class UserService(
       case Right(_) =>
         val salt          = Salt.newSalt()
         val now           = Instant.now().atOffset(ZoneOffset.UTC)
-        val userAddResult = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now))
+        val userAddResult = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now, passwordHashing))
         userAddResult.foreach { _ =>
           val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
           emailService.scheduleEmail(email, confirmationEmail)
@@ -63,21 +64,28 @@ class UserService(
   def authenticate(login: String, nonEncryptedPassword: String): Future[Option[BasicUserData]] =
     userDao
       .findByLoginOrEmail(login)
-      .map(_.filter(u => hashing.verifyPassword(u.password, nonEncryptedPassword, u.salt)))
+      .map(_.filter(u => passwordHashing.verifyPassword(u.password, nonEncryptedPassword, u.salt)))
       .flatMap {
         case Some(u) => rehashIfRequired(u, nonEncryptedPassword)
         case None    => Future.successful(None)
       }
       .map(_.map(BasicUserData.fromUser))
 
-  def rehashIfRequired(u: User, nonEncryptedPassword: String): Future[Option[User]] =
-    if (hashing.requiresRehashing(u.password)) {
-      logger.debug("Rehashing")
+  /**
+    * Some hash algorithms (like Argon2) can use parameters to affect how they work.
+    * Typically these parameters are stored along the hash and they can change to speed up or slow down hashing
+    * depending on needs and security status.
+    *
+    * It sounds like a good idea to check whether hashing parameters were changed recently after user successfully logs in
+    * and if so, rehash user password using those new parameters. That way all user passwords are stored with up to date
+    * security settings.
+    */
+  private def rehashIfRequired(u: User, password: String): Future[Option[User]] =
+    if (passwordHashing.requiresRehashing(u.password)) {
       val newSalt     = Salt.newSalt()
-      val newPassword = hashing.hashPassword(nonEncryptedPassword, newSalt)
+      val newPassword = passwordHashing.hashPassword(password, newSalt)
       userDao.changePassword(u.id, newPassword, newSalt).map(_ => Some(u.copy(password = newPassword, salt = newSalt)))
     } else {
-      logger.debug("Not rehashing")
       Future.successful(Some(u))
     }
 
@@ -96,9 +104,9 @@ class UserService(
   def changePassword(userId: UUID, currentPassword: String, newPassword: String): Future[Either[String, Unit]] =
     userDao.findById(userId).flatMap {
       case Some(u) =>
-        if (hashing.verifyPassword(u.password, currentPassword, u.salt)) {
+        if (passwordHashing.verifyPassword(u.password, currentPassword, u.salt)) {
           val salt = Salt.newSalt()
-          userDao.changePassword(u.id, hashing.hashPassword(newPassword, salt), salt).map(Right(_))
+          userDao.changePassword(u.id, passwordHashing.hashPassword(newPassword, salt), salt).map(Right(_))
         } else Future.successful(Left("Current password is invalid"))
 
       case None => Future.successful(Left("User not found hence cannot change password"))

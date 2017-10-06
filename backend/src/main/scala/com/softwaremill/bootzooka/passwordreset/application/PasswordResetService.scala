@@ -18,8 +18,9 @@ class PasswordResetService(
     codeDao: PasswordResetCodeDao,
     emailService: EmailService,
     emailTemplatingEngine: EmailTemplatingEngine,
-    config: PasswordResetConfig
-)(implicit ec: ExecutionContext, hashing: PasswordHashing)
+    config: PasswordResetConfig,
+    passwordHashing: PasswordHashing
+)(implicit ec: ExecutionContext)
     extends StrictLogging {
 
   def sendResetCodeToUser(login: String): Future[Unit] = {
@@ -73,7 +74,7 @@ class PasswordResetService(
 
   private def changePassword(code: PasswordResetCode, newPassword: String): Future[Unit] = {
     val salt = Salt.newSalt()
-    userDao.changePassword(code.user.id, hashing.hashPassword(newPassword, salt), salt)
+    userDao.changePassword(code.user.id, passwordHashing.hashPassword(newPassword, salt), salt)
   }
 
   private def invalidateResetCode(code: PasswordResetCode): Future[Unit] =

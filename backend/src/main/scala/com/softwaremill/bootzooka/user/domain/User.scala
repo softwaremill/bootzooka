@@ -26,9 +26,18 @@ object User {
       email: String,
       plainPassword: String,
       salt: String,
-      createdOn: OffsetDateTime
-  )(implicit hashing: PasswordHashing) =
-    User(UUID.randomUUID(), login, login.toLowerCase, email, hashing.hashPassword(plainPassword, salt), salt, createdOn)
+      createdOn: OffsetDateTime,
+      passwordHashing: PasswordHashing
+  ) =
+    User(
+      UUID.randomUUID(),
+      login,
+      login.toLowerCase,
+      email,
+      passwordHashing.hashPassword(plainPassword, salt),
+      salt,
+      createdOn
+    )
 }
 
 case class BasicUserData(id: UserId, login: String, email: String, createdOn: OffsetDateTime)

@@ -42,16 +42,18 @@ trait DependencyWiring extends StrictLogging {
   lazy val userService = new UserService(
     userDao,
     emailService,
-    emailTemplatingEngine
-  )(serviceExecutionContext, passwordHashing)
+    emailTemplatingEngine,
+    passwordHashing
+  )(serviceExecutionContext)
 
   lazy val passwordResetService = new PasswordResetService(
     userDao,
     codeDao,
     emailService,
     emailTemplatingEngine,
-    config
-  )(serviceExecutionContext, passwordHashing)
+    config,
+    passwordHashing
+  )(serviceExecutionContext)
 
   lazy val refreshTokenStorage = new RefreshTokenStorageImpl(rememberMeTokenDao, system)(serviceExecutionContext)
 }

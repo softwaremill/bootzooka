@@ -13,7 +13,7 @@ trait TestHelpersWithDb extends TestHelpers with ScalaFutures {
   lazy val emailService          = new DummyEmailService()
   lazy val emailTemplatingEngine = new EmailTemplatingEngine
   lazy val userDao               = new UserDao(sqlDatabase)
-  lazy val userService           = new UserService(userDao, emailService, emailTemplatingEngine)
+  lazy val userService           = new UserService(userDao, emailService, emailTemplatingEngine, passwordHashing)
 
   def sqlDatabase: SqlDatabase
 

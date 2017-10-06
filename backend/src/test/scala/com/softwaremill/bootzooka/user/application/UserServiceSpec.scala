@@ -96,7 +96,7 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
     // Then
     changePassResult should be('right)
     userDao.findByLowerCasedLogin("admin").futureValue match {
-      case Some(cu) => hashing.verifyPassword(cu.password, newPassword, cu.salt)
+      case Some(cu) => passwordHashing.verifyPassword(cu.password, newPassword, cu.salt)
       case None     => fail("Something bad happened, maybe mocked Dao is broken?")
     }
   }
@@ -122,7 +122,7 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
       override lazy val memory = 1024
       override lazy val parallelism = 3
     })
-    val reconfiguredUserService = new UserService(userDao, emailService, emailTemplatingEngine)(ec, reconfiguredHashing)
+    val reconfiguredUserService = new UserService(userDao, emailService, emailTemplatingEngine, reconfiguredHashing)
 
     //when
     reconfiguredUserService.authenticate("Admin", "pass").futureValue

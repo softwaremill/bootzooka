@@ -19,7 +19,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
   }
   val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
   val passwordResetService =
-    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
+    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config, passwordHashing)
 
   val routes = Route.seal(new PasswordResetRoutes with TestRoutesSupport {
     override val userService          = spec.userService
@@ -48,7 +48,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
     Post(s"/passwordreset/${code.code}", Map("password" -> newPassword)) ~> routes ~> check {
       responseAs[String] should be("ok")
       val updatedUser = userDao.findById(user.id).futureValue.get
-      hashing.verifyPassword(updatedUser.password, newPassword, updatedUser.salt) should be(true)
+      passwordHashing.verifyPassword(updatedUser.password, newPassword, updatedUser.salt) should be(true)
     }
   }
 
@@ -76,7 +76,7 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
     Post("/passwordreset/123", Map("password" -> newPassword)) ~> routes ~> check {
       status should be(StatusCodes.Forbidden)
       val updatedUser = userDao.findById(user.id).futureValue.get
-      hashing.verifyPassword(updatedUser.password, newPassword, updatedUser.salt) should be(false)
+      passwordHashing.verifyPassword(updatedUser.password, newPassword, updatedUser.salt) should be(false)
     }
   }
 }

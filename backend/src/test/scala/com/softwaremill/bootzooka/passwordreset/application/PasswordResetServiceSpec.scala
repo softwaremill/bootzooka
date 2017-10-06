@@ -16,7 +16,7 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
   }
   val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
   val passwordResetService =
-    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
+    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config, passwordHashing)
 
   "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
     passwordResetService.sendResetCodeToUser("Does not exist").futureValue
@@ -39,8 +39,8 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
     result2 should be('left)
 
     val updatedUser = userDao.findById(user.id).futureValue.get
-    hashing.verifyPassword(updatedUser.password, newPassword1, updatedUser.salt) should be(true)
-    hashing.verifyPassword(updatedUser.password, newPassword2, updatedUser.salt) should be(false)
+    passwordHashing.verifyPassword(updatedUser.password, newPassword1, updatedUser.salt) should be(true)
+    passwordHashing.verifyPassword(updatedUser.password, newPassword2, updatedUser.salt) should be(false)
 
     passwordResetCodeDao.findByCode(code.code).futureValue should be(None)
   }
@@ -59,7 +59,7 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
 
     result should be('left)
     val updatedUser = userDao.findById(user.id).futureValue.get
-    hashing.verifyPassword(updatedUser.password, newPassword, updatedUser.salt) should be(false)
+    passwordHashing.verifyPassword(updatedUser.password, newPassword, updatedUser.salt) should be(false)
     passwordResetCodeDao.findByCode(code.code).futureValue should be(None)
   }
 

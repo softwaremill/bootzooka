@@ -2,14 +2,11 @@ package com.softwaremill.bootzooka.user
 
 import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, CryptoConfig, PasswordHashing, Salt}
 import com.softwaremill.bootzooka.common.Utils
-import com.typesafe.config.Config
+import com.typesafe.config.{Config, ConfigFactory}
 
 object EncryptPasswordBenchmark extends App {
   val hashing:PasswordHashing = new Argon2dPasswordHashing(new CryptoConfig {
-    override def rootConfig: Config = ???
-    override lazy val iterations = 2
-    override lazy val memory = 16383
-    override lazy val parallelism = 4
+    override def rootConfig: Config = ConfigFactory.load()
   })
 
   def timeEncrypting(pass: String, salt: String, iterations: Int): Double = {
