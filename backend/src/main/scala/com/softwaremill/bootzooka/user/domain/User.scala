@@ -17,10 +17,6 @@ case class User(
 )
 
 object User {
-  val Iterations  = 2
-  val Memory      = 16383
-  val Parallelism = 4
-
   def withRandomUUID(
       login: String,
       email: String,
