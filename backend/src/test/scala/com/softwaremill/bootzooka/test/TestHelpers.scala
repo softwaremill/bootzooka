@@ -7,7 +7,6 @@ import com.softwaremill.bootzooka.user.domain.User
 import com.typesafe.config.{Config, ConfigFactory}
 
 trait TestHelpers {
-
   val passwordHashing: PasswordHashing = new Argon2dPasswordHashing(new CryptoConfig {
     override def rootConfig: Config = ConfigFactory.load()
   })
