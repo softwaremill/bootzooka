@@ -3,28 +3,16 @@ package com.softwaremill.bootzooka.common
 import java.security.SecureRandom
 
 object Utils {
+  private val secureRandom = new SecureRandom()
 
-  def randomString(length: Int) = {
+  def randomString(length: Int, bound: Int = 25, range: Int = 65) = {
     val sb = new StringBuffer()
-    val r  = new SecureRandom()
 
     for (i <- 1 to length) {
-      sb.append((r.nextInt(25) + 65).toChar) // A - Z
+      sb.append((secureRandom.nextInt(bound) + range).toChar) // A - Z
     }
 
     sb.toString
-  }
-
-  // see http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
-  private val hexArray = "0123456789ABCDEF".toCharArray
-  def toHex(bytes: Array[Byte]): String = {
-    val hexChars = new Array[Char](bytes.length * 2)
-    for (j <- bytes.indices) {
-      val v = bytes(j) & 0xFF
-      hexChars(j * 2) = hexArray(v >>> 4)
-      hexChars(j * 2 + 1) = hexArray(v & 0x0F)
-    }
-    new String(hexChars)
   }
 
   /**
