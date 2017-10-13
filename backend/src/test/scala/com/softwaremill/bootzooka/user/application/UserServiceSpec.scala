@@ -2,11 +2,12 @@ package com.softwaremill.bootzooka.user.application
 
 import java.util.UUID
 
+import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, CryptoConfig}
 import com.softwaremill.bootzooka.test.{FlatSpecWithDb, TestHelpersWithDb}
-import com.softwaremill.bootzooka.user.domain.User
-import org.scalatest.Matchers
+import com.typesafe.config.Config
+import org.scalatest.{Matchers, OptionValues}
 
-class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithDb {
+class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithDb with OptionValues {
 
   override protected def beforeEach() = {
     super.beforeEach()
@@ -95,7 +96,7 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
     // Then
     changePassResult should be('right)
     userDao.findByLowerCasedLogin("admin").futureValue match {
-      case Some(cu) => cu.password should be(User.encryptPassword(newPassword, cu.salt))
+      case Some(cu) => passwordHashing.verifyPassword(cu.password, newPassword, cu.salt)
       case None     => fail("Something bad happened, maybe mocked Dao is broken?")
     }
   }
@@ -110,6 +111,37 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
 
   "changePassword" should "complain when user cannot be found" in {
     userService.changePassword(UUID.randomUUID(), "pass", "newpass").futureValue should be('left)
+  }
+
+  "authenticate" should "rehash password when configuration changes" in {
+    //given
+    val user = userDao.findByLoginOrEmail("Admin").futureValue.value
+    val reconfiguredHashing = new Argon2dPasswordHashing(new CryptoConfig {
+      override def rootConfig: Config = ???
+      override lazy val iterations = 3
+      override lazy val memory = 1024
+      override lazy val parallelism = 3
+    })
+    val reconfiguredUserService = new UserService(userDao, emailService, emailTemplatingEngine, reconfiguredHashing)
+
+    //when
+    reconfiguredUserService.authenticate("Admin", "pass").futureValue
+
+    //then
+    val updatedUser = userDao.findByLoginOrEmail("Admin").futureValue.value
+    updatedUser.password shouldNot be(user.password)
+  }
+
+  "authenticate" should "not rehash password for the same configuration" in {
+    //given
+    val user = userDao.findByLoginOrEmail("Admin").futureValue.value
+
+    //when
+    userService.authenticate("Admin", "pass").futureValue
+
+    //then
+    val updatedUser = userDao.findByLoginOrEmail("Admin").futureValue.value
+    updatedUser.password shouldBe user.password
   }
 
 }

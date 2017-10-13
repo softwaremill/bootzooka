@@ -16,7 +16,7 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
   }
   val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
   val passwordResetService =
-    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config)
+    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config, passwordHashing)
 
   "sendResetCodeToUser" should "do nothing when login doesn't exist" in {
     passwordResetService.sendResetCodeToUser("Does not exist").futureValue
@@ -38,8 +38,9 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
     result1 should be('right)
     result2 should be('left)
 
-    User.passwordsMatch(newPassword1, userDao.findById(user.id).futureValue.get) should be(true)
-    User.passwordsMatch(newPassword2, userDao.findById(user.id).futureValue.get) should be(false)
+    val updatedUser = userDao.findById(user.id).futureValue.get
+    passwordHashing.verifyPassword(updatedUser.password, newPassword1, updatedUser.salt) should be(true)
+    passwordHashing.verifyPassword(updatedUser.password, newPassword2, updatedUser.salt) should be(false)
 
     passwordResetCodeDao.findByCode(code.code).futureValue should be(None)
   }
@@ -57,7 +58,26 @@ class PasswordResetServiceSpec extends FlatSpecWithDb with TestHelpersWithDb {
     val result = passwordResetService.performPasswordReset(code.code, newPassword).futureValue
 
     result should be('left)
-    User.passwordsMatch(newPassword, userDao.findById(user.id).futureValue.get) should be(false)
+    val updatedUser = userDao.findById(user.id).futureValue.get
+    passwordHashing.verifyPassword(updatedUser.password, newPassword, updatedUser.salt) should be(false)
     passwordResetCodeDao.findByCode(code.code).futureValue should be(None)
+  }
+
+  "performPasswordReset" should "calculate different hash values for the same passwords" in {
+    // given
+    val password             = randomString()
+    val user                 = newRandomStoredUser(Some(password))
+    val originalPasswordHash = userDao.findById(user.id).futureValue.get.password
+    val code                 = PasswordResetCode(randomString(), user)
+    passwordResetCodeDao.add(code).futureValue
+
+    // when
+    val result = passwordResetService.performPasswordReset(code.code, password).futureValue
+
+    result should be('right)
+
+    val newPasswordHash = userDao.findById(user.id).futureValue.get.password
+
+    originalPasswordHash should not be equal(newPasswordHash)
   }
 }

@@ -33,8 +33,8 @@ class UserDao(protected val database: SqlDatabase)(implicit val ec: ExecutionCon
       userOpt => userOpt.map(user => Future.successful(Some(user))).getOrElse(findByEmail(loginOrEmail))
     )
 
-  def changePassword(userId: UserId, newPassword: String): Future[Unit] =
-    db.run(users.filter(_.id === userId).map(_.password).update(newPassword)).mapToUnit
+  def changePassword(userId: UserId, newPassword: String, newSalt: String): Future[Unit] =
+    db.run(users.filter(_.id === userId).map(u => (u.password, u.salt)).update((newPassword, newSalt))).mapToUnit
 
   def changeLogin(userId: UserId, newLogin: String): Future[Unit] = {
     val action = users

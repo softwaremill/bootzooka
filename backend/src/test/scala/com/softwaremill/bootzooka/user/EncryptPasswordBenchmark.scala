@@ -1,14 +1,18 @@
 package com.softwaremill.bootzooka.user
 
+import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, CryptoConfig, PasswordHashing, Salt}
 import com.softwaremill.bootzooka.common.Utils
-import com.softwaremill.bootzooka.user.domain.User
+import com.typesafe.config.{Config, ConfigFactory}
 
-// Run this locally to determine the desired number of iterations in PBKDF2
 object EncryptPasswordBenchmark extends App {
+  val hashing:PasswordHashing = new Argon2dPasswordHashing(new CryptoConfig {
+    override def rootConfig: Config = ConfigFactory.load()
+  })
+
   def timeEncrypting(pass: String, salt: String, iterations: Int): Double = {
     val start = System.currentTimeMillis()
     for (i <- 1 to iterations) {
-      User.encryptPassword(pass, salt)
+      hashing.hashPassword(pass, salt)
     }
     val end = System.currentTimeMillis()
     (end - start).toDouble / iterations
@@ -20,7 +24,7 @@ object EncryptPasswordBenchmark extends App {
   }
 
   val pass = Utils.randomString(32)
-  val salt = Utils.randomString(128)
+  val salt = Salt.newSalt()
 
   timeEncryptingAndLog(pass, salt, 100) // warmup
   timeEncryptingAndLog(pass, salt, 1000)
