@@ -12,7 +12,5 @@ trait PasswordHashing {
     * and check current configuration. If hashing settings were updated since the creation
     * of the hash, it should return true.
     */
-  def requiresRehashing(hash: String):Boolean
+  def requiresRehashing(hash: String): Boolean
 }
-
-

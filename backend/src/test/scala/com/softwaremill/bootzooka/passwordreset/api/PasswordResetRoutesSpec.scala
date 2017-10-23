@@ -19,7 +19,14 @@ class PasswordResetRoutesSpec extends BaseRoutesSpec with TestHelpersWithDb { sp
   }
   val passwordResetCodeDao = new PasswordResetCodeDao(sqlDatabase)
   val passwordResetService =
-    new PasswordResetService(userDao, passwordResetCodeDao, emailService, emailTemplatingEngine, config, passwordHashing)
+    new PasswordResetService(
+      userDao,
+      passwordResetCodeDao,
+      emailService,
+      emailTemplatingEngine,
+      config,
+      passwordHashing
+    )
 
   val routes = Route.seal(new PasswordResetRoutes with TestRoutesSupport {
     override val userService          = spec.userService

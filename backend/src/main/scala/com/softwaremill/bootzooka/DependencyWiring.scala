@@ -3,8 +3,17 @@ package com.softwaremill.bootzooka
 import akka.actor.ActorSystem
 import com.softwaremill.bootzooka.common.crypto.{Argon2dPasswordHashing, CryptoConfig, PasswordHashing}
 import com.softwaremill.bootzooka.common.sql.{DatabaseConfig, SqlDatabase}
-import com.softwaremill.bootzooka.email.application.{DummyEmailService, EmailConfig, EmailTemplatingEngine, SmtpEmailService}
-import com.softwaremill.bootzooka.passwordreset.application.{PasswordResetCodeDao, PasswordResetConfig, PasswordResetService}
+import com.softwaremill.bootzooka.email.application.{
+  DummyEmailService,
+  EmailConfig,
+  EmailTemplatingEngine,
+  SmtpEmailService
+}
+import com.softwaremill.bootzooka.passwordreset.application.{
+  PasswordResetCodeDao,
+  PasswordResetConfig,
+  PasswordResetService
+}
 import com.softwaremill.bootzooka.user.application.{RefreshTokenStorageImpl, RememberMeTokenDao, UserDao, UserService}
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging

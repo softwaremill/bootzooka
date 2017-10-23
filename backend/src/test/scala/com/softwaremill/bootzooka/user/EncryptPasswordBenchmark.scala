@@ -5,7 +5,7 @@ import com.softwaremill.bootzooka.common.Utils
 import com.typesafe.config.{Config, ConfigFactory}
 
 object EncryptPasswordBenchmark extends App {
-  val hashing:PasswordHashing = new Argon2dPasswordHashing(new CryptoConfig {
+  val hashing: PasswordHashing = new Argon2dPasswordHashing(new CryptoConfig {
     override def rootConfig: Config = ConfigFactory.load()
   })
 

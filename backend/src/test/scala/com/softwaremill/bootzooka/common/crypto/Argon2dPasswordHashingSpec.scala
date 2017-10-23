@@ -7,9 +7,9 @@ import org.scalatest.{FlatSpec, Matchers}
 class Argon2dPasswordHashingSpec extends FlatSpec with Matchers with TestHelpers {
   val withChangedParams = new Argon2dPasswordHashing(new CryptoConfig {
     override def rootConfig: Config = ???
-    override lazy val iterations = 3
-    override lazy val memory = 16383
-    override lazy val parallelism = 2
+    override lazy val iterations    = 3
+    override lazy val memory        = 16383
+    override lazy val parallelism   = 2
   })
 
   behavior of "Argon2d Password Hashing"

@@ -12,10 +12,10 @@ import com.typesafe.scalalogging.StrictLogging
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService(
-                   userDao: UserDao,
-                   emailService: EmailService,
-                   emailTemplatingEngine: EmailTemplatingEngine,
-                   passwordHashing: PasswordHashing
+    userDao: UserDao,
+    emailService: EmailService,
+    emailTemplatingEngine: EmailTemplatingEngine,
+    passwordHashing: PasswordHashing
 )(implicit ec: ExecutionContext)
     extends StrictLogging {
 
@@ -43,9 +43,10 @@ class UserService(
     def registerValidData() = checkUserExistence().flatMap {
       case Left(msg) => Future.successful(UserRegisterResult.UserExists(msg))
       case Right(_) =>
-        val salt          = Salt.newSalt()
-        val now           = Instant.now().atOffset(ZoneOffset.UTC)
-        val userAddResult = userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now, passwordHashing))
+        val salt = Salt.newSalt()
+        val now  = Instant.now().atOffset(ZoneOffset.UTC)
+        val userAddResult =
+          userDao.add(User.withRandomUUID(login, email.toLowerCase, password, salt, now, passwordHashing))
         userAddResult.foreach { _ =>
           val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
           emailService.scheduleEmail(email, confirmationEmail)

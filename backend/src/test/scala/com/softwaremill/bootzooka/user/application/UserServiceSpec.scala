@@ -118,9 +118,9 @@ class UserServiceSpec extends FlatSpecWithDb with Matchers with TestHelpersWithD
     val user = userDao.findByLoginOrEmail("Admin").futureValue.value
     val reconfiguredHashing = new Argon2dPasswordHashing(new CryptoConfig {
       override def rootConfig: Config = ???
-      override lazy val iterations = 3
-      override lazy val memory = 1024
-      override lazy val parallelism = 3
+      override lazy val iterations    = 3
+      override lazy val memory        = 1024
+      override lazy val parallelism   = 3
     })
     val reconfiguredUserService = new UserService(userDao, emailService, emailTemplatingEngine, reconfiguredHashing)
 

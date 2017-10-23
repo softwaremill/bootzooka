@@ -5,6 +5,7 @@ import sbt._
 import Keys._
 
 import scala.util.Try
+import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val slf4jVersion        = "1.7.21"
@@ -69,7 +70,7 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= commonDependencies,
   updateNpm := {
     println("Updating npm dependencies")
-    haltOnCmdResultError(Process("npm install", baseDirectory.value / ".." / "ui") !)
+    haltOnCmdResultError(Process("npm install", baseDirectory.value / ".." / "ui").!)
   },
   npmTask := {
     val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
@@ -79,7 +80,9 @@ lazy val commonSettings = Seq(
       Process(localNpmCommand, baseDirectory.value / ".." / "ui").!
     println("Building with Webpack : " + taskName)
     haltOnCmdResultError(buildWebpack())
-  }
+  },
+  scalafmtOnCompile := true,
+  scalafmtVersion := "1.2.0"
 )
 
 def haltOnCmdResultError(result: Int) {
