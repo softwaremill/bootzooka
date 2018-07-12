@@ -1,2 +1,2 @@
 @setlocal
-sbt "~backend/re-start"
+sbt "~backend/reStart"
