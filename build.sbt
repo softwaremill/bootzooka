@@ -61,7 +61,7 @@ lazy val updateNpm = taskKey[Unit]("Update npm")
 lazy val npmTask   = inputKey[Unit]("Run npm with arguments")
 
 lazy val commonSettings = Seq(
-  organization := "com.softwaremill",
+  organization := "softwaremill",
   version := "0.0.1-SNAPSHOT",
   scalaVersion := "2.12.4",
   crossScalaVersions := Seq(scalaVersion.value, "2.11.8"),
@@ -85,6 +85,37 @@ lazy val commonSettings = Seq(
   scalafmtVersion := "1.2.0"
 )
 
+git.uncommittedSignifier := Some("dirty")
+git.formattedShaVersion in ThisBuild := {
+  val base = git.baseVersion.?.value
+  val suffix =
+    git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
+  git.gitHeadCommit.value.map { sha =>
+    git.defaultFormatShaVersion(base, sha.take(7), suffix)
+  }
+}
+
+lazy val dockerSettings = Seq(
+  dockerfile in docker := {
+    // The assembly task generates a fat JAR file
+    val artifact: File     = assembly.value
+    val artifactTargetPath = s"/app/${artifact.name}"
+
+    new Dockerfile {
+      from("openjdk:8-jre")
+      add(artifact, artifactTargetPath)
+      entryPoint("java", "-jar", artifactTargetPath)
+    }
+  },
+  imageNames in docker := Seq(
+    ImageName(
+      namespace = Some(organization.value),
+      repository = "bootzooka",
+      tag = Some(git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest")))
+    )
+  )
+)
+
 def haltOnCmdResultError(result: Int) {
   if (result != 0) {
     throw new Exception("Build failed.")
@@ -101,8 +132,9 @@ lazy val rootProject = (project in file("."))
   .aggregate(backend, ui)
 
 lazy val backend: Project = (project in file("backend"))
-  .enablePlugins(BuildInfoPlugin)
+  .enablePlugins(BuildInfoPlugin, DockerPlugin)
   .settings(commonSettings)
+  .settings(dockerSettings)
   .settings(Revolver.settings)
   .settings(
     libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(javaxMailSun, typesafeConfig, swagger, argon2java),

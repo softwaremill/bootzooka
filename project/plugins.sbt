@@ -7,3 +7,7 @@ addSbtPlugin("io.spray" % "sbt-revolver" % "0.9.0")
 addSbtPlugin("com.heroku" % "sbt-heroku" % "2.0.0")
 
 addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.12")
+
+addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.5.0")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0")
