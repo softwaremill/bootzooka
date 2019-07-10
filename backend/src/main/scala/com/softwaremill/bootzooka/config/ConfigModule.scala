@@ -1,5 +1,6 @@
-package com.softwaremill.bootzooka
+package com.softwaremill.bootzooka.config
 
+import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.version.BuildInfo
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
@@ -22,7 +23,7 @@ trait ConfigModule extends StrictLogging {
                    |API:            ${config.api}
                    |Email:          ${config.email}
                    |Password reset: ${config.passwordReset}
-                   |Bootzooka:      ${config.bootzooka}
+                   |User:           ${config.user}
                    |
                    |Build & env info:
                    |-----------------

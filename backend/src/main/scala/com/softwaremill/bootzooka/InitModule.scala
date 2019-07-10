@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka
 
+import com.softwaremill.bootzooka.config.ConfigModule
 import com.softwaremill.bootzooka.infrastructure.DB
 
 trait InitModule extends ConfigModule {

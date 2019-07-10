@@ -15,7 +15,7 @@ class UserService(
     apiKeyService: ApiKeyService,
     idGenerator: IdGenerator,
     clock: Clock,
-    config: BootzookaConfig
+    config: UserConfig
 ) extends StrictLogging {
 
   private val LoginAlreadyUsed = "Login already in use!"

@@ -3,10 +3,8 @@ package com.softwaremill.bootzooka.test
 import cats.data.OptionT
 import cats.effect.Sync
 import com.softwaremill.bootzooka.MainModule
-import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Error_OUT
 import com.softwaremill.bootzooka.infrastructure.Json._
-import doobie.free.connection.ConnectionIO
 import io.circe.{Decoder, Encoder}
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
@@ -34,17 +32,6 @@ trait HttpTestSupport extends Http4sDsl[Task] {
 
   implicit class RichTask[T](t: Task[T]) {
     def unwrap: T = t.runSyncUnsafe(1.minute)
-  }
-
-  implicit class RichConnectionIO[T](t: ConnectionIO[T]) {
-    def unwrap: T = t.transact(modules.xa).unwrap
-  }
-
-  def eventuallyTask[T](t: Task[T]): Task[T] = t.onErrorRestartLoop(100) { (err, maxRetries, retry) =>
-    if (maxRetries > 0)
-      retry(maxRetries - 1).delayExecution(100.milliseconds)
-    else
-      Task.raiseError(err)
   }
 
   implicit class RichOptionTResponse(t: OptionT[Task, Response[Task]]) {
@@ -79,14 +66,5 @@ trait HttpTestSupport extends Http4sDsl[Task] {
   def authorizedRequest(token: String, request: Request[Task]): Request[Task] = {
     val authHeader = Authorization(Token(CaseInsensitiveString("Bearer"), token))
     request.withHeaders(request.headers ++ Headers.of(authHeader))
-  }
-
-  def responseBodyShouldBeEmpty(r: Response[Task]): Unit = {
-    r.body.compile.toVector.unwrap.isEmpty shouldBe true
-    ()
-  }
-
-  def responseBody(r: Response[Task]): String = {
-    new String(r.body.compile.toVector.unwrap.toArray)
   }
 }

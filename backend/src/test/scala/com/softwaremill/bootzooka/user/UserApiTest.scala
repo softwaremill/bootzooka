@@ -1,7 +1,8 @@
 package com.softwaremill.bootzooka.user
 
+import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
-import com.softwaremill.bootzooka.{Clock, Config, MainModule}
+import com.softwaremill.bootzooka.{Clock, MainModule}
 import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
 import monix.eval.Task
 import com.softwaremill.bootzooka.infrastructure.Doobie._

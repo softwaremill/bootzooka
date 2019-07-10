@@ -4,8 +4,9 @@ import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_IN, ForgotPassword_OUT, PasswordReset_IN, PasswordReset_OUT}
-import com.softwaremill.bootzooka.test.{BaseTest, TestConfig, Requests, TestEmbeddedPostgres}
-import com.softwaremill.bootzooka.{Config, MainModule}
+import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
+import com.softwaremill.bootzooka.MainModule
+import com.softwaremill.bootzooka.config.Config
 import monix.eval.Task
 import org.http4s._
 import org.scalatest.concurrent.Eventually

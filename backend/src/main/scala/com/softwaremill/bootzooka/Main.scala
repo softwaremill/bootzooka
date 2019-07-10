@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka
 
+import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import doobie.util.transactor
 import monix.eval.Task

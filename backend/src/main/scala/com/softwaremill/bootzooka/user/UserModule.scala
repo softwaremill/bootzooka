@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService, Auth}
 
 trait UserModule extends BaseModule {
   lazy val userApi = new UserApi(http, apiKeyAuth, userService)
-  lazy val userService = new UserService(emailScheduler, emailTemplatingEngine, apiKeyService, idGenerator, clock, config.bootzooka)
+  lazy val userService = new UserService(emailScheduler, emailTemplatingEngine, apiKeyService, idGenerator, clock, config.user)
 
   def http: Http
   def apiKeyAuth: Auth[ApiKey]

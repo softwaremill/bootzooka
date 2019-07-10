@@ -20,8 +20,4 @@ object Json extends AutoDerivation with JavaTimeDecoders with JavaTimeEncoders {
 
   implicit def taggedStringEncoder[U]: Encoder[String @@ U] = Encoder.encodeString.asInstanceOf[Encoder[String @@ U]]
   implicit def taggedStringDecoder[U]: Decoder[String @@ U] = Decoder.decodeString.asInstanceOf[Decoder[String @@ U]]
-
-  // converts absent list param to empty list
-  implicit def decodeOptionalList[A: Decoder]: Decoder[List[A]] =
-    Decoder.decodeOption(Decoder.decodeList[A]).map(_.toList.flatten)
 }
