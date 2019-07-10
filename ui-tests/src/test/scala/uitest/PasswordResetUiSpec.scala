@@ -1,6 +1,6 @@
 package uitest
 
-import com.softwaremill.bootzooka.passwordreset.domain.PasswordResetCode
+import com.softwaremill.bootzooka.passwordreset.PasswordResetCode
 
 class PasswordResetUiSpec extends BaseUiSpec {
 

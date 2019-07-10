@@ -2,11 +2,10 @@ package uitest
 
 import java.util.concurrent.TimeUnit
 
-import akka.http.scaladsl.Http.ServerBinding
-import com.softwaremill.bootzooka.email.application.DummyEmailService
-import com.softwaremill.bootzooka.passwordreset.application.SqlPasswordResetCodeSchema
-import com.softwaremill.bootzooka.user.application.SqlUserSchema
-import com.softwaremill.bootzooka.{DependencyWiring, Main}
+import com.softwaremill.bootzooka.email.sender.DummyEmailSender
+import com.softwaremill.bootzooka.passwordreset.SqlPasswordResetCodeSchema
+import com.softwaremill.bootzooka.user.SqlUserSchema
+import com.softwaremill.bootzooka.Main
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.PageFactory
 import org.scalatest.concurrent.ScalaFutures
@@ -21,7 +20,7 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
   val RegMail = "reguser@regmail.pl"
 
   var driver: FirefoxDriver               = _
-  var emailService: DummyEmailService     = _
+  var emailService: DummyEmailSender     = _
   var loginPage: LoginPage                = _
   var messagesPage: MessagesPage          = _
   var passwordRestPage: PasswordResetPage = _
@@ -37,7 +36,7 @@ class BaseUiSpec extends FunSuite with Matchers with BeforeAndAfterAll with Befo
 
     registerUserIfNotExists(RegUser, RegMail, RegPass)
     registerUserIfNotExists("1" + RegUser, "1" + RegMail, RegPass)
-    emailService = businessLogic.emailService.asInstanceOf[DummyEmailService]
+    emailService = businessLogic.emailService.asInstanceOf[DummyEmailSender]
   }
 
   /**

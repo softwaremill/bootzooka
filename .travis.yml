@@ -1,23 +1,25 @@
 language: scala
+
 scala:
-   - 2.11.8
-   - 2.12.4
-
-jdk:
-  - oraclejdk8
-
-sudo: false
+   - 2.12.8
 
 before_cache:
-  # Tricks to avoid unnecessary cache updates
-  - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
-  - find $HOME/.sbt -name "*.lock" -delete
-
+  - du -h -d 1 $HOME/.ivy2/
+  - du -h -d 2 $HOME/.sbt/
+  - du -h -d 4 $HOME/.coursier/
+  - find $HOME/.sbt -name "*.lock" -type f -delete
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -type f -delete
+  - find $HOME/.coursier/cache -name "*.lock" -type f -delete
 cache:
   directories:
+    - $HOME/.sbt/1.0
+    - $HOME/.sbt/boot/scala*
+    - $HOME/.sbt/cache
+    - $HOME/.sbt/launchers
     - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot/
+    - $HOME/.coursier
     - ui/node_modules
+    -
 env:
   - TRAVIS_NODE_VERSION="5"
 
@@ -27,4 +29,4 @@ install:
   - (cd ui;npm install)
 
 script:
-   - sbt ++$TRAVIS_SCALA_VERSION -Dfile.encoding=UTF8 -J-XX:ReservedCodeCacheSize=256M test
+   - sbt ++$TRAVIS_SCALA_VERSION test

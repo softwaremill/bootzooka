@@ -5,5 +5,4 @@
 target/
 *.log
 .DS_Store
-application.conf
 data/

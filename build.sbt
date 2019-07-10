@@ -1,5 +1,6 @@
-import java.text.SimpleDateFormat
-import java.util.Date
+import sbtbuildinfo.BuildInfoKey.action
+import sbtbuildinfo.BuildInfoKeys.{buildInfoKeys, buildInfoOptions, buildInfoPackage}
+import sbtbuildinfo.{BuildInfoKey, BuildInfoOption}
 
 import sbt._
 import Keys._
@@ -8,65 +9,90 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val slf4jVersion        = "1.7.25"
-val logBackVersion      = "1.2.3"
-val scalaLoggingVersion = "3.7.2"
-val slickVersion        = "3.2.1"
-val seleniumVersion     = "2.53.0"
-val circeVersion        = "0.8.0"
-val akkaVersion         = "2.5.0"
-val akkaHttpVersion     = "10.0.10"
-val argon2javaVersion   = "2.2"
+val seleniumVersion = "2.53.0"
+val doobieVersion = "0.7.0"
+val http4sVersion = "0.20.4"
+val circeVersion = "0.11.1"
+val tsecVersion = "0.1.0"
+val sttpVersion = "1.6.0"
+val prometheusVersion = "0.6.0"
+val tapirVersion = "0.8.11"
 
-val slf4jApi       = "org.slf4j" % "slf4j-api" % slf4jVersion
-val logBackClassic = "ch.qos.logback" % "logback-classic" % logBackVersion
-val scalaLogging   = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
-val loggingStack   = Seq(slf4jApi, logBackClassic, scalaLogging)
+val dbDependencies = Seq(
+  "org.tpolecat" %% "doobie-core" % doobieVersion,
+  "org.tpolecat" %% "doobie-hikari" % doobieVersion,
+  "org.tpolecat" %% "doobie-postgres" % doobieVersion,
+  "org.flywaydb" % "flyway-core" % "5.2.4"
+)
 
-val typesafeConfig = "com.typesafe" % "config" % "1.3.2"
+val httpDependencies = Seq(
+  "org.http4s" %% "http4s-dsl" % http4sVersion,
+  "org.http4s" %% "http4s-blaze-server" % http4sVersion,
+  "org.http4s" %% "http4s-blaze-client" % http4sVersion,
+  "org.http4s" %% "http4s-circe" % http4sVersion,
+  "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
+  "com.softwaremill.sttp" %% "async-http-client-backend-monix" % sttpVersion,
+  "com.softwaremill.tapir" %% "tapir-http4s-server" % tapirVersion
+)
 
-val circeCore    = "io.circe" %% "circe-core" % circeVersion
-val circeGeneric = "io.circe" %% "circe-generic" % circeVersion
-val circeJawn    = "io.circe" %% "circe-jawn" % circeVersion
-val circe        = Seq(circeCore, circeGeneric, circeJawn)
+val monitoringDependencies = Seq(
+  "io.prometheus" % "simpleclient" % prometheusVersion,
+  "io.prometheus" % "simpleclient_hotspot" % prometheusVersion,
+  "com.softwaremill.sttp" %% "prometheus-backend" % sttpVersion
+)
 
-val javaxMailSun = "com.sun.mail" % "javax.mail" % "1.6.0"
+val jsonDependencies = Seq(
+  "io.circe" %% "circe-core" % circeVersion,
+  "io.circe" %% "circe-generic" % circeVersion,
+  "io.circe" %% "circe-parser" % circeVersion,
+  "io.circe" %% "circe-java8" % circeVersion,
+  "com.softwaremill.tapir" %% "tapir-json-circe" % tapirVersion,
+  "com.softwaremill.sttp" %% "circe" % sttpVersion
+)
 
-val slick       = "com.typesafe.slick" %% "slick" % slickVersion
-val slickHikari = "com.typesafe.slick" %% "slick-hikaricp" % slickVersion
-val h2          = "com.h2database" % "h2" % "1.4.196"
-val postgres    = "org.postgresql" % "postgresql" % "42.1.4"
-val flyway      = "org.flywaydb" % "flyway-core" % "4.2.0"
-val slickStack  = Seq(slick, h2, postgres, slickHikari, flyway)
+val loggingDependencies = Seq(
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+  "ch.qos.logback" % "logback-classic" % "1.2.3"
+)
 
-val scalatest        = "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+val configDependencies = Seq(
+  "com.github.pureconfig" %% "pureconfig" % "0.11.1"
+)
+
+val baseDependencies = Seq(
+  "io.monix" %% "monix" % "3.0.0-RC3",
+  "com.softwaremill.common" %% "tagging" % "2.2.1"
+)
+
+val apiDocsDependencies = Seq(
+  "com.softwaremill.tapir" %% "tapir-openapi-docs" % tapirVersion,
+  "com.softwaremill.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion,
+  "com.softwaremill.tapir" %% "tapir-swagger-ui-http4s" % tapirVersion
+)
+
+val securityDependencies = Seq(
+  "io.github.jmcardon" %% "tsec-password" % tsecVersion,
+  "io.github.jmcardon" %% "tsec-cipher-jca" % tsecVersion
+)
+
+val emailDependencies = Seq(
+  "com.sun.mail" % "javax.mail" % "1.6.0"
+)
+
+val scalatest = "org.scalatest" %% "scalatest" % "3.0.8" % "test"
 val unitTestingStack = Seq(scalatest)
 
-val seleniumJava    = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
-val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVersion % "test"
-val seleniumStack   = Seq(seleniumJava, seleniumFirefox)
+val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.1"
+val dbTestingStack = Seq(embeddedPostgres)
 
-val akkaHttpCore         = "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion
-val akkaHttpExperimental = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
-val akkaHttpTestkit      = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test"
-val akkaHttpSession      = "com.softwaremill.akka-http-session" %% "core" % "0.5.2"
-val akkaStack            = Seq(akkaHttpCore, akkaHttpExperimental, akkaHttpTestkit, akkaHttpSession)
-val swagger              = "com.github.swagger-akka-http" %% "swagger-akka-http" % "0.11.0"
-
-val argon2java = "de.mkammerer" % "argon2-jvm" % argon2javaVersion
-
-val commonDependencies = unitTestingStack ++ loggingStack
+val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
 
 lazy val updateNpm = taskKey[Unit]("Update npm")
-lazy val npmTask   = inputKey[Unit]("Run npm with arguments")
+lazy val npmTask = inputKey[Unit]("Run npm with arguments")
 
-lazy val commonSettings = Seq(
-  organization := "com.softwaremill",
-  version := "0.0.1-SNAPSHOT",
-  scalaVersion := "2.12.4",
-  crossScalaVersions := Seq(scalaVersion.value, "2.11.8"),
-  crossVersion := CrossVersion.binary,
-  scalacOptions ++= Seq("-unchecked", "-deprecation"),
+lazy val commonSettings = commonSmlBuildSettings ++ Seq(
+  organization := "com.softwaremill.bootzooka",
+  scalaVersion := "2.12.8",
   libraryDependencies ++= commonDependencies,
   updateNpm := {
     println("Updating npm dependencies")
@@ -80,9 +106,7 @@ lazy val commonSettings = Seq(
       Process(localNpmCommand, baseDirectory.value / ".." / "ui").!
     println("Building with Webpack : " + taskName)
     haltOnCmdResultError(buildWebpack())
-  },
-  scalafmtOnCompile := true,
-  scalafmtVersion := "1.2.0"
+  }
 )
 
 def haltOnCmdResultError(result: Int) {
@@ -105,14 +129,25 @@ lazy val backend: Project = (project in file("backend"))
   .settings(commonSettings)
   .settings(Revolver.settings)
   .settings(
-    libraryDependencies ++= slickStack ++ akkaStack ++ circe ++ Seq(javaxMailSun, typesafeConfig, swagger, argon2java),
-    buildInfoPackage := "com.softwaremill.bootzooka.version",
-    buildInfoObject := "BuildInfo",
     buildInfoKeys := Seq[BuildInfoKey](
-      BuildInfoKey.action("buildDate")(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date())),
-      // if the build is done outside of a git repository, we still want it to succeed
-      BuildInfoKey.action("buildSha")(Try(Process("git rev-parse HEAD").!!.stripLineEnd).getOrElse("?"))
+      name,
+      version,
+      scalaVersion,
+      sbtVersion,
+      action("lastCommitHash") {
+        import scala.sys.process._
+        // if the build is done outside of a git repository, we still want it to succeed
+        Try("git rev-parse HEAD".!!.trim).getOrElse("?")
+      }
     ),
+    buildInfoOptions += BuildInfoOption.BuildTime,
+    buildInfoOptions += BuildInfoOption.ToJson,
+    buildInfoOptions += BuildInfoOption.ToMap,
+    buildInfoPackage := "com.softwaremill.bootzooka.version",
+    buildInfoObject := "BuildInfo"
+  )
+  .settings(
+    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
     compile in Compile := {
       val compilationResult = (compile in Compile).value
       IO.touch(target.value / "compilationFinished")
@@ -134,12 +169,16 @@ lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
   .settings(test in Test := (test in Test).dependsOn(npmTask.toTask(" run test")).value)
 
-lazy val uiTests = (project in file("ui-tests"))
-  .settings(commonSettings: _*)
-  .settings(
-    parallelExecution := false,
-    libraryDependencies ++= seleniumStack,
-    test in Test := (test in Test).dependsOn(npmTask.toTask(" run build")).value
-  ) dependsOn backend
+//val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
+//val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVersion % "test"
+//val seleniumDependencies = Seq(seleniumJava, seleniumFirefox)
+//
+//lazy val uiTests = (project in file("ui-tests"))
+//  .settings(commonSettings: _*)
+//  .settings(
+//    parallelExecution := false,
+//    libraryDependencies ++= seleniumDependencies,
+//    test in Test := (test in Test).dependsOn(npmTask.toTask(" run build")).value
+//  ) dependsOn backend
 
 RenameProject.settings

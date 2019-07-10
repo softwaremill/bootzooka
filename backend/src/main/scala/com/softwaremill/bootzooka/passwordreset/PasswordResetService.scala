@@ -1,0 +1,55 @@
+package com.softwaremill.bootzooka.passwordreset
+
+import java.time.temporal.ChronoUnit
+
+import cats.implicits._
+import com.softwaremill.bootzooka._
+import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.softwaremill.bootzooka.security.Auth
+import com.softwaremill.bootzooka.user.{User, UserModel}
+import com.typesafe.scalalogging.StrictLogging
+import monix.eval.Task
+
+class PasswordResetService(
+    emailScheduler: EmailScheduler,
+    emailTemplatingEngine: EmailTemplatingEngine,
+    auth: Auth[PasswordResetCode],
+    idGenerator: IdGenerator,
+    config: PasswordResetConfig,
+    clock: Clock,
+    xa: Transactor[Task]
+) extends StrictLogging {
+
+  def forgotPassword(loginOrEmail: String): ConnectionIO[Unit] = {
+    UserModel.findByLoginOrEmail(loginOrEmail.lowerCased).flatMap {
+      case None => Fail.NotFound("user").raiseError[ConnectionIO, Unit]
+      case Some(user) =>
+        createCode(user).flatMap(sendCode(user, _))
+    }
+  }
+
+  private def createCode(user: User): ConnectionIO[PasswordResetCode] = {
+    logger.debug(s"Creating password reset code for user: ${user.id}")
+    val validUntil = clock.now().plus(config.codeValidHours.toLong, ChronoUnit.HOURS)
+    val code = PasswordResetCode(idGenerator.nextId[PasswordResetCode](), user.id, validUntil)
+    PasswordResetCodeModel.insert(code).map(_ => code)
+  }
+
+  private def sendCode(user: User, code: PasswordResetCode): ConnectionIO[Unit] = {
+    logger.debug(s"Scheduling e-mail with reset code for user: ${user.id}")
+    emailScheduler(EmailData(user.emailLowerCased, prepareResetEmail(user, code)))
+  }
+
+  private def prepareResetEmail(user: User, code: PasswordResetCode): EmailSubjectContent = {
+    val resetLink = String.format(config.resetLinkPattern, code.id)
+    emailTemplatingEngine.passwordReset(user.login, resetLink)
+  }
+
+  def resetPassword(code: String, newPassword: String): Task[Unit] = {
+    for {
+      userId <- auth(code.asInstanceOf[Id])
+      _ <- UserModel.updatePassword(userId, User.hashPassword(newPassword)).transact(xa)
+    } yield ()
+  }
+}
