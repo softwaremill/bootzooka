@@ -25,7 +25,7 @@ trait MainModule
   override lazy val idGenerator: IdGenerator = DefaultIdGenerator
   override lazy val clock: Clock = DefaultClock
   override lazy val collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
-  override lazy val http: Http = new Http(xa)
+  override lazy val http: Http = new Http()
 
   lazy val endpoints: ServerEndpoints = userApi.endpoints concatNel passwordResetApi.endpoints
   lazy val adminEndpoints: ServerEndpoints = NonEmptyList.of(metricsApi.metricsEndpoint, versionApi.versionEndpoint)

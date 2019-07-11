@@ -3,9 +3,12 @@ package com.softwaremill.bootzooka.passwordreset
 import cats.data.NonEmptyList
 import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.infrastructure.Json._
+import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util.ServerEndpoints
+import doobie.util.transactor.Transactor
+import monix.eval.Task
 
-class PasswordResetApi(http: Http, passwordResetService: PasswordResetService) {
+class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, xa: Transactor[Task]) {
   import PasswordResetApi._
   import http._
 
@@ -27,7 +30,7 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService) {
     .out(jsonBody[ForgotPassword_OUT])
     .serverLogic { data =>
       (for {
-        _ <- passwordResetService.forgotPassword(data.loginOrEmail).transact
+        _ <- passwordResetService.forgotPassword(data.loginOrEmail).transact(xa)
       } yield ForgotPassword_OUT()).toOut
     }
 

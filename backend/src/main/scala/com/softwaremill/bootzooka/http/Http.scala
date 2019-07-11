@@ -2,12 +2,10 @@ package com.softwaremill.bootzooka.http
 
 import cats.implicits._
 import com.softwaremill.bootzooka._
-import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
-import doobie.util.transactor.Transactor
 import io.circe.Printer
 import monix.eval.Task
 import org.http4s.Request
@@ -18,7 +16,7 @@ import tapir.server.{DecodeFailureHandler, DecodeFailureHandling, ServerDefaults
 import tapir.{Codec, DecodeResult, Endpoint, EndpointOutput, Schema, SchemaFor, Tapir}
 import tsec.common.SecureRandomId
 
-class Http(val xa: Transactor[Task]) extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogging {
+class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogging {
 
   val failOutput: EndpointOutput[(StatusCode, Error_OUT)] = statusCode and jsonBody[Error_OUT]
 
@@ -68,10 +66,6 @@ class Http(val xa: Transactor[Task]) extends Tapir with TapirJsonCirce with Tapi
           failToErrorOut(fail).asLeft[T]
       }
     }
-  }
-
-  implicit class ConnectionIOWrap[T](f: ConnectionIO[T]) {
-    def transact: Task[T] = f.transact(xa)
   }
 
   override def jsonPrinter: Printer = noNullsPrinter

@@ -10,7 +10,7 @@ import monix.eval.Task
 trait PasswordResetModule extends BaseModule {
   lazy val passwordResetService =
     new PasswordResetService(emailScheduler, emailTemplates, passwordResetCodeAuth, idGenerator, config.passwordReset, clock, xa)
-  lazy val passwordResetApi = new PasswordResetApi(http, passwordResetService)
+  lazy val passwordResetApi = new PasswordResetApi(http, passwordResetService, xa)
 
   def http: Http
   def passwordResetCodeAuth: Auth[PasswordResetCode]

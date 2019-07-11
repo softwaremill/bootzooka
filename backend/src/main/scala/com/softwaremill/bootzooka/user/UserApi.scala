@@ -5,13 +5,15 @@ import java.time.Instant
 import cats.data.NonEmptyList
 import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.infrastructure.Json._
+import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.bootzooka.util.{LowerCased, ServerEndpoints}
 import com.softwaremill.tagging.@@
+import doobie.util.transactor.Transactor
 import monix.eval.Task
 
-class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
+class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Transactor[Task]) {
   import UserApi._
   import http._
 
@@ -23,7 +25,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
     .out(jsonBody[Register_OUT])
     .serverLogic { data =>
       (for {
-        apiKey <- userService.registerNewUser(data.login, data.email, data.password).transact
+        apiKey <- userService.registerNewUser(data.login, data.email, data.password).transact(xa)
         _ <- Task(Metrics.registeredUsersCounter.inc())
       } yield Register_OUT(apiKey.id)).toOut
     }
@@ -34,7 +36,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
     .out(jsonBody[Login_OUT])
     .serverLogic { data =>
       (for {
-        apiKey <- userService.login(data.loginOrEmail, data.password, data.apiKeyValidHours).transact
+        apiKey <- userService.login(data.loginOrEmail, data.password, data.apiKeyValidHours).transact(xa)
       } yield Login_OUT(apiKey.id)).toOut
     }
 
@@ -46,7 +48,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
       case (authData, data) =>
         (for {
           userId <- auth(authData)
-          _ <- userService.changePassword(userId, data.currentPassword, data.newPassword).transact
+          _ <- userService.changePassword(userId, data.currentPassword, data.newPassword).transact(xa)
         } yield ChangePassword_OUT()).toOut
     }
 
@@ -56,7 +58,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
     .serverLogic { authData =>
       (for {
         userId <- auth(authData)
-        user <- userService.findById(userId).transact
+        user <- userService.findById(userId).transact(xa)
       } yield GetUser_OUT(user.login, user.emailLowerCased, user.createdOn)).toOut
     }
 
@@ -68,7 +70,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
       case (authData, data) =>
         (for {
           userId <- auth(authData)
-          _ <- userService.changeUser(userId, data.login, data.email).transact
+          _ <- userService.changeUser(userId, data.login, data.email).transact(xa)
         } yield UpdateUser_OUT()).toOut
     }
 
