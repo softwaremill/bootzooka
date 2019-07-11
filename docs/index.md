@@ -3,7 +3,7 @@ layout: default
 title:  "Overview"
 ---
 
-Bootzooka is a simple application scaffolding project to allow quick start of development for modern, web based applications. If you'd like to have a jump start developing a Scala-based Single Page Application project, skipping the boring parts and focusing on the real business value, this template might be for you!
+Bootzooka is a scaffolding project to allow quick start of development of a microservice or a web application. If you'd like to have a jump start developing a Scala-based project, skipping the boring parts and focusing on the real business value, this template might be for you!
 
 Bootzooka contains only the very basic features, that almost any application needs (listed below). These features are fully implemented both on server- and client- side. We hope that the implementations can also serve as blueprints for new functionalities.
 

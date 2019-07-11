@@ -8,7 +8,7 @@ title:  "Development"
 In order to build and develop on Bootzooka foundations you need the following:
 
 * Java JDK >= 8
-* [SBT](http://www.scala-sbt.org/) >= 0.13
+* [SBT](http://www.scala-sbt.org/) >= 1.2
 * Node.js >= 5.0 (We recommend [NVM](https://github.com/creationix/nvm) - node version manager)
 
 ## How to run
