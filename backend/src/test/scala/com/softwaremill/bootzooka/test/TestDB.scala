@@ -52,7 +52,6 @@ class TestDB(config: DBConfig) extends StrictLogging {
     Flyway
       .configure()
       .dataSource(config.url, config.username, config.password)
-      .placeholderPrefix("$%{") // so it won't interfere with email templates placeholders
       .load()
   }
 
@@ -61,6 +60,7 @@ class TestDB(config: DBConfig) extends StrictLogging {
     try {
       migrate()
       testConnection()
+      logger.info("Database migration & connection test complete")
     } catch {
       case e: Exception =>
         logger.warn("Database not available, waiting 5 seconds to retry...", e)

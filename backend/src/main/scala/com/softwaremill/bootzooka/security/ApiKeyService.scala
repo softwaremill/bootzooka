@@ -16,7 +16,7 @@ class ApiKeyService(idGenerator: IdGenerator, clock: Clock) extends StrictLoggin
     val validUntil = now.plus(validHours.toLong, ChronoUnit.HOURS)
     val apiKey = ApiKey(idGenerator.nextId[ApiKey](), userId, clock.now(), validUntil)
 
-    logger.info(s"Creating a new api key for user $userId, valid until: $validUntil")
+    logger.debug(s"Creating a new api key for user $userId, valid until: $validUntil")
     ApiKeyModel.insert(apiKey).map(_ => apiKey)
   }
 }

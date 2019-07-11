@@ -50,6 +50,7 @@ class PasswordResetService(
   def resetPassword(code: String, newPassword: String): Task[Unit] = {
     for {
       userId <- auth(code.asInstanceOf[Id])
+      _ = logger.debug(s"Resetting password for user: $userId")
       _ <- UserModel.updatePassword(userId, User.hashPassword(newPassword)).transact(xa)
     } yield ()
   }

@@ -17,7 +17,6 @@ class DB(config: DBConfig) extends StrictLogging {
     Flyway
       .configure()
       .dataSource(config.url, config.username, config.password)
-      .placeholderPrefix("$%{") // so it won't interfere with email templates placeholders
       .load()
   }
 
@@ -40,7 +39,7 @@ class DB(config: DBConfig) extends StrictLogging {
   }
 
   private def connectAndMigrate(xa: Transactor[Task]): Task[Unit] = {
-    (migrate() >> testConnection(xa)).onErrorRecoverWith {
+    (migrate() >> testConnection(xa) >> Task(logger.info("Database migration & connection test complete"))).onErrorRecoverWith {
       case e: Exception =>
         logger.warn("Database not available, waiting 5 seconds to retry...", e)
         Task.sleep(5.seconds) >> connectAndMigrate(xa)

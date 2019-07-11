@@ -39,6 +39,8 @@ class UserService(
       val user = User(idGenerator.nextId[User](), login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.now())
       val confirmationEmail = emailTemplates.registrationConfirmation(login)
 
+      logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
+
       for {
         _ <- UserModel.insert(user)
         _ <- emailScheduler(EmailData(email, confirmationEmail))
@@ -69,7 +71,9 @@ class UserService(
       val newLoginLowerCased = newLogin.lowerCased
       UserModel.findByLogin(newLoginLowerCased).flatMap {
         case Some(_) => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Unit]
-        case None    => UserModel.updateLogin(userId, newLogin, newLoginLowerCased)
+        case None =>
+          logger.debug(s"Changing login for user: $userId, to: $newLogin")
+          UserModel.updateLogin(userId, newLogin, newLoginLowerCased)
       }
     }
 
@@ -77,7 +81,9 @@ class UserService(
       val newEmailLowerCased = newEmail.lowerCased
       UserModel.findByEmail(newEmailLowerCased).flatMap {
         case Some(_) => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Unit]
-        case None    => UserModel.updateEmail(userId, newEmailLowerCased)
+        case None =>
+          logger.debug(s"Changing email for user: $userId, to: $newEmail")
+          UserModel.updateEmail(userId, newEmailLowerCased)
       }
     }
 
@@ -89,6 +95,7 @@ class UserService(
     for {
       user <- userOrNotFound(UserModel.findById(userId))
       _ <- verifyPassword(user, currentPassword)
+      _ = logger.debug(s"Changing password for user: $userId")
       _ <- UserModel.updatePassword(userId, User.hashPassword(newPassword))
     } yield ()
 
