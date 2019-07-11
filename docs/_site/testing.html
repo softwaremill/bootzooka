@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Bootzooka Documentation - Testing</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Bootzooka</h1>
+        <p>Simple project to quickly start developing a web application using AngularJS and Akka HTTP, without the need to write login, user registration etc.</p>
+
+        <ul class="view">
+          <li><a href="https://github.com/softwaremill/bootzooka/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/softwaremill/bootzooka/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/softwaremill/bootzooka">View On <strong>GitHub</strong></a></li>
+        </ul>
+
+        <hr />
+
+        <ul>
+          <li><a href="/bootzooka/">Home</a></li>
+          <li><a href="/bootzooka/architecture.html">Architecture</a></li>
+          <li><a href="/bootzooka/stack.html">Technology stack</a></li>
+          <li><a href="/bootzooka/development.html">Development</a></li>
+          <li><a href="/bootzooka/frontend.html">Frontend</a></li>
+          <li><a href="/bootzooka/devtips.html">Development tips</a></li>
+          <li><a href="/bootzooka/production.html">Production deployment</a></li>
+          <li><a href="/bootzooka/heroku.html">Heroku deployment</a></li>
+          <li><a href="/bootzooka/configuration.html">Configuration</a></li>
+          <li><a href="/bootzooka/testing.html">Testing</a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Testing</h1>
+        <p>Because tests are using in-memory <a href="http://www.h2database.com/html/main.html">H2 database</a> you don&#39;t need to have any database running on your machine. Check out easy setup of in-memory database in <code>FlatSpecWithSql</code> trait.</p>
+
+<p>When you issue <code>test</code> from SBT, tests for both server-side and client-side components are run. SBT integrates some Grunt commands and executes tests for browser part via Grunt too.</p>
+
+<h2>UI Tests</h2>
+
+<p>It is also possible to run UI tests, which are located in the <code>ui-tests</code> subproject. This subproject is not aggregated in the normal build and hence these tests must be run manually. To do it, simply run sbt in the bootzooka project directory, switch to <code>ui-tests</code> project and invoke the tests task.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ sbt
+[info] Loading project definition from /Users/pbu/Work/bootzooka/project/project
+[info] Loading project definition from /Users/pbu/Work/bootzooka/project
+[info] Compiling 1 Scala source to /Users/pbu/Work/bootzooka/project/target/scala-2.11/sbt-0.13/classes...
+[info] Set current project to bootzooka-root (in build file:/Users/pbu/Work/bootzooka/)
+&gt; project ui-tests
+[info] Set current project to bootzooka-ui-tests (in build file:/Users/pbu/Work/bootzooka/)
+&gt; test
+</code></pre></div>
+<p>Alternatively you can run a single test using the test-only task.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&gt; test-only uitest.ScalaRegisterUITest
+</code></pre></div>
+<p>These tests are written using WebDriver and <strong>you need Firefox 20</strong> to properly run them.</p>
+</section>
+      <footer>
+        <p>This project is maintained by <a href="https://www.softwaremill.com">Softwaremill</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-11235106-12");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>

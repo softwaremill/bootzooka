@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Bootzooka Documentation - Frontend application</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Bootzooka</h1>
+        <p>Simple project to quickly start developing a web application using AngularJS and Akka HTTP, without the need to write login, user registration etc.</p>
+
+        <ul class="view">
+          <li><a href="https://github.com/softwaremill/bootzooka/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/softwaremill/bootzooka/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/softwaremill/bootzooka">View On <strong>GitHub</strong></a></li>
+        </ul>
+
+        <hr />
+
+        <ul>
+          <li><a href="/bootzooka/">Home</a></li>
+          <li><a href="/bootzooka/architecture.html">Architecture</a></li>
+          <li><a href="/bootzooka/stack.html">Technology stack</a></li>
+          <li><a href="/bootzooka/development.html">Development</a></li>
+          <li><a href="/bootzooka/frontend.html">Frontend</a></li>
+          <li><a href="/bootzooka/devtips.html">Development tips</a></li>
+          <li><a href="/bootzooka/production.html">Production deployment</a></li>
+          <li><a href="/bootzooka/heroku.html">Heroku deployment</a></li>
+          <li><a href="/bootzooka/configuration.html">Configuration</a></li>
+          <li><a href="/bootzooka/testing.html">Testing</a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Frontend application</h1>
+        <p>Bootzooka&#39;s frontend is a true Single Page Application built with Angular. It can be treated as a completely separate application or as a client for Bootzooka server.</p>
+
+<p>As a separate application it deserves its own build process handling all the details (linting, testing, minifying etc). Hence the frontend part is almost completely decoupled from server side code. The only coupling is on the level of packaging final application (which is described later in this doc).</p>
+
+<p>Thanks to great tools existing in JavaScript ecosystem it is fully automated and easy to configure/extend later on.</p>
+
+<h2>Installing Node.js</h2>
+
+<p>To work with the <code>ui</code> module you need to have <code>node.js</code> installed in version 0.10.13 or newer. Make sure you have both <code>node</code> and <code>npm</code> commands available on <code>PATH</code>.</p>
+
+<h2>Installing Grunt.js and Bower</h2>
+
+<p>Bootzooka frontend project uses <code>nodejs</code> based build tool called <a href="http://gruntjs.com">Grunt.js</a> to automate build stuff.</p>
+
+<h3>Global installation</h3>
+
+<p>It is advised to install Grunt.js and Bower globally. In order to do that, please run</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">npm install -g grunt-cli
+
+npm install -g bower
+</code></pre></div>
+<p>This will install grunt command globally and make it available. Be sure to have NPM binaries on <code>PATH</code>. You may need to add <code>/usr/local/share/npm/bin/</code> to your PATH if you have NPM installed via Homebrew. Then you can use <code>grunt</code> command as described below.</p>
+
+<h3>Local installation</h3>
+
+<p>If you don&#39;t want to install Grunt.js locally, Bootzooka has it already in dependencies, so doing <code>npm install</code> as described above should be enough. The only drawback is that in this mode <code>grunt</code> will not be available on your <code>PATH</code>. To run grunt from local installation you should be in <code>ui</code> project and run it via</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">./node_modules/.bin/grunt
+</code></pre></div>
+<h3>Why Bower AND npm?</h3>
+
+<p>Both tools are package managers; We use npm to manage the build dependencies (node modules: grunt and grunt plugins, karma test framework etc.), and Bower to manage the frontend dependencies (such as Bootstrap).</p>
+
+<h2>First run</h2>
+
+<p>If this is your first attempt to run <code>ui</code>, please go to <code>ui</code> project and run</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">npm install
+</code></pre></div>
+<p>and</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">bower install
+</code></pre></div>
+<p>This will install all required dependencies for this project. If all is well you can start your development version of frontend by issuing <code>grunt server</code> from command line (or running the provided <code>frontend-start</code> script in the main directory). It should start your browser and point you to <a href="http://0.0.0.0:9090/#/">Bootzooka home page</a>.</p>
+
+<h2>Development</h2>
+
+<p>Build system exposes several tasks that can be run. <code>Gruntfile.js</code> contains all the build configuration. Run it with <code>grunt &lt;task&gt;</code> if you have grunt installed globally or via <code>./node_modules/.bin/grunt &lt;task&gt;</code> if installed locally.</p>
+
+<p>The most important tasks exposed are:</p>
+
+<ul>
+<li><code>grunt server</code></li>
+<li><code>grunt server:dist</code></li>
+<li><code>grunt build</code></li>
+<li><code>grunt test</code></li>
+<li><code>grunt autotest</code></li>
+</ul>
+
+<h2><code>Grunt server</code> task</h2>
+
+<p>This task serves Bootzooka application on port <code>9090</code> on <code>0.0.0.0</code> (it is available to all hosts from the same network). Your default browser should open at this location. All requests to <code>/rest/</code> context for data will be proxied to port <code>8080</code> when it expects backend server to be run.</p>
+
+<p>Grunt will watch for any change in frontend files (templates, js files, styles) and every change is automatically compiled (if necessary) and browser is automatically refreshed to apply changes. No need to refresh it by hand.</p>
+
+<p><strong>Note: if you have LiveReload extension enabled in you browser, please disable it so that it doesn&#39;t interfere with Grunt&#39;s</strong></p>
+
+<p>In this task all scripts are served in non-concatenated and non-minified version from their original locations (if possible).</p>
+
+<h2><code>Grunt server:dist</code> task</h2>
+
+<p>This task is similar to the one above with one difference: it preprocessess all the files in order to create distribution (it currently includes concatenation of scripts files), runs tests and serves application from this freshly baked distribution version. This server&#39;s version doesn&#39;t watch for file changes.</p>
+
+<h2><code>Grunt build</code> task</h2>
+
+<p>It runs all tests and builds everything to as distribution version to <code>dist</code> directory. It doesn&#39;t fire up the proxy server.</p>
+
+<h2><code>Grunt test</code> task</h2>
+
+<p>It simply tests the build one time. Tests are run with Karma runner using PhantomJS as default browser. Whole tests configuration is in <code>karma-config.js</code> file in <code>ui</code> project.</p>
+
+<h2><code>Grunt autotest</code> task</h2>
+
+<p>This task runs tests and watches for changes in files. When change is detected it runs tests automatically. This is especially helpful in hard-development mode.</p>
+
+<h2>Distribution and deployment</h2>
+
+<p>Although in development <code>ui</code> is separate project there is no need to deploy it separately. All files from <code>ui/dist/webapp</code> (which are genereated during <code>grunt build</code>) are used by <code>backend</code> to build the final fat-jar application or <code>.war</code> package. All necessary integration with SBT (backend build) is provided. That means when you issue <code>package</code> in SBT, you get a complete web application which contains both server side and frontend components. You can drop it into your web container (as usual).</p>
+</section>
+      <footer>
+        <p>This project is maintained by <a href="https://www.softwaremill.com">Softwaremill</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-11235106-12");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
