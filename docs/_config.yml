@@ -1,4 +1,3 @@
-theme: jekyll-theme-minimal
-title: Scala microservice/webapp template
-plugins:
-  - jekyll-sitemap
+name: Bootzooka Documentation
+highlighter: rouge
+baseurl: "/bootzooka/"
