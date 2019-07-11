@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.email
 
-import com.softwaremill.bootzooka.BaseModule
 import com.softwaremill.bootzooka.email.sender.{DummyEmailSender, EmailSender, MailgunEmailSender, SmtpEmailSender}
+import com.softwaremill.bootzooka.util.BaseModule
 import com.softwaremill.sttp.SttpBackend
 import doobie.util.transactor.Transactor
 import monix.eval.Task

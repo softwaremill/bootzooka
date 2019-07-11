@@ -4,7 +4,7 @@ import java.time.temporal.ChronoUnit
 import java.time.{Instant, LocalDate, ZoneOffset}
 import java.util.concurrent.atomic.AtomicReference
 
-import com.softwaremill.bootzooka.Clock
+import com.softwaremill.bootzooka.util.Clock
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.duration._

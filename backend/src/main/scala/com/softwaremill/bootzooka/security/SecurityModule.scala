@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.security
 
-import com.softwaremill.bootzooka.BaseModule
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetAuthToken, PasswordResetCode}
+import com.softwaremill.bootzooka.util.BaseModule
 import doobie.util.transactor.Transactor
 import monix.eval.Task
 

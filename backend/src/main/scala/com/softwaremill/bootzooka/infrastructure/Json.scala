@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import com.softwaremill.bootzooka.Id
+import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging.@@
 import io.circe.generic.AutoDerivation
 import io.circe.java8.time.{JavaTimeDecoders, JavaTimeEncoders}

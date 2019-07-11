@@ -2,12 +2,13 @@ package com.softwaremill.bootzooka.user
 
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
-import com.softwaremill.bootzooka.{Clock, MainModule}
+import com.softwaremill.bootzooka.MainModule
 import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
 import monix.eval.Task
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.user.UserApi.{ChangePassword_OUT, GetUser_OUT, Login_OUT, Register_OUT, UpdateUser_OUT}
+import com.softwaremill.bootzooka.util.Clock
 import org.http4s.Status
 import org.scalatest.concurrent.Eventually
 

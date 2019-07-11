@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import com.softwaremill.bootzooka.BaseModule
 import com.softwaremill.bootzooka.email.{EmailScheduler, EmailTemplates}
 import com.softwaremill.bootzooka.infrastructure.Http
 import com.softwaremill.bootzooka.security.Auth
+import com.softwaremill.bootzooka.util.BaseModule
 import doobie.util.transactor.Transactor
 import monix.eval.Task
 

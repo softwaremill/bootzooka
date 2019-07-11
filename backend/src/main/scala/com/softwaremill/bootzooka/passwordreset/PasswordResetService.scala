@@ -8,6 +8,7 @@ import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubject
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.{User, UserModel}
+import com.softwaremill.bootzooka.util._
 import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
 

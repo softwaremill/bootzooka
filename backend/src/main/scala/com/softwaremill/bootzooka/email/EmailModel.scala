@@ -1,10 +1,10 @@
 package com.softwaremill.bootzooka.email
 
 import cats.data.NonEmptyList
-import com.softwaremill.bootzooka.Id
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.tagging.@@
 import cats.implicits._
+import com.softwaremill.bootzooka.util.Id
 
 object EmailModel {
 

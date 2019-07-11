@@ -9,7 +9,3 @@ object Fail {
   case object Unauthorized extends Fail
   case object Forbidden extends Fail
 }
-
-trait ClassName[T] {
-  def show: String
-}

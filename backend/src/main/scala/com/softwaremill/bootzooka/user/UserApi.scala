@@ -3,11 +3,11 @@ package com.softwaremill.bootzooka.user
 import java.time.Instant
 
 import cats.data.NonEmptyList
-import com.softwaremill.bootzooka.{LowerCased, ServerEndpoints}
 import com.softwaremill.bootzooka.infrastructure.Http
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
+import com.softwaremill.bootzooka.util.{LowerCased, ServerEndpoints}
 import com.softwaremill.tagging.@@
 import monix.eval.Task
 

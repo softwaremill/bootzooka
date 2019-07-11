@@ -3,11 +3,10 @@ package com.softwaremill.bootzooka.security
 import java.time.Instant
 
 import cats.implicits._
-
-import com.softwaremill.bootzooka.Id
 import com.softwaremill.bootzooka.infrastructure.Doobie
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.user.User
+import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging.@@
 
 object ApiKeyModel {

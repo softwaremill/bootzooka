@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import com.softwaremill.bootzooka.Id
+import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.util.log.{ExecFailure, ProcessingFailure, Success}

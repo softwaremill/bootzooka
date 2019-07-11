@@ -7,6 +7,7 @@ import com.softwaremill.bootzooka.metrics.MetricsModule
 import com.softwaremill.bootzooka.passwordreset.PasswordResetModule
 import com.softwaremill.bootzooka.security.SecurityModule
 import com.softwaremill.bootzooka.user.UserModule
+import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator, IdGenerator, ServerEndpoints}
 import doobie.util.transactor.Transactor
 import io.prometheus.client.CollectorRegistry
 import monix.eval.Task

@@ -1,4 +1,4 @@
-package com.softwaremill
+package com.softwaremill.bootzooka
 
 import java.util.Locale
 
@@ -8,7 +8,7 @@ import monix.eval.Task
 import tapir.server.ServerEndpoint
 import tsec.common.SecureRandomId
 
-package object bootzooka {
+package object util {
   type Id = SecureRandomId
 
   implicit class RichString(val s: String) extends AnyVal {

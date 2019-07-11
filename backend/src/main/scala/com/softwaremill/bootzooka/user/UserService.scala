@@ -8,6 +8,7 @@ import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
 import tsec.common.Verified
 import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.softwaremill.bootzooka.util._
 
 class UserService(
     emailScheduler: EmailScheduler,

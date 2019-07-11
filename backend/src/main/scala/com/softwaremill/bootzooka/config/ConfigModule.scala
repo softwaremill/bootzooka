@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.config
 
-import com.softwaremill.bootzooka._
+import com.softwaremill.bootzooka.util._
 import com.softwaremill.bootzooka.version.BuildInfo
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging

@@ -1,4 +1,4 @@
-package com.softwaremill.bootzooka
+package com.softwaremill.bootzooka.util
 
 import com.softwaremill.tagging._
 import tsec.common.SecureRandomId

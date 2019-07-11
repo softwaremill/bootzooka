@@ -4,6 +4,7 @@ import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka._
+import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.util.transactor.Transactor

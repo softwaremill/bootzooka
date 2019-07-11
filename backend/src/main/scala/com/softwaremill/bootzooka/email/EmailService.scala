@@ -1,10 +1,10 @@
 package com.softwaremill.bootzooka.email
 
-import com.softwaremill.bootzooka.IdGenerator
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import monix.eval.{Fiber, Task}
 import cats.implicits._
 import com.softwaremill.bootzooka.email.sender.EmailSender
+import com.softwaremill.bootzooka.util.IdGenerator
 import com.typesafe.scalalogging.StrictLogging
 
 class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[Task])

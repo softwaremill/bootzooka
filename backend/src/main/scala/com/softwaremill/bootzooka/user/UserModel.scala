@@ -3,8 +3,8 @@ package com.softwaremill.bootzooka.user
 import java.time.Instant
 
 import cats.implicits._
-import com.softwaremill.bootzooka.{Id, LowerCased}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.softwaremill.bootzooka.util.{Id, LowerCased}
 import com.softwaremill.tagging.@@
 import tsec.common.VerificationStatus
 import tsec.passwordhashers.PasswordHash
