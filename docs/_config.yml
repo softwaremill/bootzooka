@@ -1,3 +1,5 @@
 name: Bootzooka Documentation
 highlighter: rouge
 baseurl: "/bootzooka/"
+
+theme: jekyll-theme-minimal
