@@ -1,23 +1,22 @@
-package com.softwaremill.bootzooka.version
+package com.softwaremill.bootzooka.metrics
 
-import cats.data.NonEmptyList
-import com.softwaremill.bootzooka.ServerEndpoints
-import com.softwaremill.bootzooka.infrastructure.Http
+import com.softwaremill.bootzooka.infrastructure.{Error_OUT, Http}
 import com.softwaremill.bootzooka.infrastructure.Json._
+import com.softwaremill.bootzooka.version.BuildInfo
 import monix.eval.Task
+import tapir.model.StatusCode
+import tapir.server.ServerEndpoint
 
 class VersionApi(http: Http) {
-  import http._
   import VersionApi._
+  import http._
 
-  private val versionEndpoint = baseEndpoint.get
+  val versionEndpoint: ServerEndpoint[Unit, (StatusCode, Error_OUT), Version_OUT, Nothing, Task] = baseEndpoint.get
     .in("version")
     .out(jsonBody[Version_OUT])
     .serverLogic { _ =>
       Task.now(Version_OUT(BuildInfo.builtAtString, BuildInfo.lastCommitHash)).toOut
     }
-
-  val endpoints: ServerEndpoints = NonEmptyList.of(versionEndpoint)
 }
 
 object VersionApi {

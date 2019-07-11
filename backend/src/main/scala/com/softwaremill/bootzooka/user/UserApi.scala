@@ -6,8 +6,10 @@ import cats.data.NonEmptyList
 import com.softwaremill.bootzooka.{LowerCased, ServerEndpoints}
 import com.softwaremill.bootzooka.infrastructure.Http
 import com.softwaremill.bootzooka.infrastructure.Json._
+import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.tagging.@@
+import monix.eval.Task
 
 class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
   import UserApi._
@@ -22,6 +24,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
     .serverLogic { data =>
       (for {
         apiKey <- userService.registerNewUser(data.login, data.email, data.password).transact
+        _ <- Task(Metrics.registeredUsersCounter.inc())
       } yield Register_OUT(apiKey.id)).toOut
     }
 

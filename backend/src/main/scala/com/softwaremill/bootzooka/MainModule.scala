@@ -26,7 +26,7 @@ trait MainModule
   override lazy val http: Http = new Http(xa)
 
   lazy val endpoints: ServerEndpoints = userApi.endpoints concatNel passwordResetApi.endpoints
-  lazy val metricsEndpoints: ServerEndpoints = NonEmptyList.of(metricsApi.metricsEndpoint)
+  lazy val adminEndpoints: ServerEndpoints = NonEmptyList.of(metricsApi.metricsEndpoint, versionApi.versionEndpoint)
   lazy val backgroundProcesses: fs2.Stream[Task, Nothing] = fs2.Stream.eval_(emailService.startSender())
 
   def xa: Transactor[Task]

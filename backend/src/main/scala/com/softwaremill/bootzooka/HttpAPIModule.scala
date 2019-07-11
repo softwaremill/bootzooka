@@ -22,7 +22,7 @@ trait HttpAPIModule extends BaseModule {
   private val docsContextPath = s"$apiContextPath/docs"
 
   def endpoints: ServerEndpoints
-  def metricsEndpoints: ServerEndpoints
+  def adminEndpoints: ServerEndpoints
   def http: Http
 
   lazy val httpRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
@@ -41,9 +41,9 @@ trait HttpAPIModule extends BaseModule {
       .flatMap { monitoredServices =>
         val app: HttpApp[Task] =
           Router(
+            s"/$docsContextPath" -> docsRoutes,
             s"/$apiContextPath" -> CORS(monitoredServices, corsConfig),
-            "/metrics" -> toRoutes(metricsEndpoints),
-            s"/$docsContextPath" -> docsRoutes
+            "/admin" -> toRoutes(adminEndpoints)
           ).orNotFound
 
         BlazeServerBuilder[Task]
