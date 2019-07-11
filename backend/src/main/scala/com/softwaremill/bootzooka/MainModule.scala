@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka
 
 import cats.data.NonEmptyList
 import com.softwaremill.bootzooka.email.EmailModule
-import com.softwaremill.bootzooka.infrastructure.Http
+import com.softwaremill.bootzooka.infrastructure.{Http, InfrastructureModule}
 import com.softwaremill.bootzooka.metrics.MetricsModule
 import com.softwaremill.bootzooka.passwordreset.PasswordResetModule
 import com.softwaremill.bootzooka.security.SecurityModule
@@ -11,7 +11,14 @@ import doobie.util.transactor.Transactor
 import io.prometheus.client.CollectorRegistry
 import monix.eval.Task
 
-trait MainModule extends SecurityModule with EmailModule with UserModule with PasswordResetModule with MetricsModule with HttpAPIModule {
+trait MainModule
+    extends SecurityModule
+    with EmailModule
+    with UserModule
+    with PasswordResetModule
+    with MetricsModule
+    with HttpAPIModule
+    with InfrastructureModule {
 
   override lazy val idGenerator: IdGenerator = DefaultIdGenerator
   override lazy val clock: Clock = DefaultClock

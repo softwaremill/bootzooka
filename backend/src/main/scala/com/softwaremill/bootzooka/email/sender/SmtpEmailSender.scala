@@ -3,23 +3,23 @@ package com.softwaremill.bootzooka.email.sender
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.util.{Date, Properties}
 
-import com.softwaremill.bootzooka.email.{EmailConfig, EmailData}
+import com.softwaremill.bootzooka.email.{EmailData, SmtpConfig}
 import com.typesafe.scalalogging.StrictLogging
 import javax.activation.{DataHandler, DataSource}
 import javax.mail.internet.{InternetAddress, MimeBodyPart, MimeMessage, MimeMultipart}
 import javax.mail.{Address, Message, Session, Transport}
 import monix.eval.Task
 
-class SmtpEmailSender(config: EmailConfig) extends EmailSender with StrictLogging {
+class SmtpEmailSender(config: SmtpConfig) extends EmailSender with StrictLogging {
   def apply(email: EmailData): Task[Unit] = Task {
     val emailToSend = new SmtpEmailSender.EmailDescription(List(email.recipient), email.content, email.subject)
     SmtpEmailSender.send(
-      config.smtp.host,
-      config.smtp.port,
-      config.smtp.username,
-      config.smtp.password,
-      config.smtp.verifySslCertificate,
-      config.smtp.sslConnection,
+      config.host,
+      config.port,
+      config.username,
+      config.password,
+      config.verifySslCertificate,
+      config.sslConnection,
       config.from,
       config.encoding,
       emailToSend
