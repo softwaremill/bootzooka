@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.email
 
 import scala.io.Source
 
-class EmailTemplatingEngine {
+class EmailTemplates {
   def registrationConfirmation(userName: String): EmailSubjectContent = {
     val template = prepareEmailTemplate("registrationConfirmation", Map("userName" -> userName))
     addSignature(splitToContentAndSubject(template))

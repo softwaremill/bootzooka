@@ -2,14 +2,12 @@ package com.softwaremill.bootzooka.email
 
 import org.scalatest.{FlatSpec, Matchers}
 
-class EmailTemplatingEngineTest extends FlatSpec with Matchers {
-  behavior of "splitToContentAndSubject"
-
-  val engine = new EmailTemplatingEngine
+class EmailTemplatesTest extends FlatSpec with Matchers {
+  val templates = new EmailTemplates
 
   it should "generate the registration confirmation email" in {
     // when
-    val email = engine.registrationConfirmation("john")
+    val email = templates.registrationConfirmation("john")
 
     // then
     email.subject should be("SoftwareMill Bootzooka - registration confirmation for user john")

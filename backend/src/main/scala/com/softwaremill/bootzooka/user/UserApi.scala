@@ -78,6 +78,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService) {
         getUserEndpoint,
         updateUserEndpoint
       )
+      .map(_.tag("user"))
 }
 
 object UserApi {

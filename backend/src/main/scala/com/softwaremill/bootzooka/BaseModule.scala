@@ -7,4 +7,3 @@ trait BaseModule {
   def clock: Clock
   def config: Config
 }
-

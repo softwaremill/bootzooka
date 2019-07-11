@@ -8,7 +8,7 @@ import monix.eval.Task
 trait EmailModule extends BaseModule {
   lazy val emailService = new EmailService(idGenerator, emailSender, config.email, xa)
   lazy val emailScheduler: EmailScheduler = emailService
-  lazy val emailTemplatingEngine = new EmailTemplatingEngine()
+  lazy val emailTemplates = new EmailTemplates()
   lazy val emailSender: EmailSender = if (config.email.enabled) {
     new SmtpEmailSender(config.email)
   } else {

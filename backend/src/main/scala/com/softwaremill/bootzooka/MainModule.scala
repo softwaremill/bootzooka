@@ -11,13 +11,7 @@ import doobie.util.transactor.Transactor
 import io.prometheus.client.CollectorRegistry
 import monix.eval.Task
 
-trait MainModule
-    extends SecurityModule
-    with EmailModule
-    with UserModule
-    with PasswordResetModule
-    with MetricsModule
-    with HttpAPIModule {
+trait MainModule extends SecurityModule with EmailModule with UserModule with PasswordResetModule with MetricsModule with HttpAPIModule {
 
   override lazy val idGenerator: IdGenerator = DefaultIdGenerator
   override lazy val clock: Clock = DefaultClock

@@ -4,7 +4,7 @@ import java.time.temporal.ChronoUnit
 
 import cats.implicits._
 import com.softwaremill.bootzooka._
-import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.{User, UserModel}
@@ -13,7 +13,7 @@ import monix.eval.Task
 
 class PasswordResetService(
     emailScheduler: EmailScheduler,
-    emailTemplatingEngine: EmailTemplatingEngine,
+    emailTemplates: EmailTemplates,
     auth: Auth[PasswordResetCode],
     idGenerator: IdGenerator,
     config: PasswordResetConfig,
@@ -43,7 +43,7 @@ class PasswordResetService(
 
   private def prepareResetEmail(user: User, code: PasswordResetCode): EmailSubjectContent = {
     val resetLink = String.format(config.resetLinkPattern, code.id)
-    emailTemplatingEngine.passwordReset(user.login, resetLink)
+    emailTemplates.passwordReset(user.login, resetLink)
   }
 
   def resetPassword(code: String, newPassword: String): Task[Unit] = {

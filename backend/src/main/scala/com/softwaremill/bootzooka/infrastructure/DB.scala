@@ -53,7 +53,8 @@ class DB(config: DBConfig) extends StrictLogging {
     } else Task.unit
   }
 
-  private def testConnection(xa: Transactor[Task]): Task[Unit] = Task {
-    sql"select 1".query[Int].unique.transact(xa)
-  }.void
+  private def testConnection(xa: Transactor[Task]): Task[Unit] =
+    Task {
+      sql"select 1".query[Int].unique.transact(xa)
+    }.void
 }

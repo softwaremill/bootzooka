@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.user
 
 import cats.implicits._
 import com.softwaremill.bootzooka._
-import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplatingEngine}
+import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
@@ -11,7 +11,7 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 
 class UserService(
     emailScheduler: EmailScheduler,
-    emailTemplatingEngine: EmailTemplatingEngine,
+    emailTemplates: EmailTemplates,
     apiKeyService: ApiKeyService,
     idGenerator: IdGenerator,
     clock: Clock,
@@ -36,7 +36,7 @@ class UserService(
 
     def doRegister(): ConnectionIO[ApiKey] = {
       val user = User(idGenerator.nextId[User](), login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.now())
-      val confirmationEmail = emailTemplatingEngine.registrationConfirmation(login)
+      val confirmationEmail = emailTemplates.registrationConfirmation(login)
 
       for {
         _ <- UserModel.insert(user)

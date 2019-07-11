@@ -37,6 +37,7 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService) {
         passwordResetEndpoint,
         forgotPasswordEndpoint
       )
+      .map(_.tag("passwordreset"))
 }
 
 object PasswordResetApi {
