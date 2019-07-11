@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.metrics
 
-import com.softwaremill.bootzooka.infrastructure.Http
+import com.softwaremill.bootzooka.http.Http
 import io.prometheus.client.CollectorRegistry
 
 trait MetricsModule {

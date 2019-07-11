@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import cats.data.NonEmptyList
-import com.softwaremill.bootzooka.infrastructure.Http
+import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.util.ServerEndpoints
 

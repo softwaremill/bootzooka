@@ -1,7 +1,7 @@
-package com.softwaremill.bootzooka
+package com.softwaremill.bootzooka.http
 
 import cats.effect.ExitCode
-import com.softwaremill.bootzooka.infrastructure.{CorrelationId, Http}
+import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import com.softwaremill.bootzooka.util.{BaseModule, ServerEndpoints}
 import io.prometheus.client.CollectorRegistry
 import monix.eval.Task

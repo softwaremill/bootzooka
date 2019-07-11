@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.metrics
 
-import com.softwaremill.bootzooka.infrastructure.{Error_OUT, Http}
+import com.softwaremill.bootzooka.http.{Error_OUT, Http}
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.version.BuildInfo
 import monix.eval.Task

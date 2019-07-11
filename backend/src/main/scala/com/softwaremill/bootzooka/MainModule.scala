@@ -2,7 +2,8 @@ package com.softwaremill.bootzooka
 
 import cats.data.NonEmptyList
 import com.softwaremill.bootzooka.email.EmailModule
-import com.softwaremill.bootzooka.infrastructure.{Http, InfrastructureModule}
+import com.softwaremill.bootzooka.http.{Http, HttpAPIModule}
+import com.softwaremill.bootzooka.infrastructure.InfrastructureModule
 import com.softwaremill.bootzooka.metrics.MetricsModule
 import com.softwaremill.bootzooka.passwordreset.PasswordResetModule
 import com.softwaremill.bootzooka.security.SecurityModule

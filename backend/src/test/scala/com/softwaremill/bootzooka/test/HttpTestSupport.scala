@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.test
 import cats.data.OptionT
 import cats.effect.Sync
 import com.softwaremill.bootzooka.MainModule
-import com.softwaremill.bootzooka.infrastructure.Error_OUT
+import com.softwaremill.bootzooka.http.Error_OUT
 import com.softwaremill.bootzooka.infrastructure.Json._
 import io.circe.{Decoder, Encoder}
 import monix.eval.Task

@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.user
 
 import com.softwaremill.bootzooka.email.{EmailScheduler, EmailTemplates}
-import com.softwaremill.bootzooka.infrastructure.Http
+import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService, Auth}
 import com.softwaremill.bootzooka.util.BaseModule
 

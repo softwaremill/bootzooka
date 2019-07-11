@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.metrics
 
 import java.io.StringWriter
 
-import com.softwaremill.bootzooka.infrastructure.{Error_OUT, Http}
+import com.softwaremill.bootzooka.http.{Error_OUT, Http}
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
 import monix.eval.Task
