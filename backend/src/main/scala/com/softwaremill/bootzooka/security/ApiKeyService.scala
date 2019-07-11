@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.security
 
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 import com.softwaremill.bootzooka.user.User
@@ -19,3 +20,5 @@ class ApiKeyService(idGenerator: IdGenerator, clock: Clock) extends StrictLoggin
     ApiKeyModel.insert(apiKey).map(_ => apiKey)
   }
 }
+
+case class ApiKey(id: Id @@ ApiKey, userId: Id @@ User, createdOn: Instant, validUntil: Instant)
