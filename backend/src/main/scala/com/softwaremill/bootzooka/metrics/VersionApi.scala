@@ -7,6 +7,9 @@ import monix.eval.Task
 import tapir.model.StatusCode
 import tapir.server.ServerEndpoint
 
+/**
+  * Defines an endpoint which exposes the current application version information.
+  */
 class VersionApi(http: Http) {
   import VersionApi._
   import http._

@@ -10,6 +10,9 @@ import tsec.passwordhashers.jca.SCrypt
 import scala.concurrent.duration._
 import scala.reflect.runtime.universe.TypeTag
 
+/**
+  * Import the members of this object when defining SQL queries using doobie.
+  */
 object Doobie
     extends doobie.Aliases
     with doobie.hi.Modules
@@ -33,6 +36,10 @@ object Doobie
     implicitly[Meta[String]].asInstanceOf[Meta[PasswordHash[SCrypt]]]
 
   private val SlowThreshold = 200.millis
+
+  /**
+    * Logs the SQL queries which are slow or end up in an exception.
+    */
   implicit val doobieLogHandler: LogHandler = LogHandler {
     case Success(sql, _, exec, processing) =>
       if (exec > SlowThreshold || processing > SlowThreshold) {

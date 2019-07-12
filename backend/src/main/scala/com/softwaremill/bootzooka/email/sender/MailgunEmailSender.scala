@@ -5,6 +5,10 @@ import com.softwaremill.sttp._
 import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
 
+/**
+  * Sends emails using the [[https://www.mailgun.com Mailgun]] service. The external http call is done using
+  * [[sttp https://github.com/softwaremill/sttp]].
+  */
 class MailgunEmailSender(config: MailgunConfig)(implicit sttpBackend: SttpBackend[Task, Nothing]) extends EmailSender with StrictLogging {
   override def apply(email: EmailData): Task[Unit] = {
     sttp.auth

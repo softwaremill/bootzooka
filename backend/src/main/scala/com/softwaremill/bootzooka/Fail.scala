@@ -1,5 +1,11 @@
 package com.softwaremill.bootzooka
 
+/**
+  * Base class for all failures in the application. The failures are translated to HTTP API results in the
+  * [[com.softwaremill.bootzooka.http.Http]] class.
+  *
+  * The class hierarchy is not sealed and can be extended as required by specific functionalities.
+  */
 abstract class Fail extends Exception
 
 object Fail {

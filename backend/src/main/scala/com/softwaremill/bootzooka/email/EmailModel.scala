@@ -6,6 +6,9 @@ import com.softwaremill.tagging.@@
 import cats.implicits._
 import com.softwaremill.bootzooka.util.Id
 
+/**
+  * Model for storing and retrieving scheduled emails.
+  */
 object EmailModel {
 
   def insert(email: Email): ConnectionIO[Unit] = {

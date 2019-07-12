@@ -14,6 +14,9 @@ import org.flywaydb.core.Flyway
 import scala.annotation.tailrec
 import scala.concurrent.duration._
 
+/**
+  * A work-around to use the `xaResource` imperatively.
+  */
 class TestDB(config: DBConfig) extends StrictLogging {
 
   var xa: Transactor[Task] = _
@@ -36,8 +39,7 @@ class TestDB(config: DBConfig) extends StrictLogging {
       )
     } yield xa
 
-    // a work-around to use the xaResource imperatively: first extracting it from the use method,
-    // then stopping when the `done` mvar is filled.
+    // first extracting it from the use method, then stopping when the `done` mvar is filled (when `close()` is invoked)
     xaResource
       .use { _xa =>
         xaReady.put(_xa) >> done.take

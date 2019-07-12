@@ -7,6 +7,9 @@ import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.util.IdGenerator
 import com.typesafe.scalalogging.StrictLogging
 
+/**
+  * Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches.
+  */
 class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[Task])
     extends EmailScheduler
     with StrictLogging {
@@ -25,6 +28,9 @@ class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: E
     } yield ()
   }
 
+  /**
+    * Starts an asynchronous process which attempts to send batches of emails in defined intervals.
+    */
   def startSender(): Task[Fiber[Nothing]] = {
     (sendBatch() >> Task.sleep(config.emailSendInterval))
       .onErrorHandle { e =>

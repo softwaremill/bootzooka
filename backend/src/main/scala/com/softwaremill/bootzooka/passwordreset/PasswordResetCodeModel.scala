@@ -36,5 +36,6 @@ object PasswordResetAuthToken extends AuthTokenOps[PasswordResetCode] {
   override def delete: PasswordResetCode => ConnectionIO[Unit] = ak => PasswordResetCodeModel.delete(ak.id)
   override def userId: PasswordResetCode => Id @@ User = _.userId
   override def validUntil: PasswordResetCode => Instant = _.validUntil
+  // password reset code is a one-time token
   override def deleteWhenValid: Boolean = true
 }

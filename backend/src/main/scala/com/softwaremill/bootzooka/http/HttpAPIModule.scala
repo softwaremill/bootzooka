@@ -1,6 +1,7 @@
 package com.softwaremill.bootzooka.http
 
 import cats.effect.ExitCode
+import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import com.softwaremill.bootzooka.util.{BaseModule, ServerEndpoints}
 import io.prometheus.client.CollectorRegistry
@@ -11,31 +12,44 @@ import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
 import org.http4s.syntax.kleisli._
-import org.http4s.{HttpApp, HttpRoutes}
+import org.http4s.{HttpApp, HttpRoutes, Request}
+import tapir.DecodeResult
 import tapir.docs.openapi._
+import tapir.model.StatusCode
 import tapir.openapi.Server
 import tapir.openapi.circe.yaml._
+import tapir.server.{DecodeFailureHandler, DecodeFailureHandling, ServerDefaults}
 import tapir.server.http4s._
 import tapir.swagger.http4s.SwaggerHttp4s
 
+/**
+  * Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs
+  * and correlation id support.
+  *
+  * The following endpoints are exposed:
+  * - `/api/v1` - the main API
+  * - `/api/v1/docs` - swagger UI for the main API
+  * - `/admin` - admin API
+  */
 trait HttpAPIModule extends BaseModule {
   private val apiContextPath = "api/v1"
   private val docsContextPath = s"$apiContextPath/docs"
 
-  def endpoints: ServerEndpoints
-  def adminEndpoints: ServerEndpoints
-  def http: Http
-
-  lazy val httpRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
   lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
+  lazy val http: Http = new Http()
+  // interpreting tapir endpoints as http4s routes
+  lazy val httpRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
+  lazy val adminRoutes: HttpRoutes[Task] = toRoutes(adminEndpoints)
   lazy val docsRoutes: HttpRoutes[Task] = {
     val openapi = endpoints.toList.toOpenAPI("Bootzooka", "1.0").copy(servers = List(Server(s"/$apiContextPath", None)))
     val yaml = openapi.toYaml
     new SwaggerHttp4s(yaml, docsContextPath).routes[Task]
   }
 
+  /**
+    * A never-ending stream which handles incoming requests.
+    */
   lazy val serveHttp: fs2.Stream[Task, ExitCode] = {
-    implicit val collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
     val prometheusHttp4sMetrics = Prometheus[Task](collectorRegistry)
     fs2.Stream
       .eval(prometheusHttp4sMetrics.map(m => Metrics[Task](m)(httpRoutes)))
@@ -44,7 +58,7 @@ trait HttpAPIModule extends BaseModule {
           Router(
             s"/$docsContextPath" -> docsRoutes,
             s"/$apiContextPath" -> CORS(monitoredServices, corsConfig),
-            "/admin" -> toRoutes(adminEndpoints)
+            "/admin" -> adminRoutes
           ).orNotFound
 
         BlazeServerBuilder[Task]
@@ -54,12 +68,30 @@ trait HttpAPIModule extends BaseModule {
       }
   }
 
+  /**
+    * When a query parameter, JSON body, header value etc., cannot be decoded to the desired type, we also want to
+    * return errors in the same format (as a JSON corresponding to [[Error_OUT]]).
+    */
+  private val decodeFailureHandler: DecodeFailureHandler[Request[Task]] = {
+    // if an exception is thrown when decoding an input, and the exception is a Fail, responding basing on the Fail
+    case (_, _, DecodeResult.Error(_, f: Fail)) => DecodeFailureHandling.response(http.failOutput)(http.exceptionToErrorOut(f))
+    // otherwise, converting the decode input failure into a ParsingFailure response
+    case (req, input, failure) =>
+      def failResponse(code: StatusCode, msg: String): DecodeFailureHandling =
+        DecodeFailureHandling.response(http.failOutput)((code, Error_OUT(msg)))
+      ServerDefaults.decodeFailureHandlerUsingResponse(failResponse, badRequestOnPathFailureIfPathShapeMatches = false)(req, input, failure)
+  }
+
   private def toRoutes(es: ServerEndpoints): HttpRoutes[Task] = {
     implicit val serverOptions: Http4sServerOptions[Task] = Http4sServerOptions
       .default[Task]
       .copy(
-        decodeFailureHandler = http.decodeFailureHandler
+        decodeFailureHandler = decodeFailureHandler
       )
     es.toList.toRoutes
   }
+
+  def endpoints: ServerEndpoints
+  def adminEndpoints: ServerEndpoints
+  def collectorRegistry: CollectorRegistry
 }

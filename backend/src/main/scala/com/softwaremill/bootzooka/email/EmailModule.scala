@@ -8,8 +8,10 @@ import monix.eval.Task
 
 trait EmailModule extends BaseModule {
   lazy val emailService = new EmailService(idGenerator, emailSender, config.email, xa)
+  // the EmailService implements the EmailScheduler functionality - hence, creating an alias for this dependency
   lazy val emailScheduler: EmailScheduler = emailService
   lazy val emailTemplates = new EmailTemplates()
+  // depending on the configuration, creating the appropriate EmailSender instance
   lazy val emailSender: EmailSender = if (config.email.mailgun.enabled) {
     new MailgunEmailSender(config.email.mailgun)(sttpBackend)
   } else if (config.email.smtp.enabled) {

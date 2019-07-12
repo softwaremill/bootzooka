@@ -15,7 +15,10 @@ import org.slf4j.MDC
 
 import scala.util.Random
 
-// https://blog.softwaremill.com/correlation-ids-in-scala-using-monix-3aa11783db81
+/**
+  * Correlation id support. The `init()` method should be called when the application starts.
+  * See [[https://blog.softwaremill.com/correlation-ids-in-scala-using-monix-3aa11783db81]] for details.
+  */
 object CorrelationId extends StrictLogging {
   System.setProperty("monix.environment.localContextPropagation", "1")
   def init(): Unit = {
@@ -52,6 +55,9 @@ object CorrelationId extends StrictLogging {
   }
 }
 
+/**
+  * An sttp backend wrapper, which sets the current correlation id on all outgoing requests.
+  */
 class SetCorrelationIdBackend(delegate: SttpBackend[Task, Nothing]) extends SttpBackend[Task, Nothing] {
   override def send[T](request: sttp.Request[T, Nothing]): Task[Response[T]] = {
     // suspending the calculation of the correlation id until the request send is evaluated
@@ -68,7 +74,10 @@ class SetCorrelationIdBackend(delegate: SttpBackend[Task, Nothing]) extends Sttp
   override def responseMonad: MonadError[Task] = delegate.responseMonad
 }
 
-// from https://olegpy.com/better-logging-monix-1/
+/**
+  * Based on [[https://olegpy.com/better-logging-monix-1/]]. Makes the current correlation id available for logback
+  * loggers.
+  */
 class MonixMDCAdapter extends LogbackMDCAdapter {
   private[this] val map = Local[ju.Map[String, String]](ju.Collections.emptyMap())
 

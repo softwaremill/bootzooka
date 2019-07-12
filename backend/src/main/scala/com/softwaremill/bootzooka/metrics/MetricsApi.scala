@@ -9,6 +9,9 @@ import monix.eval.Task
 import tapir.model.StatusCode
 import tapir.server.ServerEndpoint
 
+/**
+  * Defines an endpoint which exposes the current state of the metrics, which can be later read by a Prometheus server.
+  */
 class MetricsApi(http: Http, registry: CollectorRegistry) {
   import http._
 

@@ -6,6 +6,9 @@ import com.typesafe.scalalogging.StrictLogging
 import org.postgresql.jdbc.PgConnection
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
 
+/**
+  * Base trait for tests which use the database. The database is cleaned after each test.
+  */
 trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll with StrictLogging { self: Suite =>
   private var postgres: EmbeddedPostgres = _
   private var currentDbConfig: DBConfig = _

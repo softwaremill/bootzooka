@@ -10,6 +10,9 @@ import javax.mail.internet.{InternetAddress, MimeBodyPart, MimeMessage, MimeMult
 import javax.mail.{Address, Message, Session, Transport}
 import monix.eval.Task
 
+/**
+  * Sends emails synchronously using SMTP.
+  */
 class SmtpEmailSender(config: SmtpConfig) extends EmailSender with StrictLogging {
   def apply(email: EmailData): Task[Unit] = Task {
     val emailToSend = new SmtpEmailSender.EmailDescription(List(email.recipient), email.content, email.subject)

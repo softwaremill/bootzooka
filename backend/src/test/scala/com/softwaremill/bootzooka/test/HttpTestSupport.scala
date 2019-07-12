@@ -22,6 +22,7 @@ trait HttpTestSupport extends Http4sDsl[Task] {
 
   val modules: MainModule
 
+  // in tests we are using the http4s client, hence we need http4s entity encoders/decoders to send/receive data
   implicit def entityEncoderFromCirce[F[_]: Sync, T: Encoder]: EntityEncoder[F, T] = {
     org.http4s.circe.jsonEncoderWithPrinterOf[F, T](noNullsPrinter)
   }

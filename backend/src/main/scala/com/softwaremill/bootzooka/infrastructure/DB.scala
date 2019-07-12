@@ -11,14 +11,10 @@ import org.flywaydb.core.Flyway
 import scala.concurrent.duration._
 import Doobie._
 
+/**
+  * Configures the database, setting up the connection pool and performing migrations.
+  */
 class DB(config: DBConfig) extends StrictLogging {
-
-  private val flyway = {
-    Flyway
-      .configure()
-      .dataSource(config.url, config.username, config.password)
-      .load()
-  }
 
   val transactorResource: Resource[Task, Transactor[Task]] = {
     implicit val contextShift: ContextShift[Task] = Task.contextShift(global)
@@ -44,6 +40,13 @@ class DB(config: DBConfig) extends StrictLogging {
         logger.warn("Database not available, waiting 5 seconds to retry...", e)
         Task.sleep(5.seconds) >> connectAndMigrate(xa)
     }
+  }
+
+  private val flyway = {
+    Flyway
+      .configure()
+      .dataSource(config.url, config.username, config.password)
+      .load()
   }
 
   private def migrate(): Task[Unit] = {
