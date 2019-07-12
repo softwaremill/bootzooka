@@ -40,21 +40,43 @@ proxies: [ {
 } ]
 ```
 
-## JSON
+## Imports
 
-For serializing data to JSON the [Circe](https://github.com/travisbrown/circe) library is used. It relies on compile-time codec generation, instead of run-time reflection. If in your endpoint, you want to send a response to the client which corresponds to a case class, you need to:
+There are three imports that are useful when developing a new functionality:
 
-1. make sure that the content of `JsonSupport` is in scope (e.g. by extending the trait itself or the more general `RoutesSupport`)
-2. `import io.circe.generic.auto._` which will automatically generate a codec from the case class at compile-time
-3. define an implicit `CanBeSerialized[T]` instance for the type `T` that you want to send. This is a feature of Bootzooka, not normally required, but included to make sure that you only send data that indeed should be sent (to avoid automatically serializing e.g. a list of `User` instances which contains the password hashes)
+### JSON
 
-Of course, the existing endpoints (for managing users, getting the version) have all of that ready.
+If you are doing JSON serialisaion or deserialisation, or if you are defining an endpoint which uses JSON bodies, add the following import:
 
-## Swagger
+```scala
+import com.softwaremill.bootzooka.infrastructure.Json._
+```
 
-Bootzooka uses [swagger-akka-http](https://github.com/swagger-akka-http/swagger-akka-http) for generating `swagger.json` and `swagger.yaml`. Swagger files are exposed to [/api-docs/swagger.yaml](http://localhost:8080/api-docs/swagger.yaml) and [/api-docs/swagger.json](http://localhost:8080/api-docs/swagger.json).
+This will bring into scope both custom and built-in [Circe](https://github.com/circe/circe) encoders/decoders.
 
-Routes are not added to Swagger files automatically, they have to be annotated first. See [`VersionRoutes` and `VersionRoutesAnnotations`](https://github.com/softwaremill/bootzooka/blob/master/backend/src/main/scala/com/softwaremill/bootzooka/version/VersionRoutes.scala) for an example.
+### Database
 
-If the project is running locally, you might use [editor.swagger.io](http://editor.swagger.io/#!/) for testing purposes.
- 
+If you are defining database queries or running transactions, add the following import:
+
+```scala
+import com.softwaremill.bootzooka.infrastructure.Doobie._
+```
+
+This will bring into scope both custom and built-in [doobie](https://tpolecat.github.io/doobie/) metas.
+
+### HTTP API
+
+Finally, if you are describing new endpoints, import all members of the current `Http` instance:
+
+```scala
+import com.softwaremill.bootzooka.http.Http
+
+class UserApi(http: Http) {
+  import http._
+
+  ...
+}
+```
+
+This will bring into scope tapir builder methods and custom schemas for documentation.
+Note that if you are using JSON in your endpoint descriptions, you'll need the JSON imports as well.
