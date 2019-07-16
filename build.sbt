@@ -10,7 +10,6 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val seleniumVersion = "2.53.0"
 val doobieVersion = "0.7.0"
 val http4sVersion = "0.20.6"
 val circeVersion = "0.11.1"
@@ -207,17 +206,5 @@ lazy val backend: Project = (project in file("backend"))
 lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
   .settings(test in Test := (test in Test).dependsOn(npmTask.toTask(" run test")).value)
-
-//val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion % "test"
-//val seleniumFirefox = "org.seleniumhq.selenium" % "selenium-firefox-driver" % seleniumVersion % "test"
-//val seleniumDependencies = Seq(seleniumJava, seleniumFirefox)
-//
-//lazy val uiTests = (project in file("ui-tests"))
-//  .settings(commonSettings: _*)
-//  .settings(
-//    parallelExecution := false,
-//    libraryDependencies ++= seleniumDependencies,
-//    test in Test := (test in Test).dependsOn(npmTask.toTask(" run build")).value
-//  ) dependsOn backend
 
 RenameProject.settings
