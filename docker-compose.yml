@@ -1,0 +1,23 @@
+version: '3'
+services:
+  bootzooka:
+    image: 'bootzooka:latest'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - bootzooka-db
+    environment:
+      SQL_USERNAME: 'postgres'
+      SQL_PASSWORD: 'sml_rules'
+      SQL_DBNAME: 'bootzooka'
+      SQL_HOST: 'bootzooka-db'
+      SQL_PORT: '5432'
+      API_HOST: '0.0.0.0'
+  bootzooka-db:
+    image: 'postgres'
+    ports:
+      - '25432:5432'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'sml_rules'
+      POSTGRES_DB: 'bootzooka'

@@ -15,6 +15,8 @@ java -jar backend/target/scala-2.12/bootzooka.jar
 
 To build a docker image, run `backend/docker:publishLocal`. This will create the `docker:latest` image.
 
+You can test the image by using the provided `docker-compose.yml` file.
+
 ## Heroku
 
 Bootzooka-based applications can be easily deployed to [Heroku](https://www.heroku.com).
