@@ -78,7 +78,7 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2"
+  "javax.mail" % "javax.mail-api" % "1.6.2"
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.0.8" % "test"
@@ -164,7 +164,13 @@ lazy val backend: Project = (project in file("backend"))
       )
     },
     assemblyJarName in assembly := "bootzooka.jar",
-    assembly := assembly.dependsOn(npmTask.toTask(" run build")).value
+    assembly := assembly.dependsOn(npmTask.toTask(" run build")).value,
+    assemblyMergeStrategy in assembly := {
+      case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
+      case x =>
+        val oldStrategy = (assemblyMergeStrategy in assembly).value
+        oldStrategy(x)
+    }
   )
 
 lazy val ui = (project in file("ui"))
