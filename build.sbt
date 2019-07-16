@@ -188,7 +188,7 @@ lazy val backend: Project = (project in file("backend"))
     packageName in Docker := "bootzooka",
     dockerCommands := {
       dockerCommands.value.flatMap {
-        case ep@ExecCmd("ENTRYPOINT", _*) =>
+        case ep @ ExecCmd("ENTRYPOINT", _*) =>
           Seq(
             ExecCmd("ENTRYPOINT", "/opt/docker/docker-entrypoint.sh" :: ep.args.toList: _*)
           )
