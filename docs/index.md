@@ -19,9 +19,9 @@ Current (user visible) features:
 * integrated SBT + Webpack build
 * unit & integration backend tests
 * frontend JS tests
-* fat-jar deployment
+* fat-jar, Docker or Heroku deployment
 
-This may not sound "cool", but in fact Bootzooka is really helpful when bootstrapping a new project. This is because it contains the whole required setup and automation of build processes both for frontend and backend. You get it out of the box which means significantly less time spent on setting up infrastructure and tools and more time spent on actual coding features in project.
+This may not sound "cool", but the goal of Bootzooka is to be helpful when bootstrapping a new project. It contains the whole required setup and automation of build processes both for frontend and backend. You get it out of the box which means significantly less time spent on setting up infrastructure and tools and more time spent on actual coding features in project.
 
 Live demo is available on [http://bootzooka.softwaremill.com](http://bootzooka.softwaremill.com).
 

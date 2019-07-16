@@ -8,22 +8,21 @@ When picking Bootzooka's technology stack we wanted to use modern, but reasonabl
 Bootzooka's stack consists of the following technologies/tools:
 
 *	[scala](https://www.scala-lang.org) (JVM based language)
-*	[http4s](https://http4s.org) (lightweight HTTP library) + tapir (endpoint description library)
+*	[http4s](https://http4s.org) (lightweight HTTP library) + [tapir](https://github.com/softwaremill/tapir) (endpoint description library)
 *	SQL database, by default [PostgreSQL](https://www.postgresql.org) (persistence)
-*	[doobie](https://tpolecat.github.io/doobie/) (query SQL database using strictly typed DSL)
-*   [flyway](https://flywaydb.org) (easy schema evolution)
+*	[doobie](https://tpolecat.github.io/doobie/) (query SQL database using strictly typed DSL) + [flyway](https://flywaydb.org) (easy schema evolution)
 * [monix](https://monix.io) (managing side-effects and concurrency in the backend)
-*	AngularJS + HTML5 (frontend)
-*	[SBT](https://www.scala-sbt.org) & Webpack (build tools)
-*   Swagger (interactive API docs)
+*	[react](https://reactjs.org) (frontend)
+*	[SBT](https://www.scala-sbt.org) & [Webpack](https://webpack.js.org) (build tools)
+* [Swagger](https://swagger.io) (interactive API docs)
 
 ### Why Scala?
 
-A lot of the projects that we develop at [SoftwareMill](http://softwaremill.com) are written in Scala. It's our default go-to language for server-side. SoftwareMill is also a [Lightbend](http://lightbend.com/) partner.
+A lot of the projects that we develop at [SoftwareMill](http://softwaremill.com) are written in Scala. It's our default go-to language for the server-side. We maintain or sponsor a number of [open-source Scala projects](https://softwaremill.com/open-source/). We are partners of [Lightbend](http://lightbend.com/), [Datastax](https://www.datastax.com) and [Confluent](https://www.confluent.io).
 
-### Why AngularJS?
+### Why React?
 
-Angular the most popular JavaScript framework right now, developed and supported by Google and we use it frequently at [SoftwareMill](http://softwaremill.com) (also because it's really good). It offers a complete solution to build dynamic and modern HTML5 based web applications.
+React is one of the most popular JavaScript framework right now, developed and supported by Facebook; we use it frequently at [SoftwareMill](http://softwaremill.com) (also because it's really good). It offers a complete solution to build dynamic and modern HTML5 based web applications, with a "functional" approach.
 
 ### Why http4s + tapir?
 
