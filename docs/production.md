@@ -10,3 +10,7 @@ To build an executable jar, simply run (in sbt) `backend/assembly` (that is, the
 ```
 java -jar backend/target/scala-2.12/bootzooka.jar
 ```
+
+## Docker
+
+To build a docker image, run `backend/docker:publishLocal`. This will create the `docker:latest` image.

@@ -1,6 +1,7 @@
 import sbtbuildinfo.BuildInfoKey.action
 import sbtbuildinfo.BuildInfoKeys.{buildInfoKeys, buildInfoOptions, buildInfoPackage}
 import sbtbuildinfo.{BuildInfoKey, BuildInfoOption}
+import com.typesafe.sbt.packager.docker.ExecCmd
 
 import sbt._
 import Keys._
@@ -53,6 +54,8 @@ val jsonDependencies = Seq(
 val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "org.codehaus.janino" % "janino" % "3.0.14",
+  "de.siegmar" % "logback-gelf" % "2.1.0",
   "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.1"
 )
 
@@ -162,16 +165,43 @@ lazy val backend: Project = (project in file("backend"))
       (unmanagedResourceDirectories in Compile).value ++ List(
         baseDirectory.value.getParentFile / ui.base.getName / "dist"
       )
-    },
+    }
+  )
+  // fat-jar packaging
+  .settings(
     assemblyJarName in assembly := "bootzooka.jar",
     assembly := assembly.dependsOn(npmTask.toTask(" run build")).value,
     assemblyMergeStrategy in assembly := {
       case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
-      case PathList(ps @ _*) if ps.last endsWith "pom.properties" => MergeStrategy.first
+      case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.first
       case x =>
         val oldStrategy = (assemblyMergeStrategy in assembly).value
         oldStrategy(x)
     }
+  )
+  // docker packaging
+  .enablePlugins(DockerPlugin)
+  .enablePlugins(JavaServerAppPackaging)
+  .settings(
+    dockerExposedPorts := Seq(8080),
+    dockerBaseImage := "openjdk:8u212-jdk-stretch",
+    packageName in Docker := "bootzooka",
+    dockerCommands := {
+      dockerCommands.value.flatMap {
+        case ep@ExecCmd("ENTRYPOINT", _*) =>
+          Seq(
+            ExecCmd("ENTRYPOINT", "/opt/docker/docker-entrypoint.sh" :: ep.args.toList: _*)
+          )
+        case other => Seq(other)
+      }
+    },
+    mappings in Docker ++= {
+      val scriptDir = baseDirectory.value / ".." / "scripts"
+      val entrypointScript = scriptDir / "docker-entrypoint.sh"
+      val entrypointScriptTargetPath = "/opt/docker/docker-entrypoint.sh"
+      Seq(entrypointScript -> entrypointScriptTargetPath)
+    },
+    dockerUpdateLatest := true
   )
 
 lazy val ui = (project in file("ui"))
