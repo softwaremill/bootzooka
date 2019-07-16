@@ -78,7 +78,7 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.0"
+  "com.sun.mail" % "javax.mail" % "1.6.2"
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.0.8" % "test"
