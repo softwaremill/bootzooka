@@ -24,6 +24,10 @@ A lot of the projects that we develop at [SoftwareMill](http://softwaremill.com)
 
 React is one of the most popular JavaScript framework right now, developed and supported by Facebook; we use it frequently at [SoftwareMill](http://softwaremill.com) (also because it's really good). It offers a complete solution to build dynamic and modern HTML5 based web applications, with a "functional" approach.
 
+### Why Monix?
+
+Monix is a concurrency toolkit, thanks to which working with side-effects is concurrency-safe and type-safe. The basic datatype, `Task`, is a lazily evaluated description of side effects. It offers a number of combinators to sequence, handle errors, allocate resources and run effects asynchronously.
+
 ### Why http4s + tapir?
 
 http4s is a popular ligthweight, functional library for exposing HTTP servers. tapir on the other hand, defines a programmer-friendly API for describing HTTP endpoints which can be interpreted as a server (using http4s as the backing implementation), or as Swagger/OpenAPI documentation.
