@@ -81,14 +81,14 @@ class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Event
     val request = Request[Task](method = POST, uri = uri"/passwordreset/forgot")
       .withEntity(ForgotPassword_IN(loginOrEmail))
 
-    modules.httpRoutes(request).unwrap
+    modules.httpApi.mainRoutes(request).unwrap
   }
 
   def resetPassword(code: String, password: String): Response[Task] = {
     val request = Request[Task](method = POST, uri = uri"/passwordreset/reset")
       .withEntity(PasswordReset_IN(code, password))
 
-    modules.httpRoutes(request).unwrap
+    modules.httpApi.mainRoutes(request).unwrap
   }
 
   def codeSentToEmail(email: String): String = {

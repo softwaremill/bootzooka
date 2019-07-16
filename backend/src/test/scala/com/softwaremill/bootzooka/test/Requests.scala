@@ -21,7 +21,7 @@ class Requests(val modules: MainModule) extends HttpTestSupport {
     val request = Request[Task](method = POST, uri = uri"/user/register")
       .withEntity(Register_IN(login, email, password))
 
-    modules.httpRoutes(request).unwrap
+    modules.httpApi.mainRoutes(request).unwrap
   }
 
   def newRegisteredUsed(): RegisteredUser = {
@@ -34,26 +34,26 @@ class Requests(val modules: MainModule) extends HttpTestSupport {
     val request = Request[Task](method = POST, uri = uri"/user/login")
       .withEntity(Login_IN(loginOrEmail, password, apiKeyValidHours))
 
-    modules.httpRoutes(request).unwrap
+    modules.httpApi.mainRoutes(request).unwrap
   }
 
   def getUser(apiKey: String): Response[Task] = {
     val request = Request[Task](method = GET, uri = uri"/user")
-    modules.httpRoutes(authorizedRequest(apiKey, request)).unwrap
+    modules.httpApi.mainRoutes(authorizedRequest(apiKey, request)).unwrap
   }
 
   def changePassword(apiKey: String, password: String, newPassword: String): Response[Task] = {
     val request = Request[Task](method = POST, uri = uri"/user/changepassword")
       .withEntity(ChangePassword_IN(password, newPassword))
 
-    modules.httpRoutes(authorizedRequest(apiKey, request)).unwrap
+    modules.httpApi.mainRoutes(authorizedRequest(apiKey, request)).unwrap
   }
 
   def updateUser(apiKey: String, login: Option[String], email: Option[String]): Response[Task] = {
     val request = Request[Task](method = POST, uri = uri"/user")
       .withEntity(UpdateUser_IN(login, email))
 
-    modules.httpRoutes(authorizedRequest(apiKey, request)).unwrap
+    modules.httpApi.mainRoutes(authorizedRequest(apiKey, request)).unwrap
   }
 
 }

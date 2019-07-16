@@ -21,7 +21,7 @@ object Main {
         override def config: Config = initModule.config
       }
 
-      (modules.backgroundProcesses ++ modules.serveHttp).compile.drain
+      (modules.backgroundProcesses ++ modules.httpApi.serveRequests).compile.drain
     }
 
     mainTask.runSyncUnsafe()

@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.http
 import cats.effect.ExitCode
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
-import com.softwaremill.bootzooka.util.{BaseModule, ServerEndpoints}
+import com.softwaremill.bootzooka.util.ServerEndpoints
 import io.prometheus.client.CollectorRegistry
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
@@ -18,8 +18,8 @@ import tapir.docs.openapi._
 import tapir.model.StatusCode
 import tapir.openapi.Server
 import tapir.openapi.circe.yaml._
-import tapir.server.{DecodeFailureHandler, DecodeFailureHandling, ServerDefaults}
 import tapir.server.http4s._
+import tapir.server.{DecodeFailureHandler, DecodeFailureHandling, ServerDefaults}
 import tapir.swagger.http4s.SwaggerHttp4s
 
 /**
@@ -31,16 +31,15 @@ import tapir.swagger.http4s.SwaggerHttp4s
   * - `/api/v1/docs` - swagger UI for the main API
   * - `/admin` - admin API
   */
-trait HttpAPIModule extends BaseModule {
+class HttpApi(http: Http, endpoints: ServerEndpoints, adminEndpoints: ServerEndpoints, collectorRegistry: CollectorRegistry, config: HttpConfig) {
   private val apiContextPath = "api/v1"
   private val docsContextPath = s"$apiContextPath/docs"
 
-  lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
-  lazy val http: Http = new Http()
+  private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
   // interpreting tapir endpoints as http4s routes
-  lazy val httpRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
-  lazy val adminRoutes: HttpRoutes[Task] = toRoutes(adminEndpoints)
-  lazy val docsRoutes: HttpRoutes[Task] = {
+  lazy val mainRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
+  private lazy val adminRoutes: HttpRoutes[Task] = toRoutes(adminEndpoints)
+  private lazy val docsRoutes: HttpRoutes[Task] = {
     val openapi = endpoints.toList.toOpenAPI("Bootzooka", "1.0").copy(servers = List(Server(s"/$apiContextPath", None)))
     val yaml = openapi.toYaml
     new SwaggerHttp4s(yaml, docsContextPath).routes[Task]
@@ -49,10 +48,10 @@ trait HttpAPIModule extends BaseModule {
   /**
     * A never-ending stream which handles incoming requests.
     */
-  lazy val serveHttp: fs2.Stream[Task, ExitCode] = {
+  lazy val serveRequests: fs2.Stream[Task, ExitCode] = {
     val prometheusHttp4sMetrics = Prometheus[Task](collectorRegistry)
     fs2.Stream
-      .eval(prometheusHttp4sMetrics.map(m => Metrics[Task](m)(httpRoutes)))
+      .eval(prometheusHttp4sMetrics.map(m => Metrics[Task](m)(mainRoutes)))
       .flatMap { monitoredServices =>
         val app: HttpApp[Task] =
           Router(
@@ -62,7 +61,7 @@ trait HttpAPIModule extends BaseModule {
           ).orNotFound
 
         BlazeServerBuilder[Task]
-          .bindHttp(config.api.port, config.api.host)
+          .bindHttp(config.port, config.host)
           .withHttpApp(app)
           .serve
       }
@@ -91,7 +90,4 @@ trait HttpAPIModule extends BaseModule {
     es.toList.toRoutes
   }
 
-  def endpoints: ServerEndpoints
-  def adminEndpoints: ServerEndpoints
-  def collectorRegistry: CollectorRegistry
 }
