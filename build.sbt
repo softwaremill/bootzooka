@@ -167,6 +167,7 @@ lazy val backend: Project = (project in file("backend"))
     assembly := assembly.dependsOn(npmTask.toTask(" run build")).value,
     assemblyMergeStrategy in assembly := {
       case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
+      case PathList(ps @ _*) if ps.last endsWith "pom.properties" => MergeStrategy.first
       case x =>
         val oldStrategy = (assemblyMergeStrategy in assembly).value
         oldStrategy(x)
