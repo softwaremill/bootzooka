@@ -34,5 +34,5 @@ trait MainModule
     config.api
   )
 
-  lazy val backgroundProcesses: fs2.Stream[Task, Nothing] = fs2.Stream.eval_(emailService.startSender())
+  lazy val backgroundProcesses: fs2.Stream[Task, Nothing] = fs2.Stream.eval_(emailService.startProcesses())
 }

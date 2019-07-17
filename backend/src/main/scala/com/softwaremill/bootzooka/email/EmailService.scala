@@ -31,9 +31,9 @@ class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: E
 
   /**
     * Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates
-    * a metrics which holds the size of the email queue.
+    * a metric which holds the size of the email queue.
     */
-  def startSender(): Task[Fiber[Nothing]] = {
+  def startProcesses(): Task[(Fiber[Nothing], Fiber[Nothing])] = {
     val sendProcess = (sendBatch() >> Task.sleep(config.emailSendInterval))
       .onErrorHandle { e =>
         logger.error("Exception when sending emails", e)
@@ -48,7 +48,7 @@ class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: E
       .loopForever
       .start
 
-    sendProcess >> monitoringProcess
+    Task.parZip2(sendProcess, monitoringProcess)
   }
 }
 
