@@ -4,6 +4,7 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 import monix.eval.{Fiber, Task}
 import cats.implicits._
 import com.softwaremill.bootzooka.email.sender.EmailSender
+import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator
 import com.typesafe.scalalogging.StrictLogging
 
@@ -29,15 +30,25 @@ class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: E
   }
 
   /**
-    * Starts an asynchronous process which attempts to send batches of emails in defined intervals.
+    * Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates
+    * a metrics which holds the size of the email queue.
     */
   def startSender(): Task[Fiber[Nothing]] = {
-    (sendBatch() >> Task.sleep(config.emailSendInterval))
+    val sendProcess = (sendBatch() >> Task.sleep(config.emailSendInterval))
       .onErrorHandle { e =>
         logger.error("Exception when sending emails", e)
       }
       .loopForever
       .start
+
+    val monitoringProcess = EmailModel.count().transact(xa).map(_.toDouble).map(Metrics.emailQueueGauge.set)
+      .onErrorHandle { e =>
+        logger.error("Exception when counting emails", e)
+      }
+      .loopForever
+      .start
+
+    sendProcess >> monitoringProcess
   }
 }
 

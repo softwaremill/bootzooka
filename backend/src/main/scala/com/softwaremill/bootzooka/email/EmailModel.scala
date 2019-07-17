@@ -22,6 +22,12 @@ object EmailModel {
       .to[List]
   }
 
+  def count(): ConnectionIO[Int] = {
+    sql"SELECT COUNT(*) FROM scheduled_emails"
+      .query[Int]
+      .unique
+  }
+
   def delete(ids: List[Id @@ Email]): ConnectionIO[Unit] = {
     NonEmptyList.fromList(ids) match {
       case None    => ().pure[ConnectionIO]
