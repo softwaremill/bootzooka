@@ -6,3 +6,5 @@ target/
 *.log
 .DS_Store
 data/
+*.bloop
+*.metals
