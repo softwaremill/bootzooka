@@ -10,7 +10,7 @@ applications.
 ## Requirements
 
 ### PostgreSQL
-In order to run Bootzooka, you need a running instance of the PostgreSQL with a `postgres` database. You can spin up one easily using docker:
+In order to run Bootzooka, you need a running instance of the PostgreSQL with a `bootzooka` database. You can spin up one easily using docker:
 ```sh
 # use "bootzooka" as a password
 docker run --name bootzooka-postgres -p 5432:5432 -e POSTGRES_PASSWORD=bootzooka -e POSTGRES_DB=bootzooka -d postgres
