@@ -12,8 +12,8 @@ class Footer extends Component {
   async componentDidMount() {
     try {
       const { data } = await this.props.versionService.getVersion();
-      const { build, date } = data;
-      this.setState({ version: `${build}, ${date}` });
+      const { buildDate, buildSha } = data;
+      this.setState({ version: `${buildDate}, ${buildSha}` });
     } catch (error) {
       console.error(error);
     }

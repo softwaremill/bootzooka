@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 class VersionService {
+  static context = 'admin';
+
   getVersion() {
-    return axios.get('api/version');
+    return axios.get(`${VersionService.context}/version`);
   }
 }
 
