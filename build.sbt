@@ -14,7 +14,7 @@ val doobieVersion = "0.7.0"
 val http4sVersion = "0.20.6"
 val circeVersion = "0.11.1"
 val tsecVersion = "0.1.0"
-val sttpVersion = "1.6.3"
+val sttpVersion = "1.6.4"
 val prometheusVersion = "0.6.0"
 val tapirVersion = "0.9.0"
 
