@@ -16,7 +16,7 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
   def create(userId: Id @@ User, valid: Duration): ConnectionIO[ApiKey] = {
     val now = clock.instant()
     val validUntil = now.plus(valid.toMinutes, ChronoUnit.MINUTES)
-    val apiKey = ApiKey(idGenerator.nextId[ApiKey](), userId, clock.instant(), validUntil)
+    val apiKey = ApiKey(idGenerator.nextId[ApiKey](), userId, now, validUntil)
 
     logger.debug(s"Creating a new api key for user $userId, valid until: $validUntil")
     apiKeyModel.insert(apiKey).map(_ => apiKey)
