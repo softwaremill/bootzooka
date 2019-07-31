@@ -10,6 +10,7 @@ import com.softwaremill.bootzooka.security.SecurityModule
 import com.softwaremill.bootzooka.user.UserModule
 import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator, IdGenerator}
 import monix.eval.Task
+import cats.implicits._
 
 /**
   * Main application module. Depends on resources initalised in [[InitModule]].
@@ -34,5 +35,5 @@ trait MainModule
     config.api
   )
 
-  lazy val backgroundProcesses: fs2.Stream[Task, Nothing] = fs2.Stream.eval_(emailService.startProcesses())
+  lazy val startBackgroundProcesses: Task[Unit] = emailService.startProcesses().void
 }

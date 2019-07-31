@@ -6,6 +6,7 @@ import com.softwaremill.bootzooka.metrics.Metrics
 import doobie.util.transactor
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
+import cats.implicits._
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -21,7 +22,13 @@ object Main {
         override def config: Config = initModule.config
       }
 
-      (modules.backgroundProcesses ++ modules.httpApi.serveRequests).compile.drain
+      /*
+      Sequencing two tasks using the >> operator:
+      - the first starts the background processes (such as an email sender)
+      - the second is a stream of handling requests, compiled to a single task which never ends (unless the socket
+        is broken)
+       */
+      modules.startBackgroundProcesses >> modules.httpApi.serveRequests.compile.drain
     }
 
     mainTask.runSyncUnsafe()
