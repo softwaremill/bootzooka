@@ -41,8 +41,6 @@ class HttpApi(
   private val apiContextPath = "api/v1"
   private val docsContextPath = s"$apiContextPath/docs"
 
-  private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
-  // interpreting tapir endpoints as http4s routes
   lazy val mainRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
   private lazy val adminRoutes: HttpRoutes[Task] = toRoutes(adminEndpoints)
   private lazy val docsRoutes: HttpRoutes[Task] = {
@@ -50,6 +48,8 @@ class HttpApi(
     val yaml = openapi.toYaml
     new SwaggerHttp4s(yaml, docsContextPath).routes[Task]
   }
+
+  private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
 
   /**
     * A never-ending stream which handles incoming requests.
@@ -96,6 +96,9 @@ class HttpApi(
       ServerDefaults.decodeFailureHandlerUsingResponse(failResponse, badRequestOnPathFailureIfPathShapeMatches = false)(req, input, failure)
   }
 
+  /**
+    * Interprets the given endpoint descriptions as http4s routes
+    */
   private def toRoutes(es: ServerEndpoints): HttpRoutes[Task] = {
     implicit val serverOptions: Http4sServerOptions[Task] = Http4sServerOptions
       .default[Task]
