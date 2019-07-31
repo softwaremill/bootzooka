@@ -74,7 +74,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
 
     // then
     modules.emailService.sendBatch().unwrap
-    DummyEmailSender.findSendEmail(email, s"registration confirmation for user $login") shouldBe 'defined
+    DummyEmailSender.findSentEmail(email, s"registration confirmation for user $login") shouldBe 'defined
   }
 
   "/user/login" should "login the user using the login" in {
