@@ -74,8 +74,17 @@ class HttpApi(
   }
 
   /**
-    * When a query parameter, JSON body, header value etc., cannot be decoded to the desired type, we also want to
-    * return errors in the same format (as a JSON corresponding to [[Error_OUT]]).
+    * tapir's Codecs parse inputs - query parameters, JSON bodies, headers - to their desired types. This might fail,
+    * and then a decode failure is returned, instead of a value. How such a failure is handled can be customised.
+    *
+    * We want to return responses in the same JSON format (corresponding to [[Error_OUT]]) as other errors returned
+    * during normal request processing.
+    *
+    * We use the default behavior of tapir (`ServerDefaults.decodeFailureHandlerUsingResponse`), customising the format
+    * used for returning errors (`http.failOutput`). This will cause `400 Bad Request` to be returned in most cases.
+    *
+    * Additionally, if the error thrown is a `Fail` we might get additional information, such as a custom status
+    * code, by translating it using the `http.exceptionToErrorOut` method and using that to create the response.
     */
   private val decodeFailureHandler: DecodeFailureHandler[Request[Task]] = {
     // if an exception is thrown when decoding an input, and the exception is a Fail, responding basing on the Fail
