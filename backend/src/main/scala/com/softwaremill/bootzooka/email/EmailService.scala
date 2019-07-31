@@ -34,21 +34,24 @@ class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: E
     * a metric which holds the size of the email queue.
     */
   def startProcesses(): Task[(Fiber[Nothing], Fiber[Nothing])] = {
-    val sendProcess = (sendBatch() >> Task.sleep(config.emailSendInterval))
-      .onErrorHandle { e =>
-        logger.error("Exception when sending emails", e)
-      }
-      .loopForever
-      .start
+    val sendProcess = runForeverPeriodically("Exception when sending emails") {
+      sendBatch()
+    }
 
-    val monitoringProcess = EmailModel.count().transact(xa).map(_.toDouble).map(Metrics.emailQueueGauge.set)
-      .onErrorHandle { e =>
-        logger.error("Exception when counting emails", e)
-      }
-      .loopForever
-      .start
+    val monitoringProcess = runForeverPeriodically("Exception when counting emails") {
+      EmailModel.count().transact(xa).map(_.toDouble).map(Metrics.emailQueueGauge.set)
+    }
 
     Task.parZip2(sendProcess, monitoringProcess)
+  }
+
+  private def runForeverPeriodically[T](errorMsg: String)(t: Task[T]): Task[Fiber[Nothing]] = {
+    (t >> Task.sleep(config.emailSendInterval))
+      .onErrorHandle { e =>
+        logger.error(errorMsg, e)
+      }
+      .loopForever
+      .start
   }
 }
 
