@@ -14,6 +14,8 @@ import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
 
 class PasswordResetService(
+    userModel: UserModel,
+    passwordResetCodeModel: PasswordResetCodeModel,
     emailScheduler: EmailScheduler,
     emailTemplates: EmailTemplates,
     auth: Auth[PasswordResetCode],
@@ -24,7 +26,7 @@ class PasswordResetService(
 ) extends StrictLogging {
 
   def forgotPassword(loginOrEmail: String): ConnectionIO[Unit] = {
-    UserModel.findByLoginOrEmail(loginOrEmail.lowerCased).flatMap {
+    userModel.findByLoginOrEmail(loginOrEmail.lowerCased).flatMap {
       case None => Fail.NotFound("user").raiseError[ConnectionIO, Unit]
       case Some(user) =>
         createCode(user).flatMap(sendCode(user, _))
@@ -35,7 +37,7 @@ class PasswordResetService(
     logger.debug(s"Creating password reset code for user: ${user.id}")
     val validUntil = clock.instant().plus(config.codeValid.toMinutes, ChronoUnit.MINUTES)
     val code = PasswordResetCode(idGenerator.nextId[PasswordResetCode](), user.id, validUntil)
-    PasswordResetCodeModel.insert(code).map(_ => code)
+    passwordResetCodeModel.insert(code).map(_ => code)
   }
 
   private def sendCode(user: User, code: PasswordResetCode): ConnectionIO[Unit] = {
@@ -52,7 +54,7 @@ class PasswordResetService(
     for {
       userId <- auth(code.asInstanceOf[Id])
       _ = logger.debug(s"Resetting password for user: $userId")
-      _ <- UserModel.updatePassword(userId, User.hashPassword(newPassword)).transact(xa)
+      _ <- userModel.updatePassword(userId, User.hashPassword(newPassword)).transact(xa)
     } yield ()
   }
 }

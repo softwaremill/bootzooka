@@ -11,21 +11,21 @@ import com.typesafe.scalalogging.StrictLogging
 /**
   * Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches.
   */
-class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[Task])
+class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[Task])
     extends EmailScheduler
     with StrictLogging {
 
   def apply(data: EmailData): ConnectionIO[Unit] = {
     logger.debug(s"Scheduling email to be sent to: ${data.recipient}")
-    EmailModel.insert(Email(idGenerator.nextId(), data))
+    emailModel.insert(Email(idGenerator.nextId(), data))
   }
 
   def sendBatch(): Task[Unit] = {
     for {
-      emails <- EmailModel.find(config.batchSize).transact(xa)
+      emails <- emailModel.find(config.batchSize).transact(xa)
       _ = if (emails.nonEmpty) logger.info(s"Sending ${emails.size} emails")
       _ <- Task.sequence(emails.map(_.data).map(emailSender.apply))
-      _ <- EmailModel.delete(emails.map(_.id)).transact(xa)
+      _ <- emailModel.delete(emails.map(_.id)).transact(xa)
     } yield ()
   }
 
@@ -39,7 +39,7 @@ class EmailService(idGenerator: IdGenerator, emailSender: EmailSender, config: E
     }
 
     val monitoringProcess = runForeverPeriodically("Exception when counting emails") {
-      EmailModel.count().transact(xa).map(_.toDouble).map(Metrics.emailQueueGauge.set)
+      emailModel.count().transact(xa).map(_.toDouble).map(Metrics.emailQueueGauge.set)
     }
 
     Task.parZip2(sendProcess, monitoringProcess)

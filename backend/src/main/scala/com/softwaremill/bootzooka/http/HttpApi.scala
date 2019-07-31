@@ -31,7 +31,13 @@ import tapir.swagger.http4s.SwaggerHttp4s
   * - `/api/v1/docs` - swagger UI for the main API
   * - `/admin` - admin API
   */
-class HttpApi(http: Http, endpoints: ServerEndpoints, adminEndpoints: ServerEndpoints, collectorRegistry: CollectorRegistry, config: HttpConfig) {
+class HttpApi(
+    http: Http,
+    endpoints: ServerEndpoints,
+    adminEndpoints: ServerEndpoints,
+    collectorRegistry: CollectorRegistry,
+    config: HttpConfig
+) {
   private val apiContextPath = "api/v1"
   private val docsContextPath = s"$apiContextPath/docs"
 

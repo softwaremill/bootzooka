@@ -11,7 +11,7 @@ import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.duration.Duration
 
-class ApiKeyService(idGenerator: IdGenerator, clock: Clock) extends StrictLogging {
+class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: Clock) extends StrictLogging {
 
   def create(userId: Id @@ User, valid: Duration): ConnectionIO[ApiKey] = {
     val now = clock.instant()
@@ -19,7 +19,7 @@ class ApiKeyService(idGenerator: IdGenerator, clock: Clock) extends StrictLoggin
     val apiKey = ApiKey(idGenerator.nextId[ApiKey](), userId, clock.instant(), validUntil)
 
     logger.debug(s"Creating a new api key for user $userId, valid until: $validUntil")
-    ApiKeyModel.insert(apiKey).map(_ => apiKey)
+    apiKeyModel.insert(apiKey).map(_ => apiKey)
   }
 }
 

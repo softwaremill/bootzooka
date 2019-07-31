@@ -9,7 +9,7 @@ import com.softwaremill.bootzooka.util.Id
 /**
   * Model for storing and retrieving scheduled emails.
   */
-object EmailModel {
+class EmailModel {
 
   def insert(email: Email): ConnectionIO[Unit] = {
     sql"""INSERT INTO scheduled_emails (id, recipient, subject, content)

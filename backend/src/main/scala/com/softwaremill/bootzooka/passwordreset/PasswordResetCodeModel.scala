@@ -10,7 +10,7 @@ import com.softwaremill.tagging.@@
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.AuthTokenOps
 
-object PasswordResetCodeModel {
+class PasswordResetCodeModel {
 
   def insert(pr: PasswordResetCode): ConnectionIO[Unit] = {
     sql"""INSERT INTO password_reset_codes (id, user_id, valid_until)
@@ -30,10 +30,10 @@ object PasswordResetCodeModel {
 
 case class PasswordResetCode(id: Id @@ PasswordResetCode, userId: Id @@ User, validUntil: Instant)
 
-object PasswordResetAuthToken extends AuthTokenOps[PasswordResetCode] {
+class PasswordResetAuthToken(passwordResetCodeModel: PasswordResetCodeModel) extends AuthTokenOps[PasswordResetCode] {
   override def tokenName: String = "PasswordResetCode"
-  override def findById: Id @@ PasswordResetCode => ConnectionIO[Option[PasswordResetCode]] = PasswordResetCodeModel.findById
-  override def delete: PasswordResetCode => ConnectionIO[Unit] = ak => PasswordResetCodeModel.delete(ak.id)
+  override def findById: Id @@ PasswordResetCode => ConnectionIO[Option[PasswordResetCode]] = passwordResetCodeModel.findById
+  override def delete: PasswordResetCode => ConnectionIO[Unit] = ak => passwordResetCodeModel.delete(ak.id)
   override def userId: PasswordResetCode => Id @@ User = _.userId
   override def validUntil: PasswordResetCode => Instant = _.validUntil
   // password reset code is a one-time token

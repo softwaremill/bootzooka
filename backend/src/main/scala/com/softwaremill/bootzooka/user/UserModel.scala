@@ -10,7 +10,7 @@ import tsec.common.VerificationStatus
 import tsec.passwordhashers.PasswordHash
 import tsec.passwordhashers.jca.SCrypt
 
-object UserModel {
+class UserModel {
 
   def insert(user: User): ConnectionIO[Unit] = {
     sql"""INSERT INTO users (id, login, login_lowercase, email_lowercase, password, created_on)
