@@ -9,11 +9,13 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util.{Id, IdGenerator}
 import com.typesafe.scalalogging.StrictLogging
 
+import scala.concurrent.duration.Duration
+
 class ApiKeyService(idGenerator: IdGenerator, clock: Clock) extends StrictLogging {
 
-  def create(userId: Id @@ User, validHours: Int): ConnectionIO[ApiKey] = {
+  def create(userId: Id @@ User, valid: Duration): ConnectionIO[ApiKey] = {
     val now = clock.instant()
-    val validUntil = now.plus(validHours.toLong, ChronoUnit.HOURS)
+    val validUntil = now.plus(valid.toMinutes, ChronoUnit.MINUTES)
     val apiKey = ApiKey(idGenerator.nextId[ApiKey](), userId, clock.instant(), validUntil)
 
     logger.debug(s"Creating a new api key for user $userId, valid until: $validUntil")

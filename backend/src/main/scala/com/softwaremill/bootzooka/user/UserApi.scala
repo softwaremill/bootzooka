@@ -13,6 +13,8 @@ import com.softwaremill.tagging.@@
 import doobie.util.transactor.Transactor
 import monix.eval.Task
 
+import scala.concurrent.duration._
+
 class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Transactor[Task]) {
   import UserApi._
   import http._
@@ -36,7 +38,9 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .out(jsonBody[Login_OUT])
     .serverLogic { data =>
       (for {
-        apiKey <- userService.login(data.loginOrEmail, data.password, data.apiKeyValidHours).transact(xa)
+        apiKey <- userService
+          .login(data.loginOrEmail, data.password, data.apiKeyValidHours.map(h => Duration(h.toLong, HOURS)))
+          .transact(xa)
       } yield Login_OUT(apiKey.id)).toOut
     }
 

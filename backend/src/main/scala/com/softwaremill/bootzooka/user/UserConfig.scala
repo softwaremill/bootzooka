@@ -1,3 +1,5 @@
 package com.softwaremill.bootzooka.user
 
-case class UserConfig(defaultApiKeyValidHours: Int)
+import scala.concurrent.duration.Duration
+
+case class UserConfig(defaultApiKeyValid: Duration)

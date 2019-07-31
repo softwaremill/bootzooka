@@ -33,7 +33,7 @@ class PasswordResetService(
 
   private def createCode(user: User): ConnectionIO[PasswordResetCode] = {
     logger.debug(s"Creating password reset code for user: ${user.id}")
-    val validUntil = clock.instant().plus(config.codeValidHours.toLong, ChronoUnit.HOURS)
+    val validUntil = clock.instant().plus(config.codeValid.toMinutes, ChronoUnit.MINUTES)
     val code = PasswordResetCode(idGenerator.nextId[PasswordResetCode](), user.id, validUntil)
     PasswordResetCodeModel.insert(code).map(_ => code)
   }

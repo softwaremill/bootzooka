@@ -12,6 +12,8 @@ import tsec.common.Verified
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util._
 
+import scala.concurrent.duration.Duration
+
 class UserService(
     emailScheduler: EmailScheduler,
     emailTemplates: EmailTemplates,
@@ -46,7 +48,7 @@ class UserService(
       for {
         _ <- UserModel.insert(user)
         _ <- emailScheduler(EmailData(email, confirmationEmail))
-        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValidHours)
+        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
       } yield apiKey
     }
 
@@ -61,11 +63,11 @@ class UserService(
 
   def findById(id: Id @@ User): ConnectionIO[User] = userOrNotFound(UserModel.findById(id))
 
-  def login(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int]): ConnectionIO[ApiKey] =
+  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] =
     for {
       user <- userOrNotFound(UserModel.findByLoginOrEmail(loginOrEmail.lowerCased))
       _ <- verifyPassword(user, password)
-      apiKey <- apiKeyService.create(user.id, apiKeyValidHours.getOrElse(config.defaultApiKeyValidHours))
+      apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
     } yield apiKey
 
   def changeUser(userId: Id @@ User, newLoginOpt: Option[String], newEmailOpt: Option[String]): ConnectionIO[Unit] = {
