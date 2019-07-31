@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.test
 
+import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.time.{Instant, LocalDate, ZoneOffset}
 import java.util.concurrent.atomic.AtomicReference
 
 import com.softwaremill.bootzooka.util.Clock
@@ -22,13 +22,5 @@ class TestClock(nowRef: AtomicReference[Instant]) extends Clock with StrictLoggi
     val newNow = nowRef.get().plus(d.toMillis, ChronoUnit.MILLIS)
     logger.info(s"The time is now $newNow")
     nowRef.set(newNow)
-  }
-
-  def forwardOneSecond(): Unit = forward(1.second)
-
-  def setTo(instant: Instant): Unit = nowRef.set(instant)
-
-  def setTo(year: Int, month: Int, day: Int): Unit = {
-    setTo(LocalDate.of(year, month, day).atStartOfDay().toInstant(ZoneOffset.UTC))
   }
 }
