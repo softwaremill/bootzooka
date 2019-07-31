@@ -43,11 +43,11 @@ object Doobie
   implicit val doobieLogHandler: LogHandler = LogHandler {
     case Success(sql, _, exec, processing) =>
       if (exec > SlowThreshold || processing > SlowThreshold) {
-        logger.warn(s"Slow query: $sql")
+        logger.warn(s"Slow query (execution: $exec, processing: $processing): $sql")
       }
-    case ProcessingFailure(sql, args, _, _, failure) =>
-      logger.error(s"Processing failure: $sql | args: $args", failure)
-    case ExecFailure(sql, args, _, failure) =>
-      logger.error(s"Execution failure: $sql | args: $args", failure)
+    case ProcessingFailure(sql, args, exec, processing, failure) =>
+      logger.error(s"Processing failure (execution: $exec, processing: $processing): $sql | args: $args", failure)
+    case ExecFailure(sql, args, exec, failure) =>
+      logger.error(s"Execution failure (execution: $exec): $sql | args: $args", failure)
   }
 }
