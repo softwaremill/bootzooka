@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka.user
 
+import java.time.Clock
+
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
@@ -36,7 +38,7 @@ class UserService(
     }
 
     def doRegister(): ConnectionIO[ApiKey] = {
-      val user = User(idGenerator.nextId[User](), login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.now())
+      val user = User(idGenerator.nextId[User](), login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.instant())
       val confirmationEmail = emailTemplates.registrationConfirmation(login)
 
       logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")

@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.security
 
 import java.security.SecureRandom
-import java.time.Instant
+import java.time.{Clock, Instant}
 
 import cats.data.OptionT
 import cats.effect.Timer
@@ -47,7 +47,7 @@ class Auth[T](
   }
 
   private def verifyValid(token: T): Task[Option[Unit]] = {
-    if (clock.now().isAfter(authTokenOps.validUntil(token))) {
+    if (clock.instant().isAfter(authTokenOps.validUntil(token))) {
       logger.info(s"${authTokenOps.tokenName} expired: $token")
       authTokenOps.delete(token).transact(xa).map(_ => None)
     } else {

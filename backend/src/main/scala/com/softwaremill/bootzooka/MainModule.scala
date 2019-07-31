@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka
 
+import java.time.Clock
+
 import cats.data.NonEmptyList
 import com.softwaremill.bootzooka.email.EmailModule
 import com.softwaremill.bootzooka.http.{Http, HttpApi}
@@ -8,7 +10,7 @@ import com.softwaremill.bootzooka.metrics.MetricsModule
 import com.softwaremill.bootzooka.passwordreset.PasswordResetModule
 import com.softwaremill.bootzooka.security.SecurityModule
 import com.softwaremill.bootzooka.user.UserModule
-import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator, IdGenerator}
+import com.softwaremill.bootzooka.util.{DefaultIdGenerator, IdGenerator}
 import monix.eval.Task
 import cats.implicits._
 
@@ -24,7 +26,7 @@ trait MainModule
     with InfrastructureModule {
 
   override lazy val idGenerator: IdGenerator = DefaultIdGenerator
-  override lazy val clock: Clock = DefaultClock
+  override lazy val clock: Clock = Clock.systemUTC()
 
   lazy val http: Http = new Http()
   lazy val httpApi: HttpApi = new HttpApi(
