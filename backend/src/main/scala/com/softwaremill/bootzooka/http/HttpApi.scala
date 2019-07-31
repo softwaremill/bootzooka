@@ -89,7 +89,7 @@ class HttpApi(
   private val decodeFailureHandler: DecodeFailureHandler[Request[Task]] = {
     // if an exception is thrown when decoding an input, and the exception is a Fail, responding basing on the Fail
     case (_, _, DecodeResult.Error(_, f: Fail)) => DecodeFailureHandling.response(http.failOutput)(http.exceptionToErrorOut(f))
-    // otherwise, converting the decode input failure into a ParsingFailure response
+    // otherwise, converting the decode input failure into a response using tapir's defaults
     case (req, input, failure) =>
       def failResponse(code: StatusCode, msg: String): DecodeFailureHandling =
         DecodeFailureHandling.response(http.failOutput)((code, Error_OUT(msg)))
