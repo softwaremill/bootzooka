@@ -7,7 +7,13 @@ Configuration uses the [Typesafe Config](https://github.com/lightbend/config) fi
 
 The configuration is stored in the `application.conf` file. You can either modify that file directly or override it using system properties (see Typesafe Config's readme on how to do that).
 
-* To have e-mail sender working please provide smtp details (host, port, password, username).
+## Email configuration
+
+By default, a dummy (no-op) email sender is used. If you'd like to send real emails, you'll need to enable either the
+smtp sender, or the mailgun sender by specifying the appropriate configuration options (one of `email.mailgun.enabled`
+or `email.smtp.enabled` needs to be `true`).
+
+You can also add support for another email service by implementing the `EmailSender` trait.
 
 ## Project name customization
 
