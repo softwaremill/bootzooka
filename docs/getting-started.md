@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  "Development"
+title:  "Getting started"
 ---
 
 ## Prerequisities
