@@ -49,7 +49,7 @@ class Requests(val modules: MainModule) extends HttpTestSupport {
     modules.httpApi.mainRoutes(authorizedRequest(apiKey, request)).unwrap
   }
 
-  def updateUser(apiKey: String, login: Option[String], email: Option[String]): Response[Task] = {
+  def updateUser(apiKey: String, login: String, email: String): Response[Task] = {
     val request = Request[Task](method = POST, uri = uri"/user")
       .withEntity(UpdateUser_IN(login, email))
 
