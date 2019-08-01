@@ -92,7 +92,7 @@ class App extends Component {
               <ProtectedRoute isLoggedIn={isLoggedIn} path="/main" component={SecretMain} />
               <ProtectedRoute isLoggedIn={isLoggedIn} path="/profile" render={() => withForkMe(
                 <div>
-                  <ProfileDetails user={user} userService={userService}
+                  <ProfileDetails apiKey={apiKey} user={user} userService={userService}
                     onUserUpdated={this.updateUserInfo.bind(this)}
                     notifyError={this.notifyError} notifySuccess={this.notifySuccess} />
                   <PasswordDetails apiKey={apiKey} userService={userService}

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { validateEmail, validateLogin } from '../validation/validation';
+import { serviceProp } from '../utils/utils';
+import UserService from '../UserService/UserService';
 
 class ProfileDetails extends Component {
   constructor(props) {
     super(props);
-    const { email, login } = props.user;
+    const { email, login } = this.props.user;
     this.state = {
       values: {
         login,
@@ -24,7 +26,7 @@ class ProfileDetails extends Component {
     event.preventDefault();
     try {
       const { email, login } = this.state.values;
-      await this.props.userService.changeProfileDetails({ login, email });
+      await this.props.userService.changeProfileDetails(this.props.apiKey, { login, email });
       this.props.onUserUpdated({ email, login });
       this.props.notifySuccess('Profile details changed!');
     } catch (error) {
@@ -76,9 +78,8 @@ class ProfileDetails extends Component {
 }
 
 ProfileDetails.propTypes = {
-  userService: PropTypes.shape({
-    changeProfileDetails: PropTypes.func.isRequired
-  }).isRequired,
+  apiKey: PropTypes.string,
+  userService: serviceProp(UserService),
   user: PropTypes.shape({
     login: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,

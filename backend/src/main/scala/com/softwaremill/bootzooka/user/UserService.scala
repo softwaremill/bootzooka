@@ -70,8 +70,8 @@ class UserService(
     def changeLogin(newLogin: String): ConnectionIO[Unit] = {
       val newLoginLowerCased = newLogin.lowerCased
       UserModel.findByLogin(newLoginLowerCased).flatMap {
-        case Some(_) => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Unit]
-        case None =>
+        case Some(user) if user.id != userId => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Unit]
+        case _ =>
           logger.debug(s"Changing login for user: $userId, to: $newLogin")
           UserModel.updateLogin(userId, newLogin, newLoginLowerCased)
       }
@@ -80,8 +80,8 @@ class UserService(
     def changeEmail(newEmail: String): ConnectionIO[Unit] = {
       val newEmailLowerCased = newEmail.lowerCased
       UserModel.findByEmail(newEmailLowerCased).flatMap {
-        case Some(_) => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Unit]
-        case None =>
+        case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Unit]
+        case _ =>
           logger.debug(s"Changing email for user: $userId, to: $newEmail")
           UserModel.updateEmail(userId, newEmailLowerCased)
       }

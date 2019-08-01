@@ -18,9 +18,15 @@ class UserService {
     });
   }
 
-  // TODO
-  changeProfileDetails({ email, login }) {
-    return axios.patch(`${UserService.context}`, { email, login });
+  changeProfileDetails(apiKey, { email, login }) {
+    return this._securedRequest(apiKey, {
+      method: 'POST',
+      url: UserService.context,
+      data: {
+        email,
+        login
+      }
+    });
   }
 
   changePassword(apiKey, { currentPassword, newPassword }) {
