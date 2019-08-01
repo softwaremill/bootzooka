@@ -3,6 +3,8 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { validatePassword } from '../validation/validation';
 import * as queryString from 'query-string';
+import PasswordService from '../PasswordService/PasswordService';
+import { serviceProp } from '../utils/utils';
 
 class PasswordReset extends Component {
   constructor(props) {
@@ -27,7 +29,7 @@ class PasswordReset extends Component {
     const { code } = queryString.parse(this.props.queryParamsString);
     try {
       const { newPassword: password } = this.state.values;
-      await this.props.userService.resetPassword({ code, password });
+      await this.props.passwordService.resetPassword({ code, password });
       this.props.notifySuccess('Password changed!');
       this.setState({ passwordChanged: true });
     } catch (error) {
@@ -83,9 +85,7 @@ class PasswordReset extends Component {
 }
 
 PasswordReset.propTypes = {
-  userService: PropTypes.shape({
-    resetPassword: PropTypes.func.isRequired
-  }).isRequired,
+  passwordService: serviceProp(PasswordService),
   queryParamsString: PropTypes.string.isRequired,
 };
 

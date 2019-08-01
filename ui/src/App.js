@@ -18,6 +18,9 @@ import ProfileDetails from './ProfileDetails/ProfileDetails';
 import PasswordDetails from './PasswordDetails/PasswordDetails';
 import Footer from './Footer/Footer';
 import PasswordReset from './PasswordReset/PasswordReset';
+import PasswordService from './PasswordService/PasswordService';
+import UserService from './UserService/UserService';
+import VersionService from './VersionService/VersionService';
 
 class App extends Component {
   constructor(props) {
@@ -77,7 +80,7 @@ class App extends Component {
   }
 
   render() {
-    const { userService, versionService } = this.props;
+    const { passwordService, userService, versionService } = this.props;
     const { apiKey, isLoadingAuthInfo, isLoggedIn, user } = this.state;
     return (
       isLoadingAuthInfo ? <Spinner />
@@ -105,11 +108,11 @@ class App extends Component {
                   notifyError={this.notifyError} notifySuccess={this.notifySuccess} />
                 )} />
               <Route path="/recover-lost-password" render={() => withForkMe(
-                <RecoverLostPassword userService={userService}
+                <RecoverLostPassword passwordService={passwordService}
                   notifyError={this.notifyError} notifySuccess={this.notifySuccess} />
                 )} />
               <Route path="/password-reset" render={({ location }) => withForkMe(
-                <PasswordReset userService={userService} queryParamsString={location.search}
+                <PasswordReset passwordService={passwordService} queryParamsString={location.search}
                   notifyError={this.notifyError} notifySuccess={this.notifySuccess} />
               )} />
               <Route render={() => withForkMe(<NotFound />)} />
@@ -123,9 +126,9 @@ class App extends Component {
 }
 
 App.propTypes = {
-  userService: PropTypes.shape({
-    getCurrentUser: PropTypes.func.isRequired,
-  }).isRequired
+  passwordService: PropTypes.instanceOf(PasswordService).isRequired,
+  userService: PropTypes.instanceOf(UserService).isRequired,
+  versionService: PropTypes.instanceOf(VersionService).isRequired,
 };
 
 export default App;

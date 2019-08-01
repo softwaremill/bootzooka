@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import PasswordService from '../PasswordService/PasswordService';
+import { serviceProp } from '../utils/utils';
 
 class RecoverLostPassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
       values: {
-        login: ''
+        loginOrEmail: ''
       },
       touchedControls: {
-        login: false
+        loginOrEmail: false
       },
       resetComplete: false
     };
@@ -21,12 +23,10 @@ class RecoverLostPassword extends Component {
   async handleSubmit(event) {
     event.preventDefault();
     try {
-      const { login } = this.state.values;
-      const { data: response } = await this.props.userService.claimPasswordReset({ login });
-      if (response === 'success') {
-        this.setState({ resetComplete: true });
-        this.props.notifySuccess('Password reset claim success.');
-      }
+      const { loginOrEmail } = this.state.values;
+      const { data: response } = await this.props.passwordService.claimPasswordReset({ loginOrEmail });
+      this.setState({ resetComplete: true });
+      this.props.notifySuccess('Password reset claim success.');
     } catch (error) {
       this.props.notifyError('Could not claim password reset!');
       console.error(error);
@@ -42,7 +42,7 @@ class RecoverLostPassword extends Component {
   }
 
   isValid() {
-    return this.state.values.login.length > 0;
+    return this.state.values.loginOrEmail.length > 0;
   }
 
   render() {
@@ -50,10 +50,10 @@ class RecoverLostPassword extends Component {
       this.state.resetComplete ? <Redirect to="/login" />
       : <div className="RecoverLostPassword">
           <form className="CommonForm" onSubmit={this.handleSubmit}>
-            <input type="text" name="login" placeholder="Email address or login"
-              onChange={({ target }) => this.handleValueChange('login', target.value)}
-              onBlur={() => this.handleBlur('login')} />
-            { this.state.touchedControls.login && this.state.values.login.length < 1 ? <p className="validation-message">login or email address is required!</p> : null }
+            <input type="text" name="loginOrEmail" placeholder="Email address or login"
+              onChange={({ target }) => this.handleValueChange('loginOrEmail', target.value)}
+              onBlur={() => this.handleBlur('loginOrEmail')} />
+            { this.state.touchedControls.loginOrEmail && this.state.values.loginOrEmail.length < 1 ? <p className="validation-message">login or email address is required!</p> : null }
             <input type="submit" value="Reset password" className="button-primary" disabled={!this.isValid()} />
           </form>
         </div>
@@ -62,9 +62,7 @@ class RecoverLostPassword extends Component {
 }
 
 RecoverLostPassword.propTypes = {
-  userService: PropTypes.shape({
-    claimPasswordReset: PropTypes.func.isRequired
-  }).isRequired,
+  passwordService: serviceProp(PasswordService),
   notifyError: PropTypes.func.isRequired,
   notifySuccess: PropTypes.func.isRequired,
 };

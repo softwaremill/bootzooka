@@ -18,6 +18,7 @@ class UserService {
     });
   }
 
+  // TODO
   changeProfileDetails({ email, login }) {
     return axios.patch(`${UserService.context}`, { email, login });
   }
@@ -31,15 +32,6 @@ class UserService {
         newPassword
       }
     });
-  }
-
-  // TODO extract to a separate service, add unit tests
-  claimPasswordReset({ login }) {
-    return axios.post('passwordreset/forgot', { login });
-  }
-
-  resetPassword({ code, password }) {
-    return axios.post(`passwordreset/reset/${code}`, { code, password });
   }
 
   _securedRequest(apiKey, config) {
