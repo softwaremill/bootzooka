@@ -11,7 +11,7 @@ const notifyError = jest.fn();
 describe('structure', () => {
   it('should contain login input', () => {
     const wrapper = shallow(<Login userService={userService} notifyError={notifyError} />);
-    expect(wrapper.find('input[name="login"]').length).toBe(1);
+    expect(wrapper.find('input[name="loginOrEmail"]').length).toBe(1);
   });
 
   it('should contain password input', () => {
@@ -34,9 +34,9 @@ describe('behaviour', () => {
 
   it('an error should appear under empty login input on blur', () => {
     const wrapper = shallow(<Login userService={userService} notifyError={notifyError} />);
-    const loginInput = wrapper.find('input[name="login"]');
+    const loginInput = wrapper.find('input[name="loginOrEmail"]');
     loginInput.simulate('blur');
-    expect(wrapper.contains(<p className="validation-message" key={0}>login is required!</p>)).toBe(true);
+    expect(wrapper.contains(<p className="validation-message" key={0}>login/email is required!</p>)).toBe(true);
   });
 
   it('an error should appear under empty password input on blur', () => {
@@ -49,7 +49,7 @@ describe('behaviour', () => {
   it('should enable sign in button when all inputs are correct', () => {
     const wrapper = shallow(<Login userService={userService} notifyError={notifyError} />);
     const initialState = wrapper.state();
-    wrapper.setState({ ...initialState, values: { login: 'mickey', password: 'P4sSW0Rd#1' } });
+    wrapper.setState({ ...initialState, values: { loginOrEmail: 'mickey', password: 'P4sSW0Rd#1' } });
     const signInButton = wrapper.find('input[type="submit"]');
     expect(signInButton.props().disabled).toBe(false);
   });

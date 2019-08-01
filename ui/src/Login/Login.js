@@ -7,29 +7,24 @@ class Login extends Component {
     super(props);
     this.state = {
       values: {
-        login: '',
+        loginOrEmail: '',
         password: '',
-        rememberMe: false,
       },
       touchedControls: {
-        login: false,
+        loginOrEmail: false,
         password: false,
       },
-      isLoggedIn: false,
     };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  async handleSubmit(event) {
+  handleSubmit = async event => {
     event.preventDefault();
     try {
-      const { login, password, rememberMe } = this.state.values;
-      const { data: userData } = await this.props.userService.login({ login, password, rememberMe });
-      this.props.onLoggedIn(userData);
-      this.setState({ isLoggedIn: true });
+      const { loginOrEmail, password } = this.state.values;
+      const { data } = await this.props.userService.login({ loginOrEmail, password });
+      await this.props.onLoggedIn(data.apiKey);
     } catch (error) {
-      this.props.notifyError('Incorrect login or password!');
+      this.props.notifyError('Incorrect login/email or password!');
       console.error(error);
     }
   }
@@ -43,26 +38,25 @@ class Login extends Component {
   }
 
   isValid() {
-    const { login, password } = this.state.values;
-    return login.length > 0 && password.length > 0;
+    const { loginOrEmail, password } = this.state.values;
+    return loginOrEmail.length > 0 && password.length > 0;
   }
 
   render() {
     return (
-      this.state.isLoggedIn ? <Redirect to="/main" />
+      this.props.isLoggedIn ? <Redirect to="/main" />
       :  <div className="Login">
           <h4>Please sign in</h4>
           <form className="CommonForm" onSubmit={this.handleSubmit}>
-            <input type="text" name="login" placeholder="Login"
-              onChange={({ target }) => this.handleValueChange('login', target.value)}
-              onBlur={() => this.handleBlur('login')} />
-            { this.state.touchedControls.login && this.state.values.login.length < 1 ? <p className="validation-message">login is required!</p> : null }
+            <input type="text" name="loginOrEmail" placeholder="Login or email"
+              onChange={({ target }) => this.handleValueChange('loginOrEmail', target.value)}
+              onBlur={() => this.handleBlur('loginOrEmail')} />
+            { this.state.touchedControls.loginOrEmail && this.state.values.loginOrEmail.length < 1 ? <p className="validation-message">login/email is required!</p> : null }
             <input type="password" name="password" placeholder="Password"
               onChange={({ target }) => this.handleValueChange('password', target.value)}
               onBlur={() => this.handleBlur('password')} />
             { this.state.touchedControls.password && this.state.values.password.length < 1 ? <p className="validation-message">password is required!</p> : null }
             <Link to="/recover-lost-password">Forgot password?</Link>
-            <label><input type="checkbox" checked={this.state.values.rememberMe} onChange={({ target }) => this.handleValueChange('rememberMe', target.checked)} /> Remember me</label>
             <input type="submit" value="Sign in" className="button-primary" disabled={!this.isValid()} />
           </form>
         </div>
@@ -71,10 +65,11 @@ class Login extends Component {
 }
 
 Login.propTypes = {
+  isLoggedIn: PropTypes.bool,
+  notifyError: PropTypes.func.isRequired,
   userService: PropTypes.shape({
     login: PropTypes.func.isRequired
   }).isRequired,
-  notifyError: PropTypes.func.isRequired,
 };
 
 export default Login;

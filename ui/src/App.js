@@ -23,6 +23,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      apiKey: null,
       isLoggedIn: false,
       user: null,
       isLoadingAuthInfo: true
@@ -33,32 +34,38 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    try {
-      const { data: user } = await this.props.userService.getCurrentUser();
-      this.setState({ isLoggedIn: true, user, isLoadingAuthInfo: false });
-    } catch (_error) {
-      // user is not logged in
-      // TODO the backend API should not throw in case of user not logged in - it should rather return an information about that fact.
-      this.setState({ isLoadingAuthInfo: false });
+    const apiKey = window.localStorage.getItem('apiKey');
+
+    if (apiKey) {
+      try {
+        const { data: user } = await this.props.userService.getCurrentUser(apiKey);
+        this.setState({ apiKey, isLoggedIn: true, user, isLoadingAuthInfo: false });
+      } catch (err) {
+        window.console.error(err);
+        window.localStorage.removeItem('apiKey');
+        this.setState({ isLoadingAuthInfo: false });
+      }
     }
+    this.setState({ isLoadingAuthInfo: false });
   }
 
   updateUserInfo({ email, login }) {
     this.setState(state => ({ ...state, user: { ...state.user, email, login } }));
   }
 
-  onLoggedIn(user) {
-    this.setState({ isLoggedIn: true, user });
+  async onLoggedIn(apiKey) {
+    try {
+      const { data: user } = await this.props.userService.getCurrentUser(apiKey);
+      window.localStorage.setItem('apiKey', apiKey);
+      this.setState({ apiKey, isLoggedIn: true, user });
+    } catch (err) {
+      window.console.error(err);
+    }
   }
 
-  async logout() {
-    try {
-      await this.props.userService.logout();
-      this.setState({ isLoggedIn: false, user: null });
-    } catch (error) {
-      this.notifyError('Logout failed!');
-      console.error(error);
-    }
+  logout() {
+    window.localStorage.removeItem('apiKey');
+    this.setState({ apiKey: null, isLoggedIn: false, user: null });
   }
 
   notifySuccess(msg) {
@@ -71,7 +78,7 @@ class App extends Component {
 
   render() {
     const { userService, versionService } = this.props;
-    const { isLoadingAuthInfo, isLoggedIn, user } = this.state;
+    const { apiKey, isLoadingAuthInfo, isLoggedIn, user } = this.state;
     return (
       isLoadingAuthInfo ? <Spinner />
       : <div className="App">
@@ -85,12 +92,13 @@ class App extends Component {
                   <ProfileDetails user={user} userService={userService}
                     onUserUpdated={this.updateUserInfo.bind(this)}
                     notifyError={this.notifyError} notifySuccess={this.notifySuccess} />
-                  <PasswordDetails userService={userService} notifyError={this.notifyError} notifySuccess={this.notifySuccess} />
+                  <PasswordDetails apiKey={apiKey} userService={userService}
+                    notifyError={this.notifyError} notifySuccess={this.notifySuccess} />
                 </div>
               )} />
               <Route path="/login" render={() => withForkMe(
                 <Login userService={userService} onLoggedIn={this.onLoggedIn.bind(this)}
-                  notifyError={this.notifyError} />
+                  notifyError={this.notifyError} isLoggedIn={isLoggedIn} />
                 )} />
               <Route path="/register" render={() => withForkMe(
                 <Register userService={userService}
@@ -116,7 +124,6 @@ class App extends Component {
 
 App.propTypes = {
   userService: PropTypes.shape({
-    logout: PropTypes.func.isRequired,
     getCurrentUser: PropTypes.func.isRequired,
   }).isRequired
 };
