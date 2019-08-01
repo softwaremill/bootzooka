@@ -66,7 +66,7 @@ class UserService(
       apiKey <- apiKeyService.create(user.id, apiKeyValidHours.getOrElse(config.defaultApiKeyValidHours))
     } yield apiKey
 
-  def changeUser(userId: Id @@ User, newLoginOpt: Option[String], newEmailOpt: Option[String]): ConnectionIO[Unit] = {
+  def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
     def changeLogin(newLogin: String): ConnectionIO[Unit] = {
       val newLoginLowerCased = newLogin.lowerCased
       UserModel.findByLogin(newLoginLowerCased).flatMap {
@@ -87,8 +87,7 @@ class UserService(
       }
     }
 
-    newLoginOpt.map(changeLogin).getOrElse(().pure[ConnectionIO]) >>
-      newEmailOpt.map(changeEmail).getOrElse(().pure[ConnectionIO])
+    changeLogin(newLogin) >> changeEmail(newEmail)
   }
 
   def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] =
