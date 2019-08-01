@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka.user
 
+import java.time.Clock
+
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
@@ -10,7 +12,10 @@ import tsec.common.Verified
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util._
 
+import scala.concurrent.duration.Duration
+
 class UserService(
+    userModel: UserModel,
     emailScheduler: EmailScheduler,
     emailTemplates: EmailTemplates,
     apiKeyService: ApiKeyService,
@@ -31,20 +36,20 @@ class UserService(
     }
 
     def checkUserDoesNotExist(): ConnectionIO[Unit] = {
-      failIfDefined(UserModel.findByLogin(login.lowerCased), LoginAlreadyUsed) >>
-        failIfDefined(UserModel.findByEmail(email.lowerCased), EmailAlreadyUsed)
+      failIfDefined(userModel.findByLogin(login.lowerCased), LoginAlreadyUsed) >>
+        failIfDefined(userModel.findByEmail(email.lowerCased), EmailAlreadyUsed)
     }
 
     def doRegister(): ConnectionIO[ApiKey] = {
-      val user = User(idGenerator.nextId[User](), login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.now())
+      val user = User(idGenerator.nextId[User](), login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.instant())
       val confirmationEmail = emailTemplates.registrationConfirmation(login)
 
       logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
 
       for {
-        _ <- UserModel.insert(user)
+        _ <- userModel.insert(user)
         _ <- emailScheduler(EmailData(email, confirmationEmail))
-        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValidHours)
+        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
       } yield apiKey
     }
 
@@ -57,33 +62,33 @@ class UserService(
     } yield apiKey
   }
 
-  def findById(id: Id @@ User): ConnectionIO[User] = userOrNotFound(UserModel.findById(id))
+  def findById(id: Id @@ User): ConnectionIO[User] = userOrNotFound(userModel.findById(id))
 
-  def login(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int]): ConnectionIO[ApiKey] =
+  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] =
     for {
-      user <- userOrNotFound(UserModel.findByLoginOrEmail(loginOrEmail.lowerCased))
+      user <- userOrNotFound(userModel.findByLoginOrEmail(loginOrEmail.lowerCased))
       _ <- verifyPassword(user, password)
-      apiKey <- apiKeyService.create(user.id, apiKeyValidHours.getOrElse(config.defaultApiKeyValidHours))
+      apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
     } yield apiKey
 
   def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
     def changeLogin(newLogin: String): ConnectionIO[Unit] = {
       val newLoginLowerCased = newLogin.lowerCased
-      UserModel.findByLogin(newLoginLowerCased).flatMap {
+      userModel.findByLogin(newLoginLowerCased).flatMap {
         case Some(user) if user.id != userId => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Unit]
         case _ =>
           logger.debug(s"Changing login for user: $userId, to: $newLogin")
-          UserModel.updateLogin(userId, newLogin, newLoginLowerCased)
+          userModel.updateLogin(userId, newLogin, newLoginLowerCased)
       }
     }
 
     def changeEmail(newEmail: String): ConnectionIO[Unit] = {
       val newEmailLowerCased = newEmail.lowerCased
-      UserModel.findByEmail(newEmailLowerCased).flatMap {
+      userModel.findByEmail(newEmailLowerCased).flatMap {
         case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Unit]
         case _ =>
           logger.debug(s"Changing email for user: $userId, to: $newEmail")
-          UserModel.updateEmail(userId, newEmailLowerCased)
+          userModel.updateEmail(userId, newEmailLowerCased)
       }
     }
 
@@ -92,10 +97,10 @@ class UserService(
 
   def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] =
     for {
-      user <- userOrNotFound(UserModel.findById(userId))
+      user <- userOrNotFound(userModel.findById(userId))
       _ <- verifyPassword(user, currentPassword)
       _ = logger.debug(s"Changing password for user: $userId")
-      _ <- UserModel.updatePassword(userId, User.hashPassword(newPassword))
+      _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
     } yield ()
 
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {
@@ -125,11 +130,11 @@ object UserRegisterValidator {
       _ <- validPassword(password.trim).right
     } yield ()
 
-  private def validLogin(login: String) =
+  private def validLogin(login: String): Either[String, Unit] =
     if (login.length >= MinLoginLength) ValidationOk else Left("Login is too short!")
 
   private val emailRegex =
-    """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
+    """^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
   private def validEmail(email: String) =
     if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid e-mail!")

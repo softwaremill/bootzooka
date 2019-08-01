@@ -1,10 +1,7 @@
 package com.softwaremill.bootzooka.config
 
-import com.softwaremill.bootzooka.util._
 import com.softwaremill.bootzooka.version.BuildInfo
-import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
-import pureconfig.ConfigReader
 import pureconfig.generic.auto._
 
 import scala.collection.immutable.TreeMap
@@ -13,8 +10,6 @@ import scala.collection.immutable.TreeMap
   * Reads and gives access to the configuration object.
   */
 trait ConfigModule extends StrictLogging {
-
-  private implicit def idReader[T]: ConfigReader[Id @@ T] = ConfigReader[String].map(_.asId)
 
   lazy val config: Config = pureconfig.loadConfigOrThrow[Config]
 

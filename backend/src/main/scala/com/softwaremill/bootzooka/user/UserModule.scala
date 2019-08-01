@@ -8,8 +8,9 @@ import doobie.util.transactor.Transactor
 import monix.eval.Task
 
 trait UserModule extends BaseModule {
+  lazy val userModel = new UserModel
   lazy val userApi = new UserApi(http, apiKeyAuth, userService, xa)
-  lazy val userService = new UserService(emailScheduler, emailTemplates, apiKeyService, idGenerator, clock, config.user)
+  lazy val userService = new UserService(userModel, emailScheduler, emailTemplates, apiKeyService, idGenerator, clock, config.user)
 
   def http: Http
   def apiKeyAuth: Auth[ApiKey]

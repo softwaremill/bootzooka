@@ -12,10 +12,10 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, x
   import PasswordResetApi._
   import http._
 
-  private val PasswordReset = "passwordreset"
+  private val PasswordResetPath = "passwordreset"
 
   private val passwordResetEndpoint = baseEndpoint.post
-    .in(PasswordReset / "reset")
+    .in(PasswordResetPath / "reset")
     .in(jsonBody[PasswordReset_IN])
     .out(jsonBody[PasswordReset_OUT])
     .serverLogic { data =>
@@ -25,7 +25,7 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, x
     }
 
   private val forgotPasswordEndpoint = baseEndpoint.post
-    .in(PasswordReset / "forgot")
+    .in(PasswordResetPath / "forgot")
     .in(jsonBody[ForgotPassword_IN])
     .out(jsonBody[ForgotPassword_OUT])
     .serverLogic { data =>

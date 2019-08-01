@@ -2,12 +2,11 @@ package com.softwaremill.bootzooka.infrastructure
 
 import java.net.URI
 
-import cats.effect.{ContextShift, Resource}
+import cats.effect.Resource
 import cats.implicits._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
 import monix.eval.Task
-import monix.execution.Scheduler.Implicits.global
 import org.flywaydb.core.Flyway
 
 import scala.concurrent.duration._
@@ -33,8 +32,17 @@ class DB(_config: DBConfig) extends StrictLogging {
   }
 
   val transactorResource: Resource[Task, Transactor[Task]] = {
-    implicit val contextShift: ContextShift[Task] = Task.contextShift(global)
-
+    /*
+     * When running DB operations, there are three thread pools at play:
+     * (1) connectEC: this is a thread pool for awaiting connections to the database. There might be an arbitrary
+     * number of clients waiting for a connection, so this should be bounded.
+     * (2) transactEC: this is a thread pool for executing JDBC operations. As the connection pool is limited,
+     * this can be unbounded pool
+     * (3) contextShift: pool for executing non-blocking operations, to which control shifts after completing
+     * DB operations. This is provided by Monix for Task.
+     *
+     * See also: https://tpolecat.github.io/doobie/docs/14-Managing-Connections.html#about-threading
+     */
     for {
       connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[Task](config.connectThreadPoolSize)
       transactEC <- doobie.util.ExecutionContexts.cachedThreadPool[Task]

@@ -1,12 +1,10 @@
 package com.softwaremill.bootzooka.email.sender
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.util.{Date, Properties}
 
 import com.softwaremill.bootzooka.email.{EmailData, SmtpConfig}
 import com.typesafe.scalalogging.StrictLogging
-import javax.activation.{DataHandler, DataSource}
-import javax.mail.internet.{InternetAddress, MimeBodyPart, MimeMessage, MimeMultipart}
+import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail.{Address, Message, Session, Transport}
 import monix.eval.Task
 
@@ -47,8 +45,7 @@ object SmtpEmailSender extends StrictLogging {
       sslConnection: Boolean,
       from: String,
       encoding: String,
-      emailDescription: EmailDescription,
-      attachmentDescriptions: AttachmentDescription*
+      emailDescription: EmailDescription
   ): Unit = {
 
     val props = setupSmtpServerProperties(sslConnection, smtpHost, smtpPort, verifySSLCertificate)
@@ -70,12 +67,7 @@ object SmtpEmailSender extends StrictLogging {
     m.setReplyTo(replyTo)
     m.setSubject(emailDescription.subject, encoding)
     m.setSentDate(new Date())
-
-    if (attachmentDescriptions.nonEmpty) {
-      addAttachments(m, emailDescription.message, encoding, attachmentDescriptions: _*)
-    } else {
-      m.setText(emailDescription.message, encoding, "plain")
-    }
+    m.setText(emailDescription.message, encoding, "plain")
 
     val transport = createSmtpTransportFrom(session, sslConnection)
     try {
@@ -128,46 +120,6 @@ object SmtpEmailSender extends StrictLogging {
   private def convertStringEmailsToAddresses(emails: Array[String]): Array[Address] =
     emails.map(new InternetAddress(_))
 
-  private def addAttachments(
-      mimeMessage: MimeMessage,
-      msg: String,
-      encoding: String,
-      attachmentDescriptions: AttachmentDescription*
-  ): Unit = {
-    val multiPart = new MimeMultipart()
-
-    val textPart = new MimeBodyPart()
-    multiPart.addBodyPart(textPart)
-    textPart.setText(msg, encoding, "plain")
-
-    for (attachmentDescription <- attachmentDescriptions) {
-      val binaryPart = new MimeBodyPart()
-      multiPart.addBodyPart(binaryPart)
-
-      val ds = new DataSource() {
-        def getInputStream =
-          new ByteArrayInputStream(attachmentDescription.content)
-
-        def getOutputStream: ByteArrayOutputStream = {
-          val byteStream = new ByteArrayOutputStream()
-          byteStream.write(attachmentDescription.content)
-          byteStream
-        }
-
-        def getContentType: String =
-          attachmentDescription.contentType
-
-        def getName: String =
-          attachmentDescription.filename
-      }
-      binaryPart.setDataHandler(new DataHandler(ds))
-      binaryPart.setFileName(attachmentDescription.filename)
-      binaryPart.setDescription("")
-    }
-
-    mimeMessage.setContent(multiPart)
-  }
-
   case class EmailDescription(
       emails: Array[String],
       message: String,
@@ -180,6 +132,4 @@ object SmtpEmailSender extends StrictLogging {
     def this(emails: List[String], message: String, subject: String) =
       this(emails.toArray, message, subject, Array(), Array(), Array())
   }
-
-  case class AttachmentDescription(content: Array[Byte], filename: String, contentType: String)
 }

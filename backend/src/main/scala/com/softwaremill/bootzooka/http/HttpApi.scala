@@ -31,12 +31,16 @@ import tapir.swagger.http4s.SwaggerHttp4s
   * - `/api/v1/docs` - swagger UI for the main API
   * - `/admin` - admin API
   */
-class HttpApi(http: Http, endpoints: ServerEndpoints, adminEndpoints: ServerEndpoints, collectorRegistry: CollectorRegistry, config: HttpConfig) {
+class HttpApi(
+    http: Http,
+    endpoints: ServerEndpoints,
+    adminEndpoints: ServerEndpoints,
+    collectorRegistry: CollectorRegistry,
+    config: HttpConfig
+) {
   private val apiContextPath = "api/v1"
   private val docsContextPath = s"$apiContextPath/docs"
 
-  private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
-  // interpreting tapir endpoints as http4s routes
   lazy val mainRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
   private lazy val adminRoutes: HttpRoutes[Task] = toRoutes(adminEndpoints)
   private lazy val docsRoutes: HttpRoutes[Task] = {
@@ -44,6 +48,8 @@ class HttpApi(http: Http, endpoints: ServerEndpoints, adminEndpoints: ServerEndp
     val yaml = openapi.toYaml
     new SwaggerHttp4s(yaml, docsContextPath).routes[Task]
   }
+
+  private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
 
   /**
     * A never-ending stream which handles incoming requests.
@@ -68,19 +74,31 @@ class HttpApi(http: Http, endpoints: ServerEndpoints, adminEndpoints: ServerEndp
   }
 
   /**
-    * When a query parameter, JSON body, header value etc., cannot be decoded to the desired type, we also want to
-    * return errors in the same format (as a JSON corresponding to [[Error_OUT]]).
+    * tapir's Codecs parse inputs - query parameters, JSON bodies, headers - to their desired types. This might fail,
+    * and then a decode failure is returned, instead of a value. How such a failure is handled can be customised.
+    *
+    * We want to return responses in the same JSON format (corresponding to [[Error_OUT]]) as other errors returned
+    * during normal request processing.
+    *
+    * We use the default behavior of tapir (`ServerDefaults.decodeFailureHandlerUsingResponse`), customising the format
+    * used for returning errors (`http.failOutput`). This will cause `400 Bad Request` to be returned in most cases.
+    *
+    * Additionally, if the error thrown is a `Fail` we might get additional information, such as a custom status
+    * code, by translating it using the `http.exceptionToErrorOut` method and using that to create the response.
     */
   private val decodeFailureHandler: DecodeFailureHandler[Request[Task]] = {
     // if an exception is thrown when decoding an input, and the exception is a Fail, responding basing on the Fail
     case (_, _, DecodeResult.Error(_, f: Fail)) => DecodeFailureHandling.response(http.failOutput)(http.exceptionToErrorOut(f))
-    // otherwise, converting the decode input failure into a ParsingFailure response
+    // otherwise, converting the decode input failure into a response using tapir's defaults
     case (req, input, failure) =>
       def failResponse(code: StatusCode, msg: String): DecodeFailureHandling =
         DecodeFailureHandling.response(http.failOutput)((code, Error_OUT(msg)))
       ServerDefaults.decodeFailureHandlerUsingResponse(failResponse, badRequestOnPathFailureIfPathShapeMatches = false)(req, input, failure)
   }
 
+  /**
+    * Interprets the given endpoint descriptions as http4s routes
+    */
   private def toRoutes(es: ServerEndpoints): HttpRoutes[Task] = {
     implicit val serverOptions: Http4sServerOptions[Task] = Http4sServerOptions
       .default[Task]

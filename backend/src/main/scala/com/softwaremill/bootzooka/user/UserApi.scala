@@ -13,14 +13,16 @@ import com.softwaremill.tagging.@@
 import doobie.util.transactor.Transactor
 import monix.eval.Task
 
+import scala.concurrent.duration._
+
 class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Transactor[Task]) {
   import UserApi._
   import http._
 
-  private val User = "user"
+  private val UserPath = "user"
 
   private val registerUserEndpoint = baseEndpoint.post
-    .in(User / "register")
+    .in(UserPath / "register")
     .in(jsonBody[Register_IN])
     .out(jsonBody[Register_OUT])
     .serverLogic { data =>
@@ -31,17 +33,19 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     }
 
   private val loginEndpoint = baseEndpoint.post
-    .in(User / "login")
+    .in(UserPath / "login")
     .in(jsonBody[Login_IN])
     .out(jsonBody[Login_OUT])
     .serverLogic { data =>
       (for {
-        apiKey <- userService.login(data.loginOrEmail, data.password, data.apiKeyValidHours).transact(xa)
+        apiKey <- userService
+          .login(data.loginOrEmail, data.password, data.apiKeyValidHours.map(h => Duration(h.toLong, HOURS)))
+          .transact(xa)
       } yield Login_OUT(apiKey.id)).toOut
     }
 
   private val changePasswordEndpoint = secureEndpoint.post
-    .in(User / "changepassword")
+    .in(UserPath / "changepassword")
     .in(jsonBody[ChangePassword_IN])
     .out(jsonBody[ChangePassword_OUT])
     .serverLogic {
@@ -53,7 +57,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     }
 
   private val getUserEndpoint = secureEndpoint.get
-    .in(User)
+    .in(UserPath)
     .out(jsonBody[GetUser_OUT])
     .serverLogic { authData =>
       (for {
@@ -63,7 +67,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     }
 
   private val updateUserEndpoint = secureEndpoint.post
-    .in(User)
+    .in(UserPath)
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
     .serverLogic {

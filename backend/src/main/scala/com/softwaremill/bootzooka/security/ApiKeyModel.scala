@@ -9,7 +9,7 @@ import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging.@@
 
-object ApiKeyModel {
+class ApiKeyModel {
 
   def insert(apiKey: ApiKey): ConnectionIO[Unit] = {
     sql"""INSERT INTO api_keys (id, user_id, created_on, valid_until)
@@ -27,10 +27,10 @@ object ApiKeyModel {
   }
 }
 
-object ApiKeyAuthToken extends AuthTokenOps[ApiKey] {
+class ApiKeyAuthToken(apiKeyModel: ApiKeyModel) extends AuthTokenOps[ApiKey] {
   override def tokenName: String = "ApiKey"
-  override def findById: Id @@ ApiKey => Doobie.ConnectionIO[Option[ApiKey]] = ApiKeyModel.findById
-  override def delete: ApiKey => Doobie.ConnectionIO[Unit] = ak => ApiKeyModel.delete(ak.id)
+  override def findById: Id @@ ApiKey => Doobie.ConnectionIO[Option[ApiKey]] = apiKeyModel.findById
+  override def delete: ApiKey => Doobie.ConnectionIO[Unit] = ak => apiKeyModel.delete(ak.id)
   override def userId: ApiKey => Id @@ User = _.userId
   override def validUntil: ApiKey => Instant = _.validUntil
   override def deleteWhenValid: Boolean = false

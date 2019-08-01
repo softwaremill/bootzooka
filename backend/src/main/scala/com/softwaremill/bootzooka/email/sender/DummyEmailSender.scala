@@ -22,7 +22,7 @@ object DummyEmailSender extends EmailSender with StrictLogging {
     logger.info(s"Would send email, if this wasn't a dummy email service implementation: $email")
   }
 
-  def findSendEmail(recipient: String, subjectContains: String): Option[EmailData] = this.synchronized {
+  def findSentEmail(recipient: String, subjectContains: String): Option[EmailData] = this.synchronized {
     sentEmails.find(email => email.recipient == recipient && email.subject.contains(subjectContains))
   }
 }

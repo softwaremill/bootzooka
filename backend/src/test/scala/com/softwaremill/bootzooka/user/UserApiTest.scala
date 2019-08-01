@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka.user
 
+import java.time.Clock
+
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.MainModule
@@ -8,7 +10,6 @@ import monix.eval.Task
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.user.UserApi.{ChangePassword_OUT, GetUser_OUT, Login_OUT, Register_OUT, UpdateUser_OUT}
-import com.softwaremill.bootzooka.util.Clock
 import org.http4s.Status
 import org.scalatest.concurrent.Eventually
 
@@ -73,7 +74,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
 
     // then
     modules.emailService.sendBatch().unwrap
-    DummyEmailSender.findSendEmail(email, s"registration confirmation for user $login") shouldBe 'defined
+    DummyEmailSender.findSentEmail(email, s"registration confirmation for user $login") shouldBe 'defined
   }
 
   "/user/login" should "login the user using the login" in {
