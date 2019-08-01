@@ -91,23 +91,23 @@ val dbTestingStack = Seq(embeddedPostgres)
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
 
-lazy val updateNpm = taskKey[Unit]("Update npm")
-lazy val npmTask = inputKey[Unit]("Run npm with arguments")
+lazy val updateYarn = taskKey[Unit]("Update yarn")
+lazy val yarnTask = inputKey[Unit]("Run yarn with arguments")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "2.12.8",
   libraryDependencies ++= commonDependencies,
-  updateNpm := {
-    println("Updating npm dependencies")
-    haltOnCmdResultError(Process("npm install", baseDirectory.value / ".." / "ui").!)
+  updateYarn := {
+    println("Updating npm/yarn dependencies")
+    haltOnCmdResultError(Process("yarn install", baseDirectory.value / ".." / "ui").!)
   },
-  npmTask := {
+  yarnTask := {
     val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
-    updateNpm.value
-    val localNpmCommand = "npm " + taskName
+    updateYarn.value
+    val localYarnCommand = "yarn " + taskName
     def buildWebpack() =
-      Process(localNpmCommand, baseDirectory.value / ".." / "ui").!
+      Process(localYarnCommand, baseDirectory.value / ".." / "ui").!
     println("Building with Webpack : " + taskName)
     haltOnCmdResultError(buildWebpack())
   }
@@ -169,7 +169,7 @@ lazy val backend: Project = (project in file("backend"))
   // fat-jar packaging
   .settings(
     assemblyJarName in assembly := "bootzooka.jar",
-    assembly := assembly.dependsOn(npmTask.toTask(" run build")).value,
+    assembly := assembly.dependsOn(yarnTask.toTask(" run build")).value,
     assemblyMergeStrategy in assembly := {
       case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
       case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.first
@@ -205,6 +205,6 @@ lazy val backend: Project = (project in file("backend"))
 
 lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
-  .settings(test in Test := (test in Test).dependsOn(npmTask.toTask(" run test")).value)
+  .settings(test in Test := (test in Test).dependsOn(yarnTask.toTask(" test:ci")).value)
 
 RenameProject.settings
