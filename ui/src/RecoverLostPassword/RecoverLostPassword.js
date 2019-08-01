@@ -24,7 +24,7 @@ class RecoverLostPassword extends Component {
     event.preventDefault();
     try {
       const { loginOrEmail } = this.state.values;
-      const { data: response } = await this.props.passwordService.claimPasswordReset({ loginOrEmail });
+      await this.props.passwordService.claimPasswordReset({ loginOrEmail });
       this.setState({ resetComplete: true });
       this.props.notifySuccess('Password reset claim success.');
     } catch (error) {
