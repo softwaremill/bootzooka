@@ -30,7 +30,7 @@ before_install: # if "install" is overridden
   - sudo apt-get install -y -qq yarn
 
 install:
-  - cd ui;yarn install
+  - (cd ui;yarn install)
 
 script:
    - sbt ++$TRAVIS_SCALA_VERSION test
