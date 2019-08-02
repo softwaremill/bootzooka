@@ -165,7 +165,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     val newLogin = login + login
 
     // when
-    val response1 = updateUser(apiKey, Some(newLogin), None)
+    val response1 = updateUser(apiKey, newLogin, email)
 
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]
@@ -179,7 +179,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     val (_, newEmail, _) = randomLoginEmailPassword()
 
     // when
-    val response1 = updateUser(apiKey, None, Some(newEmail))
+    val response1 = updateUser(apiKey, login, newEmail)
 
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]

@@ -71,12 +71,12 @@ class UserService(
       apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
     } yield apiKey
 
-  def changeUser(userId: Id @@ User, newLoginOpt: Option[String], newEmailOpt: Option[String]): ConnectionIO[Unit] = {
+  def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
     def changeLogin(newLogin: String): ConnectionIO[Unit] = {
       val newLoginLowerCased = newLogin.lowerCased
       userModel.findByLogin(newLoginLowerCased).flatMap {
-        case Some(_) => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Unit]
-        case None =>
+        case Some(user) if user.id != userId => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Unit]
+        case _ =>
           logger.debug(s"Changing login for user: $userId, to: $newLogin")
           userModel.updateLogin(userId, newLogin, newLoginLowerCased)
       }
@@ -85,15 +85,14 @@ class UserService(
     def changeEmail(newEmail: String): ConnectionIO[Unit] = {
       val newEmailLowerCased = newEmail.lowerCased
       userModel.findByEmail(newEmailLowerCased).flatMap {
-        case Some(_) => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Unit]
-        case None =>
+        case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Unit]
+        case _ =>
           logger.debug(s"Changing email for user: $userId, to: $newEmail")
           userModel.updateEmail(userId, newEmailLowerCased)
       }
     }
 
-    newLoginOpt.map(changeLogin).getOrElse(().pure[ConnectionIO]) >>
-      newEmailOpt.map(changeEmail).getOrElse(().pure[ConnectionIO])
+    changeLogin(newLogin) >> changeEmail(newEmail)
   }
 
   def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] =

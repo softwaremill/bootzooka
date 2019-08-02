@@ -101,7 +101,7 @@ object UserApi {
   case class Login_IN(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int])
   case class Login_OUT(apiKey: String)
 
-  case class UpdateUser_IN(login: Option[String], email: Option[String])
+  case class UpdateUser_IN(login: String, email: String)
   case class UpdateUser_OUT()
 
   case class GetUser_OUT(login: String, email: String @@ LowerCased, createdOn: Instant)
