@@ -106,10 +106,10 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
     val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
     updateYarn.value
     val localYarnCommand = "yarn " + taskName
-    def buildWebpack() =
+    def runYarnTask() =
       Process(localYarnCommand, baseDirectory.value / ".." / "ui").!
-    println("Building with Webpack : " + taskName)
-    haltOnCmdResultError(buildWebpack())
+    println("Running yarn task: " + taskName)
+    haltOnCmdResultError(runYarnTask())
   }
 )
 
@@ -169,7 +169,7 @@ lazy val backend: Project = (project in file("backend"))
   // fat-jar packaging
   .settings(
     assemblyJarName in assembly := "bootzooka.jar",
-    assembly := assembly.dependsOn(yarnTask.toTask(" run build")).value,
+    assembly := assembly.dependsOn(yarnTask.toTask(" build")).value,
     assemblyMergeStrategy in assembly := {
       case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
       case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.first
