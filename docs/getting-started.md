@@ -8,8 +8,8 @@ title:  "Getting started"
 In order to build and develop on Bootzooka foundations you need the following:
 
 * Java JDK >= 8
-* [SBT](http://www.scala-sbt.org/) >= 1.2
-* Node.js >= 10.0 (We recommend [NVM](https://github.com/creationix/nvm) - node version manager)
+* [sbt](http://www.scala-sbt.org/) >= 1.2
+* Node.js >= 10.0 (We recommend [nvm](https://github.com/creationix/nvm) - node version manager)
 * PostgreSQL
 
 ## How to run
@@ -20,7 +20,7 @@ Because (as said before) Bootzooka consists of two separate applications, in dev
 
 ### Database
 
-Bootzooka uses [PostgreSQL](https://www.postgresql.org) to store data, so you will need the database running to use the application. By default, Bootzooka tries to use the `bootzooka` database using the `postgres` user (empty password), connecting to a server running on `localhost:5432`. This can be customised in the `application.conf` file.
+Bootzooka uses [PostgreSQL](https://www.postgresql.org) to store data, so you will need the database running to use the application. By default, Bootzooka uses the `bootzooka` database using the `postgres` user (empty password), connecting to a server running on `localhost:5432`. This can be customised in the `application.conf` file.
 
 You can either use a stand-alone database, a docker image (see the `docker-compose.yml` file), or any other PostgreSQL instance.
 
@@ -30,6 +30,6 @@ To run the backend server part, enter the main directory and type `./backend-sta
 
 ### Browser client
 
-To run the frontend server part, enter the main directory and type `./frontend-start.sh`. This should open `http://0.0.0.0:9090/` in your browser (frontend listens on port 9090, backend on port 8080; so all backend HTTP requests will be proxied to port 8080).
+To run the frontend server part, enter the main directory and type `./frontend-start.sh`. This should open `http://localhost:3000/` in your browser (frontend listens on port 3000, backend on port 8080; so all backend HTTP requests will be proxied to port 8080).
 
 For details of frontend build and architecture please refer to the [frontend docs](frontend.html).
