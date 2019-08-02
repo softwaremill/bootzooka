@@ -33,7 +33,7 @@ You will need the [yarn package manager](https://yarnpkg.com) to run the UI. Ins
 curl -o- -L https://yarnpkg.com/install.sh | bash
 ```
 
-Then, you can start the frontend
+Then, you can start the frontend:
 
 ```sh
 ./frontend-start.sh
