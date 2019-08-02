@@ -76,6 +76,7 @@ class UserService(
       val newLoginLowerCased = newLogin.lowerCased
       userModel.findByLogin(newLoginLowerCased).flatMap {
         case Some(user) if user.id != userId => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Unit]
+        case Some(user) if user.login == newLogin => ().pure[ConnectionIO]
         case _ =>
           logger.debug(s"Changing login for user: $userId, to: $newLogin")
           userModel.updateLogin(userId, newLogin, newLoginLowerCased)
@@ -86,6 +87,7 @@ class UserService(
       val newEmailLowerCased = newEmail.lowerCased
       userModel.findByEmail(newEmailLowerCased).flatMap {
         case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Unit]
+        case Some(user) if user.emailLowerCased == newEmailLowerCased => ().pure[ConnectionIO]
         case _ =>
           logger.debug(s"Changing email for user: $userId, to: $newEmail")
           userModel.updateEmail(userId, newEmailLowerCased)
