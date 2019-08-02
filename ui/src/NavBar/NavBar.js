@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const NavBar = ({ isLoggedIn, logout, user }) =>
   <div className="NavBar">
-    <NavLink className="NavBar__link" activeClassName="NavBar__link--active" to="/" exact>SML Bootzooka</NavLink>
+    <NavLink className="NavBar__link" activeClassName="NavBar__link--active" to="/" exact>Bootzooka</NavLink>
     <NavLink className="NavBar__link" activeClassName="NavBar__link--active" to="/main">Home</NavLink>
     { isLoggedIn && user ? <NavLink className="NavBar__link" activeClassName="NavBar__link--active" to="/profile">Logged in as { user.login }</NavLink>
       : <NavLink className="NavBar__link" activeClassName="NavBar__link--active" to="/register">Register</NavLink> }
