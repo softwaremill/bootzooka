@@ -152,12 +152,6 @@ lazy val backend: Project = (project in file("backend"))
   )
   .settings(
     libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
-    compile in Compile := {
-      val compilationResult = (compile in Compile).value
-      IO.touch(target.value / "compilationFinished")
-
-      compilationResult
-    },
     mainClass in Compile := Some("com.softwaremill.bootzooka.Main"),
     // We need to include the whole webapp, hence replacing the resource directory
     unmanagedResourceDirectories in Compile := {
