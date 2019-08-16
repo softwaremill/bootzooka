@@ -7,13 +7,13 @@ When picking Bootzooka's technology stack we wanted to use modern, but reasonabl
 
 Bootzooka's stack consists of the following technologies/tools:
 
-*	[scala](https://www.scala-lang.org) (JVM based language)
-*	[http4s](https://http4s.org) (lightweight HTTP library) + [tapir](https://github.com/softwaremill/tapir) (endpoint description library)
-*	SQL database, by default [PostgreSQL](https://www.postgresql.org) (persistence)
-*	[doobie](https://tpolecat.github.io/doobie/) (query SQL database using strictly typed DSL) + [flyway](https://flywaydb.org) (easy schema evolution)
+* [scala](https://www.scala-lang.org) (JVM based language)
+* [http4s](https://http4s.org) (lightweight HTTP library) + [tapir](https://github.com/softwaremill/tapir) (endpoint description library)
+* SQL database, by default [PostgreSQL](https://www.postgresql.org) (persistence)
+* [doobie](https://tpolecat.github.io/doobie/) (query SQL database using strictly typed DSL) + [flyway](https://flywaydb.org) (easy schema evolution)
 * [monix](https://monix.io) (managing side-effects and concurrency in the backend)
-*	[react](https://reactjs.org) (frontend)
-*	[SBT](https://www.scala-sbt.org) & [Webpack](https://webpack.js.org) (build tools)
+* [react](https://reactjs.org) (frontend)
+* [SBT](https://www.scala-sbt.org) & [Webpack](https://webpack.js.org) (build tools)
 * [Swagger](https://swagger.io) (interactive API docs)
 
 ### Why Scala?
