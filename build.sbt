@@ -113,6 +113,25 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   }
 )
 
+lazy val buildInfoSettings = Seq(
+  buildInfoKeys := Seq[BuildInfoKey](
+    name,
+    version,
+    scalaVersion,
+    sbtVersion,
+    action("lastCommitHash") {
+      import scala.sys.process._
+      // if the build is done outside of a git repository, we still want it to succeed
+      Try("git rev-parse HEAD".!!.trim).getOrElse("?")
+    }
+  ),
+  buildInfoOptions += BuildInfoOption.BuildTime,
+  buildInfoOptions += BuildInfoOption.ToJson,
+  buildInfoOptions += BuildInfoOption.ToMap,
+  buildInfoPackage := "com.softwaremill.bootzooka.version",
+  buildInfoObject := "BuildInfo"
+)
+
 def haltOnCmdResultError(result: Int) {
   if (result != 0) {
     throw new Exception("Build failed.")
@@ -132,31 +151,14 @@ lazy val backend: Project = (project in file("backend"))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)
   .settings(Revolver.settings)
-  .settings(
-    buildInfoKeys := Seq[BuildInfoKey](
-      name,
-      version,
-      scalaVersion,
-      sbtVersion,
-      action("lastCommitHash") {
-        import scala.sys.process._
-        // if the build is done outside of a git repository, we still want it to succeed
-        Try("git rev-parse HEAD".!!.trim).getOrElse("?")
-      }
-    ),
-    buildInfoOptions += BuildInfoOption.BuildTime,
-    buildInfoOptions += BuildInfoOption.ToJson,
-    buildInfoOptions += BuildInfoOption.ToMap,
-    buildInfoPackage := "com.softwaremill.bootzooka.version",
-    buildInfoObject := "BuildInfo"
-  )
+  .settings(buildInfoSettings)
   .settings(
     libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
     mainClass in Compile := Some("com.softwaremill.bootzooka.Main"),
-    // We need to include the whole webapp, hence replacing the resource directory
+    // including the whole webapp
     unmanagedResourceDirectories in Compile := {
       (unmanagedResourceDirectories in Compile).value ++ List(
-        baseDirectory.value.getParentFile / ui.base.getName / "dist"
+        baseDirectory.value.getParentFile / ui.base.getName / "build"
       )
     }
   )
