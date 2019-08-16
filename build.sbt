@@ -96,7 +96,7 @@ lazy val yarnTask = inputKey[Unit]("Run yarn with arguments")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "2.12.8",
+  scalaVersion := "2.12.9",
   libraryDependencies ++= commonDependencies,
   updateYarn := {
     println("Updating npm/yarn dependencies")
