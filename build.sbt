@@ -132,6 +132,40 @@ lazy val buildInfoSettings = Seq(
   buildInfoObject := "BuildInfo"
 )
 
+lazy val fatJarSettings = Seq(
+  assemblyJarName in assembly := "bootzooka.jar",
+  assembly := assembly.dependsOn(yarnTask.toTask(" build")).value,
+  assemblyMergeStrategy in assembly := {
+    case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
+    case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.first
+    case x =>
+      val oldStrategy = (assemblyMergeStrategy in assembly).value
+      oldStrategy(x)
+  }
+)
+
+lazy val dockerSettings = Seq(
+  dockerExposedPorts := Seq(8080),
+  dockerBaseImage := "openjdk:8u212-jdk-stretch",
+  packageName in Docker := "bootzooka",
+  dockerCommands := {
+    dockerCommands.value.flatMap {
+      case ep @ ExecCmd("ENTRYPOINT", _*) =>
+        Seq(
+          ExecCmd("ENTRYPOINT", "/opt/docker/docker-entrypoint.sh" :: ep.args.toList: _*)
+        )
+      case other => Seq(other)
+    }
+  },
+  mappings in Docker ++= {
+    val scriptDir = baseDirectory.value / ".." / "scripts"
+    val entrypointScript = scriptDir / "docker-entrypoint.sh"
+    val entrypointScriptTargetPath = "/opt/docker/docker-entrypoint.sh"
+    Seq(entrypointScript -> entrypointScriptTargetPath)
+  },
+  dockerUpdateLatest := true
+)
+
 def haltOnCmdResultError(result: Int) {
   if (result != 0) {
     throw new Exception("Build failed.")
@@ -148,10 +182,6 @@ lazy val rootProject = (project in file("."))
   .aggregate(backend, ui)
 
 lazy val backend: Project = (project in file("backend"))
-  .enablePlugins(BuildInfoPlugin)
-  .settings(commonSettings)
-  .settings(Revolver.settings)
-  .settings(buildInfoSettings)
   .settings(
     libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
     mainClass in Compile := Some("com.softwaremill.bootzooka.Main"),
@@ -162,42 +192,14 @@ lazy val backend: Project = (project in file("backend"))
       )
     }
   )
-  // fat-jar packaging
-  .settings(
-    assemblyJarName in assembly := "bootzooka.jar",
-    assembly := assembly.dependsOn(yarnTask.toTask(" build")).value,
-    assemblyMergeStrategy in assembly := {
-      case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
-      case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.first
-      case x =>
-        val oldStrategy = (assemblyMergeStrategy in assembly).value
-        oldStrategy(x)
-    }
-  )
-  // docker packaging
+  .enablePlugins(BuildInfoPlugin)
+  .settings(commonSettings)
+  .settings(Revolver.settings)
+  .settings(buildInfoSettings)
+  .settings(fatJarSettings)
   .enablePlugins(DockerPlugin)
   .enablePlugins(JavaServerAppPackaging)
-  .settings(
-    dockerExposedPorts := Seq(8080),
-    dockerBaseImage := "openjdk:8u212-jdk-stretch",
-    packageName in Docker := "bootzooka",
-    dockerCommands := {
-      dockerCommands.value.flatMap {
-        case ep @ ExecCmd("ENTRYPOINT", _*) =>
-          Seq(
-            ExecCmd("ENTRYPOINT", "/opt/docker/docker-entrypoint.sh" :: ep.args.toList: _*)
-          )
-        case other => Seq(other)
-      }
-    },
-    mappings in Docker ++= {
-      val scriptDir = baseDirectory.value / ".." / "scripts"
-      val entrypointScript = scriptDir / "docker-entrypoint.sh"
-      val entrypointScriptTargetPath = "/opt/docker/docker-entrypoint.sh"
-      Seq(entrypointScript -> entrypointScriptTargetPath)
-    },
-    dockerUpdateLatest := true
-  )
+  .settings(dockerSettings)
 
 lazy val ui = (project in file("ui"))
   .settings(commonSettings: _*)
