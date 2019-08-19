@@ -91,25 +91,32 @@ val dbTestingStack = Seq(embeddedPostgres)
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
 
+lazy val uiProjectName = "ui"
+lazy val uiDirectory = settingKey[File]("Path to the ui project directory")
 lazy val updateYarn = taskKey[Unit]("Update yarn")
 lazy val yarnTask = inputKey[Unit]("Run yarn with arguments")
+lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "2.12.9",
   libraryDependencies ++= commonDependencies,
+  uiDirectory := baseDirectory.value.getParentFile / uiProjectName,
   updateYarn := {
-    println("Updating npm/yarn dependencies")
-    haltOnCmdResultError(Process("yarn install", baseDirectory.value / ".." / "ui").!)
+    streams.value.log("Updating npm/yarn dependencies")
+    haltOnCmdResultError(Process("yarn install", uiDirectory.value).!)
   },
   yarnTask := {
     val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
     updateYarn.value
     val localYarnCommand = "yarn " + taskName
-    def runYarnTask() =
-      Process(localYarnCommand, baseDirectory.value / ".." / "ui").!
-    println("Running yarn task: " + taskName)
+    def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
+    streams.value.log("Running yarn task: " + taskName)
     haltOnCmdResultError(runYarnTask())
+  },
+  copyWebapp := {
+    streams.value.log.info("Copying the webapp resources")
+    IO.copyDirectory(uiDirectory.value / "build", (classDirectory in Compile).value / "webapp")
   }
 )
 
@@ -135,6 +142,7 @@ lazy val buildInfoSettings = Seq(
 lazy val fatJarSettings = Seq(
   assemblyJarName in assembly := "bootzooka.jar",
   assembly := assembly.dependsOn(yarnTask.toTask(" build")).value,
+  assembly := assembly.dependsOn(copyWebapp).value,
   assemblyMergeStrategy in assembly := {
     case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
     case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.first
@@ -148,6 +156,7 @@ lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),
   dockerBaseImage := "openjdk:8u212-jdk-stretch",
   packageName in Docker := "bootzooka",
+  dockerUsername := Some("softwaremill"),
   dockerCommands := {
     dockerCommands.value.flatMap {
       case ep @ ExecCmd("ENTRYPOINT", _*) =>
@@ -163,7 +172,8 @@ lazy val dockerSettings = Seq(
     val entrypointScriptTargetPath = "/opt/docker/docker-entrypoint.sh"
     Seq(entrypointScript -> entrypointScriptTargetPath)
   },
-  dockerUpdateLatest := true
+  dockerUpdateLatest := true,
+  publishLocal in Docker := (publishLocal in Docker).dependsOn(copyWebapp).value,
 )
 
 def haltOnCmdResultError(result: Int) {
@@ -173,7 +183,7 @@ def haltOnCmdResultError(result: Int) {
 }
 
 lazy val rootProject = (project in file("."))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(
     name := "bootzooka",
     herokuFatJar in Compile := Some((assemblyOutputPath in backend in assembly).value),
@@ -184,13 +194,7 @@ lazy val rootProject = (project in file("."))
 lazy val backend: Project = (project in file("backend"))
   .settings(
     libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
-    mainClass in Compile := Some("com.softwaremill.bootzooka.Main"),
-    // including the whole webapp
-    unmanagedResourceDirectories in Compile := {
-      (unmanagedResourceDirectories in Compile).value ++ List(
-        baseDirectory.value.getParentFile / ui.base.getName / "build"
-      )
-    }
+    mainClass in Compile := Some("com.softwaremill.bootzooka.Main")
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)
@@ -201,8 +205,8 @@ lazy val backend: Project = (project in file("backend"))
   .enablePlugins(JavaServerAppPackaging)
   .settings(dockerSettings)
 
-lazy val ui = (project in file("ui"))
-  .settings(commonSettings: _*)
+lazy val ui = (project in file(uiProjectName))
+  .settings(commonSettings)
   .settings(test in Test := (test in Test).dependsOn(yarnTask.toTask(" test:ci")).value)
 
 RenameProject.settings

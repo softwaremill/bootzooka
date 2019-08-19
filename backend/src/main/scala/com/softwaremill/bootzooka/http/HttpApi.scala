@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka.http
 
+import java.util.concurrent.Executors
+
 import cats.effect.ExitCode
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
@@ -7,12 +9,15 @@ import com.softwaremill.bootzooka.util.ServerEndpoints
 import io.prometheus.client.CollectorRegistry
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
+import org.http4s.dsl.Http4sDsl
 import org.http4s.metrics.prometheus.Prometheus
 import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
 import org.http4s.syntax.kleisli._
-import org.http4s.{HttpApp, HttpRoutes, Request}
+import org.http4s.server.staticcontent._
+import org.http4s.server.staticcontent.ResourceService
+import org.http4s.{HttpApp, HttpRoutes, Request, StaticFile}
 import tapir.DecodeResult
 import tapir.docs.openapi._
 import tapir.model.StatusCode
@@ -21,6 +26,9 @@ import tapir.openapi.circe.yaml._
 import tapir.server.http4s._
 import tapir.server.{DecodeFailureHandler, DecodeFailureHandling, ServerDefaults}
 import tapir.swagger.http4s.SwaggerHttp4s
+import cats.implicits._
+
+import scala.concurrent.ExecutionContext
 
 /**
   * Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs
@@ -63,7 +71,8 @@ class HttpApi(
           Router(
             s"/$docsContextPath" -> docsRoutes,
             s"/$apiContextPath" -> CORS(monitoredServices, corsConfig),
-            "/admin" -> adminRoutes
+            "/admin" -> adminRoutes,
+            "" -> webappRoutes
           ).orNotFound
 
         BlazeServerBuilder[Task]
@@ -108,4 +117,18 @@ class HttpApi(
     es.toList.toRoutes
   }
 
+  /**
+    * Serves the webapp resources (html, js, css files), from the /webapp directory on the classpath.
+    */
+  private lazy val webappRoutes: HttpRoutes[Task] = {
+    val dsl = Http4sDsl[Task]
+    import dsl._
+    val blockingEc = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(4))
+    val rootRoute = HttpRoutes.of[Task] {
+      case request @ GET -> Root =>
+        StaticFile.fromResource("/webapp/index.html", blockingEc, Some(request)).getOrElseF(NotFound())
+    }
+    val resourcesRoutes = resourceService[Task](ResourceService.Config("/webapp", blockingEc))
+    rootRoute <+> resourcesRoutes
+  }
 }
