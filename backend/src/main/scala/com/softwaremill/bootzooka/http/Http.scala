@@ -82,7 +82,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
 }
 
 /**
-  * Schemas for custom types used in endpoint descriptions (as parts of query parmeters, JSON bodies, etc.)
+  * Schemas for custom types used in endpoint descriptions (as parts of query parameters, JSON bodies, etc.)
   */
 trait TapirSchemas {
   implicit val idPlainCodec: PlainCodec[SecureRandomId] =
