@@ -174,12 +174,19 @@ lazy val dockerSettings = Seq(
   },
   dockerUpdateLatest := true,
   publishLocal in Docker := (publishLocal in Docker).dependsOn(copyWebapp).value,
+  version in Docker := git.gitHeadCommit.value.map(head => now() + "-" + head.take(8)).getOrElse("latest")
 )
 
 def haltOnCmdResultError(result: Int) {
   if (result != 0) {
     throw new Exception("Build failed.")
   }
+}
+
+def now(): String = {
+  import java.text.SimpleDateFormat
+  import java.util.Date
+  new SimpleDateFormat("yyyy-mm-dd-hhmmss").format(new Date())
 }
 
 lazy val rootProject = (project in file("."))
