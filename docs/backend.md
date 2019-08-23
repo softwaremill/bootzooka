@@ -10,7 +10,7 @@ The backend code is divided into a number of packages, each implementing a diffe
 The classes in each package roughly follow a similar pattern:
 
 * `XModule` trait. A module wires the object graph of classes in a single package (most often as `lazy val`s), using 
-dependencies from other packages (defined using `def`s). See [http://di-in-scala.github.io/#modules](di-in-scala) for 
+dependencies from other packages (defined using `def`s). See [di-in-scala](http://di-in-scala.github.io/#modules) for 
 more details.
 * `XModel` object. Contains [doobie](https://tpolecat.github.io/doobie/) queries to access the model corresponding
 to the given functionality. The file also contains the model classes which are used in this functionality.
