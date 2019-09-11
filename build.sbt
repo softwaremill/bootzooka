@@ -63,7 +63,7 @@ val configDependencies = Seq(
 )
 
 val baseDependencies = Seq(
-  "io.monix" %% "monix" % "3.0.0-RC3",
+  "io.monix" %% "monix" % "3.0.0",
   "com.softwaremill.common" %% "tagging" % "2.2.1",
   "com.softwaremill.quicklens" %% "quicklens" % "1.4.12"
 )
