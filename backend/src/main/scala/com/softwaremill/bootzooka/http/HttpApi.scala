@@ -102,7 +102,11 @@ class HttpApi(
     case (req, input, failure) =>
       def failResponse(code: StatusCode, msg: String): DecodeFailureHandling =
         DecodeFailureHandling.response(http.failOutput)((code, Error_OUT(msg)))
-      ServerDefaults.decodeFailureHandlerUsingResponse(failResponse, badRequestOnPathFailureIfPathShapeMatches = false)(req, input, failure)
+      ServerDefaults.decodeFailureHandlerUsingResponse(
+        failResponse,
+        badRequestOnPathFailureIfPathShapeMatches = false,
+        ServerDefaults.validationErrorToMessage
+      )(req, input, failure)
   }
 
   /**
