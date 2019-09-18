@@ -6,7 +6,6 @@ import com.softwaremill.bootzooka.metrics.Metrics
 import doobie.util.transactor
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
-import cats.implicits._
 
 object Main {
   def main(args: Array[String]): Unit = {

@@ -2,6 +2,7 @@ package com.softwaremill.bootzooka.config
 
 import com.softwaremill.bootzooka.version.BuildInfo
 import com.typesafe.scalalogging.StrictLogging
+import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 
 import scala.collection.immutable.TreeMap
@@ -11,7 +12,7 @@ import scala.collection.immutable.TreeMap
   */
 trait ConfigModule extends StrictLogging {
 
-  lazy val config: Config = pureconfig.loadConfigOrThrow[Config]
+  lazy val config: Config = ConfigSource.default.loadOrThrow[Config]
 
   def logConfig(): Unit = {
     val baseInfo = s"""

@@ -12,7 +12,6 @@ import com.softwaremill.bootzooka.security.SecurityModule
 import com.softwaremill.bootzooka.user.UserModule
 import com.softwaremill.bootzooka.util.{DefaultIdGenerator, IdGenerator, ServerEndpoints}
 import monix.eval.Task
-import cats.implicits._
 
 /**
   * Main application module. Depends on resources initalised in [[InitModule]].

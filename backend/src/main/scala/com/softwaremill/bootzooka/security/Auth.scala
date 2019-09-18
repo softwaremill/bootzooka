@@ -11,7 +11,6 @@ import com.softwaremill.bootzooka._
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
-import cats.implicits._
 import com.softwaremill.bootzooka.util._
 
 import scala.concurrent.duration._

@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka.email
 
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import monix.eval.{Fiber, Task}
-import cats.implicits._
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator
