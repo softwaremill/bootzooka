@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.infrastructure
 import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging.@@
 import io.circe.generic.AutoDerivation
-import io.circe.java8.time.{JavaTimeDecoders, JavaTimeEncoders}
 import io.circe.{Decoder, Encoder, Printer}
 import tsec.passwordhashers.PasswordHash
 import tsec.passwordhashers.jca.SCrypt
@@ -11,7 +10,7 @@ import tsec.passwordhashers.jca.SCrypt
 /**
   * Import the members of this object when doing JSON serialisation or deserialisation.
   */
-object Json extends AutoDerivation with JavaTimeDecoders with JavaTimeEncoders {
+object Json extends AutoDerivation {
   val noNullsPrinter: Printer = Printer.noSpaces.copy(dropNullValues = true)
 
   implicit val passwordHashEncoder: Encoder[PasswordHash[SCrypt]] =

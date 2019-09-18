@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka.test
 
 import cats.effect.ContextShift
-import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.DBConfig
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.typesafe.scalalogging.StrictLogging
@@ -44,7 +43,7 @@ class TestDB(config: DBConfig) extends StrictLogging {
       .use { _xa =>
         xaReady.put(_xa) >> done.take
       }
-      .forkAndForget
+      .startAndForget
       .runSyncUnsafe()
 
     xa = xaReady.take.runSyncUnsafe()

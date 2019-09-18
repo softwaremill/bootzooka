@@ -10,7 +10,7 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val doobieVersion = "0.8.2"
+val doobieVersion = "0.7.0"
 val http4sVersion = "0.20.10"
 val circeVersion = "0.12.1"
 val tsecVersion = "0.1.0"
@@ -45,7 +45,6 @@ val jsonDependencies = Seq(
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
-  "io.circe" %% "circe-java8" % circeVersion,
   "com.softwaremill.tapir" %% "tapir-json-circe" % tapirVersion,
   "com.softwaremill.sttp" %% "circe" % sttpVersion
 )

@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.infrastructure
 import java.net.URI
 
 import cats.effect.Resource
-import cats.implicits._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
 import monix.eval.Task
