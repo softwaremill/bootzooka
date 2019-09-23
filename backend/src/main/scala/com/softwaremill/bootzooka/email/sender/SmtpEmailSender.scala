@@ -18,7 +18,7 @@ class SmtpEmailSender(config: SmtpConfig) extends EmailSender with StrictLogging
       config.host,
       config.port,
       config.username,
-      config.password,
+      config.password.value,
       config.verifySslCertificate,
       config.sslConnection,
       config.from,

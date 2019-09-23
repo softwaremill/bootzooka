@@ -10,6 +10,7 @@ import org.flywaydb.core.Flyway
 
 import scala.concurrent.duration._
 import Doobie._
+import com.softwaremill.bootzooka.config.Sensitive
 
 /**
   * Configures the database, setting up the connection pool and performing migrations.
@@ -24,7 +25,7 @@ class DB(_config: DBConfig) extends StrictLogging {
       val usernamePassword = dbUri.getUserInfo.split(":")
       _config.copy(
         username = usernamePassword(0),
-        password = if (usernamePassword.length > 1) usernamePassword(1) else "",
+        password = Sensitive(if (usernamePassword.length > 1) usernamePassword(1) else ""),
         url = "jdbc:postgresql://" + dbUri.getHost + ':' + dbUri.getPort + dbUri.getPath
       )
     } else _config
@@ -49,7 +50,7 @@ class DB(_config: DBConfig) extends StrictLogging {
         config.driver,
         config.url,
         config.username,
-        config.password,
+        config.password.value,
         connectEC,
         transactEC
       )
@@ -68,7 +69,7 @@ class DB(_config: DBConfig) extends StrictLogging {
   private val flyway = {
     Flyway
       .configure()
-      .dataSource(config.url, config.username, config.password)
+      .dataSource(config.url, config.username, config.password.value)
       .load()
   }
 

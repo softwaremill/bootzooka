@@ -1,5 +1,5 @@
 package com.softwaremill.bootzooka.infrastructure
 
-case class DBConfig(username: String, password: String, url: String, migrateOnStart: Boolean, driver: String, connectThreadPoolSize: Int) {
-  override def toString: String = s"DBConfig($username,***,$url,$migrateOnStart,$driver,$connectThreadPoolSize)"
-}
+import com.softwaremill.bootzooka.config.Sensitive
+
+case class DBConfig(username: String, password: Sensitive, url: String, migrateOnStart: Boolean, driver: String, connectThreadPoolSize: Int)

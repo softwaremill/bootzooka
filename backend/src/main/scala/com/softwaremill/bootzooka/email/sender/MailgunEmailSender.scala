@@ -12,7 +12,7 @@ import monix.eval.Task
 class MailgunEmailSender(config: MailgunConfig)(implicit sttpBackend: SttpBackend[Task, Nothing]) extends EmailSender with StrictLogging {
   override def apply(email: EmailData): Task[Unit] = {
     sttp.auth
-      .basic("api", config.apiKey)
+      .basic("api", config.apiKey.value)
       .post(uri"${config.url}")
       .body(
         Map(

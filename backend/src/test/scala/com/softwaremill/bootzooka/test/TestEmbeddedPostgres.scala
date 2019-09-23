@@ -1,6 +1,7 @@
 package com.softwaremill.bootzooka.test
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres
+import com.softwaremill.bootzooka.config.Sensitive
 import com.softwaremill.bootzooka.infrastructure.DBConfig
 import com.typesafe.scalalogging.StrictLogging
 import org.postgresql.jdbc.PgConnection
@@ -21,7 +22,7 @@ trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll wit
     postgres.getPostgresDatabase.getConnection.asInstanceOf[PgConnection].setPrepareThreshold(100)
     currentDbConfig = TestConfig.db.copy(
       username = "postgres",
-      password = "",
+      password = Sensitive(""),
       url = url,
       migrateOnStart = true
     )
