@@ -10,13 +10,13 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val doobieVersion = "0.8.4"
+val doobieVersion = "0.7.1"
 val http4sVersion = "0.20.10"
 val circeVersion = "0.12.1"
 val tsecVersion = "0.1.0"
-val sttpVersion = "1.6.7"
+val sttpVersion = "1.7.0"
 val prometheusVersion = "0.7.0"
-val tapirVersion = "0.11.3"
+val tapirVersion = "0.11.4"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
@@ -54,7 +54,7 @@ val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.codehaus.janino" % "janino" % "3.1.0",
   "de.siegmar" % "logback-gelf" % "2.1.0",
-  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.2"
+  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.5"
 )
 
 val configDependencies = Seq(
@@ -85,7 +85,7 @@ val emailDependencies = Seq(
 val scalatest = "org.scalatest" %% "scalatest" % "3.0.8" % "test"
 val unitTestingStack = Seq(scalatest)
 
-val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.1"
+val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.2"
 val dbTestingStack = Seq(embeddedPostgres)
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
