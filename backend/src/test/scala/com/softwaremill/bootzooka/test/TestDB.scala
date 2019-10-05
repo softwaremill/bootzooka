@@ -32,7 +32,7 @@ class TestDB(config: DBConfig) extends StrictLogging {
         config.driver,
         config.url,
         config.username,
-        config.password,
+        config.password.value,
         connectEC,
         transactEC
       )
@@ -52,7 +52,7 @@ class TestDB(config: DBConfig) extends StrictLogging {
   private val flyway = {
     Flyway
       .configure()
-      .dataSource(config.url, config.username, config.password)
+      .dataSource(config.url, config.username, config.password.value)
       .load()
   }
 

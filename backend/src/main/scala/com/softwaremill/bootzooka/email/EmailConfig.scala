@@ -1,5 +1,7 @@
 package com.softwaremill.bootzooka.email
 
+import com.softwaremill.bootzooka.config.Sensitive
+
 import scala.concurrent.duration.FiniteDuration
 
 case class EmailConfig(
@@ -14,15 +16,11 @@ case class SmtpConfig(
     host: String,
     port: Int,
     username: String,
-    password: String,
+    password: Sensitive,
     sslConnection: Boolean,
     verifySslCertificate: Boolean,
     from: String,
     encoding: String
-) {
-  override def toString: String = s"SmtpConfig($enabled,$host,$port,$username,***,$sslConnection,$verifySslCertificate,$from,$encoding)"
-}
+)
 
-case class MailgunConfig(enabled: Boolean, apiKey: String, url: String, domain: String, senderName: String, senderDisplayName: String) {
-  override def toString: String = s"MailgunConfig($enabled,***,$url,$domain,$senderName,$senderDisplayName)"
-}
+case class MailgunConfig(enabled: Boolean, apiKey: Sensitive, url: String, domain: String, senderName: String, senderDisplayName: String)
