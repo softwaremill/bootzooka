@@ -1,12 +1,8 @@
-# Bootzooka
-
-[![Build Status](https://travis-ci.org/softwaremill/bootzooka.svg?branch=master)](https://travis-ci.org/softwaremill/bootzooka)
-
-![Banner](https://github.com/softwaremill/bootzooka/raw/master/banner.png)
-
-Bootzooka is simple project to quickly start developing a Scala-based microservice or web application
+![Bootzooka](https://github.com/softwaremill/bootzooka/raw/master/banner.png)
 
 [See the docs](http://softwaremill.github.io/bootzooka/) for more information.
+
+[![Build Status](https://travis-ci.org/softwaremill/bootzooka.svg?branch=master)](https://travis-ci.org/softwaremill/bootzooka)
 
 ## Quick start
 
