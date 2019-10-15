@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/softwaremill/bootzooka.svg?branch=master)](https://travis-ci.org/softwaremill/bootzooka)
 
+![Banner](https://github.com/softwaremill/bootzooka/raw/master/banner.png)
+
 Bootzooka is simple project to quickly start developing a Scala-based microservice or web application
 
 [See the docs](http://softwaremill.github.io/bootzooka/) for more information.
@@ -39,6 +41,13 @@ Then, you can start the frontend:
 ./frontend-start.sh
 ```
 
+## Commercial Support
+
+We offer commercial support for Bootzooka and related technologies, as well as development services. [Contact us](https://softwaremill.com) to learn more about our offer! 
+
+## Copyright
+
+Copyright (C) 2013-2019 SoftwareMill [https://softwaremill.com](https://softwaremill.com).
 
 
 
