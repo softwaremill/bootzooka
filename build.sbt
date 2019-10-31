@@ -11,7 +11,7 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "0.7.1"
-val http4sVersion = "0.20.11"
+val http4sVersion = "0.20.12"
 val circeVersion = "0.12.3"
 val tsecVersion = "0.1.0"
 val sttpVersion = "1.7.2"
