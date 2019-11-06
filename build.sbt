@@ -10,8 +10,8 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val doobieVersion = "0.8.4"
-val http4sVersion = "0.20.12"
+val doobieVersion = "0.7.1"
+val http4sVersion = "0.20.13"
 val circeVersion = "0.12.3"
 val tsecVersion = "0.1.0"
 val sttpVersion = "1.7.2"
@@ -53,7 +53,7 @@ val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.codehaus.janino" % "janino" % "3.1.0",
-  "de.siegmar" % "logback-gelf" % "2.1.0",
+  "de.siegmar" % "logback-gelf" % "2.1.2",
   "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.5"
 )
 
