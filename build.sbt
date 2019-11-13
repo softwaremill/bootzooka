@@ -11,12 +11,12 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "0.7.1"
-val http4sVersion = "0.20.13"
+val http4sVersion = "0.21.0-M5"
 val circeVersion = "0.12.3"
 val tsecVersion = "0.1.0"
-val sttpVersion = "1.7.2"
+val sttpVersion = "2.0.0-RC1"
 val prometheusVersion = "0.8.0"
-val tapirVersion = "0.11.9"
+val tapirVersion = "0.12.1"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
@@ -31,22 +31,22 @@ val httpDependencies = Seq(
   "org.http4s" %% "http4s-blaze-client" % http4sVersion,
   "org.http4s" %% "http4s-circe" % http4sVersion,
   "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
-  "com.softwaremill.sttp" %% "async-http-client-backend-monix" % sttpVersion,
-  "com.softwaremill.tapir" %% "tapir-http4s-server" % tapirVersion
+  "com.softwaremill.sttp.client" %% "async-http-client-backend-monix" % sttpVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion
 )
 
 val monitoringDependencies = Seq(
   "io.prometheus" % "simpleclient" % prometheusVersion,
   "io.prometheus" % "simpleclient_hotspot" % prometheusVersion,
-  "com.softwaremill.sttp" %% "prometheus-backend" % sttpVersion
+  "com.softwaremill.sttp.client" %% "prometheus-backend" % sttpVersion
 )
 
 val jsonDependencies = Seq(
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
-  "com.softwaremill.tapir" %% "tapir-json-circe" % tapirVersion,
-  "com.softwaremill.sttp" %% "circe" % sttpVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % tapirVersion,
+  "com.softwaremill.sttp.client" %% "circe" % sttpVersion
 )
 
 val loggingDependencies = Seq(
@@ -68,9 +68,9 @@ val baseDependencies = Seq(
 )
 
 val apiDocsDependencies = Seq(
-  "com.softwaremill.tapir" %% "tapir-openapi-docs" % tapirVersion,
-  "com.softwaremill.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion,
-  "com.softwaremill.tapir" %% "tapir-swagger-ui-http4s" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-http4s" % tapirVersion
 )
 
 val securityDependencies = Seq(

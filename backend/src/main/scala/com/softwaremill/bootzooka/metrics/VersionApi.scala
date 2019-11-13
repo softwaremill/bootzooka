@@ -4,8 +4,8 @@ import com.softwaremill.bootzooka.http.{Error_OUT, Http}
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.version.BuildInfo
 import monix.eval.Task
-import tapir.model.StatusCode
-import tapir.server.ServerEndpoint
+import sttp.model.StatusCode
+import sttp.tapir.server.ServerEndpoint
 
 /**
   * Defines an endpoint which exposes the current application version information.

@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.http
 
 import java.util.concurrent.Executors
 
-import cats.effect.ExitCode
+import cats.effect.{Blocker, ExitCode}
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import com.softwaremill.bootzooka.util.ServerEndpoints
@@ -18,15 +18,15 @@ import org.http4s.syntax.kleisli._
 import org.http4s.server.staticcontent._
 import org.http4s.server.staticcontent.ResourceService
 import org.http4s.{HttpApp, HttpRoutes, Request, StaticFile}
-import tapir.DecodeResult
-import tapir.docs.openapi._
-import tapir.model.StatusCode
-import tapir.openapi.Server
-import tapir.openapi.circe.yaml._
-import tapir.server.http4s._
-import tapir.server.{DecodeFailureHandler, DecodeFailureHandling, ServerDefaults}
-import tapir.swagger.http4s.SwaggerHttp4s
+import sttp.tapir.DecodeResult
+import sttp.tapir.docs.openapi._
+import sttp.tapir.openapi.Server
+import sttp.tapir.openapi.circe.yaml._
+import sttp.tapir.server.http4s._
+import sttp.tapir.server.{DecodeFailureHandler, DecodeFailureHandling, ServerDefaults}
+import sttp.tapir.swagger.http4s.SwaggerHttp4s
 import cats.implicits._
+import sttp.model.StatusCode
 
 import scala.concurrent.ExecutionContext
 
@@ -104,7 +104,8 @@ class HttpApi(
         DecodeFailureHandling.response(http.failOutput)((code, Error_OUT(msg)))
       ServerDefaults.decodeFailureHandlerUsingResponse(
         failResponse,
-        badRequestOnPathFailureIfPathShapeMatches = false,
+        badRequestOnPathErrorIfPathShapeMatches = false,
+        badRequestOnPathInvalidIfPathShapeMatches = true,
         ServerDefaults.validationErrorToMessage
       )(req, input, failure)
   }
@@ -127,12 +128,12 @@ class HttpApi(
   private lazy val webappRoutes: HttpRoutes[Task] = {
     val dsl = Http4sDsl[Task]
     import dsl._
-    val blockingEc = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(4))
+    val blocker = Blocker.liftExecutionContext(ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(4)))
     val rootRoute = HttpRoutes.of[Task] {
       case request @ GET -> Root =>
-        StaticFile.fromResource("/webapp/index.html", blockingEc, Some(request)).getOrElseF(NotFound())
+        StaticFile.fromResource("/webapp/index.html", blocker, Some(request)).getOrElseF(NotFound())
     }
-    val resourcesRoutes = resourceService[Task](ResourceService.Config("/webapp", blockingEc))
+    val resourcesRoutes = resourceService[Task](ResourceService.Config("/webapp", blocker))
     rootRoute <+> resourcesRoutes
   }
 }

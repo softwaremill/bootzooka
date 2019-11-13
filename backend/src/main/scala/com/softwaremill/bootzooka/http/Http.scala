@@ -8,10 +8,10 @@ import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import io.circe.Printer
 import monix.eval.Task
-import tapir.Codec.PlainCodec
-import tapir.json.circe.TapirJsonCirce
-import tapir.model.{StatusCode, StatusCodes}
-import tapir.{Codec, Endpoint, EndpointOutput, Schema, SchemaFor, Tapir}
+import sttp.tapir.Codec.PlainCodec
+import sttp.tapir.json.circe.TapirJsonCirce
+import sttp.model.StatusCode
+import sttp.tapir.{Codec, Endpoint, EndpointOutput, Schema, SchemaType, Tapir}
 import tsec.common.SecureRandomId
 
 /**
@@ -40,13 +40,13 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
 
   //
 
-  private val InternalServerError = (StatusCodes.InternalServerError, "Internal server error")
+  private val InternalServerError = (StatusCode.InternalServerError, "Internal server error")
   private val failToResponseData: Fail => (StatusCode, String) = {
-    case Fail.NotFound(what)      => (StatusCodes.NotFound, what)
-    case Fail.Conflict(msg)       => (StatusCodes.Conflict, msg)
-    case Fail.IncorrectInput(msg) => (StatusCodes.BadRequest, msg)
-    case Fail.Forbidden           => (StatusCodes.Forbidden, "Forbidden")
-    case Fail.Unauthorized        => (StatusCodes.Unauthorized, "Unauthorized")
+    case Fail.NotFound(what)      => (StatusCode.NotFound, what)
+    case Fail.Conflict(msg)       => (StatusCode.Conflict, msg)
+    case Fail.IncorrectInput(msg) => (StatusCode.BadRequest, msg)
+    case Fail.Forbidden           => (StatusCode.Forbidden, "Forbidden")
+    case Fail.Unauthorized        => (StatusCode.Unauthorized, "Unauthorized")
     case _                        => InternalServerError
   }
 
@@ -90,9 +90,9 @@ trait TapirSchemas {
   implicit def taggedPlainCodec[U, T](implicit uc: PlainCodec[U]): PlainCodec[U @@ T] =
     uc.map(_.taggedWith[T])(identity)
 
-  implicit val schemaForBigDecimal: SchemaFor[BigDecimal] = SchemaFor(Schema.SString)
-  implicit val schemaForId: SchemaFor[Id] = SchemaFor(Schema.SString)
-  implicit def schemaForTagged[U, T](implicit uc: SchemaFor[U]): SchemaFor[U @@ T] = uc.asInstanceOf[SchemaFor[U @@ T]]
+  implicit val schemaForBigDecimal: Schema[BigDecimal] = Schema(SchemaType.SString)
+  implicit val schemaForId: Schema[Id] = Schema(SchemaType.SString)
+  implicit def schemaForTagged[U, T](implicit uc: Schema[U]): Schema[U @@ T] = uc.asInstanceOf[Schema[U @@ T]]
 }
 
 case class Error_OUT(error: String)

@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.email
 
 import com.softwaremill.bootzooka.email.sender.{DummyEmailSender, EmailSender, MailgunEmailSender, SmtpEmailSender}
 import com.softwaremill.bootzooka.util.BaseModule
-import com.softwaremill.sttp.SttpBackend
+import sttp.client.SttpBackend
 import doobie.util.transactor.Transactor
 import monix.eval.Task
 
@@ -22,5 +22,5 @@ trait EmailModule extends BaseModule {
   }
 
   def xa: Transactor[Task]
-  def sttpBackend: SttpBackend[Task, Nothing]
+  def sttpBackend: SttpBackend[Task, Nothing, Nothing]
 }

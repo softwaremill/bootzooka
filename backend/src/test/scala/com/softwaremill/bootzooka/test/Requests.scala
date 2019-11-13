@@ -5,6 +5,7 @@ import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.user.UserApi._
 import monix.eval.Task
 import org.http4s._
+import org.http4s.syntax.all._
 
 import scala.util.Random
 

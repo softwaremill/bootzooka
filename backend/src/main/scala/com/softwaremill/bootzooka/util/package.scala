@@ -5,7 +5,7 @@ import java.util.Locale
 import cats.data.NonEmptyList
 import com.softwaremill.tagging._
 import monix.eval.Task
-import tapir.server.ServerEndpoint
+import sttp.tapir.server.ServerEndpoint
 import tsec.common.SecureRandomId
 
 package object util {
