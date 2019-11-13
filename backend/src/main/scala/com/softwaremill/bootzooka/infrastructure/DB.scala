@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.infrastructure
 
 import java.net.URI
 
-import cats.effect.Resource
+import cats.effect.{Blocker, Resource}
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
 import monix.eval.Task
@@ -52,7 +52,7 @@ class DB(_config: DBConfig) extends StrictLogging {
         config.username,
         config.password.value,
         connectEC,
-        transactEC
+        Blocker.liftExecutionContext(transactEC)
       )
       _ <- Resource.liftF(connectAndMigrate(xa))
     } yield xa

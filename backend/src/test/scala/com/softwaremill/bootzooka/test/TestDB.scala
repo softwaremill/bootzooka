@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.test
 
-import cats.effect.ContextShift
+import cats.effect.{Blocker, ContextShift}
 import com.softwaremill.bootzooka.infrastructure.DBConfig
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.typesafe.scalalogging.StrictLogging
@@ -34,7 +34,7 @@ class TestDB(config: DBConfig) extends StrictLogging {
         config.username,
         config.password.value,
         connectEC,
-        transactEC
+        Blocker.liftExecutionContext(transactEC)
       )
     } yield xa
 
