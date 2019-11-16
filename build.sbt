@@ -116,7 +116,8 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   copyWebapp := {
     streams.value.log.info("Copying the webapp resources")
     IO.copyDirectory(uiDirectory.value / "build", (classDirectory in Compile).value / "webapp")
-  }
+  },
+  copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value
 )
 
 lazy val buildInfoSettings = Seq(
@@ -140,7 +141,6 @@ lazy val buildInfoSettings = Seq(
 
 lazy val fatJarSettings = Seq(
   assemblyJarName in assembly := "bootzooka.jar",
-  assembly := assembly.dependsOn(yarnTask.toTask(" build")).value,
   assembly := assembly.dependsOn(copyWebapp).value,
   assemblyMergeStrategy in assembly := {
     case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
