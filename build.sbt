@@ -214,5 +214,6 @@ lazy val backend: Project = (project in file("backend"))
 lazy val ui = (project in file(uiProjectName))
   .settings(commonSettings)
   .settings(test in Test := (test in Test).dependsOn(yarnTask.toTask(" test:ci")).value)
+  .settings(cleanFiles += baseDirectory.value / "build")
 
 RenameProject.settings
