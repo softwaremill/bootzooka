@@ -2,6 +2,7 @@ package com.softwaremill.bootzooka.http
 
 import java.util.concurrent.Executors
 
+import cats.data.Kleisli
 import cats.effect.{Blocker, ExitCode}
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
@@ -17,7 +18,7 @@ import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
 import org.http4s.syntax.kleisli._
 import org.http4s.server.staticcontent._
 import org.http4s.server.staticcontent.ResourceService
-import org.http4s.{HttpApp, HttpRoutes, Request, StaticFile}
+import org.http4s._
 import sttp.tapir.DecodeResult
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Server
@@ -29,6 +30,7 @@ import cats.implicits._
 import sttp.model.StatusCode
 
 import scala.concurrent.ExecutionContext
+import scala.io.Source
 
 /**
   * Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs
@@ -59,6 +61,12 @@ class HttpApi(
 
   private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
 
+  private def forwardToRootResponse(request: Request[Task]): Response[Task] = {
+    Response[Task]()
+      .withEntity(Source.fromResource("webapp/index.html").getLines().mkString)
+      .withHeaders(request.headers)
+  }
+
   /**
     * A never-ending stream which handles incoming requests.
     */
@@ -67,13 +75,14 @@ class HttpApi(
     fs2.Stream
       .eval(prometheusHttp4sMetrics.map(m => Metrics[Task](m)(mainRoutes)))
       .flatMap { monitoredServices =>
+        val routes = Router(
+          s"/$docsContextPath" -> docsRoutes,
+          s"/$apiContextPath" -> CORS(monitoredServices, corsConfig),
+          "/admin" -> adminRoutes,
+          "" -> webappRoutes
+        )
         val app: HttpApp[Task] =
-          Router(
-            s"/$docsContextPath" -> docsRoutes,
-            s"/$apiContextPath" -> CORS(monitoredServices, corsConfig),
-            "/admin" -> adminRoutes,
-            "" -> webappRoutes
-          ).orNotFound
+          Kleisli(req => routes.run(req).getOrElse(forwardToRootResponse(req)))
 
         BlazeServerBuilder[Task]
           .bindHttp(config.port, config.host)
