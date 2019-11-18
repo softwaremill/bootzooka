@@ -23,7 +23,7 @@ import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Server
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.server.http4s._
-import sttp.tapir.server.{DecodeFailureHandler, DecodeFailureHandling, ServerDefaults}
+import sttp.tapir.server.{DecodeFailureContext, DecodeFailureHandler, DecodeFailureHandling, ServerDefaults}
 import sttp.tapir.swagger.http4s.SwaggerHttp4s
 import cats.implicits._
 import sttp.model.StatusCode
@@ -89,25 +89,25 @@ class HttpApi(
     * We want to return responses in the same JSON format (corresponding to [[Error_OUT]]) as other errors returned
     * during normal request processing.
     *
-    * We use the default behavior of tapir (`ServerDefaults.decodeFailureHandlerUsingResponse`), customising the format
+    * We use the default behavior of tapir (`ServerDefaults.decodeFailureHandler`), customising the format
     * used for returning errors (`http.failOutput`). This will cause `400 Bad Request` to be returned in most cases.
     *
     * Additionally, if the error thrown is a `Fail` we might get additional information, such as a custom status
     * code, by translating it using the `http.exceptionToErrorOut` method and using that to create the response.
     */
   private val decodeFailureHandler: DecodeFailureHandler[Request[Task]] = {
-    // if an exception is thrown when decoding an input, and the exception is a Fail, responding basing on the Fail
-    case (_, _, DecodeResult.Error(_, f: Fail)) => DecodeFailureHandling.response(http.failOutput)(http.exceptionToErrorOut(f))
-    // otherwise, converting the decode input failure into a response using tapir's defaults
-    case (req, input, failure) =>
-      def failResponse(code: StatusCode, msg: String): DecodeFailureHandling =
-        DecodeFailureHandling.response(http.failOutput)((code, Error_OUT(msg)))
-      ServerDefaults.decodeFailureHandlerUsingResponse(
-        failResponse,
-        badRequestOnPathErrorIfPathShapeMatches = false,
-        badRequestOnPathInvalidIfPathShapeMatches = true,
-        ServerDefaults.validationErrorToMessage
-      )(req, input, failure)
+    def failResponse(code: StatusCode, msg: String): DecodeFailureHandling =
+      DecodeFailureHandling.response(http.failOutput)((code, Error_OUT(msg)))
+
+    val defaultHandler = ServerDefaults.decodeFailureHandler.copy(response = failResponse)
+
+    {
+      // if an exception is thrown when decoding an input, and the exception is a Fail, responding basing on the Fail
+      case DecodeFailureContext(_, _, DecodeResult.Error(_, f: Fail)) => DecodeFailureHandling.response(http.failOutput)(http.exceptionToErrorOut(f))
+      // otherwise, converting the decode input failure into a response using tapir's defaults
+      case ctx =>
+        defaultHandler(ctx)
+    }
   }
 
   /**
