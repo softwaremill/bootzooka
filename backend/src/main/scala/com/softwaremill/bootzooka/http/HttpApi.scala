@@ -47,7 +47,6 @@ class HttpApi(
     config: HttpConfig
 ) {
   private val apiContextPath = "api/v1"
-  private val indexHtmlPath = "webapp/index.html"
 
   lazy val mainRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
   private lazy val adminRoutes: HttpRoutes[Task] = toRoutes(adminEndpoints)
@@ -87,7 +86,7 @@ class HttpApi(
   private val staticFileBlocker = Blocker.liftExecutionContext(ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(4)))
 
   private def indexResponse(r: Request[Task]): Task[Response[Task]] =
-    StaticFile.fromResource(s"/$indexHtmlPath", staticFileBlocker, Some(r)).getOrElseF(Task.pure(Response.notFound[Task]))
+    StaticFile.fromResource(s"/webapp/index.html", staticFileBlocker, Some(r)).getOrElseF(Task.pure(Response.notFound[Task]))
 
   private val respondWithNotFound: HttpRoutes[Task] = Kleisli(_ => OptionT.pure(Response.notFound))
   private val respondWithIndex: HttpRoutes[Task] = Kleisli(req => OptionT.liftF(indexResponse(req)))
