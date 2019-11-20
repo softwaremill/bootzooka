@@ -15,7 +15,6 @@ import org.http4s.metrics.prometheus.Prometheus
 import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
-import org.http4s.syntax.kleisli._
 import org.http4s.server.staticcontent._
 import org.http4s.server.staticcontent.ResourceService
 import org.http4s._
@@ -50,6 +49,7 @@ class HttpApi(
 ) {
   private val apiContextPath = "api/v1"
   private val docsContextPath = s"$apiContextPath/docs"
+  private val indexHtmlPath = "webapp/index.html"
 
   lazy val mainRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(toRoutes(endpoints))
   private lazy val adminRoutes: HttpRoutes[Task] = toRoutes(adminEndpoints)
@@ -63,7 +63,7 @@ class HttpApi(
 
   private def forwardToRootResponse(request: Request[Task]): Response[Task] = {
     Response[Task]()
-      .withEntity(Source.fromResource("webapp/index.html").getLines().mkString)
+      .withEntity(Source.fromResource(indexHtmlPath).getLines().mkString)
       .withHeaders(request.headers)
   }
 
@@ -140,7 +140,7 @@ class HttpApi(
     val blocker = Blocker.liftExecutionContext(ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(4)))
     val rootRoute = HttpRoutes.of[Task] {
       case request @ GET -> Root =>
-        StaticFile.fromResource("/webapp/index.html", blocker, Some(request)).getOrElseF(NotFound())
+        StaticFile.fromResource(s"/$indexHtmlPath", blocker, Some(request)).getOrElseF(NotFound())
     }
     val resourcesRoutes = resourceService[Task](ResourceService.Config("/webapp", blocker))
     rootRoute <+> resourcesRoutes
