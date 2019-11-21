@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.http
 import java.util.concurrent.Executors
 
 import cats.data.{Kleisli, OptionT}
-import cats.effect.{Blocker, ExitCode}
+import cats.effect.{Blocker, ExitCode, Resource}
 import cats.implicits._
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
@@ -38,6 +38,7 @@ import scala.concurrent.ExecutionContext
   * - `/api/v1` - the main API
   * - `/api/v1/docs` - swagger UI for the main API
   * - `/admin` - admin API
+  * - `/` - serving frontend resources
   */
 class HttpApi(
     http: Http,
@@ -59,12 +60,11 @@ class HttpApi(
   private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
 
   /**
-    * A never-ending stream which handles incoming requests.
+    * The resource describing the HTTP server; binds when the resource is allocated.
     */
-  lazy val serveRequests: fs2.Stream[Task, ExitCode] = {
+  lazy val resource: Resource[Task, org.http4s.server.Server[Task]] = {
     val prometheusHttp4sMetrics = Prometheus[Task](collectorRegistry)
-    fs2.Stream
-      .eval(prometheusHttp4sMetrics.map(m => Metrics[Task](m)(mainRoutes)))
+    Resource.liftF(prometheusHttp4sMetrics.map(m => Metrics[Task](m)(mainRoutes)))
       .flatMap { monitoredServices =>
         val app: HttpApp[Task] = Router(
           // for /api/v1 requests, first trying the API; then the docs; then, returning 404
@@ -79,7 +79,7 @@ class HttpApi(
         BlazeServerBuilder[Task]
           .bindHttp(config.port, config.host)
           .withHttpApp(app)
-          .serve
+          .resource
       }
   }
 
