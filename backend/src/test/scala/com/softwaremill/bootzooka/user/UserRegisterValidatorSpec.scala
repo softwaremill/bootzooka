@@ -1,8 +1,9 @@
 package com.softwaremill.bootzooka.user
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class UserRegisterValidatorSpec extends FlatSpec with Matchers {
+class UserRegisterValidatorSpec extends AnyFlatSpec with Matchers {
   "validate" should "accept valid data" in {
     val dataIsValid = UserRegisterValidator.validate("login", "admin@bootzooka.com", "password")
 
