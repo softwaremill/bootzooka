@@ -54,7 +54,7 @@ val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.codehaus.janino" % "janino" % "3.1.0",
   "de.siegmar" % "logback-gelf" % "2.1.2",
-  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.5"
+  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.8"
 )
 
 val configDependencies = Seq(
