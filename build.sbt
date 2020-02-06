@@ -22,7 +22,7 @@ val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "6.2.1"
+  "org.flywaydb" % "flyway-core" % "6.2.2"
 )
 
 val httpDependencies = Seq(
