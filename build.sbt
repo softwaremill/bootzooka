@@ -185,7 +185,7 @@ def haltOnCmdResultError(result: Int) {
 def now(): String = {
   import java.text.SimpleDateFormat
   import java.util.Date
-  new SimpleDateFormat("yyyy-mm-dd-hhmmss").format(new Date())
+  new SimpleDateFormat("yyyy-MM-dd-hhmmss").format(new Date())
 }
 
 lazy val rootProject = (project in file("."))
