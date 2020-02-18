@@ -13,16 +13,16 @@ import complete.DefaultParsers._
 val doobieVersion = "0.8.6"
 val http4sVersion = "0.21.0-M5"
 val circeVersion = "0.12.3"
-val tsecVersion = "0.1.0"
-val sttpVersion = "2.0.0-RC4"
-val prometheusVersion = "0.8.0"
-val tapirVersion = "0.12.7"
+val tsecVersion = "0.2.0"
+val sttpVersion = "2.0.0-RC9"
+val prometheusVersion = "0.8.1"
+val tapirVersion = "0.12.20"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "6.1.0"
+  "org.flywaydb" % "flyway-core" % "6.2.3"
 )
 
 val httpDependencies = Seq(
@@ -54,11 +54,11 @@ val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.codehaus.janino" % "janino" % "3.1.0",
   "de.siegmar" % "logback-gelf" % "2.2.0",
-  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.5"
+  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.7"
 )
 
 val configDependencies = Seq(
-  "com.github.pureconfig" %% "pureconfig" % "0.12.1"
+  "com.github.pureconfig" %% "pureconfig" % "0.12.2"
 )
 
 val baseDependencies = Seq(
@@ -82,7 +82,7 @@ val emailDependencies = Seq(
   "com.sun.mail" % "javax.mail" % "1.6.2"
 )
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.0.8" % Test
+val scalatest = "org.scalatest" %% "scalatest" % "3.1.0" % Test
 val unitTestingStack = Seq(scalatest)
 
 val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.3" % Test
@@ -185,7 +185,7 @@ def haltOnCmdResultError(result: Int) {
 def now(): String = {
   import java.text.SimpleDateFormat
   import java.util.Date
-  new SimpleDateFormat("yyyy-mm-dd-hhmmss").format(new Date())
+  new SimpleDateFormat("yyyy-MM-dd-hhmmss").format(new Date())
 }
 
 lazy val rootProject = (project in file("."))

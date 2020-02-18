@@ -13,10 +13,11 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.headers.Authorization
 import org.http4s.util.CaseInsensitiveString
 import org.http4s.{EntityDecoder, EntityEncoder, Headers, Request, Response, Status}
-import org.scalatest.Matchers._
+import matchers.should.Matchers._
 
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
+import org.scalatest.matchers
 
 trait HttpTestSupport extends Http4sDsl[Task] {
 
