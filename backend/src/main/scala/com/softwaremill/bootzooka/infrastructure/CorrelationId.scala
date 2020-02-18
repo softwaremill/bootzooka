@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.infrastructure
 
+import com.softwaremill.correlator.Http4sCorrelationMiddleware
 import sttp.client._
 import sttp.client.{Response, SttpBackend}
 import monix.eval.Task
@@ -10,7 +11,7 @@ import sttp.client.ws.WebSocketResponse
   * Correlation id support. The `init()` method should be called when the application starts.
   * See [[https://github.com/softwaremill/correlator]] for details.
   */
-object CorrelationId extends com.softwaremill.correlator.CorrelationId()
+object CorrelationId extends com.softwaremill.correlator.CorrelationIdDecorator()
 
 /**
   * An sttp backend wrapper, which sets the current correlation id on all outgoing requests.
@@ -20,7 +21,7 @@ class SetCorrelationIdBackend(delegate: SttpBackend[Task, Nothing, NothingT]) ex
     // suspending the calculation of the correlation id until the request send is evaluated
     CorrelationId()
       .map {
-        case Some(cid) => request.header(CorrelationId.headerName, cid)
+        case Some(cid) => request.header(Http4sCorrelationMiddleware.HeaderName, cid)
         case None      => request
       }
       .flatMap(delegate.send)

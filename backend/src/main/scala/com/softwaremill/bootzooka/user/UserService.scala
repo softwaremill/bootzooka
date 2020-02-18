@@ -127,9 +127,9 @@ object UserRegisterValidator {
 
   def validate(login: String, email: String, password: String): Either[String, Unit] =
     for {
-      _ <- validLogin(login.trim).right
-      _ <- validEmail(email.trim).right
-      _ <- validPassword(password.trim).right
+      _ <- validLogin(login.trim)
+      _ <- validEmail(email.trim)
+      _ <- validPassword(password.trim)
     } yield ()
 
   private def validLogin(login: String): Either[String, Unit] =

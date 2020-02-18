@@ -11,7 +11,7 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "0.8.8"
-val http4sVersion = "0.21.0-M5"
+val http4sVersion = "0.21.1"
 val circeVersion = "0.13.0"
 val tsecVersion = "0.2.0"
 val sttpVersion = "2.0.0-RC11"
@@ -54,7 +54,7 @@ val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.codehaus.janino" % "janino" % "3.1.0",
   "de.siegmar" % "logback-gelf" % "2.2.0",
-  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.7"
+  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.8"
 )
 
 val configDependencies = Seq(
@@ -98,7 +98,7 @@ lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "2.12.10",
+  scalaVersion := "2.13.1",
   libraryDependencies ++= commonDependencies,
   uiDirectory := baseDirectory.value.getParentFile / uiProjectName,
   updateYarn := {
