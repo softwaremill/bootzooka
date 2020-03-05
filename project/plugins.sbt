@@ -4,7 +4,7 @@ addSbtPlugin("io.spray" % "sbt-revolver" % "0.9.1")
 
 addSbtPlugin("com.heroku" % "sbt-heroku" % "2.1.4")
 
-addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill" % "1.8.5")
+addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill" % "1.8.6")
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.10")
 
