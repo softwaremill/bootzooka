@@ -53,7 +53,7 @@ val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.codehaus.janino" % "janino" % "3.1.1",
-  "de.siegmar" % "logback-gelf" % "2.2.0",
+  "de.siegmar" % "logback-gelf" % "3.0.0",
   "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.8"
 )
 
