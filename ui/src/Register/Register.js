@@ -32,7 +32,7 @@ class Register extends Component {
       const { data: response } = await this.props.userService.registerUser({ login, email, password });
       console.log(response.apiKey);
       // TODO save the apiKey in localStorage; read it in the UserService/axios request transformer?
-      // remvoe it from localStorage on logout
+      // remove it from localStorage on logout
       this.setState({ isRegistered: true });
       this.props.notifySuccess('Successfully registered.');
     } catch (error) {

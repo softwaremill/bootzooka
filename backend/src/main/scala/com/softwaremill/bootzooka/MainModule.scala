@@ -14,7 +14,7 @@ import com.softwaremill.bootzooka.util.{DefaultIdGenerator, IdGenerator, ServerE
 import monix.eval.Task
 
 /**
-  * Main application module. Depends on resources initalised in [[InitModule]].
+  * Main application module. Depends on resources initialised in [[InitModule]].
   */
 trait MainModule
     extends SecurityModule
