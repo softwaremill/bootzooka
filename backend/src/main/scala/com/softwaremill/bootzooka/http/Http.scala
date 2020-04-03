@@ -86,7 +86,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
   */
 trait TapirSchemas {
   implicit val idPlainCodec: PlainCodec[SecureRandomId] =
-    Codec.stringPlainCodecUtf8.map(_.asInstanceOf[SecureRandomId])(identity)
+    Codec.string.map(_.asInstanceOf[SecureRandomId])(identity)
   implicit def taggedPlainCodec[U, T](implicit uc: PlainCodec[U]): PlainCodec[U @@ T] =
     uc.map(_.taggedWith[T])(identity)
 
