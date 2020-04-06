@@ -1,5 +1,6 @@
 import React from 'react';
-import { Either } from "ts-matches";
+import { Either } from 'ts-matches';
+import './Footer.scss';
 
 type Props = {
   version: Either<Error, string>;
