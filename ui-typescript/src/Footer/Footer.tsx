@@ -6,22 +6,15 @@ type Props = {
 }
 
 const Footer: React.FC<Props> = (props) => {
-  const [version, setVersion] = useState<Either<Error, string>>(props.version);
-
-
-  useEffect(() => {
-    setVersion(version);
-  });
-
   return (
     <div className="Footer">
       <p>Bootzooka - application scaffolding by <span><a href="http://softwaremill.com">SoftwareMill</a></span>,
         sources available on <span><a href="https://github.com/softwaremill/bootzooka/">GitHub</a></span>
       </p>
-        {version.fold({
-          left: e => <p>Version: {e.message}</p>,
-          right: v => <p>Version: {v}</p>
-        })}
+      {props.version.fold({
+        left: () => <p>App version: unknown</p>,
+        right: version => <p>App version: {version}</p>
+      })}
     </div>
   );
 };
