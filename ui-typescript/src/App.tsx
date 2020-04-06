@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Login from './Login/Login';
 import NavBar from './NavBar/NavBar';
-// import NotFound from './NotFound/NotFound';
+import NotFound from './NotFound/NotFound';
 // import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 // import RecoverLostPassword from './RecoverLostPassword/RecoverLostPassword';
 // import Register from './Register/Register';
@@ -115,7 +115,7 @@ const App: React.FC = () => {
             {/*<PasswordReset passwordService={passwordService} queryParamsString={location.search}*/}
             {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
             {/*)}/>*/}
-            {/*<Route render={() => withForkMe(<NotFound/>)}/>*/}
+            <Route render={() => withForkMe(<NotFound/>)}/>
           </Switch>
         </div>
         <Footer version={version}/>
