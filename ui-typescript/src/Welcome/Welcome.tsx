@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './Welcome.scss';
 
 const Welcome: React.FC = () =>
   <div className="Welcome">

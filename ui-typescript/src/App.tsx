@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import Login from './Login/Login';
+import Login from './Login/Login';
 import NavBar from './NavBar/NavBar';
 // import NotFound from './NotFound/NotFound';
 // import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
@@ -18,16 +18,15 @@ import Footer from './Footer/Footer';
 // import PasswordReset from './PasswordReset/PasswordReset';
 import PasswordService from './PasswordService/PasswordService';
 import { login, registerUser, getCurrentUser } from './UserService/UserService';
-import { getAppVersion } from "./VersionService/VersionService";
-import { User } from "./types/Types";
-import { Either, Right } from "ts-matches";
-import './App.scss';
+import { getAppVersion } from './VersionService/VersionService';
+import { User } from './types/Types';
+import { Either, Right } from 'ts-matches';
 
 const App: React.FC = () => {
   // const { passwordService, userService, versionService } = props;
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState('');
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState<User>({ email: "", login: "" });
+  const [user, setUser] = useState<User>({ email: '', login: '' });
   const [isLoadingAuthInfo, setLoadingAuthInfo] = useState(true);
   const [version, setVersion] = useState<Either<Error, string>>(Right.of(''));
 
@@ -71,9 +70,9 @@ const App: React.FC = () => {
 
   const logout = useCallback(() => {
     window.localStorage.removeItem('apiKey');
-    setApiKey("");
+    setApiKey('');
     setLoggedIn(false);
-    setUser({ email: "", login: "" })
+    setUser({ email: '', login: '' })
   }, []);
 
   const notifySuccess = (msg: string) => {
@@ -101,10 +100,9 @@ const App: React.FC = () => {
             {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
             {/*</div>*/}
             {/*)}/>*/}
-            {/*<Route path="/login" render={() => withForkMe(*/}
-            {/*<Login userService={userService} onLoggedIn={onLoggedIn}*/}
-            {/*notifyError={notifyError} isLoggedIn={isLoggedIn}/>*/}
-            {/*)}/>*/}
+            <Route path="/login" render={() => withForkMe(
+              <Login onLoggedIn={onLoggedIn} notifyError={notifyError} isLoggedIn={isLoggedIn}/>
+            )}/>
             {/*<Route path="/register" render={() => withForkMe(*/}
             {/*<Register userService={userService}*/}
             {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
