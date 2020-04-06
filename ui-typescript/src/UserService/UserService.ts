@@ -3,22 +3,22 @@ import { ChangePasswordData, LoginData, UserRegistrationData } from "../types/Ty
 
 const userUrl = 'api/v1/user';
 
-const registerUser = ({ login, email, password }: UserRegistrationData) => {
+export const registerUser = ({ login, email, password }: UserRegistrationData) => {
   return axios.post(`${userUrl}/register`, { login, email, password });
 };
 
-const login = ({ loginOrEmail, password }: LoginData) => {
+export const login = ({ loginOrEmail, password }: LoginData) => {
   return axios.post(`${userUrl}/login`, { loginOrEmail, password, apiKeyValidHours: 1 });
 };
 
-const getCurrentUser = (apiKey: string) => {
+export const getCurrentUser = (apiKey: string) => {
   return _securedRequest(apiKey, {
     method: 'GET',
     url: userUrl
   });
 };
 
-const changeProfileDetails = (apiKey: string, { email, login }: { email: string, login: string }) => {
+export const changeProfileDetails = (apiKey: string, { email, login }: { email: string, login: string }) => {
   return _securedRequest(apiKey, {
     method: 'POST',
     url: userUrl,
@@ -29,7 +29,7 @@ const changeProfileDetails = (apiKey: string, { email, login }: { email: string,
   });
 };
 
-const changePassword = (apiKey: string, { currentPassword, newPassword }: ChangePasswordData) => {
+export const changePassword = (apiKey: string, { currentPassword, newPassword }: ChangePasswordData) => {
   return _securedRequest(apiKey, {
     method: 'POST',
     url: `${userUrl}/changepassword`,
@@ -49,4 +49,3 @@ const _securedRequest = (apiKey: string, config?: AxiosRequestConfig) => {
   });
 };
 
-export default UserService;
