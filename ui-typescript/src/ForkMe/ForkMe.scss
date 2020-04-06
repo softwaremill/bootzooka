@@ -1,0 +1,12 @@
+.ForkMe .forkMeBadge {
+  position: absolute;
+  right: 0;
+  top: 50px;
+}
+
+@media (max-width: 768px) {
+  .ForkMe .forkMeBadge {
+    height: 5em;
+    width: 5em;
+  }
+}
