@@ -2,6 +2,7 @@
   "name": "ui-typescript",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "@types/node": "12.12.14",
     "@types/react": "16.9.13",
