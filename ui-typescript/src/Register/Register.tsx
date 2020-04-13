@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { Form, Formik, useField } from "formik";
 import * as Yup from "yup";
+import { registerUser } from "../UserService/UserService";
 
 type FormValues = {
   login: string;
@@ -44,19 +45,18 @@ const Register: React.FC<Props> = (props) => {
   const [isRegistered, setRegistered] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
 
-  const handleSubmit = useCallback(async () => {
-    // event.preventDefault();
-    try {
-      //const { data: response } = await this.props.userService.registerUser(values);
-      //console.log(response.apiKey);
-      // TODO save the apiKey in localStorage; read it in the UserService/axios request transformer?
-      // remvoe it from localStorage on logout
-      setRegistered(true);
-      notifySuccess('Successfully registered.');
-    } catch (error) {
-      notifyError('Could not register new user!');
-      console.error(error);
-    }
+  const handleSubmit = useCallback(async (event) => {
+    (await registerUser(event)).fold({
+      left: (error: Error) => {
+        notifyError('Could not register new user!');
+        console.error(error);
+      },
+      right: (data: any) => {
+        localStorage.setItem('apiKey', data.apiKey);
+        setRegistered(true);
+        notifySuccess('Successfully registered.');
+      }
+    });
   }, []);
 
   const TextField = ({ label, ...props }: any) => {
@@ -77,16 +77,14 @@ const Register: React.FC<Props> = (props) => {
         <Formik initialValues={initialValues}
                 onSubmit={handleSubmit}
                 validationSchema={validationSchema}>
-          {({ dirty }) =>
-            <Form className="CommonForm">
-              <TextField type="text" name="login" placeholder="Login"/>
-              <TextField type="text" name="email" placeholder="Email"/>
-              <TextField type="password" name="password" placeholder="Password"/>
-              <TextField type="password" name="repeatedPassword" placeholder="Repeated password"/>
-              <Link to="/recover-lost-password">Forgot password?</Link>
-              <input type="submit" value="Sign in" className="button-primary" disabled={!dirty || isSubmitting}/>
-            </Form>
-          }
+          <Form className="CommonForm">
+            <TextField type="text" name="login" placeholder="Login"/>
+            <TextField type="text" name="email" placeholder="Email"/>
+            <TextField type="password" name="password" placeholder="Password"/>
+            <TextField type="password" name="repeatedPassword" placeholder="Repeated password"/>
+            <Link to="/recover-lost-password">Forgot password?</Link>
+            <input type="submit" value="Sign in" className="button-primary" disabled={isSubmitting}/>
+          </Form>
         </Formik>
       </div>
   );

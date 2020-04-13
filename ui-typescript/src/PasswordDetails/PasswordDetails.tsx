@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Form, Formik, useField } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
+import { changePassword } from "../UserService/UserService";
 
 type FormValues = {
   currentPassword: string;
@@ -10,6 +11,7 @@ type FormValues = {
 }
 
 type Props = {
+  apiKey: string;
   notifyError: (msg: string) => void;
   notifySuccess: (msg: string) => void;
 }
@@ -38,22 +40,19 @@ const initialValues: FormValues = {
 };
 
 const PasswordDetails: React.FC<Props> = (props) => {
-  const { notifyError, notifySuccess } = props;
-
+  const { notifyError, notifySuccess, apiKey } = props;
   const [isSubmitting, setSubmitting] = useState(false);
-  const [values, setValues] = useState<FormValues>(initialValues);
 
-  const handleSubmit = useCallback(async event => {
-    event.preventDefault();
-    try {
-      const { currentPassword, newPassword } = values;
-      //await changePassword(this.props.apiKey, { currentPassword, newPassword });
-      notifySuccess('Password changed!');
-      setValues({ currentPassword: '', newPassword: '', repeatedNewPassword: '' });
-    } catch (error) {
-      notifyError('Could not change password!');
-      console.error(error);
-    }
+  const handleSubmit = useCallback(async ({ currentPassword, newPassword }) => {
+    (await changePassword(apiKey, { currentPassword, newPassword })).fold({
+      left: (error: Error) => {
+        notifyError('Could not change password!');
+        console.error(error);
+      },
+      right: () => {
+        notifySuccess('Password changed!');
+      }
+    });
   }, []);
 
   const TextField = ({ label, ...props }: any) => {
@@ -73,15 +72,12 @@ const PasswordDetails: React.FC<Props> = (props) => {
       <Formik initialValues={initialValues}
               onSubmit={handleSubmit}
               validationSchema={validationSchema}>
-        {({ dirty }) => (
-          <Form className="CommonForm">
-            <TextField type="password" name="currentPassword" placeholder="Current password"/>
-            <TextField type="password" name="newPassword" placeholder="New password"/>
-            <TextField type="password" name="repeatedNewPassword" placeholder="Repeated new password"/>
-            <Link to="/recover-lost-password">Forgot password?</Link>
-            <input type="submit" value="Sign in" className="button-primary" disabled={!dirty || isSubmitting}/>
-          </Form>
-        )}
+        <Form className="CommonForm">
+          <TextField type="password" name="currentPassword" placeholder="Current password"/>
+          <TextField type="password" name="newPassword" placeholder="New password"/>
+          <TextField type="password" name="repeatedNewPassword" placeholder="Repeated new password"/>
+          <input type="submit" value="update password" className="button-primary" disabled={isSubmitting}/>
+        </Form>
       </Formik>
     </div>
   );

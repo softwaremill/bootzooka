@@ -21,9 +21,8 @@ const RecoverLostPassword: React.FC<Props> = props => {
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleSubmit = useCallback(async () => {
-
     setSubmitting(true);
-    (await PasswordService.claimPasswordRest(loginOrEmail)).fold({
+    (await PasswordService.claimPasswordReset(loginOrEmail)).fold({
       left: (error: Error) => {
         notifyError('Could not claim password reset!');
         console.error(error);
@@ -54,12 +53,10 @@ const RecoverLostPassword: React.FC<Props> = props => {
         <Formik initialValues={{ loginOrEmail: '' }}
                 onSubmit={handleSubmit}
                 validationSchema={validationSchema}>
-          {({ dirty }) =>
-            <Form className="CommonForm">
-              <TextField type="text" name="loginOrEmail" placeholder="Email or login"/>
-              <input type="submit" value="Sign in" className="button-primary" disabled={!dirty || isSubmitting}/>
-            </Form>
-          }
+          <Form className="CommonForm">
+            <TextField type="text" name="loginOrEmail" placeholder="Email or login"/>
+            <input type="submit" value="Sign in" className="button-primary" disabled={isSubmitting}/>
+          </Form>
         </Formik>
       </div>
   );

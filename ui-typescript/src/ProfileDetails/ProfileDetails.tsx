@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { changeProfileDetails } from '../UserService/UserService';
 import { User } from '../types/Types';
 import { Form, Formik, useField } from 'formik';
@@ -11,11 +11,11 @@ type FormValues = {
 }
 
 type Props = {
+  apiKey: string;
   user: User;
   notifyError: (msg: string) => void;
   notifySuccess: (msg: string) => void;
   onUserUpdated: (user: User) => void;
-  apiKey: string;
 }
 
 const validationSchema = Yup.object<FormValues>({
@@ -26,12 +26,13 @@ const validationSchema = Yup.object<FormValues>({
 });
 
 const ProfileDetails: React.FC<Props> = (props) => {
-  const { notifyError, notifySuccess, onUserUpdated, apiKey, user } = props;
-  const [login, setLogin] = useState(user.login);
-  const [email, setEmail] = useState(user.email);
-  const [isSubmitting, setSubmitting] = useState(false);
+  const { notifyError, notifySuccess, onUserUpdated, apiKey } = props;
+  const { login, email } = props.user;
 
-  const handleSubmit = useCallback(async () => {
+  const [isSubmitting, setSubmitting] = useState(false);
+  const handleSubmit = useCallback(async ( { login, email }) => {
+
+    console.log("apiKey-> ", apiKey);
     (await changeProfileDetails(apiKey, { login, email })).fold({
       left: (error: Error) => {
         notifyError('Could not change profile details!');
@@ -42,7 +43,7 @@ const ProfileDetails: React.FC<Props> = (props) => {
         notifySuccess('Profile details changed!');
       }
     });
-  }, []);
+  }, [apiKey]);
 
   const TextField = ({ label, ...props }: any) => {
     const [field, meta] = useField(props);
@@ -61,14 +62,11 @@ const ProfileDetails: React.FC<Props> = (props) => {
       <Formik initialValues={{ login, email }}
               onSubmit={handleSubmit}
               validationSchema={validationSchema}>
-        {({ dirty }) => (
-          <Form className="CommonForm">
-            <TextField type="text" name="loginOrEmail" placeholder="Login or Email"/>
-            <TextField type="password" name="password" placeholder="Password"/>
-            <Link to="/recover-lost-password">Forgot password?</Link>
-            <input type="submit" value="Sign in" className="button-primary" disabled={!dirty || isSubmitting}/>
-          </Form>
-        )}
+        <Form className="CommonForm">
+          <TextField type="text" name="login" placeholder="Login"/>
+          <TextField type="text" name="email" placeholder="Email"/>
+          <input type="submit" value="Update profile data" className="button-primary" disabled={isSubmitting}/>
+        </Form>
       </Formik>
     </div>
   );

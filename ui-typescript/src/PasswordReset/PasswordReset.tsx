@@ -71,15 +71,12 @@ const PasswordReset: React.FC<Props> = (props) => {
         <Formik initialValues={{ newPassword: '', repeatedPassword: '' }}
                 onSubmit={handleSubmit}
                 validationSchema={validationSchema}>
-          {({ dirty }) => (
-            <Form className="CommonForm">
-              <TextField type="password" name="currentPassword" placeholder="Current password"/>
-              <TextField type="password" name="newPassword" placeholder="New password"/>
-              <TextField type="password" name="repeatedNewPassword" placeholder="Repeated new password"/>
-              <Link to="/recover-lost-password">Forgot password?</Link>
-              <input type="submit" value="Sign in" className="button-primary" disabled={!dirty || isSubmitting}/>
-            </Form>
-          )}
+          <Form className="CommonForm">
+            <TextField type="password" name="newPassword" placeholder="New password"/>
+            <TextField type="password" name="repeatedPassword" placeholder="Repeated password"/>
+            <Link to="/recover-lost-password">Forgot password?</Link>
+            <input type="submit" value="Sign in" className="button-primary" disabled={isSubmitting}/>
+          </Form>
         </Formik>
       </div>
   );

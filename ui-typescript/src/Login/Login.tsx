@@ -30,14 +30,13 @@ const Login: React.FC<Props> = (props) => {
 
   const handleSubmit = useCallback(async ({ loginOrEmail, password }) => {
     setSubmitting(true);
-
-    try {
-      const { data } = await login({ loginOrEmail, password });
-      await onLoggedIn(data.apiKey);
-    } catch (error) {
-      notifyError('Incorrect login/email or password!');
-      console.error(error);
-    }
+    (await login({ loginOrEmail, password })).fold({
+      left: (error: Error) => {
+        notifyError('Incorrect login/email or password!');
+        console.error(error);
+      },
+      right: ({ apiKey }) => onLoggedIn(apiKey)
+    });
   }, []);
 
   const TextField = ({ label, ...props }: any) => {
@@ -58,14 +57,12 @@ const Login: React.FC<Props> = (props) => {
         <Formik initialValues={initialValues}
                 onSubmit={handleSubmit}
                 validationSchema={validationSchema}>
-          {({ dirty }) => (
-            <Form className="CommonForm">
-              <TextField type="text" name="loginOrEmail" placeholder="Login or Email"/>
-              <TextField type="password" name="password" placeholder="Password"/>
-              <Link to="/recover-lost-password">Forgot password?</Link>
-              <input type="submit" value="Sign in" className="button-primary" disabled={!dirty || isSubmitting}/>
-            </Form>
-          )}
+          <Form className="CommonForm">
+            <TextField type="text" name="loginOrEmail" placeholder="Login or Email"/>
+            <TextField type="password" name="password" placeholder="Password"/>
+            <Link to="/recover-lost-password">Forgot password?</Link>
+            <input type="submit" value="Sign in" className="button-primary" disabled={isSubmitting}/>
+          </Form>
         </Formik>
       </div>
   );
