@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { validateEmail, validateLogin, validatePassword } from '../validation/validation';
 import { Form, Formik, useField } from "formik";
 import * as Yup from "yup";
 
@@ -55,7 +54,7 @@ const Register: React.FC<Props> = (props) => {
       setRegistered(true);
       notifySuccess('Successfully registered.');
     } catch (error) {
-      props.notifyError('Could not register new user!');
+      notifyError('Could not register new user!');
       console.error(error);
     }
   }, []);
