@@ -12,38 +12,39 @@ import Spinner from './Spinner/Spinner';
 import Welcome from './Welcome/Welcome';
 import withForkMe from './ForkMe/ForkMe';
 import SecretMain from './SecretMain/SecretMain';
-// import ProfileDetails from './ProfileDetails/ProfileDetails';
-// import PasswordDetails from './PasswordDetails/PasswordDetails';
+import ProfileDetails from './ProfileDetails/ProfileDetails';
+import PasswordDetails from './PasswordDetails/PasswordDetails';
 import Footer from './Footer/Footer';
-// import PasswordReset from './PasswordReset/PasswordReset';
-import PasswordService from './PasswordService/PasswordService';
-import { login, registerUser, getCurrentUser } from './UserService/UserService';
+import { getCurrentUser } from './UserService/UserService';
 import { getAppVersion } from './VersionService/VersionService';
-import { User } from './types/Types';
+import { User, Version } from './types/Types';
 import { Either, Right } from 'ts-matches';
 
 const App: React.FC = () => {
-  // const { passwordService, userService, versionService } = props;
   const [apiKey, setApiKey] = useState('');
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState<User>({ email: '', login: '' });
   const [isLoadingAuthInfo, setLoadingAuthInfo] = useState(true);
-  const [version, setVersion] = useState<Either<Error, string>>(Right.of(''));
+  const [version, setVersion] = useState<Either<Error, Version>>(Right.of({ buildDate: '', buildSha: '' }));
 
   useEffect(() => {
     (async () => {
       const apiKey = window.localStorage.getItem('apiKey');
       if (apiKey) {
-        try {
-          const { data: user } = await getCurrentUser(apiKey);
-          setUser(user);
-          setLoggedIn(true);
-          setLoadingAuthInfo(false);
-        } catch (err) {
-          window.console.error(err);
-          window.localStorage.removeItem('apiKey');
-          setLoadingAuthInfo(false);
-        }
+        (await getCurrentUser(apiKey)).fold({
+          left: (error: Error) => {
+            window.console.error(error);
+            window.localStorage.removeItem('apiKey');
+          },
+          right: (user: User) => {
+            console.log(user);
+            setUser(user);
+            setApiKey(apiKey);
+            setLoggedIn(true);
+          }
+        });
+
+        setLoadingAuthInfo(false);
       }
       const v = await getAppVersion();
       setVersion(v);
@@ -57,15 +58,15 @@ const App: React.FC = () => {
   };
 
   const onLoggedIn = useCallback(async (apiKey: string) => {
-    try {
-      const { data: user } = await getCurrentUser(apiKey);
-      window.localStorage.setItem('apiKey', apiKey);
-      setApiKey(apiKey);
-      setLoggedIn(true);
-      setUser(user);
-    } catch (err) {
-      window.console.error(err);
-    }
+    (await getCurrentUser(apiKey)).fold({
+      left: (error: Error) => window.console.error(error),
+      right: (data: User) => {
+        window.localStorage.setItem('apiKey', apiKey);
+        setApiKey(apiKey);
+        setLoggedIn(true);
+        setUser(data);
+      }
+    });
   }, []);
 
   const logout = useCallback(() => {
@@ -91,28 +92,22 @@ const App: React.FC = () => {
           <Switch>
             <Route exact path="/" render={() => withForkMe(<Welcome/>)}/>
             <ProtectedRoute isLoggedIn={isLoggedIn} path="/main" component={SecretMain}/>
-            {/*<ProtectedRoute isLoggedIn={isLoggedIn} path="/profile" render={() => withForkMe(*/}
-            {/*<div>*/}
-            {/*<ProfileDetails apiKey={apiKey} user={user} userService={userService}*/}
-            {/*onUserUpdated={updateUserInfo}*/}
-            {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
-            {/*<PasswordDetails apiKey={apiKey} userService={userService}*/}
-            {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
-            {/*</div>*/}
-            {/*)}/>*/}
+            <ProtectedRoute isLoggedIn={isLoggedIn} path="/profile" render={() => withForkMe(
+              <div>
+                <ProfileDetails apiKey={apiKey} user={user} onUserUpdated={updateUserInfo}
+                                notifyError={notifyError} notifySuccess={notifySuccess}/>
+                <PasswordDetails apiKey={apiKey} notifyError={notifyError} notifySuccess={notifySuccess}/>
+              </div>
+            )}/>
             <Route path="/login" render={() => withForkMe(
               <Login onLoggedIn={onLoggedIn} notifyError={notifyError} isLoggedIn={isLoggedIn}/>
             )}/>
             <Route path="/register" render={() => withForkMe(
-            <Register notifyError={notifyError} notifySuccess={notifySuccess}/>
+              <Register notifyError={notifyError} notifySuccess={notifySuccess}/>
             )}/>
             <Route path="/recover-lost-password" render={() => withForkMe(
-            <RecoverLostPassword notifyError={notifyError} notifySuccess={notifySuccess}/>
+              <RecoverLostPassword notifyError={notifyError} notifySuccess={notifySuccess}/>
             )}/>
-            {/*<Route path="/password-reset" render={({ location }) => withForkMe(*/}
-            {/*<PasswordReset passwordService={passwordService} queryParamsString={location.search}*/}
-            {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
-            {/*)}/>*/}
             <Route render={() => withForkMe(<NotFound/>)}/>
           </Switch>
         </div>
