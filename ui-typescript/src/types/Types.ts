@@ -17,6 +17,7 @@ export interface LoginData {
 export interface User {
   email: string
   login: string
+  createdOn?: string;
 }
 
 export interface Version {
