@@ -5,13 +5,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import Login from './Login/Login';
 import NavBar from './NavBar/NavBar';
 import NotFound from './NotFound/NotFound';
-// import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
-// import RecoverLostPassword from './RecoverLostPassword/RecoverLostPassword';
-// import Register from './Register/Register';
+import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
+import RecoverLostPassword from './RecoverLostPassword/RecoverLostPassword';
+import Register from './Register/Register';
 import Spinner from './Spinner/Spinner';
 import Welcome from './Welcome/Welcome';
 import withForkMe from './ForkMe/ForkMe';
-// import SecretMain from './SecretMain/SecretMain';
+import SecretMain from './SecretMain/SecretMain';
 // import ProfileDetails from './ProfileDetails/ProfileDetails';
 // import PasswordDetails from './PasswordDetails/PasswordDetails';
 import Footer from './Footer/Footer';
@@ -90,7 +90,7 @@ const App: React.FC = () => {
         <div className="Main">
           <Switch>
             <Route exact path="/" render={() => withForkMe(<Welcome/>)}/>
-            {/*<ProtectedRoute isLoggedIn={isLoggedIn} path="/main" component={SecretMain}/>*/}
+            <ProtectedRoute isLoggedIn={isLoggedIn} path="/main" component={SecretMain}/>
             {/*<ProtectedRoute isLoggedIn={isLoggedIn} path="/profile" render={() => withForkMe(*/}
             {/*<div>*/}
             {/*<ProfileDetails apiKey={apiKey} user={user} userService={userService}*/}
@@ -103,14 +103,12 @@ const App: React.FC = () => {
             <Route path="/login" render={() => withForkMe(
               <Login onLoggedIn={onLoggedIn} notifyError={notifyError} isLoggedIn={isLoggedIn}/>
             )}/>
-            {/*<Route path="/register" render={() => withForkMe(*/}
-            {/*<Register userService={userService}*/}
-            {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
-            {/*)}/>*/}
-            {/*<Route path="/recover-lost-password" render={() => withForkMe(*/}
-            {/*<RecoverLostPassword passwordService={passwordService}*/}
-            {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
-            {/*)}/>*/}
+            <Route path="/register" render={() => withForkMe(
+            <Register notifyError={notifyError} notifySuccess={notifySuccess}/>
+            )}/>
+            <Route path="/recover-lost-password" render={() => withForkMe(
+            <RecoverLostPassword notifyError={notifyError} notifySuccess={notifySuccess}/>
+            )}/>
             {/*<Route path="/password-reset" render={({ location }) => withForkMe(*/}
             {/*<PasswordReset passwordService={passwordService} queryParamsString={location.search}*/}
             {/*notifyError={notifyError} notifySuccess={notifySuccess}/>*/}
