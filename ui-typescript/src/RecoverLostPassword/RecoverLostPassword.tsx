@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { Form, Formik, useField } from "formik";
 import * as Yup from "yup";
+import PasswordService from "../PasswordService/PasswordService";
 
 type Props = {
   notifySuccess: (msg: string) => void;
@@ -12,6 +13,7 @@ const validationSchema = Yup.object<{ loginOrEmail: string }>({
   loginOrEmail: Yup.string()
     .required('Email or login required')
 });
+
 const RecoverLostPassword: React.FC<Props> = props => {
   const { notifySuccess, notifyError } = props;
   const [loginOrEmail, setLoginOrEmail] = useState('');
@@ -19,17 +21,20 @@ const RecoverLostPassword: React.FC<Props> = props => {
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleSubmit = useCallback(async () => {
-    //event.preventDefault();
-    try {
-      setSubmitting(true);
-      //await passwordService.claimPasswordReset({ loginOrEmail });
-      setResetComplete(true);
-      setSubmitting(false);
-      notifySuccess('Password reset claim success.');
-    } catch (error) {
-      notifyError('Could not claim password reset!');
-      console.error(error);
-    }
+
+    setSubmitting(true);
+    (await PasswordService.claimPasswordRest(loginOrEmail)).fold({
+      left: (error: Error) => {
+        notifyError('Could not claim password reset!');
+        console.error(error);
+      },
+      right: () => {
+        notifySuccess('Password reset claim success.');
+        setResetComplete(true);
+      }
+    });
+
+    setSubmitting(false);
   }, []);
 
   const TextField = ({ label, ...props }: any) => {
@@ -56,12 +61,6 @@ const RecoverLostPassword: React.FC<Props> = props => {
             </Form>
           }
         </Formik>
-        <form className="CommonForm">
-          <input type="text" name="loginOrEmail" placeholder="Email address or login"/>
-          {loginOrEmail && loginOrEmail.length < 1 ?
-            <p className="validation-message">login or email address is required!</p> : null}
-          <input type="submit" value="Reset password" className="button-primary"/>
-        </form>
       </div>
   );
 };
