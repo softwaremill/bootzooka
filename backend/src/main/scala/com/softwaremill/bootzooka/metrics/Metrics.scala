@@ -7,7 +7,7 @@ object Metrics {
     Counter
       .build()
       .name(s"bootzooka_registered_users_counter")
-      .help(s"How many users registerd on this instance since it was started")
+      .help(s"How many users registered on this instance since it was started")
       .register()
 
   lazy val emailQueueGauge: Gauge =

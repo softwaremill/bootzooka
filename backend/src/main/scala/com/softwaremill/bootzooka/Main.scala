@@ -29,7 +29,7 @@ object Main extends StrictLogging {
         /*
         Sequencing two tasks using the >> operator:
         - the first starts the background processes (such as an email sender)
-        - the second alocates the http api resource, and never releases it (so that the http server is available
+        - the second allocates the http api resource, and never releases it (so that the http server is available
           as long as our application runs)
          */
         modules.startBackgroundProcesses >> modules.httpApi.resource.use(_ => Task.never)

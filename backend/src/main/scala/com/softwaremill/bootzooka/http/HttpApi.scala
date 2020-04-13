@@ -7,10 +7,12 @@ import cats.effect.{Blocker, Resource}
 import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import com.softwaremill.bootzooka.util.ServerEndpoints
+import com.softwaremill.correlator.Http4sCorrelationMiddleware
+import com.typesafe.scalalogging.StrictLogging
 import io.prometheus.client.CollectorRegistry
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
-import org.http4s._
+import org.http4s.{HttpApp, HttpRoutes, Request, Response, StaticFile}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.metrics.prometheus.Prometheus
 import org.http4s.server.Router
@@ -18,6 +20,7 @@ import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
 import org.http4s.server.staticcontent.{ResourceService, _}
 import org.http4s.syntax.kleisli._
+import Http4sCorrelationMiddleware.source
 
 import scala.concurrent.ExecutionContext
 
@@ -37,11 +40,12 @@ class HttpApi(
     adminEndpoints: ServerEndpoints,
     collectorRegistry: CollectorRegistry,
     config: HttpConfig
-) {
+) extends StrictLogging {
   private val apiContextPath = "/api/v1"
   private val endpointsToRoutes = new EndpointsToRoutes(http, apiContextPath)
 
-  lazy val mainRoutes: HttpRoutes[Task] = CorrelationId.setCorrelationIdMiddleware(endpointsToRoutes(endpoints))
+  lazy val mainRoutes: HttpRoutes[Task] =
+    Http4sCorrelationMiddleware(CorrelationId).withCorrelationId(loggingMiddleware(endpointsToRoutes(endpoints)))
   private lazy val adminRoutes: HttpRoutes[Task] = endpointsToRoutes(adminEndpoints)
   private lazy val docsRoutes: HttpRoutes[Task] = endpointsToRoutes.toDocsRoutes(endpoints)
 
@@ -51,8 +55,9 @@ class HttpApi(
     * The resource describing the HTTP server; binds when the resource is allocated.
     */
   lazy val resource: Resource[Task, org.http4s.server.Server[Task]] = {
-    val prometheusHttp4sMetrics = Prometheus[Task](collectorRegistry)
-    Resource.liftF(prometheusHttp4sMetrics.map(m => Metrics[Task](m)(mainRoutes)))
+    val prometheusHttp4sMetrics = Prometheus.metricsOps[Task](collectorRegistry)
+    prometheusHttp4sMetrics
+      .map(m => Metrics[Task](m)(mainRoutes))
       .flatMap { monitoredRoutes =>
         val app: HttpApp[Task] = Router(
           // for /api/v1 requests, first trying the API; then the docs; then, returning 404
@@ -78,6 +83,13 @@ class HttpApi(
 
   private val respondWithNotFound: HttpRoutes[Task] = Kleisli(_ => OptionT.pure(Response.notFound))
   private val respondWithIndex: HttpRoutes[Task] = Kleisli(req => OptionT.liftF(indexResponse(req)))
+
+  private def loggingMiddleware(service: HttpRoutes[Task]): HttpRoutes[Task] = Kleisli { req: Request[Task] =>
+    OptionT(for {
+      _ <- Task(logger.debug(s"Starting request to: ${req.uri.path}"))
+      r <- service(req).value
+    } yield r)
+  }
 
   /**
     * Serves the webapp resources (html, js, css files), from the /webapp directory on the classpath.

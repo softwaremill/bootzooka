@@ -60,7 +60,7 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     * using Swagger.
     */
   def toDocsRoutes(es: ServerEndpoints): HttpRoutes[Task] = {
-    val openapi = es.toList.toOpenAPI("Bootzooka", "1.0").copy(servers = List(Server(s"$apiContextPath", None)))
+    val openapi = es.toList.toOpenAPI("Bootzooka", "1.0").servers(List(Server(s"$apiContextPath", None)))
     val yaml = openapi.toYaml
     new SwaggerHttp4s(yaml).routes[Task]
   }

@@ -8,8 +8,7 @@ import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
-import com.softwaremill.bootzooka.util.{LowerCased, ServerEndpoints}
-import com.softwaremill.tagging.@@
+import com.softwaremill.bootzooka.util.ServerEndpoints
 import doobie.util.transactor.Transactor
 import monix.eval.Task
 
@@ -104,5 +103,5 @@ object UserApi {
   case class UpdateUser_IN(login: String, email: String)
   case class UpdateUser_OUT()
 
-  case class GetUser_OUT(login: String, email: String @@ LowerCased, createdOn: Instant)
+  case class GetUser_OUT(login: String, email: String, createdOn: Instant)
 }

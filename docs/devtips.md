@@ -5,7 +5,7 @@ title:  "Development tips"
 
 Generally during development you'll need two processes:
 
-* sbt running the backend server 
+* sbt running the backend server
 * grunt server which automatically picks up any changes
 
 ## Cloning
@@ -46,7 +46,7 @@ There are three imports that are useful when developing a new functionality:
 
 ### JSON
 
-If you are doing JSON serialisaion or deserialisation, or if you are defining an endpoint which uses JSON bodies, add the following import:
+If you are doing JSON serialisation or deserialisation, or if you are defining an endpoint which uses JSON bodies, add the following import:
 
 ```scala
 import com.softwaremill.bootzooka.infrastructure.Json._

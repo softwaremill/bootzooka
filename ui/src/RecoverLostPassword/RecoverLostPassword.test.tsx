@@ -25,8 +25,8 @@ describe('behaviour', () => {
   it('reset password button should initially be disabled', () => {
     const wrapper = shallow(<RecoverLostPassword passwordService={passwordService}
       notifyError={notifyError} notifySuccess={notifySuccess} />);
-    const resetPasswordButtom = wrapper.find('input[type="submit"]');
-    expect(resetPasswordButtom.props().disabled).toBe(true);
+    const resetPasswordButton = wrapper.find('input[type="submit"]');
+    expect(resetPasswordButton.props().disabled).toBe(true);
   });
 
   it('an error should appear under empty login input on blur', () => {
@@ -42,7 +42,7 @@ describe('behaviour', () => {
       notifyError={notifyError} notifySuccess={notifySuccess} />);
     const initialState = wrapper.state();
     wrapper.setState({ ...initialState, values: { loginOrEmail: 'mickey' } });
-    const resetPasswordButtom = wrapper.find('input[type="submit"]');
-    expect(resetPasswordButtom.props().disabled).toBe(false);
+    const resetPasswordButton = wrapper.find('input[type="submit"]');
+    expect(resetPasswordButton.props().disabled).toBe(false);
   });
 });

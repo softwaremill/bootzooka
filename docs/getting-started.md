@@ -3,7 +3,7 @@ layout: default
 title:  "Getting started"
 ---
 
-## Prerequisities
+## Prerequisites
 
 In order to build and develop on Bootzooka foundations you need the following:
 
