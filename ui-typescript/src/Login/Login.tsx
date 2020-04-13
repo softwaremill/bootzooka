@@ -1,6 +1,22 @@
 import React, { useCallback, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { login } from "../UserService/UserService";
+import { Form, Formik, useField } from "formik";
+import * as Yup from 'yup';
+
+interface FormValues {
+  loginOrEmail: string;
+  password: string;
+}
+
+const initialValues: FormValues = { loginOrEmail: '', password: '' };
+
+const validationSchema = Yup.object({
+  loginOrEmail: Yup.string()
+    .required('Login or Email Required'),
+  password: Yup.string()
+    .required('Password Required'),
+});
 
 type Props = {
   isLoggedIn: boolean;
@@ -10,49 +26,47 @@ type Props = {
 
 const Login: React.FC<Props> = (props) => {
   const { notifyError, isLoggedIn, onLoggedIn } = props;
+  const [isSubmitting, setSubmitting] = useState(false);
 
-  const [values, setValues] = useState({ loginOrEmail: '', password: '' });
-  const [touchedControls, setTouchedControls] = useState({ loginOrEmail: false, password: false });
+  const handleSubmit = useCallback(async ({ loginOrEmail, password }) => {
+    setSubmitting(true);
 
-  const handleSubmit = useCallback(async event => {
-    event.preventDefault();
     try {
-      const { data } = await login({ loginOrEmail: values.loginOrEmail, password: values.password });
+      const { data } = await login({ loginOrEmail, password });
       await onLoggedIn(data.apiKey);
     } catch (error) {
       notifyError('Incorrect login/email or password!');
       console.error(error);
     }
-  }, [values]);
+  }, []);
 
-  const handleValueChange = (key: string, value: string) => {
-    setValues({ ...values, [key]: value });
+  const TextField = ({ label, ...props }: any) => {
+    const [field, meta] = useField(props);
+    return (
+      <>
+        <label htmlFor={props.id || props.name}>{label}</label>
+        <input {...field} {...props} />
+        {meta.touched && meta.error ? <div className="validation-message">{meta.error}</div> : null}
+      </>
+    );
   };
-
-  const handleBlur = (inputName: string) => {
-    setTouchedControls({ ...touchedControls, [inputName]: true })
-  };
-
-  const isValid = () => values.loginOrEmail.length > 0 && values.password.length > 0;
 
   return (
     isLoggedIn ? <Redirect to="/main"/>
       : <div className="Login">
         <h4>Please sign in</h4>
-        <form className="CommonForm" onSubmit={handleSubmit}>
-          <input type="text" name="loginOrEmail" placeholder="Login or email"
-                 onChange={({ target }) => handleValueChange('loginOrEmail', target.value)}
-                 onBlur={() => handleBlur('loginOrEmail')}/>
-          {touchedControls.loginOrEmail && values.loginOrEmail.length < 1 ?
-            <p className="validation-message">login/email is required!</p> : null}
-          <input type="password" name="password" placeholder="Password"
-                 onChange={({ target }) => handleValueChange('password', target.value)}
-                 onBlur={() => handleBlur('password')}/>
-          {touchedControls.password && values.password.length < 1 ?
-            <p className="validation-message">password is required!</p> : null}
-          <Link to="/recover-lost-password">Forgot password?</Link>
-          <input type="submit" value="Sign in" className="button-primary" disabled={!isValid()}/>
-        </form>
+        <Formik initialValues={initialValues}
+                onSubmit={handleSubmit}
+                validationSchema={validationSchema}>
+          {({ dirty }) => (
+            <Form className="CommonForm">
+              <TextField type="text" name="loginOrEmail" placeholder="Login or Email"/>
+              <TextField type="password" name="password" placeholder="Password"/>
+              <Link to="/recover-lost-password">Forgot password?</Link>
+              <input type="submit" value="Sign in" className="button-primary" disabled={!dirty || isSubmitting}/>
+            </Form>
+          )}
+        </Formik>
       </div>
   );
 };
