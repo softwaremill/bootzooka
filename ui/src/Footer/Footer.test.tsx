@@ -14,11 +14,11 @@ getVersion.mockReturnValue(Promise.resolve({
   }
 }));
 
-const version = Right("v1.0");
+const version = Right.of({ buildDate: "v1.0", buildSha: "aacd1724ffa61f47d5af67d3b05799da7991c4d7" });
 
 it('renders version component', () => {
   render(
-    <Footer version={versionService}/>
+    <Footer version={version}/>
   )
 });
 
