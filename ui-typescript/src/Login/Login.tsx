@@ -4,14 +4,14 @@ import { login } from "../UserService/UserService";
 import { Form, Formik, useField } from "formik";
 import * as Yup from 'yup';
 
-interface FormValues {
+type FormValues = {
   loginOrEmail: string;
   password: string;
 }
 
 const initialValues: FormValues = { loginOrEmail: '', password: '' };
 
-const validationSchema = Yup.object({
+const validationSchema = Yup.object<FormValues>({
   loginOrEmail: Yup.string()
     .required('Login or Email Required'),
   password: Yup.string()
