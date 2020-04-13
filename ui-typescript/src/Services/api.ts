@@ -12,7 +12,7 @@ const get = async <T, Err = any>(url: string, config: AxiosRequestConfig = {}): 
   }
 };
 
-const post = async <V, T, Err = any>(url: string, data: V, config: AxiosRequestConfig): Promise<Either<AxiosError<Err>, T>> => {
+const post = async <V, T, Err = any>(url: string, data: V, config: AxiosRequestConfig = {}): Promise<Either<AxiosError<Err>, T>> => {
   try {
     const { response } = await axios.post(url, data, config);
     return Right.of(response);
