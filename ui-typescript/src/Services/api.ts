@@ -21,5 +21,23 @@ const post = async <V, T, Err = any>(url: string, data: V, config: AxiosRequestC
   }
 };
 
+const securedGet = async (apiKey: string, url: string, config?: AxiosRequestConfig) => {
+  return get(url, {
+    headers: {
+      Authorization: `Bearer ${apiKey}`
+    },
+    ...config
+  });
+};
 
-export { get, post }
+const securedPost = async <T>(apiKey: string, url: string, data: T, config?: AxiosRequestConfig) => {
+  return post(url, data,
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey}`
+      },
+      ...config
+    });
+};
+
+export { get, post, securedGet, securedPost }
