@@ -14,9 +14,9 @@ val doobieVersion = "0.9.0"
 val http4sVersion = "0.21.3"
 val circeVersion = "0.13.0"
 val tsecVersion = "0.2.0"
-val sttpVersion = "2.0.9"
+val sttpVersion = "2.1.0-RC1"
 val prometheusVersion = "0.8.1"
-val tapirVersion = "0.14.0"
+val tapirVersion = "0.14.3"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
@@ -98,7 +98,7 @@ lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "2.13.1",
+  scalaVersion := "2.13.2",
   libraryDependencies ++= commonDependencies,
   uiDirectory := baseDirectory.value.getParentFile / uiProjectName,
   updateYarn := {

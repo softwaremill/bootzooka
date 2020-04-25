@@ -36,7 +36,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
     * corresponding to the [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
     */
   val secureEndpoint: Endpoint[Id, (StatusCode, Error_OUT), Unit, Nothing] =
-    baseEndpoint.in(auth.bearer.map(_.asInstanceOf[Id])(identity))
+    baseEndpoint.in(auth.bearer[String].map(_.asInstanceOf[Id])(identity))
 
   //
 
