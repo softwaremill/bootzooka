@@ -14,7 +14,7 @@ val doobieVersion = "0.9.0"
 val http4sVersion = "0.21.6"
 val circeVersion = "0.13.0"
 val tsecVersion = "0.2.1"
-val sttpVersion = "2.2.1"
+val sttpVersion = "2.2.3"
 val prometheusVersion = "0.9.0"
 val tapirVersion = "0.16.7"
 
@@ -63,7 +63,7 @@ val configDependencies = Seq(
 
 val baseDependencies = Seq(
   "io.monix" %% "monix" % "3.2.2",
-  "com.softwaremill.common" %% "tagging" % "2.2.1",
+  "com.softwaremill.common" %% "tagging" % "2.2.3",
   "com.softwaremill.quicklens" %% "quicklens" % "1.6.0"
 )
 
