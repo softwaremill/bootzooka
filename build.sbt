@@ -11,12 +11,12 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "0.9.0"
-val http4sVersion = "0.21.6"
+val http4sVersion = "0.21.7"
 val circeVersion = "0.13.0"
 val tsecVersion = "0.2.1"
 val sttpVersion = "2.2.4"
 val prometheusVersion = "0.9.0"
-val tapirVersion = "0.16.10"
+val tapirVersion = "0.16.12"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
@@ -63,8 +63,8 @@ val configDependencies = Seq(
 
 val baseDependencies = Seq(
   "io.monix" %% "monix" % "3.2.2",
-  "com.softwaremill.common" %% "tagging" % "2.2.4",
-  "com.softwaremill.quicklens" %% "quicklens" % "1.6.0"
+  "com.softwaremill.common" %% "tagging" % "2.2.1",
+  "com.softwaremill.quicklens" %% "quicklens" % "1.6.1"
 )
 
 val apiDocsDependencies = Seq(
