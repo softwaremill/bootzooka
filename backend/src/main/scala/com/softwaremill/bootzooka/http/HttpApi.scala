@@ -21,6 +21,7 @@ import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
 import org.http4s.server.staticcontent.{ResourceService, _}
 import org.http4s.syntax.kleisli._
 import Http4sCorrelationMiddleware.source
+import monix.execution.Scheduler
 
 import scala.concurrent.ExecutionContext
 
@@ -69,7 +70,7 @@ class HttpApi(
           "" -> (webappRoutes <+> respondWithIndex)
         ).orNotFound
 
-        BlazeServerBuilder[Task]
+        BlazeServerBuilder[Task](Scheduler.global)
           .bindHttp(config.port, config.host)
           .withHttpApp(app)
           .resource

@@ -15,7 +15,7 @@ import sttp.tapir.server.ServerEndpoint
 class MetricsApi(http: Http, registry: CollectorRegistry) {
   import http._
 
-  val metricsEndpoint: ServerEndpoint[Unit, (StatusCode, Error_OUT), String, Nothing, Task] = baseEndpoint.get
+  val metricsEndpoint: ServerEndpoint[Unit, (StatusCode, Error_OUT), String, Any, Task] = baseEndpoint.get
     .in("metrics")
     .out(stringBody)
     .serverLogic { _ =>

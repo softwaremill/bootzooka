@@ -16,5 +16,5 @@ package object util {
     def lowerCased: String @@ LowerCased = s.toLowerCase(Locale.ENGLISH).taggedWith[LowerCased]
   }
 
-  type ServerEndpoints = NonEmptyList[ServerEndpoint[_, _, _, Nothing, Task]]
+  type ServerEndpoints = NonEmptyList[ServerEndpoint[_, _, _, Any, Task]]
 }

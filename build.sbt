@@ -14,9 +14,9 @@ val doobieVersion = "0.9.2"
 val http4sVersion = "0.21.7"
 val circeVersion = "0.13.0"
 val tsecVersion = "0.2.1"
-val sttpVersion = "2.2.1"
+val sttpVersion = "3.0.0-RC5"
 val prometheusVersion = "0.9.0"
-val tapirVersion = "0.16.16"
+val tapirVersion = "0.17.0-M2"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
@@ -31,14 +31,15 @@ val httpDependencies = Seq(
   "org.http4s" %% "http4s-blaze-client" % http4sVersion,
   "org.http4s" %% "http4s-circe" % http4sVersion,
   "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
-  "com.softwaremill.sttp.client" %% "async-http-client-backend-monix" % sttpVersion,
+  "com.softwaremill.sttp.client3" %% "async-http-client-backend-monix" % sttpVersion,
+  "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion
 )
 
 val monitoringDependencies = Seq(
   "io.prometheus" % "simpleclient" % prometheusVersion,
   "io.prometheus" % "simpleclient_hotspot" % prometheusVersion,
-  "com.softwaremill.sttp.client" %% "prometheus-backend" % sttpVersion
+  "com.softwaremill.sttp.client3" %% "prometheus-backend" % sttpVersion
 )
 
 val jsonDependencies = Seq(
@@ -46,7 +47,7 @@ val jsonDependencies = Seq(
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % tapirVersion,
-  "com.softwaremill.sttp.client" %% "circe" % sttpVersion
+  "com.softwaremill.sttp.client3" %% "circe" % sttpVersion
 )
 
 val loggingDependencies = Seq(
@@ -98,7 +99,7 @@ lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "2.13.2",
+  scalaVersion := "2.13.3",
   libraryDependencies ++= commonDependencies,
   uiDirectory := baseDirectory.value.getParentFile / uiProjectName,
   updateYarn := {

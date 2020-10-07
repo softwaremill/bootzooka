@@ -1,13 +1,14 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import sttp.client.{NothingT, SttpBackend}
-import sttp.client.prometheus.PrometheusBackend
+import sttp.client3.SttpBackend
+import sttp.client3.prometheus.PrometheusBackend
 import monix.eval.Task
+import sttp.client3.logging.slf4j.Slf4jLoggingBackend
 
 trait InfrastructureModule {
-  implicit lazy val sttpBackend: SttpBackend[Task, Nothing, NothingT] = new SetCorrelationIdBackend(
-    new LoggingSttpBackend[Task, Nothing, NothingT](PrometheusBackend[Task, Nothing, NothingT](baseSttpBackend))
+  implicit lazy val sttpBackend: SttpBackend[Task, Any] = new SetCorrelationIdBackend(
+    Slf4jLoggingBackend(PrometheusBackend(baseSttpBackend), includeTiming = true)
   )
 
-  def baseSttpBackend: SttpBackend[Task, Nothing, NothingT]
+  def baseSttpBackend: SttpBackend[Task, Any]
 }

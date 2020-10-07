@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.email
 
 import com.softwaremill.bootzooka.email.sender.{DummyEmailSender, EmailSender, MailgunEmailSender, SmtpEmailSender}
 import com.softwaremill.bootzooka.util.BaseModule
-import sttp.client.SttpBackend
+import sttp.client3.SttpBackend
 import doobie.util.transactor.Transactor
 import monix.eval.Task
 
@@ -14,7 +14,7 @@ trait EmailModule extends BaseModule {
   lazy val emailTemplates = new EmailTemplates()
   // depending on the configuration, creating the appropriate EmailSender instance
   lazy val emailSender: EmailSender = if (config.email.mailgun.enabled) {
-    new MailgunEmailSender(config.email.mailgun)(sttpBackend)
+    new MailgunEmailSender(config.email.mailgun, sttpBackend)
   } else if (config.email.smtp.enabled) {
     new SmtpEmailSender(config.email.smtp)
   } else {
@@ -22,5 +22,5 @@ trait EmailModule extends BaseModule {
   }
 
   def xa: Transactor[Task]
-  def sttpBackend: SttpBackend[Task, Nothing, Nothing]
+  def sttpBackend: SttpBackend[Task, Any]
 }

@@ -12,16 +12,16 @@ import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.user.UserApi.{ChangePassword_OUT, GetUser_OUT, Login_OUT, Register_OUT, UpdateUser_OUT}
 import org.http4s.Status
 import org.scalatest.concurrent.Eventually
-import sttp.client.impl.monix.TaskMonadAsyncError
-import sttp.client.testing.SttpBackendStub
-import sttp.client.{NothingT, SttpBackend}
+import sttp.client3.impl.monix.TaskMonadAsyncError
+import sttp.client3.testing.SttpBackendStub
+import sttp.client3.SttpBackend
 
 import scala.concurrent.duration._
 
 class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
   lazy val modules: MainModule = new MainModule {
     override def xa: Transactor[Task] = currentDb.xa
-    override lazy val baseSttpBackend: SttpBackend[Task, Nothing, NothingT] = SttpBackendStub(TaskMonadAsyncError)
+    override lazy val baseSttpBackend: SttpBackend[Task, Any] = SttpBackendStub(TaskMonadAsyncError)
     override lazy val config: Config = TestConfig
     override lazy val clock: Clock = testClock
   }

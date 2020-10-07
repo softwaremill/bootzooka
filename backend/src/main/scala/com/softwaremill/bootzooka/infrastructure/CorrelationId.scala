@@ -1,11 +1,11 @@
 package com.softwaremill.bootzooka.infrastructure
 
 import com.softwaremill.correlator.Http4sCorrelationMiddleware
-import sttp.client._
-import sttp.client.{Response, SttpBackend}
+import sttp.client3._
+import sttp.client3.{Response, SttpBackend}
 import monix.eval.Task
-import sttp.client.monad.MonadError
-import sttp.client.ws.WebSocketResponse
+import sttp.capabilities.Effect
+import sttp.monad.MonadError
 
 /**
   * Correlation id support. The `init()` method should be called when the application starts.
@@ -16,8 +16,8 @@ object CorrelationId extends com.softwaremill.correlator.CorrelationIdDecorator(
 /**
   * An sttp backend wrapper, which sets the current correlation id on all outgoing requests.
   */
-class SetCorrelationIdBackend(delegate: SttpBackend[Task, Nothing, NothingT]) extends SttpBackend[Task, Nothing, NothingT] {
-  override def send[T](request: Request[T, Nothing]): Task[Response[T]] = {
+class SetCorrelationIdBackend[P](delegate: SttpBackend[Task, P]) extends SttpBackend[Task, P] {
+  override def send[T, R >: P with Effect[Task]](request: Request[T, R]): Task[Response[T]] = {
     // suspending the calculation of the correlation id until the request send is evaluated
     CorrelationId()
       .map {
@@ -26,9 +26,6 @@ class SetCorrelationIdBackend(delegate: SttpBackend[Task, Nothing, NothingT]) ex
       }
       .flatMap(delegate.send)
   }
-
-  override def openWebsocket[T, WS_RESULT](request: Request[T, Nothing], handler: NothingT[WS_RESULT]): Task[WebSocketResponse[WS_RESULT]] =
-    delegate.openWebsocket(request, handler)
 
   override def close(): Task[Unit] = delegate.close()
 

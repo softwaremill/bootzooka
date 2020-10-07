@@ -14,7 +14,7 @@ class VersionApi(http: Http) {
   import VersionApi._
   import http._
 
-  val versionEndpoint: ServerEndpoint[Unit, (StatusCode, Error_OUT), Version_OUT, Nothing, Task] = baseEndpoint.get
+  val versionEndpoint: ServerEndpoint[Unit, (StatusCode, Error_OUT), Version_OUT, Any, Task] = baseEndpoint.get
     .in("version")
     .out(jsonBody[Version_OUT])
     .serverLogic { _ =>

@@ -3,13 +3,13 @@ package com.softwaremill.bootzooka.email.sender
 import com.softwaremill.bootzooka.email.{EmailData, MailgunConfig}
 import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
-import sttp.client._
+import sttp.client3._
 
 /**
   * Sends emails using the [[https://www.mailgun.com Mailgun]] service. The external http call is done using
   * [[sttp https://github.com/softwaremill/sttp]].
   */
-class MailgunEmailSender(config: MailgunConfig)(implicit sttpBackend: SttpBackend[Task, Nothing, Nothing]) extends EmailSender with StrictLogging {
+class MailgunEmailSender(config: MailgunConfig, sttpBackend: SttpBackend[Task, Any]) extends EmailSender with StrictLogging {
   override def apply(email: EmailData): Task[Unit] = {
     basicRequest.auth
       .basic("api", config.apiKey.value)
@@ -22,7 +22,7 @@ class MailgunEmailSender(config: MailgunConfig)(implicit sttpBackend: SttpBacken
           "html" -> email.content
         )
       )
-      .send()
+      .send(sttpBackend)
       .map(_ => logger.debug(s"Email to: ${email.recipient} sent"))
   }
 }
