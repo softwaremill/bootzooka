@@ -1,53 +1,60 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-class UserService {
-  static context = 'api/v1/user';
+interface UserService {
+  context: string;
+  registerUser: (params: { login: string; email: string; password: string }) => Promise<AxiosResponse<any>>;
+  login: (params: { loginOrEmail: string; password: string }) => Promise<AxiosResponse<any>>;
+  getCurrentUser: (apiKey: string) => Promise<AxiosResponse<any>>;
+  changeProfileDetails: (apiKey: string, params: { email: string; login: string }) => Promise<AxiosResponse<any>>;
+  changePassword: (
+    apiKey: string,
+    params: { currentPassword: string; newPassword: string }
+  ) => Promise<AxiosResponse<any>>;
+  _securedRequest: (apiKey: string, config: AxiosRequestConfig) => Promise<AxiosResponse<any>>;
+}
 
-  registerUser({ login, email, password }) {
-    return axios.post(`${UserService.context}/register`, { login, email, password });
-  }
+const userService: UserService = {
+  context: "api/v1/user",
 
-  login({ loginOrEmail, password }) {
-    return axios.post(`${UserService.context}/login`, { loginOrEmail, password, apiKeyValidHours: 1 });
-  }
+  registerUser(params) {
+    return axios.post(`${this.context}/register`, params);
+  },
+
+  login(params) {
+    return axios.post(`${this.context}/login`, { ...params, apiKeyValidHours: 1 });
+  },
 
   getCurrentUser(apiKey) {
     return this._securedRequest(apiKey, {
-      method: 'GET',
-      url: UserService.context
+      method: "GET",
+      url: this.context,
     });
-  }
+  },
 
-  changeProfileDetails(apiKey, { email, login }) {
+  changeProfileDetails(apiKey, params) {
     return this._securedRequest(apiKey, {
-      method: 'POST',
-      url: UserService.context,
-      data: {
-        email,
-        login
-      }
+      method: "POST",
+      url: this.context,
+      data: params,
     });
-  }
+  },
 
-  changePassword(apiKey, { currentPassword, newPassword }) {
+  changePassword(apiKey, params) {
     return this._securedRequest(apiKey, {
-      method: 'POST',
-      url: `${UserService.context}/changepassword`,
-      data: {
-        currentPassword,
-        newPassword
-      }
+      method: "POST",
+      url: `${this.context}/changepassword`,
+      data: params,
     });
-  }
+  },
 
   _securedRequest(apiKey, config) {
     return axios.request({
       headers: {
-        Authorization: `Bearer ${apiKey}`
+        Authorization: `Bearer ${apiKey}`,
       },
-      ...config
+      ...config,
     });
-  }
-}
+  },
+};
 
-export default UserService;
+export default userService;

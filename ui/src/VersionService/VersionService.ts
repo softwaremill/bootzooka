@@ -1,11 +1,15 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from "axios";
 
-class VersionService {
-  static context = 'admin';
-
-  getVersion() {
-    return axios.get(`${VersionService.context}/version`);
-  }
+interface VersionService {
+  context: string;
+  getVersion: () => Promise<AxiosResponse<any>>;
 }
 
-export default VersionService;
+const versionService: VersionService = {
+  context: "admin",
+  getVersion() {
+    return axios.get(`${this.context}/version`);
+  },
+};
+
+export default versionService;
