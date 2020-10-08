@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { shallow } from 'enzyme';
-import NavBar from './NavBar';
+import Top from './Top';
 
 describe('structure when the user is not logged in', () => {
   it('should contain 4 NavLinks', () => {
-    const wrapper = shallow(<NavBar isLoggedIn={false} logout={jest.fn()} />);
+    const wrapper = shallow(<Top isLoggedIn={false} logout={jest.fn()} />);
     const navLinks = wrapper.find(NavLink);
     expect(navLinks.length).toBe(4);
     expect(navLinks.get(0).props.to).toBe('/');
@@ -17,7 +17,7 @@ describe('structure when the user is not logged in', () => {
 
 describe('structure when the user is logged in', () => {
   it('should contain 3 NavLinks and one anchor element', () => {
-    const wrapper = shallow(<NavBar isLoggedIn={true} logout={jest.fn()} user={{ login: 'admin' }} />);
+    const wrapper = shallow(<Top isLoggedIn={true} logout={jest.fn()} user={{ login: 'admin' }} />);
     const navLinks = wrapper.find(NavLink);
     expect(navLinks.length).toBe(3);
     expect(navLinks.get(0).props.to).toBe('/');

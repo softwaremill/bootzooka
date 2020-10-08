@@ -1,18 +1,20 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Footer from "./Footer/Footer";
-import NavBar from "./NavBar/NavBar";
+import Top from "./Top/Top";
 import Welcome from "./Welcome/Welcome";
-import "./App.scss";
+import Container from "react-bootstrap/Container";
 
 const App: React.FC = () => {
   return (
     <div className="App">
       <Router>
-        <NavBar user={{ login: "qwe" }} isLoggedIn={true} logout={() => {}} />
-        <Switch>
-          <Route exact path="/" component={Welcome} />
-        </Switch>
+        <Top user={{ login: "qwe" }} isLoggedIn={true} logout={() => {}} />
+        <Container>
+          <Switch>
+            <Route exact path="/" component={Welcome} />
+          </Switch>
+        </Container>
         <Footer />
       </Router>
     </div>

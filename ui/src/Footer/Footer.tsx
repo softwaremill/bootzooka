@@ -1,4 +1,7 @@
 import React from "react";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import versionService from "../VersionService/VersionService";
 import "./Footer.scss";
 
@@ -18,13 +21,24 @@ const Footer: React.FC = () => {
   }, [setVersion]);
 
   return (
-    <div className="Footer">
-      <p>
-        Bootzooka - application scaffolding by <a href="http://softwaremill.com">SoftwareMill</a>, sources available on{" "}
-        <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
-      </p>
-      <p>{version}</p>
-    </div>
+    <Container fluid className="fixed-bottom bg-light">
+      <Row>
+        <Col sm={6}>
+          <p>
+            <small>
+              Bootzooka - application scaffolding by <a href="http://softwaremill.com">SoftwareMill</a>, sources
+              available on <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
+            </small>
+          </p>
+        </Col>
+
+        <Col sm={6}>
+          <p>
+            <small>{version}</small>
+          </p>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
