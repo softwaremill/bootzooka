@@ -1,0 +1,52 @@
+@import "styles/skeleton.css";
+@import "App.css";
+@import "Login/Login.css";
+@import "Footer/Footer.css";
+@import "ForkMe/ForkMe.css";
+@import "NavBar/NavBar.css";
+@import "NotFound/NotFound.css";
+@import "PasswordDetails/PasswordDetails.css";
+@import "PasswordReset/PasswordReset.css";
+@import "ProfileDetails/ProfileDetails.css";
+@import "Register/Register.css";
+@import "RecoverLostPassword/RecoverLostPassword.css";
+@import "Spinner/Spinner.css";
+@import "Welcome/Welcome.css";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  cursor: pointer;
+}
+
+.validation-message {
+  color: crimson;
+  margin-bottom: 1em;
+}
+
+input[type="submit"],
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+}
+
+input[type="submit"]:disabled,
+input[type="submit"]:disabled:hover {
+  background-color: gainsboro;
+  border-color: gainsboro;
+  cursor: not-allowed;
+}

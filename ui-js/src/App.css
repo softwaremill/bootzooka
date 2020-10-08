@@ -1,0 +1,22 @@
+.App {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.Main {
+  flex: 1;
+}
+
+.CommonForm {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 95%;
+}
+
+@media (min-width: 768px) {
+  .CommonForm {
+    width: 25%;
+  }
+}
