@@ -1,0 +1,27 @@
+.Welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.Welcome__footer {
+  display: flex;
+  align-items: center;
+}
+
+.Welcome h3 {
+  margin-top: 1em;
+}
+
+.Welcome a {
+  text-decoration: none;
+}
+
+.Welcome p {
+  margin: 0 0 1em 0;
+}
+
+.sml-logo {
+  width: 20em;
+}
