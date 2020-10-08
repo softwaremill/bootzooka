@@ -1,14 +1,15 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 interface VersionService {
   context: string;
-  getVersion: () => Promise<AxiosResponse<any>>;
+  getVersion: () => Promise<any>;
 }
 
 const versionService: VersionService = {
   context: "admin",
-  getVersion() {
-    return axios.get(`${this.context}/version`);
+  async getVersion() {
+    const { data } = await axios.get(`${this.context}/version`);
+    return data;
   },
 };
 
