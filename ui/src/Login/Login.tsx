@@ -8,17 +8,12 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
 
-interface LoginProps {
-  isLoggedIn: boolean;
-  onLoggedIn: (apiKey: string) => void;
-}
-
 interface LoginParams {
   loginOrEmail: string;
   password: string;
 }
 
-const Login: React.FC<LoginProps> = ({ isLoggedIn, onLoggedIn }) => {
+const Login: React.FC = () => {
   const {
     dispatch,
     state: { user },

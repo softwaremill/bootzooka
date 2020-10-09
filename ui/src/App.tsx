@@ -5,12 +5,13 @@ import Top from "./Top/Top";
 import Welcome from "./Welcome/Welcome";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
+import SecretMain from "./SecretMain/SecretMain";
 import { AppContext } from "./AppContext/AppContext";
 import userService from "./UserService/UserService";
 
 const App: React.FC = () => {
   const { dispatch, state } = React.useContext(AppContext);
-  const { apiKey } = state;
+  const { apiKey, user } = state;
 
   React.useEffect(() => {
     const getUserData = async () => {
@@ -51,12 +52,24 @@ const App: React.FC = () => {
     <Router>
       <Top user={{ login: "qwe" }} isLoggedIn={false} logout={() => {}} />
       <Switch>
-        <Route exact path="/" component={Welcome} />
+        <Route exact path="/">
+          <Welcome />
+        </Route>
         <Route path="/login">
-          <Login onLoggedIn={(q) => console.log(q)} isLoggedIn={false} />
+          <Login />
         </Route>
         <Route path="/register">
           <Register />
+        </Route>
+        {!!user && (
+          <>
+            <Route path="/main">
+              <SecretMain />
+            </Route>
+          </>
+        )}
+        <Route path="/">
+          <Login />
         </Route>
       </Switch>
       <Footer />
