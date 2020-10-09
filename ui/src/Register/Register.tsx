@@ -6,7 +6,7 @@ import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import { AppContext, Message } from "../AppContext/AppContext";
+import { AppContext } from "../AppContext/AppContext";
 
 interface RegisterParams {
   login: string;
@@ -28,22 +28,22 @@ const Register: React.FC = () => {
       .required("Required"),
   });
 
-  const addMessage = (message: Message) => {
-    dispatch({ type: "ADD_MESSAGE", message });
-  };
-
   const onSubmit = async (values: RegisterParams) => {
     try {
       const { login, email, password } = values;
       const { apiKey } = await userService.registerUser({ login, email, password });
-      console.log(apiKey);
-      // TODO save the apiKey in localStorage; read it in the UserService/axios request transformer?
-      // remove it from localStorage on logout
+      dispatch({
+        type: "SET_API_KEY",
+        apiKey,
+      });
+      dispatch({ type: "ADD_MESSAGE", message: { content: "Successfully registered.", variant: "success" } });
       setRegistered(true);
-      addMessage({ content: "Successfully registered.", variant: "success" });
     } catch (error) {
       const response = error?.response?.data?.error || error.message;
-      addMessage({ content: `Could not register new user! ${response}`, variant: "danger" });
+      dispatch({
+        type: "ADD_MESSAGE",
+        message: { content: `Could not register new user! ${response}`, variant: "danger" },
+      });
       console.error(error);
     }
   };

@@ -15,11 +15,14 @@ const Notifications: React.FC = () => {
 
   return (
     <Container className="my-3">
-      {messages.map(({ content, variant }, index) => (
-        <Alert key={index} variant={variant} onClose={() => dismissMessage(index)} dismissible>
-          {content}
-        </Alert>
-      ))}
+      {messages
+        .map(({ content, variant }, index) => (
+          <Alert key={index} variant={variant} onClose={() => dismissMessage(index)} dismissible>
+            {content}
+          </Alert>
+        ))
+        .slice(-5)
+        .reverse()}
     </Container>
   );
 };

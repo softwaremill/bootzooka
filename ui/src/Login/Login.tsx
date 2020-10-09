@@ -6,7 +6,7 @@ import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import { AppContext, Message } from "../AppContext/AppContext";
+import { AppContext } from "../AppContext/AppContext";
 
 interface LoginProps {
   isLoggedIn: boolean;
@@ -19,24 +19,29 @@ interface LoginParams {
 }
 
 const Login: React.FC<LoginProps> = ({ isLoggedIn, onLoggedIn }) => {
-  const { dispatch } = React.useContext(AppContext);
+  const {
+    dispatch,
+    state: { user },
+  } = React.useContext(AppContext);
 
   const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
     loginOrEmail: Yup.string().required("Required"),
     password: Yup.string().required("Required"),
   });
 
-  const addMessage = (message: Message) => {
-    dispatch({ type: "ADD_MESSAGE", message });
-  };
-
   const onSubmit = async (values: LoginParams) => {
     try {
       const { apiKey } = await userService.login(values);
-      await onLoggedIn(apiKey);
-      addMessage({ content: "Successfully logged in.", variant: "success" });
+      dispatch({ type: "SET_API_KEY", apiKey });
+      dispatch({
+        type: "ADD_MESSAGE",
+        message: { content: "Successfully logged in.", variant: "success" },
+      });
     } catch (error) {
-      addMessage({ content: "Incorrect login/email or password!", variant: "danger" });
+      dispatch({
+        type: "ADD_MESSAGE",
+        message: { content: "Incorrect login/email or password!", variant: "danger" },
+      });
       console.error(error);
     }
   };
@@ -50,14 +55,13 @@ const Login: React.FC<LoginProps> = ({ isLoggedIn, onLoggedIn }) => {
     validationSchema,
   });
 
-  if (isLoggedIn) return <Redirect to="/main" />;
+  if (user) return <Redirect to="/main" />;
 
   return (
     <Container className="py-5">
       <h3>Please sign in</h3>
       <Form
         onSubmit={(e) => {
-          console.log("qwe");
           formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
         }}
       >
