@@ -2,49 +2,51 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 interface UserService {
   context: string;
-  registerUser: (params: { login: string; email: string; password: string }) => Promise<AxiosResponse<any>>;
-  login: (params: { loginOrEmail: string; password: string }) => Promise<AxiosResponse<any>>;
-  getCurrentUser: (apiKey: string) => Promise<AxiosResponse<any>>;
-  changeProfileDetails: (apiKey: string, params: { email: string; login: string }) => Promise<AxiosResponse<any>>;
-  changePassword: (
-    apiKey: string,
-    params: { currentPassword: string; newPassword: string }
-  ) => Promise<AxiosResponse<any>>;
+  registerUser: (params: { login: string; email: string; password: string }) => Promise<any>;
+  login: (params: { loginOrEmail: string; password: string }) => Promise<any>;
+  getCurrentUser: (apiKey: string) => Promise<any>;
+  changeProfileDetails: (apiKey: string, params: { email: string; login: string }) => Promise<any>;
+  changePassword: (apiKey: string, params: { currentPassword: string; newPassword: string }) => Promise<any>;
   _securedRequest: (apiKey: string, config: AxiosRequestConfig) => Promise<AxiosResponse<any>>;
 }
 
 const userService: UserService = {
   context: "api/v1/user",
 
-  registerUser(params) {
-    return axios.post(`${this.context}/register`, params);
+  async registerUser(params) {
+    const { data } = await axios.post(`${this.context}/register`, params);
+    return data;
   },
 
-  login(params) {
-    return axios.post(`${this.context}/login`, { ...params, apiKeyValidHours: 1 });
+  async login(params) {
+    const { data } = await axios.post(`${this.context}/login`, { ...params, apiKeyValidHours: 1 });
+    return data;
   },
 
-  getCurrentUser(apiKey) {
-    return this._securedRequest(apiKey, {
+  async getCurrentUser(apiKey) {
+    const { data } = await this._securedRequest(apiKey, {
       method: "GET",
       url: this.context,
     });
+    return data;
   },
 
-  changeProfileDetails(apiKey, params) {
-    return this._securedRequest(apiKey, {
+  async changeProfileDetails(apiKey, params) {
+    const { data } = await this._securedRequest(apiKey, {
       method: "POST",
       url: this.context,
       data: params,
     });
+    return data;
   },
 
-  changePassword(apiKey, params) {
-    return this._securedRequest(apiKey, {
+  async changePassword(apiKey, params) {
+    const { data } = await this._securedRequest(apiKey, {
       method: "POST",
       url: `${this.context}/changepassword`,
       data: params,
     });
+    return data;
   },
 
   _securedRequest(apiKey, config) {

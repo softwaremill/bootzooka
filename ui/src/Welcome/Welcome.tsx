@@ -1,9 +1,12 @@
 import React from "react";
-import logo from "./sml_2.png";
-import "./Welcome.scss";
+// import logo from "./sml_2.png";
+// import Image from "react-bootstrap/Image";
+// import Row from "react-bootstrap/Row";
+// import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
 
 const Welcome: React.FC = () => (
-  <div className="Welcome">
+  <Container className="py-5">
     <h3>Hi there! Welcome to Bootzooka!</h3>
     <p>In this template application you can register as a new user, log in and later manage your user details.</p>
     <p>
@@ -17,13 +20,12 @@ const Welcome: React.FC = () => (
       </a>
       .
     </p>
-    <div className="Welcome__footer">
-      <h4>brought to you by</h4>
-      <a href="http://softwaremill.com" rel="noopener noreferrer" target="_blank">
-        <img src={logo} className="sml-logo" alt="SoftwareMill" />
-      </a>
-    </div>
-  </div>
+
+    <small>brought to you by</small>
+    <a href="http://softwaremill.com" rel="noopener noreferrer" target="_blank">
+      {/* <Image className="sm-3" fluid src={logo} alt="SoftwareMill" /> */}
+    </a>
+  </Container>
 );
 
 export default Welcome;

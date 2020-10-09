@@ -3,21 +3,22 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Footer from "./Footer/Footer";
 import Top from "./Top/Top";
 import Welcome from "./Welcome/Welcome";
-import Container from "react-bootstrap/Container";
+import Login from "./Login/Login";
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <Router>
-        <Top user={{ login: "qwe" }} isLoggedIn={true} logout={() => {}} />
-        <Container>
-          <Switch>
-            <Route exact path="/" component={Welcome} />
-          </Switch>
-        </Container>
-        <Footer />
-      </Router>
-    </div>
+    <Router>
+      <Top user={{ login: "qwe" }} isLoggedIn={false} logout={() => {}} />
+
+      <Switch>
+        <Route exact path="/" component={Welcome} />
+        <Route path="/login">
+          <Login onLoggedIn={(q) => console.log(q)} notifyError={(q) => console.log(q)} isLoggedIn={false} />
+        </Route>
+      </Switch>
+
+      <Footer />
+    </Router>
   );
 };
 
