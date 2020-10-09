@@ -8,10 +8,11 @@ import Register from "./Register/Register";
 import SecretMain from "./SecretMain/SecretMain";
 import { AppContext } from "./AppContext/AppContext";
 import userService from "./UserService/UserService";
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 
 const App: React.FC = () => {
   const { dispatch, state } = React.useContext(AppContext);
-  const { apiKey, user } = state;
+  const { apiKey } = state;
 
   React.useEffect(() => {
     const getUserData = async () => {
@@ -61,13 +62,11 @@ const App: React.FC = () => {
         <Route path="/register">
           <Register />
         </Route>
-        {!!user && (
-          <>
-            <Route path="/main">
-              <SecretMain />
-            </Route>
-          </>
-        )}
+
+        <ProtectedRoute path="/main">
+          <SecretMain />
+        </ProtectedRoute>
+
         <Route path="/">
           <Login />
         </Route>
