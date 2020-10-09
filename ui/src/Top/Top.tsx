@@ -3,7 +3,6 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
-import "./Top.scss";
 
 interface NavBarProps {
   isLoggedIn: boolean;
@@ -17,7 +16,7 @@ const Top: React.FC<NavBarProps> = ({ isLoggedIn, logout, user }) => (
       <LinkContainer exact to="/">
         <Nav.Link>Bootzooka</Nav.Link>
       </LinkContainer>
-      <LinkContainer exact to="/main">
+      <LinkContainer to="/main">
         <Nav.Link>Home</Nav.Link>
       </LinkContainer>
     </Nav>
