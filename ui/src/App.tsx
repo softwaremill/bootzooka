@@ -4,6 +4,7 @@ import Footer from "./Footer/Footer";
 import Top from "./Top/Top";
 import Welcome from "./Welcome/Welcome";
 import Login from "./Login/Login";
+import Register from "./Register/Register";
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,9 @@ const App: React.FC = () => {
         <Route exact path="/" component={Welcome} />
         <Route path="/login">
           <Login onLoggedIn={(q) => console.log(q)} notifyError={(q) => console.log(q)} isLoggedIn={false} />
+        </Route>
+        <Route path="/register">
+          <Register notifySuccess={(q) => console.log(q)} notifyError={(q) => console.log(q)} />
         </Route>
       </Switch>
 

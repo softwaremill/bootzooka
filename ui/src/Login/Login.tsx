@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
-import { useFormik, FormikErrors } from "formik";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -18,13 +19,10 @@ interface LoginParams {
 }
 
 const Login: React.FC<LoginProps> = ({ isLoggedIn, notifyError, onLoggedIn }) => {
-  const validate = ({ loginOrEmail, password }: LoginParams) => {
-    const errors: FormikErrors<LoginParams> = {};
-    if (!loginOrEmail) errors.loginOrEmail = "Required";
-    if (!password) errors.password = "Required";
-
-    return errors;
-  };
+  const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
+    loginOrEmail: Yup.string().required("Required"),
+    password: Yup.string().required("Required"),
+  });
 
   const onSubmit = async (values: LoginParams) => {
     try {
@@ -36,13 +34,13 @@ const Login: React.FC<LoginProps> = ({ isLoggedIn, notifyError, onLoggedIn }) =>
     }
   };
 
-  const formik = useFormik({
+  const formik = useFormik<LoginParams>({
     initialValues: {
       loginOrEmail: "",
       password: "",
     },
     onSubmit,
-    validate,
+    validationSchema,
   });
 
   if (isLoggedIn) return <Redirect to="/main" />;
@@ -50,7 +48,12 @@ const Login: React.FC<LoginProps> = ({ isLoggedIn, notifyError, onLoggedIn }) =>
   return (
     <Container className="py-5">
       <h3>Please sign in</h3>
-      <Form onSubmit={(e) => formik.handleSubmit(e as React.FormEvent<HTMLFormElement>)}>
+      <Form
+        onSubmit={(e) => {
+          console.log("qwe");
+          formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
+        }}
+      >
         <Form.Group>
           <Form.Label>Login or email</Form.Label>
           <Form.Control
@@ -64,6 +67,7 @@ const Login: React.FC<LoginProps> = ({ isLoggedIn, notifyError, onLoggedIn }) =>
           />
           <Form.Control.Feedback type="invalid">{formik.errors.loginOrEmail}</Form.Control.Feedback>
         </Form.Group>
+
         <Form.Group>
           <Form.Label>Passsword</Form.Label>
           <Form.Control
@@ -77,6 +81,7 @@ const Login: React.FC<LoginProps> = ({ isLoggedIn, notifyError, onLoggedIn }) =>
           />
           <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
         </Form.Group>
+
         <Button type="submit">Sign In</Button>
         <Link className="btn btn-link" to="/recover-lost-password">
           Forgot password?
