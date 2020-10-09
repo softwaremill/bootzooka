@@ -27,8 +27,8 @@ const initialAppstate: AppState = {
 type AppAction =
   | { type: "ADD_MESSAGE"; message: Message }
   | { type: "REMOVE_MESSAGE"; messageIndex: number }
-  | { type: "SET_API_KEY"; apiKey: string }
-  | { type: "SET_USER_DATA"; user: User };
+  | { type: "SET_API_KEY"; apiKey: string | null }
+  | { type: "SET_USER_DATA"; user: User | null };
 
 const UIReducer = (state: AppState, action: AppAction): AppState => {
   switch (action.type) {

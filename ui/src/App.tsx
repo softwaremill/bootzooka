@@ -51,7 +51,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Top user={{ login: "qwe" }} isLoggedIn={false} logout={() => {}} />
+      <Top />
       <Switch>
         <Route exact path="/">
           <Welcome />
