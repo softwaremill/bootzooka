@@ -6,10 +6,10 @@ import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import { AppContext, Message } from "../AppContext/AppContext";
 
 interface LoginProps {
   isLoggedIn: boolean;
-  notifyError: (error: string) => void;
   onLoggedIn: (apiKey: string) => void;
 }
 
@@ -18,18 +18,25 @@ interface LoginParams {
   password: string;
 }
 
-const Login: React.FC<LoginProps> = ({ isLoggedIn, notifyError, onLoggedIn }) => {
+const Login: React.FC<LoginProps> = ({ isLoggedIn, onLoggedIn }) => {
+  const { dispatch } = React.useContext(AppContext);
+
   const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
     loginOrEmail: Yup.string().required("Required"),
     password: Yup.string().required("Required"),
   });
 
+  const addMessage = (message: Message) => {
+    dispatch({ type: "ADD_MESSAGE", message });
+  };
+
   const onSubmit = async (values: LoginParams) => {
     try {
       const { apiKey } = await userService.login(values);
       await onLoggedIn(apiKey);
+      addMessage({ content: "Successfully logged in.", variant: "success" });
     } catch (error) {
-      notifyError("Incorrect login/email or password!");
+      addMessage({ content: "Incorrect login/email or password!", variant: "danger" });
       console.error(error);
     }
   };

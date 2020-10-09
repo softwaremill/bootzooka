@@ -6,11 +6,7 @@ import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-
-interface RegisterProps {
-  notifySuccess: (error: string) => void;
-  notifyError: (error: string) => void;
-}
+import { AppContext, Message } from "../AppContext/AppContext";
 
 interface RegisterParams {
   login: string;
@@ -19,8 +15,9 @@ interface RegisterParams {
   repeatedPassword: string;
 }
 
-const Register: React.FC<RegisterProps> = ({ notifyError, notifySuccess }) => {
+const Register: React.FC = () => {
   const [isRegistered, setRegistered] = React.useState(false);
+  const { dispatch } = React.useContext(AppContext);
 
   const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.object({
     login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -31,6 +28,10 @@ const Register: React.FC<RegisterProps> = ({ notifyError, notifySuccess }) => {
       .required("Required"),
   });
 
+  const addMessage = (message: Message) => {
+    dispatch({ type: "ADD_MESSAGE", message });
+  };
+
   const onSubmit = async (values: RegisterParams) => {
     try {
       const { login, email, password } = values;
@@ -39,9 +40,10 @@ const Register: React.FC<RegisterProps> = ({ notifyError, notifySuccess }) => {
       // TODO save the apiKey in localStorage; read it in the UserService/axios request transformer?
       // remove it from localStorage on logout
       setRegistered(true);
-      notifySuccess("Successfully registered.");
+      addMessage({ content: "Successfully registered.", variant: "success" });
     } catch (error) {
-      notifyError("Could not register new user!");
+      const response = error?.response?.data?.error || error.message;
+      addMessage({ content: `Could not register new user! ${response}`, variant: "danger" });
       console.error(error);
     }
   };

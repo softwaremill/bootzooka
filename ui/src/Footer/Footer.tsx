@@ -3,15 +3,21 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import versionService from "../VersionService/VersionService";
+import Notifications from "../Notifications/Notifications";
+
+interface VersionData {
+  buildDate: string;
+  buildSha: string;
+}
 
 const Footer: React.FC = () => {
-  const [version, setVersion] = React.useState("");
+  const [version, setVersion] = React.useState<VersionData>();
 
   React.useEffect(() => {
     const fetchVersion = async () => {
       try {
-        const { buildDate, buildSha } = await versionService.getVersion();
-        setVersion(`${buildDate}, ${buildSha}`);
+        const data = await versionService.getVersion();
+        setVersion(data);
       } catch (error) {
         console.error(error);
       }
@@ -20,21 +26,24 @@ const Footer: React.FC = () => {
   }, [setVersion]);
 
   return (
-    <Container fluid className="fixed-bottom bg-light">
+    <Container fluid className="fixed-bottom">
       <Row>
+        <Notifications />
+      </Row>
+      <Row className="bg-light py-3">
         <Col sm={6}>
-          <p>
-            <small>
-              Bootzooka - application scaffolding by <a href="http://softwaremill.com">SoftwareMill</a>, sources
-              available on <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
-            </small>
-          </p>
+          <small>
+            Bootzooka - application scaffolding by <a href="http://softwaremill.com">SoftwareMill</a>,
+            <br /> sources available on <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
+          </small>
         </Col>
 
-        <Col sm={6}>
-          <p>
-            <small>{version}</small>
-          </p>
+        <Col sm={6} className="text-right">
+          <small>
+            <strong>build date:</strong> {version?.buildDate}
+            <br />
+            <strong>build sha:</strong> {version?.buildSha}
+          </small>
         </Col>
       </Row>
     </Container>
