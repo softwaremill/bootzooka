@@ -8,3 +8,4 @@ target/
 data/
 *.bloop
 *.metals
+.bsp
