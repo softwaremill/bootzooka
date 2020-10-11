@@ -78,7 +78,6 @@ const Register: React.FC = () => {
           <Form.Control
             type="text"
             name="login"
-            placeholder="Login"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.login}
@@ -92,7 +91,6 @@ const Register: React.FC = () => {
           <Form.Control
             type="text"
             name="email"
-            placeholder="Email address"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.email}
@@ -106,7 +104,6 @@ const Register: React.FC = () => {
           <Form.Control
             type="password"
             name="password"
-            placeholder="Password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
@@ -120,7 +117,6 @@ const Register: React.FC = () => {
           <Form.Control
             type="password"
             name="repeatedPassword"
-            placeholder="Repeat Password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.repeatedPassword}

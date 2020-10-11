@@ -30,7 +30,7 @@ type AppAction =
   | { type: "SET_API_KEY"; apiKey: string | null }
   | { type: "SET_USER_DATA"; user: User | null };
 
-const UIReducer = (state: AppState, action: AppAction): AppState => {
+const AppReducer = (state: AppState, action: AppAction): AppState => {
   switch (action.type) {
     case "ADD_MESSAGE":
       return immer(state, (draftState) => {
@@ -63,7 +63,7 @@ export const AppContext = React.createContext<{
 });
 
 export const AppContextProvider: React.FC = ({ children }) => {
-  const [state, dispatch] = React.useReducer(UIReducer, initialAppstate);
+  const [state, dispatch] = React.useReducer(AppReducer, initialAppstate);
 
   return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
 };

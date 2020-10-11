@@ -65,7 +65,6 @@ const Login: React.FC = () => {
           <Form.Control
             type="text"
             name="loginOrEmail"
-            placeholder="Login or email"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.loginOrEmail}
@@ -79,7 +78,6 @@ const Login: React.FC = () => {
           <Form.Control
             type="password"
             name="password"
-            placeholder="Password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
