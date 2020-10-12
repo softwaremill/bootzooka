@@ -11,6 +11,7 @@ import PasswordDetails from "./PasswordDetails/PasswordDetails";
 import RecoverLostPassword from "./RecoverLostPassword/RecoverLostPassword";
 import PasswordReset from "./PasswordReset/PasswordReset";
 import NotFound from "./NotFound/NotFound";
+import ForkMe from "./ForkMe/ForkMe";
 import { AppContext } from "./AppContext/AppContext";
 import userService from "./UserService/UserService";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
@@ -78,35 +79,37 @@ const App: React.FC = () => {
   return (
     <Router>
       <Top />
-      <Switch>
-        <Route exact path="/">
-          <Welcome />
-        </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Route path="/recover-lost-password">
-          <RecoverLostPassword />
-        </Route>
-        <Route path="/password-reset">
-          <PasswordReset />
-        </Route>
+      <ForkMe>
+        <Switch>
+          <Route exact path="/">
+            <Welcome />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/recover-lost-password">
+            <RecoverLostPassword />
+          </Route>
+          <Route path="/password-reset">
+            <PasswordReset />
+          </Route>
 
-        <ProtectedRoute path="/main">
-          <SecretMain />
-        </ProtectedRoute>
-        <ProtectedRoute path="/profile">
-          <ProfileDetails />
-          <PasswordDetails />
-        </ProtectedRoute>
+          <ProtectedRoute path="/main">
+            <SecretMain />
+          </ProtectedRoute>
+          <ProtectedRoute path="/profile">
+            <ProfileDetails />
+            <PasswordDetails />
+          </ProtectedRoute>
 
-        <Route>
-          <NotFound />
-        </Route>
-      </Switch>
+          <Route>
+            <NotFound />
+          </Route>
+        </Switch>
+      </ForkMe>
       <Footer />
     </Router>
   );
