@@ -81,6 +81,7 @@ const Register: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.login}
+            isValid={!formik.errors.login && formik.touched.login}
             isInvalid={!!formik.errors.login && formik.touched.login}
           />
           <Form.Control.Feedback type="invalid">{formik.errors.login}</Form.Control.Feedback>
@@ -94,6 +95,7 @@ const Register: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.email}
+            isValid={!formik.errors.email && formik.touched.email}
             isInvalid={!!formik.errors.email && formik.touched.email}
           />
           <Form.Control.Feedback type="invalid">{formik.errors.email}</Form.Control.Feedback>
@@ -107,6 +109,7 @@ const Register: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
+            isValid={!formik.errors.password && formik.touched.password}
             isInvalid={!!formik.errors.password && formik.touched.password}
           />
           <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
@@ -120,6 +123,7 @@ const Register: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.repeatedPassword}
+            isValid={!formik.errors.repeatedPassword && formik.touched.repeatedPassword}
             isInvalid={!!formik.errors.repeatedPassword && formik.touched.repeatedPassword}
           />
           <Form.Control.Feedback type="invalid">{formik.errors.repeatedPassword}</Form.Control.Feedback>

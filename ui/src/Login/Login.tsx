@@ -68,6 +68,7 @@ const Login: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.loginOrEmail}
+            isValid={!formik.errors.loginOrEmail && formik.touched.loginOrEmail}
             isInvalid={!!formik.errors.loginOrEmail && formik.touched.loginOrEmail}
           />
           <Form.Control.Feedback type="invalid">{formik.errors.loginOrEmail}</Form.Control.Feedback>
@@ -81,6 +82,7 @@ const Login: React.FC = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
+            isValid={!formik.errors.password && formik.touched.password}
             isInvalid={!!formik.errors.password && formik.touched.password}
           />
           <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
