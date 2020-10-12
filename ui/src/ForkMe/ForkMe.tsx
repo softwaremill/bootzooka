@@ -9,7 +9,7 @@ const ForkMe: React.FC = ({ children }) => (
     <Row className="position-relative">
       {children}
       <a href="https://github.com/softwaremill/bootzooka" target="_blank" rel="noopener noreferrer">
-        <Image style={{ position: "absolute", top: 0, right: 0 }} src={forkMeOrange} />
+        <Image style={{ position: "absolute", top: 0, right: 0 }} src={forkMeOrange} alt="fork me on github" />
       </a>
     </Row>
   </Container>
