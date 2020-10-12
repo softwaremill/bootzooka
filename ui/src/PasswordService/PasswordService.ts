@@ -1,21 +1,22 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 interface PasswordService {
   context: string;
-  claimPasswordReset: (params: { loginOrEmail: string }) => Promise<AxiosResponse<any>>;
-  resetPassword: (params: { code: string; password: string }) => Promise<AxiosResponse<any>>;
+  claimPasswordReset: (params: { loginOrEmail: string }) => Promise<any>;
+  resetPassword: (params: { code: string; password: string }) => Promise<any>;
 }
 
 const passwordSerwice: PasswordService = {
   context: "api/v1/passwordreset",
 
-  // TODO extract to a separate service, add unit tests
-  claimPasswordReset(params) {
-    return axios.post(`${this.context}/forgot`, params);
+  async claimPasswordReset(params) {
+    const { data } = await axios.post(`${this.context}/forgot`, params);
+    return data;
   },
 
-  resetPassword(params) {
-    return axios.post(`${this.context}/reset`, params);
+  async resetPassword(params) {
+    const { data } = await axios.post(`${this.context}/reset`, params);
+    return data;
   },
 };
 
