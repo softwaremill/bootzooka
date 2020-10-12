@@ -28,34 +28,36 @@ const Top: React.FC = () => {
   };
 
   return (
-    <Navbar variant="dark" bg="secondary" sticky="top" className="justify-content-between">
-      <Nav>
-        <LinkContainer exact to="/">
-          <Nav.Link>Bootzooka</Nav.Link>
-        </LinkContainer>
-        <LinkContainer to="/main">
-          <Nav.Link>Home</Nav.Link>
-        </LinkContainer>
-      </Nav>
-      <Nav>
-        {loggedIn && user ? (
-          <>
-            <LinkContainer to="/profile">
-              <Nav.Link>Logged in as {user.login}</Nav.Link>
-            </LinkContainer>
-            <Button onClick={handleLogOut}>Logout</Button>
-          </>
-        ) : (
-          <>
-            <LinkContainer to="/register">
-              <Nav.Link>Register</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/login">
-              <Nav.Link>Login</Nav.Link>
-            </LinkContainer>
-          </>
-        )}
-      </Nav>
+    <Navbar variant="dark" bg="secondary" sticky="top" collapseOnSelect expand="lg">
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="d-flex flex-grow-1 justify-content-between">
+          <LinkContainer exact to="/">
+            <Nav.Link>Bootzooka</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/main">
+            <Nav.Link>Home</Nav.Link>
+          </LinkContainer>
+          <div className="flex-grow-1" />
+          {loggedIn && user ? (
+            <>
+              <LinkContainer to="/profile">
+                <Nav.Link>Logged in as {user.login}</Nav.Link>
+              </LinkContainer>
+              <Button onClick={handleLogOut}>Logout</Button>
+            </>
+          ) : (
+            <>
+              <LinkContainer to="/register">
+                <Nav.Link>Register</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/login">
+                <Nav.Link>Login</Nav.Link>
+              </LinkContainer>
+            </>
+          )}
+        </Nav>
+      </Navbar.Collapse>
     </Navbar>
   );
 };
