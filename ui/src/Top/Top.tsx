@@ -28,7 +28,7 @@ const Top: React.FC = () => {
   };
 
   return (
-    <Navbar variant="dark" bg="dark" sticky="top" className="justify-content-between">
+    <Navbar variant="dark" bg="secondary" sticky="top" className="justify-content-between">
       <Nav>
         <LinkContainer exact to="/">
           <Nav.Link>Bootzooka</Nav.Link>

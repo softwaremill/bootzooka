@@ -38,8 +38,8 @@ const Footer: React.FC = () => {
           </small>
         </Col>
 
-        <Col sm={6} className="text-right">
-          <small>
+        <Col sm={6} className="text-right" >
+          <small style={{wordBreak:'break-all'}}>
             <strong>build date:</strong> {version?.buildDate}
             <br />
             <strong>build sha:</strong> {version?.buildSha}
