@@ -8,6 +8,9 @@ import Register from "./Register/Register";
 import SecretMain from "./SecretMain/SecretMain";
 import ProfileDetails from "./ProfileDetails/ProfileDetails";
 import PasswordDetails from "./PasswordDetails/PasswordDetails";
+import RecoverLostPassword from "./RecoverLostPassword/RecoverLostPassword";
+import PasswordReset from "./PasswordReset/PasswordReset";
+import NotFound from "./NotFound/NotFound";
 import { AppContext } from "./AppContext/AppContext";
 import userService from "./UserService/UserService";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
@@ -85,6 +88,12 @@ const App: React.FC = () => {
         <Route path="/register">
           <Register />
         </Route>
+        <Route path="/recover-lost-password">
+          <RecoverLostPassword />
+        </Route>
+        <Route path="/password-reset">
+          <PasswordReset />
+        </Route>
 
         <ProtectedRoute path="/main">
           <SecretMain />
@@ -94,8 +103,8 @@ const App: React.FC = () => {
           <PasswordDetails />
         </ProtectedRoute>
 
-        <Route path="/">
-          <Login />
+        <Route>
+          <NotFound />
         </Route>
       </Switch>
       <Footer />

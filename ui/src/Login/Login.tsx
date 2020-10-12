@@ -16,7 +16,7 @@ interface LoginParams {
 const Login: React.FC = () => {
   const {
     dispatch,
-    state: { user },
+    state: { loggedIn },
   } = React.useContext(AppContext);
 
   const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
@@ -50,16 +50,23 @@ const Login: React.FC = () => {
     validationSchema,
   });
 
-  if (user) return <Redirect to="/main" />;
+  const handleSubmit = React.useCallback(
+    (e?: React.FormEvent<HTMLElement> | undefined) => {
+      try {
+        formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [formik]
+  );
+
+  if (loggedIn) return <Redirect to="/main" />;
 
   return (
     <Container className="py-5">
       <h3>Please sign in</h3>
-      <Form
-        onSubmit={(e) => {
-          formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
-        }}
-      >
+      <Form onSubmit={handleSubmit}>
         <Form.Group>
           <Form.Label>Login or email</Form.Label>
           <Form.Control

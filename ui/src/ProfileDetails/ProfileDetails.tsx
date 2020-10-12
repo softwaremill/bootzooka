@@ -52,13 +52,16 @@ const ProfileDetails: React.FC = () => {
     validationSchema,
   });
 
-  const handleSubmit = (e?: React.FormEvent<HTMLElement> | undefined) => {
-    try {
-      formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const handleSubmit = React.useCallback(
+    (e?: React.FormEvent<HTMLElement> | undefined) => {
+      try {
+        formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [formik]
+  );
 
   return (
     <Container className="py-5">

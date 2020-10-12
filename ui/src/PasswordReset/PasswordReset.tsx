@@ -1,39 +1,40 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import userService from "../UserService/UserService";
+import passwordService from "../PasswordService/PasswordService";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
 
-interface PasswordDetailsParams {
-  currentPassword: string;
-  newPassword: string;
+interface PasswordResetParams {
+  password: string;
   repeatedPassword: string;
 }
 
 const ProfileDetails: React.FC = () => {
-  const {
-    dispatch,
-    state: { apiKey },
-  } = React.useContext(AppContext);
+  const [isResetComplete, setResetComplete] = React.useState(false);
+  const { dispatch } = React.useContext(AppContext);
 
-  const validationSchema: Yup.ObjectSchema<PasswordDetailsParams | undefined> = Yup.object({
-    currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
-    newPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
+  const validationSchema: Yup.ObjectSchema<PasswordResetParams | undefined> = Yup.object({
+    password: Yup.string().min(3, "At least 3 characters required").required("Required"),
     repeatedPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword")], "Passwords must match")
+      .oneOf([Yup.ref("password")], "Passwords must match")
       .required("Required"),
   });
 
-  const onSubmit = async (values: PasswordDetailsParams) => {
-    if (!apiKey) return;
-
+  const onSubmit = async (values: PasswordResetParams) => {
     try {
-      const { currentPassword, newPassword } = values;
-      await userService.changePassword(apiKey, { currentPassword, newPassword });
+      const { password } = values;
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+
+      if (!code) throw new Error("URL Code not provided");
+
+      await passwordService.resetPassword({ password, code });
       dispatch({ type: "ADD_MESSAGE", message: { content: "Password changed!", variant: "success" } });
+      setResetComplete(true);
     } catch (error) {
       const response = error?.response?.data?.error || error.message;
       dispatch({
@@ -44,10 +45,9 @@ const ProfileDetails: React.FC = () => {
     }
   };
 
-  const formik = useFormik<PasswordDetailsParams>({
+  const formik = useFormik<PasswordResetParams>({
     initialValues: {
-      currentPassword: "",
-      newPassword: "",
+      password: "",
       repeatedPassword: "",
     },
     onSubmit,
@@ -65,36 +65,24 @@ const ProfileDetails: React.FC = () => {
     [formik]
   );
 
+  if (isResetComplete) return <Redirect to="/login" />;
+
   return (
     <Container className="py-5">
       <h3>Password details</h3>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
-          <Form.Label>Current Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="currentPassword"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.currentPassword}
-            isValid={!formik.errors.currentPassword && formik.touched.currentPassword}
-            isInvalid={!!formik.errors.currentPassword && formik.touched.currentPassword}
-          />
-          <Form.Control.Feedback type="invalid">{formik.errors.currentPassword}</Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group>
           <Form.Label>New password</Form.Label>
           <Form.Control
             type="password"
-            name="newPassword"
+            name="password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.newPassword}
-            isValid={!formik.errors.newPassword && formik.touched.newPassword}
-            isInvalid={!!formik.errors.newPassword && formik.touched.newPassword}
+            value={formik.values.password}
+            isValid={!formik.errors.password && formik.touched.password}
+            isInvalid={!!formik.errors.password && formik.touched.password}
           />
-          <Form.Control.Feedback type="invalid">{formik.errors.newPassword}</Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group>
