@@ -5,10 +5,10 @@ import Login from "../Login/Login";
 
 const ProtectedRoute: React.FC<RouteProps> = ({ children, ...props }) => {
   const {
-    state: { user },
+    state: { loggedIn },
   } = React.useContext(AppContext);
 
-  if (!user) return <Route {...props} component={Login} />;
+  if (!loggedIn) return <Route {...props} component={Login} />;
 
   return <Route {...props}>{children}</Route>;
 };

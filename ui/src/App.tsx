@@ -9,14 +9,17 @@ import SecretMain from "./SecretMain/SecretMain";
 import { AppContext } from "./AppContext/AppContext";
 import userService from "./UserService/UserService";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
+import Loader from "./Loader/Loader";
 
 const App: React.FC = () => {
   const { dispatch, state } = React.useContext(AppContext);
-  const { apiKey } = state;
+  const { apiKey, loggedIn } = state;
 
   React.useEffect(() => {
     const getUserData = async () => {
-      if (!apiKey) return;
+      if (!apiKey) {
+        return;
+      }
 
       try {
         const user = await userService.getCurrentUser(apiKey);
@@ -25,11 +28,19 @@ const App: React.FC = () => {
           type: "SET_USER_DATA",
           user,
         });
+        dispatch({
+          type: "SET_LOGGED_IN",
+          loggedIn: true,
+        });
       } catch (error) {
         const response = error?.response?.data?.error || error?.message || "Unknown error";
         dispatch({
           type: "ADD_MESSAGE",
-          message: { content: `Could not register new user! ${response}`, variant: "danger" },
+          message: { content: `Could not log in! ${response}`, variant: "danger" },
+        });
+        dispatch({
+          type: "SET_LOGGED_IN",
+          loggedIn: false,
         });
         console.error(error);
       }
@@ -41,13 +52,23 @@ const App: React.FC = () => {
   React.useEffect(() => {
     const storedApiKey = localStorage.getItem("apiKey");
 
-    if (!storedApiKey) return;
+    if (!storedApiKey) {
+      dispatch({
+        type: "SET_LOGGED_IN",
+        loggedIn: false,
+      });
+      return;
+    }
 
     dispatch({
       type: "SET_API_KEY",
       apiKey: storedApiKey,
     });
   }, [dispatch]);
+
+  if (loggedIn === null) {
+    return <Loader />;
+  }
 
   return (
     <Router>

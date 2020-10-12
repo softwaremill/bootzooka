@@ -8,7 +8,7 @@ import { AppContext } from "../AppContext/AppContext";
 const Top: React.FC = () => {
   const {
     dispatch,
-    state: { user },
+    state: { user, loggedIn },
   } = React.useContext(AppContext);
 
   const handleLogOut = () => {
@@ -19,6 +19,10 @@ const Top: React.FC = () => {
     dispatch({
       type: "SET_USER_DATA",
       user: null,
+    });
+    dispatch({
+      type: "SET_LOGGED_IN",
+      loggedIn: false,
     });
     localStorage.removeItem("apiKey");
   };
@@ -34,7 +38,7 @@ const Top: React.FC = () => {
         </LinkContainer>
       </Nav>
       <Nav>
-        {!!user ? (
+        {loggedIn && user ? (
           <>
             <LinkContainer to="/profile">
               <Nav.Link>Logged in as {user.login}</Nav.Link>
