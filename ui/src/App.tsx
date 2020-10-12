@@ -6,6 +6,8 @@ import Welcome from "./Welcome/Welcome";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 import SecretMain from "./SecretMain/SecretMain";
+import ProfileDetails from "./ProfileDetails/ProfileDetails";
+import PasswordDetails from "./PasswordDetails/PasswordDetails";
 import { AppContext } from "./AppContext/AppContext";
 import userService from "./UserService/UserService";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
@@ -86,6 +88,10 @@ const App: React.FC = () => {
 
         <ProtectedRoute path="/main">
           <SecretMain />
+        </ProtectedRoute>
+        <ProtectedRoute path="/profile">
+          <ProfileDetails />
+          <PasswordDetails />
         </ProtectedRoute>
 
         <Route path="/">
