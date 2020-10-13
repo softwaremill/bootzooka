@@ -13,11 +13,11 @@ beforeEach(() => {
 test("renders version data", async () => {
   (versionService.getVersion as jest.Mock).mockResolvedValueOnce({ buildDate: "testDate", buildSha: "testSha" });
 
-  const { getByText, findByText, findByRole } = render(<Footer />);
+  const { getByText, findByText, findAllByRole } = render(<Footer />);
 
   const info = getByText(/Bootzooka - application scaffolding by /);
 
-  await findByRole(/loader/i);
+  await findAllByRole(/loader/i);
 
   const buildDate = await findByText(/testDate/i);
   const buildSha = await findByText(/testSha/i);
@@ -32,11 +32,11 @@ test("catches error of version data", async () => {
   const testError = new Error("Test Error");
   (versionService.getVersion as jest.Mock).mockRejectedValueOnce(testError);
 
-  const { getByText, findByRole } = render(<Footer />);
+  const { getByText, findAllByRole } = render(<Footer />);
 
   const info = getByText(/Bootzooka - application scaffolding by /);
 
-  await findByRole(/loader/i);
+  await findAllByRole(/loader/i);
 
   expect(info).toBeInTheDocument();
   expect(console.error).toBeCalledWith(testError);

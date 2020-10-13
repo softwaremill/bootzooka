@@ -16,6 +16,8 @@ import { AppContext } from "./AppContext/AppContext";
 import userService from "./UserService/UserService";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 import Loader from "./Loader/Loader";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 
 const App: React.FC = () => {
   const { dispatch, state } = React.useContext(AppContext);
@@ -101,8 +103,12 @@ const App: React.FC = () => {
             <SecretMain />
           </ProtectedRoute>
           <ProtectedRoute path="/profile">
-            <ProfileDetails />
-            <PasswordDetails />
+            <Container>
+              <Row>
+                <ProfileDetails />
+                <PasswordDetails />
+              </Row>
+            </Container>
           </ProtectedRoute>
 
           <Route>

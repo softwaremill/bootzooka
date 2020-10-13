@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import versionService from "../VersionService/VersionService";
 import Notifications from "../Notifications/Notifications";
-import Loader from "../Loader/Loader";
+import Spinner from "react-bootstrap/Spinner";
 
 interface VersionData {
   buildDate: string;
@@ -35,24 +35,22 @@ const Footer: React.FC = () => {
       <Row>
         <Notifications />
       </Row>
-      <Row className="bg-light py-3">
-        <Col sm={6}>
+      <Row className="bg-light">
+        <Col sm={6} className="py-3">
           <small>
             Bootzooka - application scaffolding by <a href="http://softwaremill.com">SoftwareMill</a>,
             <br /> sources available on <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
           </small>
         </Col>
-        {isLoader ? (
-          <Loader />
-        ) : (
-          <Col sm={6} className="text-right">
-            <small style={{ wordBreak: "break-all" }}>
-              <strong>build date:</strong> {version?.buildDate}
-              <br />
-              <strong>build sha:</strong> {version?.buildSha}
-            </small>
-          </Col>
-        )}
+        <Col sm={6} className="text-right py-3 d-none d-sm-block">
+          <small className="text-break">
+            <strong>build&nbsp;date:&nbsp;</strong>
+            {isLoader ? <Spinner animation="border" size="sm" role="loader" /> : version?.buildDate}
+            <br />
+            <strong>build&nbsp;sha:&nbsp;</strong>
+            {isLoader ? <Spinner animation="border" size="sm" role="loader" /> : version?.buildSha}
+          </small>
+        </Col>
       </Row>
     </Container>
   );

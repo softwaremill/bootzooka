@@ -29,7 +29,7 @@ const Welcome: React.FC = () => (
     <Container className="py-5 text-center">
       <p>brought to you by</p>
       <a href="http://softwaremill.com" rel="noopener noreferrer" target="_blank">
-        <Image fluid style={{ maxWidth: "20em" }} src={logo} alt="SoftwareMill" />
+        <Image fluid  src={logo} alt="SoftwareMill" width="300" />
       </a>
     </Container>
   </>

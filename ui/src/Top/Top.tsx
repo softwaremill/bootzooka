@@ -4,7 +4,7 @@ import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import { AppContext } from "../AppContext/AppContext";
-import { BiLogOutCircle } from "react-icons/bi";
+import { BiPowerOff } from "react-icons/bi";
 
 const Top: React.FC = () => {
   const {
@@ -46,7 +46,7 @@ const Top: React.FC = () => {
                 <Nav.Link>Logged in as {user.login}</Nav.Link>
               </LinkContainer>
               <Button onClick={handleLogOut}>
-                <BiLogOutCircle /> Logout
+                <BiPowerOff />&nbsp;Logout
               </Button>
             </>
           ) : (
