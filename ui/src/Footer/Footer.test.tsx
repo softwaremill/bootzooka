@@ -10,13 +10,15 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-test("catches error of version data", async () => {
+test("renders version data", async () => {
   (versionService.getVersion as jest.Mock).mockImplementationOnce(async () => ({
     buildDate: "testDate",
     buildSha: "testSha",
   }));
 
-  const { findByText, findByRole } = render(<Footer />);
+  const { getByText, findByText, findByRole } = render(<Footer />);
+
+  const info = getByText(/Bootzooka - application scaffolding by /);
 
   await findByRole(/loader/i);
 
@@ -24,19 +26,23 @@ test("catches error of version data", async () => {
   const buildSha = await findByText(/testSha/i);
 
   expect(versionService.getVersion).toBeCalledWith();
+  expect(info).toBeInTheDocument();
   expect(buildDate).toBeInTheDocument();
   expect(buildSha).toBeInTheDocument();
 });
 
-test("renders varsion data", async () => {
+test("catches error of version data", async () => {
   const testError = new Error("Test Error");
   (versionService.getVersion as jest.Mock).mockImplementationOnce(async () => {
     throw testError;
   });
 
-  const { findByRole } = render(<Footer />);
+  const { getByText, findByRole } = render(<Footer />);
+
+  const info = getByText(/Bootzooka - application scaffolding by /);
 
   await findByRole(/loader/i);
 
+  expect(info).toBeInTheDocument();
   expect(console.error).toBeCalledWith(testError);
 });

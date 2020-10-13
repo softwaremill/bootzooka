@@ -19,7 +19,7 @@ interface AppState {
   loggedIn: boolean | null;
 }
 
-const initialAppstate: AppState = {
+export const initialAppstate: AppState = {
   messages: [],
   apiKey: null,
   user: null,
