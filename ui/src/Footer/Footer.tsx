@@ -21,9 +21,9 @@ const Footer: React.FC = () => {
       try {
         const data = await versionService.getVersion();
         setVersion(data);
-        setLoading(false);
       } catch (error) {
         console.error(error);
+      } finally {
         setLoading(false);
       }
     };

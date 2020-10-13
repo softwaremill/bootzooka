@@ -11,10 +11,7 @@ beforeEach(() => {
 });
 
 test("renders version data", async () => {
-  (versionService.getVersion as jest.Mock).mockImplementationOnce(async () => ({
-    buildDate: "testDate",
-    buildSha: "testSha",
-  }));
+  (versionService.getVersion as jest.Mock).mockResolvedValueOnce({ buildDate: "testDate", buildSha: "testSha" });
 
   const { getByText, findByText, findByRole } = render(<Footer />);
 
@@ -33,9 +30,7 @@ test("renders version data", async () => {
 
 test("catches error of version data", async () => {
   const testError = new Error("Test Error");
-  (versionService.getVersion as jest.Mock).mockImplementationOnce(async () => {
-    throw testError;
-  });
+  (versionService.getVersion as jest.Mock).mockRejectedValueOnce(testError);
 
   const { getByText, findByRole } = render(<Footer />);
 

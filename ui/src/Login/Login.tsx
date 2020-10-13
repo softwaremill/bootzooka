@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
+import Spinner from "react-bootstrap/Spinner";
 
 interface LoginParams {
   loginOrEmail: string;
@@ -14,6 +15,8 @@ interface LoginParams {
 }
 
 const Login: React.FC = () => {
+  const [isLoading, setLoading] = React.useState(false);
+
   const {
     dispatch,
     state: { loggedIn },
@@ -25,6 +28,7 @@ const Login: React.FC = () => {
   });
 
   const onSubmit = async (values: LoginParams) => {
+    setLoading(true);
     try {
       const { apiKey } = await userService.login(values);
       dispatch({ type: "SET_API_KEY", apiKey });
@@ -38,6 +42,8 @@ const Login: React.FC = () => {
         message: { content: "Incorrect login/email or password!", variant: "danger" },
       });
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,11 +58,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = React.useCallback(
     (e?: React.FormEvent<HTMLElement> | undefined) => {
-      try {
-        formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
-      } catch (e) {
-        console.error(e);
-      }
+      formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
     },
     [formik]
   );
@@ -68,10 +70,11 @@ const Login: React.FC = () => {
       <h3>Please sign in</h3>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
-          <Form.Label>Login or email</Form.Label>
+          <Form.Label htmlFor="loginOrEmail">Login or email</Form.Label>
           <Form.Control
             type="text"
             name="loginOrEmail"
+            id="loginOrEmail"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.loginOrEmail}
@@ -82,10 +85,11 @@ const Login: React.FC = () => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Passsword</Form.Label>
+          <Form.Label htmlFor="password">Password</Form.Label>
           <Form.Control
             type="password"
             name="password"
+            id="password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
@@ -95,7 +99,9 @@ const Login: React.FC = () => {
           <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
         </Form.Group>
 
-        <Button type="submit">Sign In</Button>
+        <Button type="submit">
+          {isLoading && <Spinner as="span" animation="border" size="sm" role="loader" />} Sign In
+        </Button>
         <Link className="btn btn-link" to="/recover-lost-password">
           Forgot password?
         </Link>
