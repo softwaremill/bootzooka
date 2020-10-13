@@ -1,14 +1,14 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import ProfileDetails from "./ProfileDetails";
-import { AppContext, initialAppstate } from "../AppContext/AppContext";
+import { AppContext, AppState } from "../AppContext/AppContext";
 import userService from "../UserService/UserService";
 
-const contextState = {
-  ...initialAppstate,
+const mockState: AppState = {
   apiKey: "test-api-key",
-  user: { login: "old-login", email: "old@test.email", createdOn: "test-created-on" },
+  user: { login: "user-login", email: "email@address.pl", createdOn: "2020-10-09T09:57:17.995288Z" },
   loggedIn: true,
+  messages: [],
 };
 
 jest.mock("../UserService/UserService");
@@ -21,7 +21,7 @@ beforeEach(() => {
 
 test("renders header", () => {
   const { getByText } = render(
-    <AppContext.Provider value={{ state: contextState, dispatch }}>
+    <AppContext.Provider value={{ state: mockState, dispatch }}>
       <ProfileDetails />
     </AppContext.Provider>
   );
@@ -29,11 +29,11 @@ test("renders header", () => {
   expect(getByText("Profile details")).toBeInTheDocument();
 });
 
-test("handles login success", async () => {
+test("handles change details success", async () => {
   (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
 
   const { getByLabelText, getByText, findByRole } = render(
-    <AppContext.Provider value={{ state: contextState, dispatch }}>
+    <AppContext.Provider value={{ state: mockState, dispatch }}>
       <ProfileDetails />
     </AppContext.Provider>
   );
@@ -55,7 +55,7 @@ test("handles login success", async () => {
   expect(dispatch).toBeCalledWith({
     type: "SET_USER_DATA",
     user: {
-      createdOn: "test-created-on",
+      createdOn: "2020-10-09T09:57:17.995288Z",
       email: "test@email.address",
       login: "test-login",
     },
@@ -66,12 +66,12 @@ test("handles login success", async () => {
   });
 });
 
-test("handles login error", async () => {
+test("handles change details error", async () => {
   const testError = new Error("Test Error");
   (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(testError);
 
   const { getByLabelText, getByText, findByRole } = render(
-    <AppContext.Provider value={{ state: contextState, dispatch }}>
+    <AppContext.Provider value={{ state: mockState, dispatch }}>
       <ProfileDetails />
     </AppContext.Provider>
   );

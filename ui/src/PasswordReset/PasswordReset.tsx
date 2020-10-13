@@ -74,10 +74,11 @@ const ProfileDetails: React.FC = () => {
       <h3>Password details</h3>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
-          <Form.Label>New password</Form.Label>
+          <Form.Label htmlFor="password">New password</Form.Label>
           <Form.Control
             type="password"
             name="password"
+            id="password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
@@ -88,10 +89,11 @@ const ProfileDetails: React.FC = () => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Repeat new password</Form.Label>
+          <Form.Label htmlFor="repeatedPassword">Repeat new password</Form.Label>
           <Form.Control
             type="password"
             name="repeatedPassword"
+            id="repeatedPassword"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.repeatedPassword}

@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import Login from "./Login";
-import { AppContext, initialAppstate } from "../AppContext/AppContext";
+import { AppContext, initialAppState } from "../AppContext/AppContext";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 import userService from "../UserService/UserService";
@@ -19,7 +19,7 @@ beforeEach(() => {
 test("renders header", () => {
   const { getByText } = render(
     <Router history={history}>
-      <AppContext.Provider value={{ state: { ...initialAppstate, loggedIn: false }, dispatch }}>
+      <AppContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
         <Login />
       </AppContext.Provider>
     </Router>
@@ -31,7 +31,7 @@ test("renders header", () => {
 test("redirects when logged in", () => {
   render(
     <Router history={history}>
-      <AppContext.Provider value={{ state: { ...initialAppstate, loggedIn: true }, dispatch }}>
+      <AppContext.Provider value={{ state: { ...initialAppState, loggedIn: true }, dispatch }}>
         <Login />
       </AppContext.Provider>
     </Router>
@@ -47,7 +47,7 @@ test("handles login success", async () => {
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
-      <AppContext.Provider value={{ state: { ...initialAppstate, loggedIn: false }, dispatch }}>
+      <AppContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
         <Login />
       </AppContext.Provider>
     </Router>
@@ -77,7 +77,7 @@ test("handles login error", async () => {
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
-      <AppContext.Provider value={{ state: { ...initialAppstate, loggedIn: false }, dispatch }}>
+      <AppContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
         <Login />
       </AppContext.Provider>
     </Router>

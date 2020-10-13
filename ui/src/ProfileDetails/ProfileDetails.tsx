@@ -100,10 +100,11 @@ const ProfileDetails: React.FC = () => {
           <Form.Control.Feedback type="invalid">{formik.errors.email}</Form.Control.Feedback>
         </Form.Group>
 
-        <Button type="submit">
+        <Button type="submit" disabled={isLoader}>
           {isLoader ? <Spinner as="span" animation="border" size="sm" role="loader" /> : <BiArrowFromBottom />}
           &nbsp;Update profile data
         </Button>
+        
       </Form>
     </Container>
   );

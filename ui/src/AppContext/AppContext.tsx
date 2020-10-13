@@ -12,14 +12,14 @@ export interface User {
   login: string;
 }
 
-interface AppState {
+export interface AppState {
   messages: Message[];
   apiKey: string | null;
   user: User | null;
   loggedIn: boolean | null;
 }
 
-export const initialAppstate: AppState = {
+export const initialAppState: AppState = {
   messages: [],
   apiKey: null,
   user: null,
@@ -65,12 +65,12 @@ export const AppContext = React.createContext<{
   state: AppState;
   dispatch: React.Dispatch<AppAction>;
 }>({
-  state: initialAppstate,
+  state: initialAppState,
   dispatch: () => null,
 });
 
 export const AppContextProvider: React.FC = ({ children }) => {
-  const [state, dispatch] = React.useReducer(AppReducer, initialAppstate);
+  const [state, dispatch] = React.useReducer(AppReducer, initialAppState);
 
   return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
 };
