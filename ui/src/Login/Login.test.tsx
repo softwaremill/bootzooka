@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, act } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import Login from "./Login";
 import { AppContext, initialAppstate } from "../AppContext/AppContext";
 import { Router } from "react-router-dom";

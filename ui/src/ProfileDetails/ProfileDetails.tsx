@@ -71,10 +71,11 @@ const ProfileDetails: React.FC = () => {
       <h3>Profile details</h3>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
-          <Form.Label>Login</Form.Label>
+          <Form.Label htmlFor="login">Login</Form.Label>
           <Form.Control
             type="text"
             name="login"
+            id="login"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.login}
@@ -85,10 +86,11 @@ const ProfileDetails: React.FC = () => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Email address</Form.Label>
+          <Form.Label htmlFor="email">Email address</Form.Label>
           <Form.Control
             type="text"
             name="email"
+            id="email"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.email}
