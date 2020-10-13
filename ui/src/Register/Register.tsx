@@ -7,6 +7,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
+import Spinner from "react-bootstrap/Spinner";
+import { BiUserPlus } from "react-icons/bi";
 
 interface RegisterParams {
   login: string;
@@ -16,7 +18,9 @@ interface RegisterParams {
 }
 
 const Register: React.FC = () => {
+  const [isLoader, setLoader] = React.useState(false);
   const [isRegistered, setRegistered] = React.useState(false);
+
   const { dispatch } = React.useContext(AppContext);
 
   const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.object({
@@ -29,6 +33,7 @@ const Register: React.FC = () => {
   });
 
   const onSubmit = async (values: RegisterParams) => {
+    setLoader(true);
     try {
       const { login, email, password } = values;
       const { apiKey } = await userService.registerUser({ login, email, password });
@@ -45,6 +50,8 @@ const Register: React.FC = () => {
         message: { content: `Could not register new user! ${response}`, variant: "danger" },
       });
       console.error(error);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -61,11 +68,7 @@ const Register: React.FC = () => {
 
   const handleSubmit = React.useCallback(
     (e?: React.FormEvent<HTMLElement> | undefined) => {
-      try {
         formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
-      } catch (e) {
-        console.error(e);
-      }
     },
     [formik]
   );
@@ -132,7 +135,10 @@ const Register: React.FC = () => {
           <Form.Control.Feedback type="invalid">{formik.errors.repeatedPassword}</Form.Control.Feedback>
         </Form.Group>
 
-        <Button type="submit">Register</Button>
+        <Button type="submit">
+          {isLoader ? <Spinner as="span" animation="border" size="sm" role="loader" /> : <BiUserPlus />}
+          &nbsp;Register
+        </Button>
       </Form>
     </Container>
   );

@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
 import Spinner from "react-bootstrap/Spinner";
+import { BiLogInCircle } from "react-icons/bi";
 
 interface LoginParams {
   loginOrEmail: string;
@@ -15,7 +16,7 @@ interface LoginParams {
 }
 
 const Login: React.FC = () => {
-  const [isLoading, setLoading] = React.useState(false);
+  const [isLoader, setLoader] = React.useState(false);
 
   const {
     dispatch,
@@ -28,7 +29,7 @@ const Login: React.FC = () => {
   });
 
   const onSubmit = async (values: LoginParams) => {
-    setLoading(true);
+    setLoader(true);
     try {
       const { apiKey } = await userService.login(values);
       dispatch({ type: "SET_API_KEY", apiKey });
@@ -43,7 +44,7 @@ const Login: React.FC = () => {
       });
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoader(false);
     }
   };
 
@@ -100,7 +101,8 @@ const Login: React.FC = () => {
         </Form.Group>
 
         <Button type="submit">
-          {isLoading && <Spinner as="span" animation="border" size="sm" role="loader" />} Sign In
+          {isLoader ? <Spinner as="span" animation="border" size="sm" role="loader" /> : <BiLogInCircle />}
+          &nbsp;Sign In
         </Button>
         <Link className="btn btn-link" to="/recover-lost-password">
           Forgot password?

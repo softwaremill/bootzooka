@@ -6,6 +6,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
+import Spinner from "react-bootstrap/Spinner";
+import { BiArrowFromBottom } from "react-icons/bi";
 
 interface ProfileDetailsParams {
   login: string;
@@ -13,6 +15,8 @@ interface ProfileDetailsParams {
 }
 
 const ProfileDetails: React.FC = () => {
+  const [isLoader, setLoader] = React.useState(false);
+
   const {
     dispatch,
     state: { apiKey, user },
@@ -26,6 +30,7 @@ const ProfileDetails: React.FC = () => {
   const onSubmit = async (values: ProfileDetailsParams) => {
     if (!apiKey || !user) return;
 
+    setLoader(true);
     try {
       await userService.changeProfileDetails(apiKey, values);
       dispatch({
@@ -40,6 +45,8 @@ const ProfileDetails: React.FC = () => {
         message: { content: `Could not change profile details! ${response}`, variant: "danger" },
       });
       console.error(error);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -54,11 +61,7 @@ const ProfileDetails: React.FC = () => {
 
   const handleSubmit = React.useCallback(
     (e?: React.FormEvent<HTMLElement> | undefined) => {
-      try {
-        formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
-      } catch (e) {
-        console.error(e);
-      }
+      formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
     },
     [formik]
   );
@@ -95,7 +98,10 @@ const ProfileDetails: React.FC = () => {
           <Form.Control.Feedback type="invalid">{formik.errors.email}</Form.Control.Feedback>
         </Form.Group>
 
-        <Button type="submit">Update profile data</Button>
+        <Button type="submit">
+          {isLoader ? <Spinner as="span" animation="border" size="sm" role="loader" /> : <BiArrowFromBottom />}
+          &nbsp;Update profile data
+        </Button>
       </Form>
     </Container>
   );

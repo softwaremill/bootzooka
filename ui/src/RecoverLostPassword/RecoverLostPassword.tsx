@@ -7,13 +7,17 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
+import Spinner from "react-bootstrap/Spinner";
+import { BiReset } from "react-icons/bi";
 
 interface RecoverLostPasswordParams {
   loginOrEmail: string;
 }
 
 const RecoverLostPassword: React.FC = () => {
+  const [isLoader, setLoader] = React.useState(false);
   const [isRecoveryComplete, setRecoveryComplete] = React.useState(false);
+
   const { dispatch } = React.useContext(AppContext);
 
   const validationSchema: Yup.ObjectSchema<RecoverLostPasswordParams | undefined> = Yup.object({
@@ -21,6 +25,7 @@ const RecoverLostPassword: React.FC = () => {
   });
 
   const onSubmit = async (values: RecoverLostPasswordParams) => {
+    setLoader(true);
     try {
       await passwordService.claimPasswordReset(values);
       dispatch({
@@ -35,6 +40,8 @@ const RecoverLostPassword: React.FC = () => {
         message: { content: `Could not claim password reset! ${response}`, variant: "danger" },
       });
       console.error(error);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -48,11 +55,7 @@ const RecoverLostPassword: React.FC = () => {
 
   const handleSubmit = React.useCallback(
     (e?: React.FormEvent<HTMLElement> | undefined) => {
-      try {
-        formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
-      } catch (e) {
-        console.error(e);
-      }
+      formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
     },
     [formik]
   );
@@ -62,9 +65,7 @@ const RecoverLostPassword: React.FC = () => {
   return (
     <Container className="py-5">
       <h3>Recover lost password</h3>
-      <Form
-        onSubmit={handleSubmit}
-      >
+      <Form onSubmit={handleSubmit}>
         <Form.Group>
           <Form.Label>Login or email</Form.Label>
           <Form.Control
@@ -79,7 +80,10 @@ const RecoverLostPassword: React.FC = () => {
           <Form.Control.Feedback type="invalid">{formik.errors.loginOrEmail}</Form.Control.Feedback>
         </Form.Group>
 
-        <Button type="submit">Reset password</Button>
+        <Button type="submit">
+          {isLoader ? <Spinner as="span" animation="border" size="sm" role="loader" /> : <BiReset />}
+          &nbsp;Reset password
+        </Button>
       </Form>
     </Container>
   );

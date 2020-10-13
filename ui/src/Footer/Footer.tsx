@@ -13,18 +13,18 @@ interface VersionData {
 
 const Footer: React.FC = () => {
   const [version, setVersion] = React.useState<VersionData>();
-  const [isLoading, setLoading] = React.useState(false);
+  const [isLoader, setLoader] = React.useState(false);
 
   React.useEffect(() => {
     const fetchVersion = async () => {
-      setLoading(true);
+      setLoader(true);
       try {
         const data = await versionService.getVersion();
         setVersion(data);
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false);
+        setLoader(false);
       }
     };
     fetchVersion();
@@ -42,7 +42,7 @@ const Footer: React.FC = () => {
             <br /> sources available on <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
           </small>
         </Col>
-        {isLoading ? (
+        {isLoader ? (
           <Loader />
         ) : (
           <Col sm={6} className="text-right">

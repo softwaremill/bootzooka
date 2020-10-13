@@ -7,6 +7,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
+import Spinner from "react-bootstrap/Spinner";
+import { BiArrowFromBottom } from "react-icons/bi";
 
 interface PasswordResetParams {
   password: string;
@@ -14,6 +16,7 @@ interface PasswordResetParams {
 }
 
 const ProfileDetails: React.FC = () => {
+  const [isLoader, setLoader] = React.useState(false);
   const [isResetComplete, setResetComplete] = React.useState(false);
   const { dispatch } = React.useContext(AppContext);
 
@@ -25,6 +28,7 @@ const ProfileDetails: React.FC = () => {
   });
 
   const onSubmit = async (values: PasswordResetParams) => {
+    setLoader(true);
     try {
       const { password } = values;
       const urlParams = new URLSearchParams(window.location.search);
@@ -42,6 +46,8 @@ const ProfileDetails: React.FC = () => {
         message: { content: `Could not change password! ${response}`, variant: "danger" },
       });
       console.error(error);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -56,11 +62,7 @@ const ProfileDetails: React.FC = () => {
 
   const handleSubmit = React.useCallback(
     (e?: React.FormEvent<HTMLElement> | undefined) => {
-      try {
-        formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
-      } catch (e) {
-        console.error(e);
-      }
+      formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
     },
     [formik]
   );
@@ -99,7 +101,10 @@ const ProfileDetails: React.FC = () => {
           <Form.Control.Feedback type="invalid">{formik.errors.repeatedPassword}</Form.Control.Feedback>
         </Form.Group>
 
-        <Button type="submit">Update password</Button>
+        <Button type="submit">
+          {isLoader ? <Spinner as="span" animation="border" size="sm" role="loader" /> : <BiArrowFromBottom />}
+          &nbsp;Update password
+        </Button>
       </Form>
     </Container>
   );
