@@ -42,11 +42,13 @@ const Top: React.FC = () => {
           <div className="flex-grow-1" />
           {loggedIn && user ? (
             <>
+              <Navbar.Text>Logged in as {user.login}</Navbar.Text>
               <LinkContainer to="/profile">
-                <Nav.Link>Logged in as {user.login}</Nav.Link>
+                <Nav.Link>Profile</Nav.Link>
               </LinkContainer>
               <Button onClick={handleLogOut}>
-                <BiPowerOff />&nbsp;Logout
+                <BiPowerOff />
+                &nbsp;Logout
               </Button>
             </>
           ) : (

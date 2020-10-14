@@ -139,6 +139,7 @@ const Register: React.FC = () => {
           {isLoader ? <Spinner as="span" animation="border" size="sm" role="loader" /> : <BiUserPlus />}
           &nbsp;Register
         </Button>
+        <Form.Text className="d-inline ml-3">form feedback</Form.Text>
       </Form>
     </Container>
   );

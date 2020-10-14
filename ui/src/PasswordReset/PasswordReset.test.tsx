@@ -57,6 +57,7 @@ test("handles password reset success", async () => {
     message: { content: "Password changed!", variant: "success" },
     type: "ADD_MESSAGE",
   });
+  expect(history.location.pathname).toEqual("/login");
 });
 
 test("handles password reset error", async () => {
@@ -64,9 +65,10 @@ test("handles password reset error", async () => {
   (passwordService.resetPassword as jest.Mock).mockRejectedValueOnce(testError);
 
   const { getByLabelText, getByText, findByRole } = render(
+    <Router history={history}>
     <AppContext.Provider value={{ state: initialAppState, dispatch }}>
       <PasswordReset />
-    </AppContext.Provider>
+    </AppContext.Provider></Router>
   );
 
   fireEvent.blur(getByLabelText("New password"));
