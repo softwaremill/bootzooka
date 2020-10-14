@@ -25,7 +25,7 @@ const ProfileDetails: React.FC = () => {
 
   const code = new URLSearchParams(window.location.search).get("code") || "";
 
-  const [result, send] = usePromise(({ password }: PasswordResetParams) =>
+  const [result, send, clear] = usePromise(({ password }: PasswordResetParams) =>
     passwordService.resetPassword({ password, code }).catch((error) => {
       throw new Error(error?.response?.data?.error || error.message);
     })
@@ -51,7 +51,7 @@ const ProfileDetails: React.FC = () => {
             &nbsp;Update password
           </Button>
 
-          <FormFeedback result={result} />
+          <FormFeedback result={result} clear={clear}/>
         </Form>
       </Formik>
     </Container>

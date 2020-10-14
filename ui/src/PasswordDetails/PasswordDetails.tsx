@@ -30,7 +30,7 @@ const ProfileDetails: React.FC = () => {
       .required("Required"),
   });
 
-  const [result, send] = usePromise(({ currentPassword, newPassword }: PasswordDetailsParams) =>
+  const [result, send, clear] = usePromise(({ currentPassword, newPassword }: PasswordDetailsParams) =>
     userService.changePassword(apiKey, { currentPassword, newPassword }).catch((error) => {
       throw new Error(error?.response?.data?.error || error.message);
     })
@@ -57,7 +57,7 @@ const ProfileDetails: React.FC = () => {
             <BiArrowFromBottom />
             &nbsp;Update password
           </Button>
-          <FormFeedback result={result} />
+          <FormFeedback result={result} clear={clear} />
         </Form>
       </Formik>
     </Container>

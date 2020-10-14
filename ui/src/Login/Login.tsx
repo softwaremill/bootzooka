@@ -28,7 +28,7 @@ const Login: React.FC = () => {
     password: Yup.string().required("Required"),
   });
 
-  const [result, send] = usePromise((values: LoginParams) =>
+  const [result, send, clear] = usePromise((values: LoginParams) =>
     userService
       .login(values)
       .then(({ apiKey }) => {
@@ -66,7 +66,7 @@ const Login: React.FC = () => {
             Forgot password?
           </Link>
 
-          <FormFeedback result={result} />
+          <FormFeedback result={result} clear={clear}/>
         </Form>
       </Formik>
     </Container>

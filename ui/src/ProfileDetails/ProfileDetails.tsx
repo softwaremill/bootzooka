@@ -27,7 +27,7 @@ const ProfileDetails: React.FC = () => {
     email: Yup.string().email("Correct email address required").required("Required"),
   });
 
-  const [result, send] = usePromise((values: ProfileDetailsParams) =>
+  const [result, send, clear] = usePromise((values: ProfileDetailsParams) =>
     userService
       .changeProfileDetails(apiKey, values)
       .then(() => {
@@ -61,7 +61,7 @@ const ProfileDetails: React.FC = () => {
             &nbsp;Update profile data
           </Button>
 
-          <FormFeedback result={result} />
+          <FormFeedback result={result} clear={clear} />
         </Form>
       </Formik>
     </Container>

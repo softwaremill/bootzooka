@@ -19,7 +19,7 @@ const RecoverLostPassword: React.FC = () => {
     loginOrEmail: Yup.string().required("Required"),
   });
 
-  const [result, send] = usePromise((values: RecoverLostPasswordParams) =>
+  const [result, send, clear] = usePromise((values: RecoverLostPasswordParams) =>
     passwordService.claimPasswordReset(values).catch((error) => {
       throw new Error(error?.response?.data?.error || error.message);
     })
@@ -42,7 +42,7 @@ const RecoverLostPassword: React.FC = () => {
             <BiReset />
             &nbsp;Reset password
           </Button>
-          <FormFeedback result={result} />
+          <FormFeedback result={result} clear={clear} />
         </Form>
       </Formik>
     </Container>

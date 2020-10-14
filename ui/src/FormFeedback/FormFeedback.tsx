@@ -1,34 +1,41 @@
 import React from "react";
-import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import { BsExclamationCircle, BsCheck } from "react-icons/bs";
-import {  PromiseResultShape } from "react-use-promise-matcher";
+import { PromiseResultShape } from "react-use-promise-matcher";
+import useFormikValuesChanged from "./useFormikValuesChanged";
 
 interface FormFeedbackProps {
   result: PromiseResultShape<any, any>;
+  clear: () => void;
 }
 
-const FormFeedback: React.FC<FormFeedbackProps> = ({ result, ...buttonProps }) =>
-  result.match({
+const FormFeedback: React.FC<FormFeedbackProps> = ({ result, clear }) => {
+  useFormikValuesChanged(() => {
+    !result.isIdle && clear();
+  });
+
+  return result.match({
     Idle: () => <></>,
     Loading: () => (
-      <Form.Text muted className="d-inline ml-2">
+      <Alert className="my-3" variant="info">
         <Spinner as="span" className="mr-2" animation="border" size="sm" role="loader" />
         Connecting...
-      </Form.Text>
+      </Alert>
     ),
     Rejected: (error) => (
-      <Form.Text className="d-inline ml-2 text-danger">
+      <Alert className="my-3" variant="danger">
         <BsExclamationCircle className="mr-2" />
         {error.toString()}
-      </Form.Text>
+      </Alert>
     ),
     Resolved: () => (
-      <Form.Text className="d-inline ml-2 text-success">
+      <Alert className="my-3" variant="success">
         <BsCheck className="mr-2" />
         Done.
-      </Form.Text>
+      </Alert>
     ),
   });
+};
 
 export default FormFeedback;

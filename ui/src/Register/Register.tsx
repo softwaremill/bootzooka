@@ -34,7 +34,7 @@ const Register: React.FC = () => {
       .required("Required"),
   });
 
-  const [result, send] = usePromise((values: RegisterParams) =>
+  const [result, send, clear] = usePromise((values: RegisterParams) =>
     userService
       .registerUser(values)
       .then(({ apiKey }) => {
@@ -70,7 +70,7 @@ const Register: React.FC = () => {
             <BiUserPlus />
             &nbsp;Register
           </Button>
-          <FormFeedback result={result} />
+          <FormFeedback result={result} clear={clear}/>
         </Form>
       </Formik>
     </Container>
