@@ -9,7 +9,7 @@ import { AppContext } from "../AppContext/AppContext";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
-import FormFeedback from "../FormFeedback/FormFeedback";
+import FeedbackButton from "../FeedbackButton/FeedbackButton";
 
 interface ProfileDetailsParams {
   login: string;
@@ -56,12 +56,7 @@ const ProfileDetails: React.FC = () => {
           <FormikInput name="login" label="Login" />
           <FormikInput name="email" label="Email address" />
 
-          <Button type="submit" disabled={result.isLoading}>
-            <BiArrowFromBottom />
-            &nbsp;Update profile data
-          </Button>
-
-          <FormFeedback result={result} clear={clear} />
+          <FeedbackButton type="submit" label="Update profile data" Icon={BiArrowFromBottom} result={result} clear={clear} />
         </Form>
       </Formik>
     </Container>

@@ -10,7 +10,7 @@ import { AppContext } from "../AppContext/AppContext";
 import { BiLogInCircle } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
-import FormFeedback from "../FormFeedback/FormFeedback";
+import FeedbackButton from "../FeedbackButton/FeedbackButton";
 
 interface LoginParams {
   loginOrEmail: string;
@@ -57,16 +57,11 @@ const Login: React.FC = () => {
         <Form as={FormikForm}>
           <FormikInput name="loginOrEmail" label="Login or email" />
           <FormikInput name="password" type="password" label="Password" />
-
-          <Button type="submit" disabled={result.isLoading}>
-            <BiLogInCircle />
-            &nbsp;Sign In
-          </Button>
-          <Link className="small float-right clear-right" to="/recover-lost-password">
+          <Link className="small float-right" to="/recover-lost-password">
             Forgot password?
           </Link>
 
-          <FormFeedback result={result} clear={clear}/>
+          <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />
         </Form>
       </Formik>
     </Container>

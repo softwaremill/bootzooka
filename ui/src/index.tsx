@@ -6,11 +6,9 @@ import { AppContextProvider } from "./AppContext/AppContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <AppContextProvider>
-      <App />
-    </AppContextProvider>
-  </React.StrictMode>,
+  <AppContextProvider>
+    <App />
+  </AppContextProvider>,
   document.getElementById("root")
 );
 

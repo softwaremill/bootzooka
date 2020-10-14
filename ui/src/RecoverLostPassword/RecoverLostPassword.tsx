@@ -8,7 +8,7 @@ import Container from "react-bootstrap/Container";
 import { BiReset } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
-import FormFeedback from "../FormFeedback/FormFeedback";
+import FeedbackButton from "../FeedbackButton/FeedbackButton";
 
 interface RecoverLostPasswordParams {
   loginOrEmail: string;
@@ -37,12 +37,7 @@ const RecoverLostPassword: React.FC = () => {
       >
         <Form as={FormikForm}>
           <FormikInput name="loginOrEmail" label="Login or email" />
-
-          <Button type="submit">
-            <BiReset />
-            &nbsp;Reset password
-          </Button>
-          <FormFeedback result={result} clear={clear} />
+          <FeedbackButton type="submit" label="Reset password" Icon={BiReset} result={result} clear={clear} />
         </Form>
       </Formik>
     </Container>

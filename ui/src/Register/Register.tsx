@@ -10,7 +10,7 @@ import { AppContext } from "../AppContext/AppContext";
 import { BiUserPlus } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
-import FormFeedback from "../FormFeedback/FormFeedback";
+import FeedbackButton from "../FeedbackButton/FeedbackButton";
 
 interface RegisterParams {
   login: string;
@@ -66,11 +66,7 @@ const Register: React.FC = () => {
           <FormikInput name="password" label="Password" type="password" />
           <FormikInput name="repeatedPassword" label="Repeat password" type="password" />
 
-          <Button type="submit" disabled={result.isLoading}>
-            <BiUserPlus />
-            &nbsp;Register
-          </Button>
-          <FormFeedback result={result} clear={clear}/>
+          <FeedbackButton type="submit" label="Register" Icon={BiUserPlus} result={result} clear={clear} />
         </Form>
       </Formik>
     </Container>

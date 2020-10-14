@@ -8,7 +8,7 @@ import Container from "react-bootstrap/Container";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
-import FormFeedback from '../FormFeedback/FormFeedback'
+import FeedbackButton from "../FeedbackButton/FeedbackButton";
 
 interface PasswordResetParams {
   password: string;
@@ -46,12 +46,7 @@ const ProfileDetails: React.FC = () => {
           <FormikInput name="password" label="New password" type="password" />
           <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
 
-          <Button type="submit">
-            <BiArrowFromBottom />
-            &nbsp;Update password
-          </Button>
-
-          <FormFeedback result={result} clear={clear}/>
+          <FeedbackButton type="submit" label="Update password" Icon={BiArrowFromBottom} result={result} clear={clear} />
         </Form>
       </Formik>
     </Container>

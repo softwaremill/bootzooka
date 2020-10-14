@@ -25,7 +25,7 @@ test("renders header", () => {
 test("handles password reset success", async () => {
   (passwordService.resetPassword as jest.Mock).mockResolvedValueOnce({});
 
-  const { getByLabelText, getByText, findByRole } = render(<PasswordReset />);
+  const { getByLabelText, getByText, getByRole, findByRole } = render(<PasswordReset />);
 
   fireEvent.blur(getByLabelText("New password"));
   fireEvent.change(getByLabelText("New password"), { target: { value: "test-new-password" } });
@@ -37,7 +37,7 @@ test("handles password reset success", async () => {
   await findByRole(/loader/i);
 
   expect(passwordService.resetPassword).toBeCalledWith({ code: "test-code", password: "test-new-password" });
-  expect(getByText("Done.")).toBeInTheDocument();
+  expect(getByRole("success")).toBeInTheDocument();
 });
 
 test("handles password reset error", async () => {
@@ -56,5 +56,5 @@ test("handles password reset error", async () => {
   await findByRole(/loader/i);
 
   expect(passwordService.resetPassword).toBeCalledWith({ code: "test-code", password: "test-new-password" });
-  expect(getByText("Error: Test Error")).toBeInTheDocument();
+  expect(getByText("Test Error")).toBeInTheDocument();
 });

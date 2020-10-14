@@ -90,5 +90,5 @@ test("handles login error", async () => {
 
   expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
   expect(dispatch).not.toBeCalled();
-  expect(getByText("Error: Test Error")).toBeInTheDocument();
+  expect(getByText("Test Error")).toBeInTheDocument();
 });

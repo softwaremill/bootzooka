@@ -30,7 +30,7 @@ test("renders header", () => {
 test("handles change details success", async () => {
   (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
 
-  const { getByLabelText, getByText, findByRole } = render(
+  const { getByLabelText, getByText, getByRole, findByRole } = render(
     <AppContext.Provider value={{ state: mockState, dispatch }}>
       <ProfileDetails />
     </AppContext.Provider>
@@ -57,7 +57,7 @@ test("handles change details success", async () => {
       login: "test-login",
     },
   });
-  expect(getByText("Done.")).toBeInTheDocument();
+  expect(getByRole("success")).toBeInTheDocument();
 });
 
 test("handles change details error", async () => {
@@ -84,5 +84,5 @@ test("handles change details error", async () => {
     login: "test-login",
   });
   expect(dispatch).not.toBeCalled();
-  expect(getByText("Error: Test Error")).toBeInTheDocument();
+  expect(getByText("Test Error")).toBeInTheDocument();
 });

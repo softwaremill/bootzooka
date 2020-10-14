@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
             Rejected: (error) => (
               <small className="text-danger">
                 <BsExclamationCircle className="mr-2" />
-                {error.toString()}
+                {error.message}
               </small>
             ),
             Resolved: ({ buildDate, buildSha }) => (

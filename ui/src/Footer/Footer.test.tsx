@@ -38,5 +38,5 @@ test("catches error of version data", async () => {
   await findAllByRole(/loader/i);
 
   expect(info).toBeInTheDocument();
-  expect(getByText("Error: Test Error")).toBeInTheDocument();
+  expect(getByText("Test Error")).toBeInTheDocument();
 });
