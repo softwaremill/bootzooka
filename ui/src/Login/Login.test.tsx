@@ -89,6 +89,6 @@ test("handles login error", async () => {
   await findByRole(/loader/i);
 
   expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  expect(dispatch).toBeCalledTimes(0);
+  expect(dispatch).not.toBeCalled();
   expect(getByText("Error: Test Error")).toBeInTheDocument();
 });

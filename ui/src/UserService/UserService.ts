@@ -1,13 +1,15 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
+type ApiKey = string | null;
+
 interface UserService {
   context: string;
   registerUser: (params: { login: string; email: string; password: string }) => Promise<any>;
   login: (params: { loginOrEmail: string; password: string }) => Promise<any>;
-  getCurrentUser: (apiKey: string) => Promise<any>;
-  changeProfileDetails: (apiKey: string, params: { email: string; login: string }) => Promise<any>;
-  changePassword: (apiKey: string, params: { currentPassword: string; newPassword: string }) => Promise<any>;
-  _securedRequest: (apiKey: string, config: AxiosRequestConfig) => Promise<AxiosResponse<any>>;
+  getCurrentUser: (apiKey: ApiKey) => Promise<any>;
+  changeProfileDetails: (apiKey: ApiKey, params: { email: string; login: string }) => Promise<any>;
+  changePassword: (apiKey: ApiKey, params: { currentPassword: string; newPassword: string }) => Promise<any>;
+  _securedRequest: (apiKey: ApiKey, config: AxiosRequestConfig) => Promise<AxiosResponse<any>>;
 }
 
 const userService: UserService = {
@@ -50,6 +52,8 @@ const userService: UserService = {
   },
 
   _securedRequest(apiKey, config) {
+    if (!apiKey) throw new Error("Api Key not provided");
+
     return axios.request({
       headers: {
         Authorization: `Bearer ${apiKey}`,

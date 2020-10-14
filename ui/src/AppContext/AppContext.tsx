@@ -15,14 +15,14 @@ export interface User {
 export interface AppState {
   messages: Message[];
   apiKey: string | null;
-  user: User | null;
+  user: Partial<User>;
   loggedIn: boolean | null;
 }
 
 export const initialAppState: AppState = {
   messages: [],
   apiKey: null,
-  user: null,
+  user: {},
   loggedIn: null,
 };
 
@@ -30,7 +30,7 @@ type AppAction =
   | { type: "ADD_MESSAGE"; message: Message }
   | { type: "REMOVE_MESSAGE"; messageIndex: number }
   | { type: "SET_API_KEY"; apiKey: string | null }
-  | { type: "SET_USER_DATA"; user: User | null }
+  | { type: "SET_USER_DATA"; user: Partial<User> }
   | { type: "SET_LOGGED_IN"; loggedIn: boolean | null };
 
 const AppReducer = (state: AppState, action: AppAction): AppState => {
@@ -49,7 +49,7 @@ const AppReducer = (state: AppState, action: AppAction): AppState => {
       });
     case "SET_USER_DATA":
       return immer(state, (draftState) => {
-        draftState.user = action.user;
+        draftState.user = {...draftState.user, ...action.user};
       });
     case "SET_LOGGED_IN":
       return immer(state, (draftState) => {

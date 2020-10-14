@@ -21,11 +21,7 @@ beforeEach(() => {
 
 test("renders header", () => {
   const { getByText } = render(
-    <Router history={history}>
-      <AppContext.Provider value={{ state: initialAppState, dispatch }}>
         <PasswordReset />
-      </AppContext.Provider>
-    </Router>
   );
 
   expect(getByText("Password details")).toBeInTheDocument();
@@ -35,11 +31,7 @@ test("handles password reset success", async () => {
   (passwordService.resetPassword as jest.Mock).mockResolvedValueOnce({});
 
   const { getByLabelText, getByText, findByRole } = render(
-    <Router history={history}>
-      <AppContext.Provider value={{ state: initialAppState, dispatch }}>
         <PasswordReset />
-      </AppContext.Provider>
-    </Router>
   );
 
   fireEvent.blur(getByLabelText("New password"));
@@ -52,12 +44,7 @@ test("handles password reset success", async () => {
   await findByRole(/loader/i);
 
   expect(passwordService.resetPassword).toBeCalledWith({ code: "test-code", password: "test-new-password" });
-  expect(dispatch).toBeCalledTimes(1);
-  expect(dispatch).toBeCalledWith({
-    message: { content: "Password changed!", variant: "success" },
-    type: "ADD_MESSAGE",
-  });
-  expect(history.location.pathname).toEqual("/login");
+  expect(getByText("Password reset success.")).toBeInTheDocument();
 });
 
 test("handles password reset error", async () => {
@@ -65,10 +52,7 @@ test("handles password reset error", async () => {
   (passwordService.resetPassword as jest.Mock).mockRejectedValueOnce(testError);
 
   const { getByLabelText, getByText, findByRole } = render(
-    <Router history={history}>
-    <AppContext.Provider value={{ state: initialAppState, dispatch }}>
       <PasswordReset />
-    </AppContext.Provider></Router>
   );
 
   fireEvent.blur(getByLabelText("New password"));
@@ -81,10 +65,5 @@ test("handles password reset error", async () => {
   await findByRole(/loader/i);
 
   expect(passwordService.resetPassword).toBeCalledWith({ code: "test-code", password: "test-new-password" });
-  expect(dispatch).toBeCalledTimes(1);
-  expect(dispatch).toBeCalledWith({
-    message: { content: "Could not change password! Test Error", variant: "danger" },
-    type: "ADD_MESSAGE",
-  });
-  expect(console.error).toBeCalledWith(testError);
+  expect(getByText("Error: Test Error")).toBeInTheDocument();
 });

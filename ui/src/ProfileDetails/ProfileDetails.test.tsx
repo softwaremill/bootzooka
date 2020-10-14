@@ -12,7 +12,6 @@ const mockState: AppState = {
 };
 
 jest.mock("../UserService/UserService");
-console.error = jest.fn();
 const dispatch = jest.fn();
 
 beforeEach(() => {
@@ -51,19 +50,15 @@ test("handles change details success", async () => {
     email: "test@email.address",
     login: "test-login",
   });
-  expect(dispatch).toBeCalledTimes(2);
+  expect(dispatch).toBeCalledTimes(1);
   expect(dispatch).toBeCalledWith({
     type: "SET_USER_DATA",
     user: {
-      createdOn: "2020-10-09T09:57:17.995288Z",
       email: "test@email.address",
       login: "test-login",
     },
   });
-  expect(dispatch).toBeCalledWith({
-    message: { content: "Profile details changed!", variant: "success" },
-    type: "ADD_MESSAGE",
-  });
+  expect(getByText("Update success.")).toBeInTheDocument();
 });
 
 test("handles change details error", async () => {
@@ -89,10 +84,6 @@ test("handles change details error", async () => {
     email: "test@email.address",
     login: "test-login",
   });
-  expect(dispatch).toBeCalledTimes(1);
-  expect(dispatch).toBeCalledWith({
-    message: { content: "Could not change profile details! Test Error", variant: "danger" },
-    type: "ADD_MESSAGE",
-  });
-  expect(console.error).toBeCalledWith(testError);
+  expect(dispatch).not.toBeCalled();
+  expect(getByText("Error: Test Error")).toBeInTheDocument();
 });

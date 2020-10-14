@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormik } from "formik";
+import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
@@ -8,6 +8,9 @@ import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
 import Spinner from "react-bootstrap/Spinner";
 import { BiArrowFromBottom } from "react-icons/bi";
+import { BsExclamationCircle, BsCheck } from "react-icons/bs";
+import { usePromise } from "react-use-promise-matcher";
+import FormikInput from "../FormikInput/FormikInput";
 
 interface PasswordDetailsParams {
   currentPassword: string;
@@ -16,10 +19,7 @@ interface PasswordDetailsParams {
 }
 
 const ProfileDetails: React.FC = () => {
-  const [isLoader, setLoader] = React.useState(false);
-
   const {
-    dispatch,
     state: { apiKey },
   } = React.useContext(AppContext);
 
@@ -31,94 +31,57 @@ const ProfileDetails: React.FC = () => {
       .required("Required"),
   });
 
-  const onSubmit = async (values: PasswordDetailsParams) => {
-    if (!apiKey) return;
-
-    setLoader(true);
-    try {
-      const { currentPassword, newPassword } = values;
-      await userService.changePassword(apiKey, { currentPassword, newPassword });
-      dispatch({ type: "ADD_MESSAGE", message: { content: "Password changed!", variant: "success" } });
-    } catch (error) {
-      const response = error?.response?.data?.error || error.message;
-      dispatch({
-        type: "ADD_MESSAGE",
-        message: { content: `Could not change password! ${response}`, variant: "danger" },
-      });
-      console.error(error);
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  const formik = useFormik<PasswordDetailsParams>({
-    initialValues: {
-      currentPassword: "",
-      newPassword: "",
-      repeatedPassword: "",
-    },
-    onSubmit,
-    validationSchema,
-  });
-
-  const handleSubmit = React.useCallback(
-    (e?: React.FormEvent<HTMLElement> | undefined) => {
-      formik.handleSubmit(e as React.FormEvent<HTMLFormElement>);
-    },
-    [formik]
+  const [result, send] = usePromise<{}, [PasswordDetailsParams], Error>(
+    ({ currentPassword, newPassword }: PasswordDetailsParams) =>
+      userService.changePassword(apiKey, { currentPassword, newPassword }).catch((error) => {
+        throw new Error(error?.response?.data?.error || error.message);
+      })
   );
 
   return (
     <Container className="py-5">
       <h3>Password details</h3>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group>
-          <Form.Label>Current Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="currentPassword"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.currentPassword}
-            isValid={!formik.errors.currentPassword && formik.touched.currentPassword}
-            isInvalid={!!formik.errors.currentPassword && formik.touched.currentPassword}
-          />
-          <Form.Control.Feedback type="invalid">{formik.errors.currentPassword}</Form.Control.Feedback>
-        </Form.Group>
+      <Formik<PasswordDetailsParams>
+        initialValues={{
+          currentPassword: "",
+          newPassword: "",
+          repeatedPassword: "",
+        }}
+        onSubmit={send}
+        validationSchema={validationSchema}
+      >
+        <Form as={FormikForm}>
+          <FormikInput name="currentPassword" label="Current password" type="password" />
+          <FormikInput name="password" label="New password" type="password" />
+          <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
 
-        <Form.Group>
-          <Form.Label>New password</Form.Label>
-          <Form.Control
-            type="password"
-            name="newPassword"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.newPassword}
-            isValid={!formik.errors.newPassword && formik.touched.newPassword}
-            isInvalid={!!formik.errors.newPassword && formik.touched.newPassword}
-          />
-          <Form.Control.Feedback type="invalid">{formik.errors.newPassword}</Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group>
-          <Form.Label>Repeat new password</Form.Label>
-          <Form.Control
-            type="password"
-            name="repeatedPassword"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.repeatedPassword}
-            isValid={!formik.errors.repeatedPassword && formik.touched.repeatedPassword}
-            isInvalid={!!formik.errors.repeatedPassword && formik.touched.repeatedPassword}
-          />
-          <Form.Control.Feedback type="invalid">{formik.errors.repeatedPassword}</Form.Control.Feedback>
-        </Form.Group>
-
-        <Button type="submit">
-          {isLoader ? <Spinner as="span" animation="border" size="sm" role="loader" /> : <BiArrowFromBottom />}
-          &nbsp;Update password
-        </Button>
-      </Form>
+          <Button type="submit">
+            <BiArrowFromBottom />
+            &nbsp;Update password
+          </Button>
+          {result.match({
+            Idle: () => <></>,
+            Loading: () => (
+              <Form.Text muted>
+                <Spinner as="span" className="mr-2" animation="border" size="sm" role="loader" />
+                Connecting
+              </Form.Text>
+            ),
+            Rejected: (error) => (
+              <Form.Text className="text-danger">
+                <BsExclamationCircle className="mr-2" />
+                {error.toString()}
+              </Form.Text>
+            ),
+            Resolved: () => (
+              <Form.Text className="text-success">
+                <BsCheck className="mr-2" />
+                Password update success.
+              </Form.Text>
+            ),
+          })}
+        </Form>
+      </Formik>
     </Container>
   );
 };
