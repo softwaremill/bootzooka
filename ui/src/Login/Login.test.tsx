@@ -9,7 +9,6 @@ import userService from "../UserService/UserService";
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 
 jest.mock("../UserService/UserService");
-console.error = jest.fn();
 const dispatch = jest.fn();
 
 beforeEach(() => {
@@ -63,12 +62,9 @@ test("handles login success", async () => {
   await findByRole(/loader/i);
 
   expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  expect(dispatch).toBeCalledTimes(2);
+  expect(dispatch).toBeCalledTimes(1);
   expect(dispatch).toBeCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
-  expect(dispatch).toBeCalledWith({
-    message: { content: "Successfully logged in.", variant: "success" },
-    type: "ADD_MESSAGE",
-  });
+  expect(history.location.pathname).toEqual("/main");
 });
 
 test("handles login error", async () => {
@@ -93,10 +89,6 @@ test("handles login error", async () => {
   await findByRole(/loader/i);
 
   expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  expect(dispatch).toBeCalledTimes(1);
-  expect(dispatch).toBeCalledWith({
-    message: { content: "Incorrect login/email or password!", variant: "danger" },
-    type: "ADD_MESSAGE",
-  });
-  expect(console.error).toBeCalledWith(testError);
+  expect(dispatch).toBeCalledTimes(0);
+  expect(getByText("Error: Test Error")).toBeInTheDocument();
 });
