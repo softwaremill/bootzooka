@@ -8,7 +8,6 @@ const mockState: AppState = {
   apiKey: "test-api-key",
   user: { login: "user-login", email: "email@address.pl", createdOn: "2020-10-09T09:57:17.995288Z" },
   loggedIn: true,
-  messages: [],
 };
 
 jest.mock("../UserService/UserService");

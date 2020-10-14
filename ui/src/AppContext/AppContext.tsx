@@ -1,11 +1,6 @@
 import React from "react";
 import immer from "immer";
 
-export interface Message {
-  content: string;
-  variant: "success" | "danger" | "warning" | "info";
-}
-
 export interface User {
   createdOn: string;
   email: string;
@@ -13,36 +8,24 @@ export interface User {
 }
 
 export interface AppState {
-  messages: Message[];
   apiKey: string | null;
   user: Partial<User>;
   loggedIn: boolean | null;
 }
 
 export const initialAppState: AppState = {
-  messages: [],
   apiKey: null,
   user: {},
   loggedIn: null,
 };
 
 type AppAction =
-  | { type: "ADD_MESSAGE"; message: Message }
-  | { type: "REMOVE_MESSAGE"; messageIndex: number }
   | { type: "SET_API_KEY"; apiKey: string | null }
   | { type: "SET_USER_DATA"; user: Partial<User> }
   | { type: "SET_LOGGED_IN"; loggedIn: boolean | null };
 
 const AppReducer = (state: AppState, action: AppAction): AppState => {
   switch (action.type) {
-    case "ADD_MESSAGE":
-      return immer(state, (draftState) => {
-        draftState.messages.push(action.message);
-      });
-    case "REMOVE_MESSAGE":
-      return immer(state, (draftState) => {
-        draftState.messages.splice(action.messageIndex, 1);
-      });
     case "SET_API_KEY":
       return immer(state, (draftState) => {
         draftState.apiKey = action.apiKey;
