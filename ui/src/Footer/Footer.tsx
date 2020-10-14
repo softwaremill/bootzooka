@@ -4,6 +4,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import versionService from "../VersionService/VersionService";
 import Spinner from "react-bootstrap/Spinner";
+import { usePromise } from "react-use-promise-matcher";
+import { BsExclamationCircle } from "react-icons/bs";
 
 interface VersionData {
   buildDate: string;
@@ -11,23 +13,16 @@ interface VersionData {
 }
 
 const Footer: React.FC = () => {
-  const [version, setVersion] = React.useState<VersionData>();
-  const [isLoader, setLoader] = React.useState(false);
+  const [result, load] = usePromise<VersionData, any, Error>(() =>
+    versionService.getVersion().catch((error) => {
+      throw new Error(error?.response?.data?.error || error.message);
+    })
+  );
 
   React.useEffect(() => {
-    const fetchVersion = async () => {
-      setLoader(true);
-      try {
-        const data = await versionService.getVersion();
-        setVersion(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoader(false);
-      }
-    };
-    fetchVersion();
-  }, [setVersion]);
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container fluid className="fixed-bottom bg-light">
@@ -39,13 +34,25 @@ const Footer: React.FC = () => {
           </small>
         </Col>
         <Col sm={6} className="text-right py-3 d-none d-sm-block">
-          <small className="text-break">
-            <strong>build&nbsp;date:&nbsp;</strong>
-            {isLoader ? <Spinner animation="border" size="sm" role="loader" /> : version?.buildDate}
-            <br />
-            <strong>build&nbsp;sha:&nbsp;</strong>
-            {isLoader ? <Spinner animation="border" size="sm" role="loader" /> : version?.buildSha}
-          </small>
+          {result.match({
+            Idle: () => <></>,
+            Loading: () => <Spinner animation="border" size="sm" role="loader" />,
+            Rejected: (error) => (
+              <small className="text-danger">
+                <BsExclamationCircle className="mr-2" />
+                {error.toString()}
+              </small>
+            ),
+            Resolved: ({ buildDate, buildSha }) => (
+              <small className="text-break">
+                <strong>build&nbsp;date:&nbsp;</strong>
+                {buildDate}
+                <br />
+                <strong>build&nbsp;sha:&nbsp;</strong>
+                {buildSha}
+              </small>
+            ),
+          })}
         </Col>
       </Row>
     </Container>

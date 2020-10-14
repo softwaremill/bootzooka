@@ -4,7 +4,6 @@ import Footer from "./Footer";
 import versionService from "../VersionService/VersionService";
 
 jest.mock("../VersionService/VersionService");
-console.error = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -39,5 +38,5 @@ test("catches error of version data", async () => {
   await findAllByRole(/loader/i);
 
   expect(info).toBeInTheDocument();
-  expect(console.error).toBeCalledWith(testError);
+  expect(getByText("Error: Test Error")).toBeInTheDocument();
 });

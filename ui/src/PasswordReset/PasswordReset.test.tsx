@@ -1,15 +1,12 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import PasswordReset from "./PasswordReset";
-import { AppContext, initialAppState } from "../AppContext/AppContext";
 import passwordService from "../PasswordService/PasswordService";
-import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 
 const history = createMemoryHistory({ initialEntries: ["/password-reset"] });
 
 jest.mock("../PasswordService/PasswordService");
-console.error = jest.fn();
 const dispatch = jest.fn();
 
 delete (window as any).location;
@@ -20,9 +17,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  const { getByText } = render(
-        <PasswordReset />
-  );
+  const { getByText } = render(<PasswordReset />);
 
   expect(getByText("Password details")).toBeInTheDocument();
 });
@@ -30,9 +25,7 @@ test("renders header", () => {
 test("handles password reset success", async () => {
   (passwordService.resetPassword as jest.Mock).mockResolvedValueOnce({});
 
-  const { getByLabelText, getByText, findByRole } = render(
-        <PasswordReset />
-  );
+  const { getByLabelText, getByText, findByRole } = render(<PasswordReset />);
 
   fireEvent.blur(getByLabelText("New password"));
   fireEvent.change(getByLabelText("New password"), { target: { value: "test-new-password" } });
@@ -51,9 +44,7 @@ test("handles password reset error", async () => {
   const testError = new Error("Test Error");
   (passwordService.resetPassword as jest.Mock).mockRejectedValueOnce(testError);
 
-  const { getByLabelText, getByText, findByRole } = render(
-      <PasswordReset />
-  );
+  const { getByLabelText, getByText, findByRole } = render(<PasswordReset />);
 
   fireEvent.blur(getByLabelText("New password"));
   fireEvent.change(getByLabelText("New password"), { target: { value: "test-new-password" } });
