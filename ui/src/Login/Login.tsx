@@ -7,11 +7,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
-import Spinner from "react-bootstrap/Spinner";
 import { BiLogInCircle } from "react-icons/bi";
-import { BsExclamationCircle } from "react-icons/bs";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
+import FormFeedback from "../FormFeedback/FormFeedback";
 
 interface LoginParams {
   loginOrEmail: string;
@@ -67,22 +66,7 @@ const Login: React.FC = () => {
             Forgot password?
           </Link>
 
-          {result.match({
-            Idle: () => <></>,
-            Loading: () => (
-              <Form.Text muted>
-                <Spinner as="span" className="mr-2" animation="border" size="sm" role="loader" />
-                Connecting
-              </Form.Text>
-            ),
-            Rejected: (error) => (
-              <Form.Text className="text-danger">
-                <BsExclamationCircle className="mr-2" />
-                {error.toString()}
-              </Form.Text>
-            ),
-            Resolved: () => <Redirect to="/main" />,
-          })}
+          <FormFeedback result={result} />
         </Form>
       </Formik>
     </Container>

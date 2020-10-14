@@ -57,7 +57,7 @@ test("handles change details success", async () => {
       login: "test-login",
     },
   });
-  expect(getByText("Update success.")).toBeInTheDocument();
+  expect(getByText("Done.")).toBeInTheDocument();
 });
 
 test("handles change details error", async () => {

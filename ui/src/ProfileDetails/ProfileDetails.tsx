@@ -6,11 +6,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
-import Spinner from "react-bootstrap/Spinner";
 import { BiArrowFromBottom } from "react-icons/bi";
-import { BsExclamationCircle, BsCheck } from "react-icons/bs";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
+import FormFeedback from "../FormFeedback/FormFeedback";
 
 interface ProfileDetailsParams {
   login: string;
@@ -62,27 +61,7 @@ const ProfileDetails: React.FC = () => {
             &nbsp;Update profile data
           </Button>
 
-          {result.match({
-            Idle: () => <></>,
-            Loading: () => (
-              <Form.Text muted>
-                <Spinner as="span" className="mr-2" animation="border" size="sm" role="loader" />
-                Connecting
-              </Form.Text>
-            ),
-            Rejected: (error) => (
-              <Form.Text className="text-danger">
-                <BsExclamationCircle className="mr-2" />
-                {error.toString()}
-              </Form.Text>
-            ),
-            Resolved: () => (
-              <Form.Text className="text-success">
-                <BsCheck className="mr-2" />
-                Update success.
-              </Form.Text>
-            ),
-          })}
+          <FormFeedback result={result} />
         </Form>
       </Formik>
     </Container>

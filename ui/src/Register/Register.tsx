@@ -7,11 +7,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
-import Spinner from "react-bootstrap/Spinner";
 import { BiUserPlus } from "react-icons/bi";
-import { BsExclamationCircle } from "react-icons/bs";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
+import FormFeedback from "../FormFeedback/FormFeedback";
 
 interface RegisterParams {
   login: string;
@@ -21,7 +20,10 @@ interface RegisterParams {
 }
 
 const Register: React.FC = () => {
-  const { dispatch } = React.useContext(AppContext);
+  const {
+    dispatch,
+    state: { loggedIn },
+  } = React.useContext(AppContext);
 
   const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.object({
     login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -42,6 +44,8 @@ const Register: React.FC = () => {
         throw new Error(error?.response?.data?.error || error.message);
       })
   );
+
+  if (loggedIn) return <Redirect to="/main" />;
 
   return (
     <Container className="py-5">
@@ -66,22 +70,7 @@ const Register: React.FC = () => {
             <BiUserPlus />
             &nbsp;Register
           </Button>
-          {result.match({
-            Idle: () => <></>,
-            Loading: () => (
-              <Form.Text muted>
-                <Spinner as="span" className="mr-2" animation="border" size="sm" role="loader" />
-                Connecting
-              </Form.Text>
-            ),
-            Rejected: (error) => (
-              <Form.Text className="text-danger">
-                <BsExclamationCircle className="mr-2" />
-                {error.toString()}
-              </Form.Text>
-            ),
-            Resolved: () => <Redirect to="/main" />,
-          })}
+          <FormFeedback result={result} />
         </Form>
       </Formik>
     </Container>

@@ -10,6 +10,7 @@ import { BiReset } from "react-icons/bi";
 import { BsExclamationCircle, BsCheck } from "react-icons/bs";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
+import FormFeedback from "../FormFeedback/FormFeedback";
 
 interface RecoverLostPasswordParams {
   loginOrEmail: string;
@@ -43,27 +44,7 @@ const RecoverLostPassword: React.FC = () => {
             <BiReset />
             &nbsp;Reset password
           </Button>
-          {result.match({
-            Idle: () => <></>,
-            Loading: () => (
-              <Form.Text muted>
-                <Spinner as="span" className="mr-2" animation="border" size="sm" role="loader" />
-                Connecting
-              </Form.Text>
-            ),
-            Rejected: (error) => (
-              <Form.Text className="text-danger">
-                <BsExclamationCircle className="mr-2" />
-                {error.toString()}
-              </Form.Text>
-            ),
-            Resolved: () => (
-              <Form.Text className="text-success">
-                <BsCheck className="mr-2" />
-                Password reset claim success.
-              </Form.Text>
-            ),
-          })}
+          <FormFeedback result={result} />
         </Form>
       </Formik>
     </Container>

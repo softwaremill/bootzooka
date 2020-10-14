@@ -41,16 +41,10 @@ const App: React.FC = () => {
           loggedIn: true,
         });
       } catch (error) {
-        const response = error?.response?.data?.error || error?.message || "Unknown error";
-        dispatch({
-          type: "ADD_MESSAGE",
-          message: { content: `Could not log in! ${response}`, variant: "danger" },
-        });
         dispatch({
           type: "SET_LOGGED_IN",
           loggedIn: false,
         });
-        console.error(error);
       }
     };
 

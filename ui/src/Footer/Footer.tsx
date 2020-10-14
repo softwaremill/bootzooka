@@ -3,7 +3,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import versionService from "../VersionService/VersionService";
-import Notifications from "../Notifications/Notifications";
 import Spinner from "react-bootstrap/Spinner";
 
 interface VersionData {
@@ -31,11 +30,8 @@ const Footer: React.FC = () => {
   }, [setVersion]);
 
   return (
-    <Container fluid className="fixed-bottom">
+    <Container fluid className="fixed-bottom bg-light">
       <Row>
-        <Notifications />
-      </Row>
-      <Row className="bg-light">
         <Col sm={6} className="py-3">
           <small>
             Bootzooka - application scaffolding by <a href="http://softwaremill.com">SoftwareMill</a>,

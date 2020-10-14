@@ -6,11 +6,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { AppContext } from "../AppContext/AppContext";
-import Spinner from "react-bootstrap/Spinner";
 import { BiArrowFromBottom } from "react-icons/bi";
-import { BsExclamationCircle, BsCheck } from "react-icons/bs";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
+import FormFeedback from "../FormFeedback/FormFeedback";
 
 interface PasswordDetailsParams {
   currentPassword: string;
@@ -31,11 +30,10 @@ const ProfileDetails: React.FC = () => {
       .required("Required"),
   });
 
-  const [result, send] = usePromise<{}, [PasswordDetailsParams], Error>(
-    ({ currentPassword, newPassword }: PasswordDetailsParams) =>
-      userService.changePassword(apiKey, { currentPassword, newPassword }).catch((error) => {
-        throw new Error(error?.response?.data?.error || error.message);
-      })
+  const [result, send] = usePromise(({ currentPassword, newPassword }: PasswordDetailsParams) =>
+    userService.changePassword(apiKey, { currentPassword, newPassword }).catch((error) => {
+      throw new Error(error?.response?.data?.error || error.message);
+    })
   );
 
   return (
@@ -52,34 +50,14 @@ const ProfileDetails: React.FC = () => {
       >
         <Form as={FormikForm}>
           <FormikInput name="currentPassword" label="Current password" type="password" />
-          <FormikInput name="password" label="New password" type="password" />
+          <FormikInput name="newPassword" label="New password" type="password" />
           <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
 
           <Button type="submit">
             <BiArrowFromBottom />
             &nbsp;Update password
           </Button>
-          {result.match({
-            Idle: () => <></>,
-            Loading: () => (
-              <Form.Text muted>
-                <Spinner as="span" className="mr-2" animation="border" size="sm" role="loader" />
-                Connecting
-              </Form.Text>
-            ),
-            Rejected: (error) => (
-              <Form.Text className="text-danger">
-                <BsExclamationCircle className="mr-2" />
-                {error.toString()}
-              </Form.Text>
-            ),
-            Resolved: () => (
-              <Form.Text className="text-success">
-                <BsCheck className="mr-2" />
-                Password update success.
-              </Form.Text>
-            ),
-          })}
+          <FormFeedback result={result} />
         </Form>
       </Formik>
     </Container>
