@@ -38,7 +38,7 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ result, clear, label, I
           <BsExclamationCircle role="error" />
           &nbsp;{label}
         </Button>
-        <Form.Text className="text-danger">{error.message}</Form.Text>
+        <Form.Text className="text-danger d-inline-block mx-3">{error.message}</Form.Text>
       </>
     ),
     Resolved: () => (

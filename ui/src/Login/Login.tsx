@@ -56,11 +56,12 @@ const Login: React.FC = () => {
         <Form as={FormikForm}>
           <FormikInput name="loginOrEmail" label="Login or email" />
           <FormikInput name="password" type="password" label="Password" />
-          <Link className="small float-right" to="/recover-lost-password">
-            Forgot password?
-          </Link>
 
           <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />
+          {' '}
+          <Link className="float-right" to="/recover-lost-password">
+            Forgot password?
+          </Link>
         </Form>
       </Formik>
     </Container>
