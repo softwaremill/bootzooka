@@ -3,7 +3,6 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import passwordService from "../PasswordService/PasswordService";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
