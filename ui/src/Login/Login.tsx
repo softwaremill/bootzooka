@@ -62,7 +62,7 @@ const Login: React.FC = () => {
             <BiLogInCircle />
             &nbsp;Sign In
           </Button>
-          <Link className="btn btn-link" to="/recover-lost-password">
+          <Link className="small float-right clear-right" to="/recover-lost-password">
             Forgot password?
           </Link>
 

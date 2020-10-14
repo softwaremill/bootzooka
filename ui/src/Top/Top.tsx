@@ -18,10 +18,6 @@ const Top: React.FC = () => {
       apiKey: null,
     });
     dispatch({
-      type: "SET_USER_DATA",
-      user: null,
-    });
-    dispatch({
       type: "SET_LOGGED_IN",
       loggedIn: false,
     });
@@ -29,18 +25,21 @@ const Top: React.FC = () => {
   };
 
   return (
-    <Navbar variant="dark" bg="secondary" sticky="top" collapseOnSelect expand="lg">
+    <Navbar variant="dark" bg="dark" sticky="top" collapseOnSelect expand="lg">
+      <LinkContainer exact to="/">
+        <Navbar.Brand>Bootzooka</Navbar.Brand>
+      </LinkContainer>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="d-flex flex-grow-1 justify-content-between">
           <LinkContainer exact to="/">
-            <Nav.Link>Bootzooka</Nav.Link>
+            <Nav.Link>Welcome</Nav.Link>
           </LinkContainer>
           <LinkContainer to="/main">
             <Nav.Link>Home</Nav.Link>
           </LinkContainer>
           <div className="flex-grow-1" />
-          {loggedIn && user ? (
+          {loggedIn ? (
             <>
               <Navbar.Text>Logged in as {user.login}</Navbar.Text>
               <LinkContainer to="/profile">

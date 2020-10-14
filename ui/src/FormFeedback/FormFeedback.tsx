@@ -12,19 +12,19 @@ const FormFeedback: React.FC<FormFeedbackProps> = ({ result, ...buttonProps }) =
   result.match({
     Idle: () => <></>,
     Loading: () => (
-      <Form.Text muted>
+      <Form.Text muted className="d-inline ml-2">
         <Spinner as="span" className="mr-2" animation="border" size="sm" role="loader" />
         Connecting...
       </Form.Text>
     ),
     Rejected: (error) => (
-      <Form.Text className="text-danger">
+      <Form.Text className="d-inline ml-2 text-danger">
         <BsExclamationCircle className="mr-2" />
         {error.toString()}
       </Form.Text>
     ),
     Resolved: () => (
-      <Form.Text className="text-success">
+      <Form.Text className="d-inline ml-2 text-success">
         <BsCheck className="mr-2" />
         Done.
       </Form.Text>
