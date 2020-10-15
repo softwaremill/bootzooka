@@ -3,7 +3,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
-import { UserContext } from "../UserContext/UserContext";
+import { UserContext } from "../../contexts/UserContext/UserContext";
 import { BiPowerOff } from "react-icons/bi";
 
 const Top: React.FC = () => {

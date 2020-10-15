@@ -1,9 +1,9 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import Footer from "./Footer";
-import versionService from "../VersionService/VersionService";
+import versionService from "../../services/VersionService/VersionService";
 
-jest.mock("../VersionService/VersionService");
+jest.mock("../../services/VersionService/VersionService");
 
 beforeEach(() => {
   jest.clearAllMocks();

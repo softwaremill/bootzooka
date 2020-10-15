@@ -4,14 +4,11 @@ import Welcome from "../pages/Welcome/Welcome";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import SecretMain from "../pages/SecretMain/SecretMain";
-import ProfileDetails from "../pages/ProfileDetails/ProfileDetails";
-import PasswordDetails from "../pages/PasswordDetails/PasswordDetails";
+import Profile from "../pages/Profile/Profile";
 import RecoverLostPassword from "../pages/RecoverLostPassword/RecoverLostPassword";
 import PasswordReset from "../pages/PasswordReset/PasswordReset";
 import NotFound from "../pages/NotFound/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 
 const Routes: React.FC = () => (
   <Switch>
@@ -35,12 +32,7 @@ const Routes: React.FC = () => (
       <SecretMain />
     </ProtectedRoute>
     <ProtectedRoute path="/profile">
-      <Container>
-        <Row>
-          <ProfileDetails />
-          <PasswordDetails />
-        </Row>
-      </Container>
+      <Profile />
     </ProtectedRoute>
 
     <Route>

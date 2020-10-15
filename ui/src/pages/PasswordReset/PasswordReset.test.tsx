@@ -1,9 +1,9 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import PasswordReset from "./PasswordReset";
-import passwordService from "../../PasswordService/PasswordService";
+import passwordService from "../../services/PasswordService/PasswordService";
 
-jest.mock("../../PasswordService/PasswordService");
+jest.mock("../../services/PasswordService/PasswordService");
 
 delete (window as any).location;
 (window as any).location = new URL("https://www.example.com/password-reset?code=test-code");

@@ -2,7 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import versionService from "../VersionService/VersionService";
+import versionService from "../../services/VersionService/VersionService";
 import Spinner from "react-bootstrap/Spinner";
 import { usePromise } from "react-use-promise-matcher";
 import { BsExclamationCircle } from "react-icons/bs";

@@ -1,8 +1,8 @@
 import React from "react";
-import { UserContext } from "../UserContext/UserContext";
-import userService from "../UserService/UserService";
+import { UserContext } from "../contexts/UserContext/UserContext";
+import userService from "../services/UserService/UserService";
 
-const useLocalStoragedApiKey = () => {
+const useLoginOnApiKey = () => {
   const {
     dispatch,
     state: { apiKey },
@@ -18,4 +18,4 @@ const useLocalStoragedApiKey = () => {
   }, [apiKey, dispatch]);
 };
 
-export default useLocalStoragedApiKey;
+export default useLoginOnApiKey;
