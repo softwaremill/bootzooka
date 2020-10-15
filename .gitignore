@@ -8,5 +8,4 @@ target/
 data/
 *.bloop
 *.metals
-
-.bsp/sbt.json
+.bsp
