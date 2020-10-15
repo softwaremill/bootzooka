@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import ProfileDetails from "./ProfileDetails";
-import { AppContext, AppState } from "../AppContext/AppContext";
+import { UserContext, AppState } from "../UserContext/UserContext";
 import userService from "../UserService/UserService";
 
 const mockState: AppState = {
@@ -19,9 +19,9 @@ beforeEach(() => {
 
 test("renders header", () => {
   const { getByText } = render(
-    <AppContext.Provider value={{ state: mockState, dispatch }}>
+    <UserContext.Provider value={{ state: mockState, dispatch }}>
       <ProfileDetails />
-    </AppContext.Provider>
+    </UserContext.Provider>
   );
 
   expect(getByText("Profile details")).toBeInTheDocument();
@@ -31,9 +31,9 @@ test("handles change details success", async () => {
   (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
 
   const { getByLabelText, getByText, getByRole, findByRole } = render(
-    <AppContext.Provider value={{ state: mockState, dispatch }}>
+    <UserContext.Provider value={{ state: mockState, dispatch }}>
       <ProfileDetails />
-    </AppContext.Provider>
+    </UserContext.Provider>
   );
 
   fireEvent.blur(getByLabelText("Login"));
@@ -51,7 +51,7 @@ test("handles change details success", async () => {
   });
   expect(dispatch).toBeCalledTimes(1);
   expect(dispatch).toBeCalledWith({
-    type: "SET_USER_DATA",
+    type: "UPDATE_USER_DATA",
     user: {
       email: "test@email.address",
       login: "test-login",
@@ -65,9 +65,9 @@ test("handles change details error", async () => {
   (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(testError);
 
   const { getByLabelText, getByText, findByRole } = render(
-    <AppContext.Provider value={{ state: mockState, dispatch }}>
+    <UserContext.Provider value={{ state: mockState, dispatch }}>
       <ProfileDetails />
-    </AppContext.Provider>
+    </UserContext.Provider>
   );
 
   fireEvent.blur(getByLabelText("Login"));

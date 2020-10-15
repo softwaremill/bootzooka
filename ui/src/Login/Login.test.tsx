@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import Login from "./Login";
-import { AppContext, initialAppState } from "../AppContext/AppContext";
+import { UserContext, initialAppState } from "../UserContext/UserContext";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 import userService from "../UserService/UserService";
@@ -18,9 +18,9 @@ beforeEach(() => {
 test("renders header", () => {
   const { getByText } = render(
     <Router history={history}>
-      <AppContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
         <Login />
-      </AppContext.Provider>
+      </UserContext.Provider>
     </Router>
   );
 
@@ -30,9 +30,9 @@ test("renders header", () => {
 test("redirects when logged in", () => {
   render(
     <Router history={history}>
-      <AppContext.Provider value={{ state: { ...initialAppState, loggedIn: true }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialAppState, loggedIn: true }, dispatch }}>
         <Login />
-      </AppContext.Provider>
+      </UserContext.Provider>
     </Router>
   );
 
@@ -46,9 +46,9 @@ test("handles login success", async () => {
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
-      <AppContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
         <Login />
-      </AppContext.Provider>
+      </UserContext.Provider>
     </Router>
   );
 
@@ -73,9 +73,9 @@ test("handles login error", async () => {
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
-      <AppContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialAppState, loggedIn: false }, dispatch }}>
         <Login />
-      </AppContext.Provider>
+      </UserContext.Provider>
     </Router>
   );
 

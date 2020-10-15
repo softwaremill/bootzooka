@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
-import { AppContext } from "../AppContext/AppContext";
+import { UserContext } from "../UserContext/UserContext";
 import { BiLogInCircle } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
@@ -17,10 +17,7 @@ interface LoginParams {
 }
 
 const Login: React.FC = () => {
-  const {
-    dispatch,
-    state: { loggedIn },
-  } = React.useContext(AppContext);
+  const { setApiKey, loggedIn } = React.useContext(UserContext);
 
   const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
     loginOrEmail: Yup.string().required("Required"),
@@ -30,9 +27,7 @@ const Login: React.FC = () => {
   const [result, send, clear] = usePromise((values: LoginParams) =>
     userService
       .login(values)
-      .then(({ apiKey }) => {
-        dispatch({ type: "SET_API_KEY", apiKey });
-      })
+      .then(({ apiKey }) => setApiKey(apiKey))
       .catch((error) => {
         if (error?.response?.status === 404) throw new Error("Incorrect login/email or password!");
 
@@ -56,9 +51,7 @@ const Login: React.FC = () => {
         <Form as={FormikForm}>
           <FormikInput name="loginOrEmail" label="Login or email" />
           <FormikInput name="password" type="password" label="Password" />
-
-          <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />
-          {' '}
+          <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />{" "}
           <Link className="float-right" to="/recover-lost-password">
             Forgot password?
           </Link>

@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
-import { AppContext } from "../AppContext/AppContext";
+import { UserContext } from "../UserContext/UserContext";
 import { BiUserPlus } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
@@ -19,10 +19,7 @@ interface RegisterParams {
 }
 
 const Register: React.FC = () => {
-  const {
-    dispatch,
-    state: { loggedIn },
-  } = React.useContext(AppContext);
+  const { setApiKey, loggedIn } = React.useContext(UserContext);
 
   const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.object({
     login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -36,9 +33,7 @@ const Register: React.FC = () => {
   const [result, send, clear] = usePromise((values: RegisterParams) =>
     userService
       .registerUser(values)
-      .then(({ apiKey }) => {
-        dispatch({ type: "SET_API_KEY", apiKey });
-      })
+      .then(({ apiKey }) => setApiKey(apiKey))
       .catch((error) => {
         throw new Error(error?.response?.data?.error || error.message);
       })

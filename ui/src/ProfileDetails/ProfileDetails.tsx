@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
-import { AppContext } from "../AppContext/AppContext";
+import { UserContext } from "../UserContext/UserContext";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
@@ -16,10 +16,7 @@ interface ProfileDetailsParams {
 }
 
 const ProfileDetails: React.FC = () => {
-  const {
-    dispatch,
-    state: { apiKey, user },
-  } = React.useContext(AppContext);
+  const { updateUserData, apiKey, user } = React.useContext(UserContext);
 
   const validationSchema: Yup.ObjectSchema<ProfileDetailsParams | undefined> = Yup.object({
     login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -29,12 +26,7 @@ const ProfileDetails: React.FC = () => {
   const [result, send, clear] = usePromise((values: ProfileDetailsParams) =>
     userService
       .changeProfileDetails(apiKey, values)
-      .then(() => {
-        dispatch({
-          type: "SET_USER_DATA",
-          user: values,
-        });
-      })
+      .then(() => updateUserData(values))
       .catch((error) => {
         throw new Error(error?.response?.data?.error || error.message);
       })
@@ -45,8 +37,8 @@ const ProfileDetails: React.FC = () => {
       <h3>Profile details</h3>
       <Formik<ProfileDetailsParams>
         initialValues={{
-          login: user.login || "",
-          email: user.email || "",
+          login: user?.login || "",
+          email: user?.email || "",
         }}
         onSubmit={send}
         validationSchema={validationSchema}
@@ -55,7 +47,13 @@ const ProfileDetails: React.FC = () => {
           <FormikInput name="login" label="Login" />
           <FormikInput name="email" label="Email address" />
 
-          <FeedbackButton type="submit" label="Update profile data" Icon={BiArrowFromBottom} result={result} clear={clear} />
+          <FeedbackButton
+            type="submit"
+            label="Update profile data"
+            Icon={BiArrowFromBottom}
+            result={result}
+            clear={clear}
+          />
         </Form>
       </Formik>
     </Container>

@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import userService from "../UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
-import { AppContext } from "../AppContext/AppContext";
+import { UserContext } from "../UserContext/UserContext";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../FormikInput/FormikInput";
@@ -17,9 +17,7 @@ interface PasswordDetailsParams {
 }
 
 const ProfileDetails: React.FC = () => {
-  const {
-    state: { apiKey },
-  } = React.useContext(AppContext);
+  const { apiKey } = React.useContext(UserContext);
 
   const validationSchema: Yup.ObjectSchema<PasswordDetailsParams | undefined> = Yup.object({
     currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -52,7 +50,13 @@ const ProfileDetails: React.FC = () => {
           <FormikInput name="newPassword" label="New password" type="password" />
           <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
 
-          <FeedbackButton type="submit" label="Update password" Icon={BiArrowFromBottom} result={result} clear={clear} />
+          <FeedbackButton
+            type="submit"
+            label="Update password"
+            Icon={BiArrowFromBottom}
+            result={result}
+            clear={clear}
+          />
         </Form>
       </Formik>
     </Container>
