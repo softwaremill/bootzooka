@@ -23,33 +23,37 @@ const Footer: React.FC = () => {
   return (
     <Container fluid className="fixed-bottom bg-light">
       <Row>
-        <Col sm={6} className="py-3">
-          <small>
-            Bootzooka - application scaffolding by <a href="http://softwaremill.com">SoftwareMill</a>,
-            <br /> sources available on <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
-          </small>
-        </Col>
-        <Col sm={6} className="text-right py-3 d-none d-sm-block">
-          {result.match({
-            Idle: () => <></>,
-            Loading: () => <Spinner animation="border" size="sm" role="loader" />,
-            Rejected: (error) => (
-              <small className="text-danger">
-                <BsExclamationCircle className="mr-2" />
-                {(error?.response?.data?.error || error?.request || error.message).toString()}
+        <Container>
+          <Row>
+            <Col sm={6} className="py-3">
+              <small>
+                Bootzooka - application scaffolding by <a href="http://softwaremill.com">SoftwareMill</a>,
+                <br /> sources available on <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
               </small>
-            ),
-            Resolved: ({ buildDate, buildSha }) => (
-              <small className="text-break">
-                <strong>build&nbsp;date:&nbsp;</strong>
-                {buildDate}
-                <br />
-                <strong>build&nbsp;sha:&nbsp;</strong>
-                {buildSha}
-              </small>
-            ),
-          })}
-        </Col>
+            </Col>
+            <Col sm={6} className="text-right py-3 d-none d-sm-block">
+              {result.match({
+                Idle: () => <></>,
+                Loading: () => <Spinner animation="border" size="sm" role="loader" />,
+                Rejected: (error) => (
+                  <small className="text-danger">
+                    <BsExclamationCircle className="mr-2" />
+                    {(error?.response?.data?.error || error?.request || error.message).toString()}
+                  </small>
+                ),
+                Resolved: ({ buildDate, buildSha }) => (
+                  <small className="text-break">
+                    <strong>build&nbsp;date:&nbsp;</strong>
+                    {buildDate}
+                    <br />
+                    <strong>build&nbsp;sha:&nbsp;</strong>
+                    {buildSha}
+                  </small>
+                ),
+              })}
+            </Col>
+          </Row>
+        </Container>
       </Row>
     </Container>
   );
