@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import { UserContext } from "../../contexts/UserContext/UserContext";
 import { BiPowerOff, BiHappy } from "react-icons/bi";
