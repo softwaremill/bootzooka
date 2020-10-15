@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <Container fluid className="fixed-bottom bg-light">
+    <Container fluid className="fixed-bottom bg-light text-muted">
       <Row>
         <Container>
           <Row>
@@ -43,10 +43,9 @@ const Footer: React.FC = () => {
                 ),
                 Resolved: ({ buildDate, buildSha }) => (
                   <small className="text-break">
-                    <strong>build&nbsp;date:&nbsp;</strong>
                     {buildDate}
                     <br />
-                    <strong>build&nbsp;sha:&nbsp;</strong>
+
                     {buildSha}
                   </small>
                 ),
