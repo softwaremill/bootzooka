@@ -39,15 +39,18 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ result, clear, label, I
           &nbsp;{label}
         </Button>
         <Form.Text className="text-danger d-inline-block mx-3">
-          {error?.response?.data || error?.request || error.message}
+          {(error?.response?.data?.error || error?.request || error.message).toString()}
         </Form.Text>
       </>
     ),
     Resolved: () => (
-      <Button {...buttonProps} disabled variant="success">
-        <BsCheck role="success" />
-        &nbsp;{label}
-      </Button>
+      <>
+        <Button {...buttonProps} variant="success">
+          <BsCheck role="success" />
+          &nbsp;{label}
+        </Button>
+        <Form.Text className="text-success d-inline-block mx-3">Done</Form.Text>
+      </>
     ),
   });
 };

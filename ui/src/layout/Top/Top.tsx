@@ -4,12 +4,15 @@ import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import { UserContext } from "../../contexts/UserContext/UserContext";
-import { BiPowerOff } from "react-icons/bi";
+import { BiPowerOff, BiHappy } from "react-icons/bi";
 
 const Top: React.FC = () => {
-  const { state:{ user, loggedIn},dispatch } = React.useContext(UserContext);
+  const {
+    state: { user, loggedIn },
+    dispatch,
+  } = React.useContext(UserContext);
 
-  const handleLogOut = () => dispatch({type:'LOG_OUT'})
+  const handleLogOut = () => dispatch({ type: "LOG_OUT" });
 
   return (
     <Navbar variant="dark" bg="dark" sticky="top" collapseOnSelect expand="lg">
@@ -28,14 +31,16 @@ const Top: React.FC = () => {
           <div className="flex-grow-1" />
           {loggedIn ? (
             <>
-              <Navbar.Text>Logged in as {user?.login}</Navbar.Text>
               <LinkContainer to="/profile">
-                <Nav.Link>Profile</Nav.Link>
-              </LinkContainer>
-              <Button onClick={handleLogOut}>
+                <Nav.Link className="text-right">
+                  <BiHappy />
+                  &nbsp;{user?.login}
+                </Nav.Link>
+              </LinkContainer>{" "}
+              <Nav.Link className="text-right" onClick={handleLogOut}>
                 <BiPowerOff />
                 &nbsp;Logout
-              </Button>
+              </Nav.Link>
             </>
           ) : (
             <>
