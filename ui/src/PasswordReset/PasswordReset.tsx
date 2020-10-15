@@ -25,9 +25,7 @@ const ProfileDetails: React.FC = () => {
   const code = new URLSearchParams(window.location.search).get("code") || "";
 
   const [result, send, clear] = usePromise(({ password }: PasswordResetParams) =>
-    passwordService.resetPassword({ password, code }).catch((error) => {
-      throw new Error(error?.response?.data?.error || error.message);
-    })
+    passwordService.resetPassword({ password, code })
   );
 
   return (
@@ -45,7 +43,13 @@ const ProfileDetails: React.FC = () => {
           <FormikInput name="password" label="New password" type="password" />
           <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
 
-          <FeedbackButton type="submit" label="Update password" Icon={BiArrowFromBottom} result={result} clear={clear} />
+          <FeedbackButton
+            type="submit"
+            label="Update password"
+            Icon={BiArrowFromBottom}
+            result={result}
+            clear={clear}
+          />
         </Form>
       </Formik>
     </Container>

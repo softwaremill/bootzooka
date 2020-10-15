@@ -7,7 +7,9 @@ import { UserContext } from "../UserContext/UserContext";
 import { BiPowerOff } from "react-icons/bi";
 
 const Top: React.FC = () => {
-  const { logOut, user, loggedIn } = React.useContext(UserContext);
+  const { state:{ user, loggedIn},dispatch } = React.useContext(UserContext);
+
+  const handleLogOut = () => dispatch({type:'LOG_OUT'})
 
   return (
     <Navbar variant="dark" bg="dark" sticky="top" collapseOnSelect expand="lg">
@@ -30,7 +32,7 @@ const Top: React.FC = () => {
               <LinkContainer to="/profile">
                 <Nav.Link>Profile</Nav.Link>
               </LinkContainer>
-              <Button onClick={logOut}>
+              <Button onClick={handleLogOut}>
                 <BiPowerOff />
                 &nbsp;Logout
               </Button>

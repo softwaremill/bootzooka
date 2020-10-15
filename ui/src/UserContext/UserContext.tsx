@@ -53,36 +53,16 @@ const UserReducer = (state: UserState, action: UserAction): UserState => {
   }
 };
 
-interface UserInterface extends UserState {
-  logIn: (user: UserDetails) => void;
-  logOut: () => void;
-  setApiKey: (apiKey: string) => void;
-  updateUserData: (user: Partial<UserDetails>) => void;
-}
-
-export const UserContext = React.createContext<UserInterface>({
-  ...initialUserState,
-  logIn: () => {},
-  logOut: () => {},
-  setApiKey: () => {},
-  updateUserData: () => {},
+export const UserContext = React.createContext<{
+  state: UserState;
+  dispatch: React.Dispatch<UserAction>;
+}>({
+  state: initialUserState,
+  dispatch: () => null,
 });
 
 export const UserContextProvider: React.FC = ({ children }) => {
   const [state, dispatch] = React.useReducer(UserReducer, initialUserState);
 
-  const logIn = React.useCallback((user) => dispatch({ type: "LOG_IN", user }), [dispatch]);
-  const logOut = React.useCallback(() => dispatch({ type: "LOG_OUT" }), [dispatch]);
-  const setApiKey = React.useCallback((apiKey) => dispatch({ type: "SET_API_KEY", apiKey }), [dispatch]);
-  const updateUserData = React.useCallback((user) => dispatch({ type: "UPDATE_USER_DATA", user }), [dispatch]);
-
-  const value = {
-    ...state,
-    logIn,
-    logOut,
-    updateUserData,
-    setApiKey,
-  };
-
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;
 };

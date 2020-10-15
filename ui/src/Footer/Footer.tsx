@@ -13,11 +13,7 @@ interface VersionData {
 }
 
 const Footer: React.FC = () => {
-  const [result, load] = usePromise<VersionData, any, Error>(() =>
-    versionService.getVersion().catch((error) => {
-      throw new Error(error?.response?.data?.error || error.message);
-    })
-  );
+  const [result, load] = usePromise<VersionData, any, any>(versionService.getVersion);
 
   React.useEffect(() => {
     load();
@@ -40,7 +36,7 @@ const Footer: React.FC = () => {
             Rejected: (error) => (
               <small className="text-danger">
                 <BsExclamationCircle className="mr-2" />
-                {error.message}
+                {error?.response?.data || error?.request || error.message}
               </small>
             ),
             Resolved: ({ buildDate, buildSha }) => (

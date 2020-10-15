@@ -19,9 +19,7 @@ const RecoverLostPassword: React.FC = () => {
   });
 
   const [result, send, clear] = usePromise((values: RecoverLostPasswordParams) =>
-    passwordService.claimPasswordReset(values).catch((error) => {
-      throw new Error(error?.response?.data?.error || error.message);
-    })
+    passwordService.claimPasswordReset(values)
   );
 
   return (

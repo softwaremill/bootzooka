@@ -4,7 +4,9 @@ import { UserContext } from "../UserContext/UserContext";
 import Login from "../Login/Login";
 
 const ProtectedRoute: React.FC<RouteProps> = ({ children, ...props }) => {
-  const { loggedIn } = React.useContext(UserContext);
+  const {
+    state: { loggedIn },
+  } = React.useContext(UserContext);
 
   if (!loggedIn) return <Route {...props} component={Login} />;
 

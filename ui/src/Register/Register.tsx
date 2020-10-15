@@ -19,7 +19,10 @@ interface RegisterParams {
 }
 
 const Register: React.FC = () => {
-  const { setApiKey, loggedIn } = React.useContext(UserContext);
+  const {
+    dispatch,
+    state: { loggedIn },
+  } = React.useContext(UserContext);
 
   const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.object({
     login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -31,12 +34,7 @@ const Register: React.FC = () => {
   });
 
   const [result, send, clear] = usePromise((values: RegisterParams) =>
-    userService
-      .registerUser(values)
-      .then(({ apiKey }) => setApiKey(apiKey))
-      .catch((error) => {
-        throw new Error(error?.response?.data?.error || error.message);
-      })
+    userService.registerUser(values).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
   );
 
   if (loggedIn) return <Redirect to="/main" />;

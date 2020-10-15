@@ -17,7 +17,9 @@ interface PasswordDetailsParams {
 }
 
 const ProfileDetails: React.FC = () => {
-  const { apiKey } = React.useContext(UserContext);
+  const {
+    state: { apiKey },
+  } = React.useContext(UserContext);
 
   const validationSchema: Yup.ObjectSchema<PasswordDetailsParams | undefined> = Yup.object({
     currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -28,9 +30,7 @@ const ProfileDetails: React.FC = () => {
   });
 
   const [result, send, clear] = usePromise(({ currentPassword, newPassword }: PasswordDetailsParams) =>
-    userService.changePassword(apiKey, { currentPassword, newPassword }).catch((error) => {
-      throw new Error(error?.response?.data?.error || error.message);
-    })
+    userService.changePassword(apiKey, { currentPassword, newPassword })
   );
 
   return (

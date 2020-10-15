@@ -17,7 +17,10 @@ interface LoginParams {
 }
 
 const Login: React.FC = () => {
-  const { setApiKey, loggedIn } = React.useContext(UserContext);
+  const {
+    dispatch,
+    state: { loggedIn },
+  } = React.useContext(UserContext);
 
   const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
     loginOrEmail: Yup.string().required("Required"),
@@ -27,11 +30,11 @@ const Login: React.FC = () => {
   const [result, send, clear] = usePromise((values: LoginParams) =>
     userService
       .login(values)
-      .then(({ apiKey }) => setApiKey(apiKey))
+      .then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
       .catch((error) => {
         if (error?.response?.status === 404) throw new Error("Incorrect login/email or password!");
 
-        throw new Error(error?.response?.data?.error || error.message);
+        throw error;
       })
   );
 

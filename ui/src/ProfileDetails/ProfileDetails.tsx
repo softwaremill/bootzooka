@@ -16,7 +16,10 @@ interface ProfileDetailsParams {
 }
 
 const ProfileDetails: React.FC = () => {
-  const { updateUserData, apiKey, user } = React.useContext(UserContext);
+  const {
+    dispatch,
+    state: { apiKey, user },
+  } = React.useContext(UserContext);
 
   const validationSchema: Yup.ObjectSchema<ProfileDetailsParams | undefined> = Yup.object({
     login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -24,12 +27,7 @@ const ProfileDetails: React.FC = () => {
   });
 
   const [result, send, clear] = usePromise((values: ProfileDetailsParams) =>
-    userService
-      .changeProfileDetails(apiKey, values)
-      .then(() => updateUserData(values))
-      .catch((error) => {
-        throw new Error(error?.response?.data?.error || error.message);
-      })
+    userService.changeProfileDetails(apiKey, values).then(() => dispatch({ type: "UPDATE_USER_DATA", user: values }))
   );
 
   return (
