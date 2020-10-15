@@ -51,6 +51,7 @@ const ProfileDetails: React.FC = () => {
             Icon={BiArrowFromBottom}
             result={result}
             clear={clear}
+            successLabel="Profile details changed"
           />
         </Form>
       </Formik>

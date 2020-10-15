@@ -34,6 +34,7 @@ test("handles password reset success", async () => {
 
   expect(passwordService.resetPassword).toBeCalledWith({ code: "test-code", password: "test-new-password" });
   expect(getByRole("success")).toBeInTheDocument();
+  expect(getByText("Password changed")).toBeInTheDocument();
 });
 
 test("handles password reset error", async () => {

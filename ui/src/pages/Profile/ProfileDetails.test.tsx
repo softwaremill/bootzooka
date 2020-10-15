@@ -58,6 +58,7 @@ test("handles change details success", async () => {
     },
   });
   expect(getByRole("success")).toBeInTheDocument();
+  expect(getByText("Profile details changed")).toBeInTheDocument();
 });
 
 test("handles change details error", async () => {

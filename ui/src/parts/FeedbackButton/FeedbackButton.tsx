@@ -12,9 +12,17 @@ interface FeedbackButtonProps extends ButtonProps {
   Icon: IconType;
   result: PromiseResultShape<any, any>;
   clear: () => void;
+  successLabel?: string;
 }
 
-const FeedbackButton: React.FC<FeedbackButtonProps> = ({ result, clear, label, Icon, ...buttonProps }) => {
+const FeedbackButton: React.FC<FeedbackButtonProps> = ({
+  result,
+  clear,
+  label,
+  Icon,
+  successLabel = "Success!",
+  ...buttonProps
+}) => {
   useFormikValuesChanged(() => {
     !result.isIdle && clear();
   });
@@ -39,7 +47,7 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ result, clear, label, I
           &nbsp;{label}
         </Button>
         <Form.Text className="text-danger d-inline-block mx-3">
-          {(error?.response?.data?.error || error?.request || error.message).toString()}
+          {(error?.response?.data?.error || error.message).toString()}
         </Form.Text>
       </>
     ),
@@ -49,7 +57,7 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ result, clear, label, I
           <BsCheck role="success" />
           &nbsp;{label}
         </Button>
-        <Form.Text className="text-success d-inline-block mx-3">Done</Form.Text>
+        <Form.Text className="text-success d-inline-block mx-3">{successLabel}</Form.Text>
       </>
     ),
   });

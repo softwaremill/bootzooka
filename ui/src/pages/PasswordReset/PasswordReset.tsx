@@ -49,6 +49,7 @@ const ProfileDetails: React.FC = () => {
             Icon={BiArrowFromBottom}
             result={result}
             clear={clear}
+            successLabel="Password changed"
           />
         </Form>
       </Formik>

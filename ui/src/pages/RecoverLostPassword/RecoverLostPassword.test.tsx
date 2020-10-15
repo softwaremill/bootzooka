@@ -29,6 +29,7 @@ test("handles password recover success", async () => {
 
   expect(passwordService.claimPasswordReset).toBeCalledWith({ loginOrEmail: "test-login" });
   expect(getByRole("success")).toBeInTheDocument();
+  expect(getByText("Password reset claim success")).toBeInTheDocument();
 });
 
 test("handles password recover error", async () => {

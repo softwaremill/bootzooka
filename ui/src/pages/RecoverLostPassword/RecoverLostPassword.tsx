@@ -34,7 +34,14 @@ const RecoverLostPassword: React.FC = () => {
       >
         <Form as={FormikForm}>
           <FormikInput name="loginOrEmail" label="Login or email" />
-          <FeedbackButton type="submit" label="Reset password" Icon={BiReset} result={result} clear={clear} />
+          <FeedbackButton
+            type="submit"
+            label="Reset password"
+            Icon={BiReset}
+            result={result}
+            clear={clear}
+            successLabel="Password reset claim success"
+          />
         </Form>
       </Formik>
     </Container>

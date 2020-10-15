@@ -52,6 +52,7 @@ test("handles change password success", async () => {
        "newPassword": "test-new-password",
   });
   expect(getByRole("success")).toBeInTheDocument();
+  expect(getByText("Password changed")).toBeInTheDocument();
 });
 
 test("handles change password error", async () => {
