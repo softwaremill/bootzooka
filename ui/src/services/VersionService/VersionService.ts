@@ -1,17 +1,13 @@
 import axios from "axios";
+import * as Yup from "yup";
 
-interface VersionService {
-  context: string;
-  getVersion: () => Promise<any>;
-}
+const context = "admin";
 
-const versionService: VersionService = {
-  context: "admin",
+const versionSchema = Yup.object().required().shape({
+  buildDate: Yup.string().required(),
+  buildSha: Yup.string().required(),
+});
 
-  async getVersion() {
-    const { data } = await axios.get(`${this.context}/version`);
-    return data;
-  },
-};
+const getVersion = () => axios.get(`${context}/version`).then(({ data }) => versionSchema.validate(data));
 
-export default versionService;
+export default { getVersion };

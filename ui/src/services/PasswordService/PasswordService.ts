@@ -1,23 +1,14 @@
 import axios from "axios";
+import * as Yup from "yup";
 
-interface PasswordService {
-  context: string;
-  claimPasswordReset: (params: { loginOrEmail: string }) => Promise<any>;
-  resetPassword: (params: { code: string; password: string }) => Promise<any>;
-}
+const context = "api/v1/passwordreset";
 
-const passwordSerwice: PasswordService = {
-  context: "api/v1/passwordreset",
+const emptySchema = Yup.object().required().shape({});
 
-  async claimPasswordReset(params) {
-    const { data } = await axios.post(`${this.context}/forgot`, params);
-    return data;
-  },
+const claimPasswordReset = (params: { loginOrEmail: string }) =>
+  axios.post(`${context}/forgot`, params).then(({ data }) => emptySchema.validate(data));
 
-  async resetPassword(params) {
-    const { data } = await axios.post(`${this.context}/reset`, params);
-    return data;
-  },
-};
+const resetPassword = (params: { code: string; password: string }) =>
+  axios.post(`${context}/reset`, params).then(({ data }) => emptySchema.validate(data));
 
-export default passwordSerwice;
+export default { claimPasswordReset, resetPassword };

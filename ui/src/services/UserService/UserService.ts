@@ -1,66 +1,58 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
+import * as Yup from "yup";
 
-type ApiKey = string | null;
+const context = "api/v1/user";
 
-interface UserService {
-  context: string;
-  registerUser: (params: { login: string; email: string; password: string }) => Promise<any>;
-  login: (params: { loginOrEmail: string; password: string }) => Promise<any>;
-  getCurrentUser: (apiKey: ApiKey) => Promise<any>;
-  changeProfileDetails: (apiKey: ApiKey, params: { email: string; login: string }) => Promise<any>;
-  changePassword: (apiKey: ApiKey, params: { currentPassword: string; newPassword: string }) => Promise<any>;
-  _securedRequest: (apiKey: ApiKey, config: AxiosRequestConfig) => Promise<AxiosResponse<any>>;
-}
+const apiKeySchema = Yup.object().required().shape({
+  apiKey: Yup.string().required(),
+});
 
-const userService: UserService = {
-  context: "api/v1/user",
+const userDetailsSchema = Yup.object().required().shape({
+  createdOn: Yup.string().required(),
+  email: Yup.string().required(),
+  login: Yup.string().required(),
+});
 
-  async registerUser(params) {
-    const { data } = await axios.post(`${this.context}/register`, params);
-    return data;
-  },
+const emptySchema = Yup.object().required().shape({});
 
-  async login(params) {
-    const { data } = await axios.post(`${this.context}/login`, { ...params, apiKeyValidHours: 1 });
-    return data;
-  },
+const registerUser = (params: { login: string; email: string; password: string }) =>
+  axios.post(`${context}/register`, params).then(({ data }) => apiKeySchema.validate(data));
 
-  async getCurrentUser(apiKey) {
-    const { data } = await this._securedRequest(apiKey, {
-      method: "GET",
-      url: this.context,
-    });
-    return data;
-  },
+const login = (params: { loginOrEmail: string; password: string }) =>
+  axios.post(`${context}/login`, { ...params, apiKeyValidHours: 1 }).then(({ data }) => apiKeySchema.validate(data));
 
-  async changeProfileDetails(apiKey, params) {
-    const { data } = await this._securedRequest(apiKey, {
-      method: "POST",
-      url: this.context,
-      data: params,
-    });
-    return data;
-  },
+const getCurrentUser = (apiKey: string | null) =>
+  _securedRequest(apiKey, {
+    method: "GET",
+    url: context,
+  }).then(({ data }) => userDetailsSchema.validate(data));
 
-  async changePassword(apiKey, params) {
-    const { data } = await this._securedRequest(apiKey, {
-      method: "POST",
-      url: `${this.context}/changepassword`,
-      data: params,
-    });
-    return data;
-  },
+const changeProfileDetails = (apiKey: string | null, params: { email: string; login: string }) =>
+  _securedRequest(apiKey, {
+    method: "POST",
+    url: context,
+    data: params,
+  }).then(({ data }) => emptySchema.validate(data));
 
-  _securedRequest(apiKey, config) {
-    if (!apiKey) throw new Error("Api Key not provided");
+const changePassword = (apiKey: string | null, params: { currentPassword: string; newPassword: string }) =>
+  _securedRequest(apiKey, {
+    method: "POST",
+    url: `${context}/changepassword`,
+    data: params,
+  }).then(({ data }) => emptySchema.validate(data));
 
-    return axios.request({
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-      ...config,
-    });
-  },
+const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
+  axios.request({
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+    ...config,
+  });
+
+export default {
+  registerUser,
+  login,
+  getCurrentUser,
+  changeProfileDetails,
+  changePassword,
 };
-
-export default userService;
