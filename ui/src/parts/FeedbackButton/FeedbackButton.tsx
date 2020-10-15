@@ -20,7 +20,7 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({
   clear,
   label,
   Icon,
-  successLabel = "Success!",
+  successLabel = "Success",
   ...buttonProps
 }) => {
   useFormikValuesChanged(() => {

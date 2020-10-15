@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <Container fluid className="fixed-bottom bg-light text-muted">
+    <Container fluid className="fixed-bottom bg-light text-muted d-none d-sm-block">
       <Row>
         <Container>
           <Row>
@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
                 <br /> sources available on <a href="https://github.com/softwaremill/bootzooka/">GitHub</a>
               </small>
             </Col>
-            <Col sm={6} className="text-right py-3 d-none d-sm-block">
+            <Col sm={6} className="text-right py-3">
               {result.match({
                 Idle: () => <></>,
                 Loading: () => <Spinner animation="border" size="sm" role="loader" />,
@@ -45,7 +45,6 @@ const Footer: React.FC = () => {
                   <small className="text-break">
                     {buildDate}
                     <br />
-
                     {buildSha}
                   </small>
                 ),

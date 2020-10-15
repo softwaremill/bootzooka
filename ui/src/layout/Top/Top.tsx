@@ -46,10 +46,10 @@ const Top: React.FC = () => {
             ) : (
               <>
                 <LinkContainer to="/register">
-                  <Nav.Link>Register</Nav.Link>
+                  <Nav.Link className="text-right">Register</Nav.Link>
                 </LinkContainer>
                 <LinkContainer to="/login">
-                  <Nav.Link>Login</Nav.Link>
+                  <Nav.Link className="text-right">Login</Nav.Link>
                 </LinkContainer>
               </>
             )}
