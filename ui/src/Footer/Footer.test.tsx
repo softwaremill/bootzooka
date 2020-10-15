@@ -16,7 +16,7 @@ test("renders version data", async () => {
 
   const info = getByText(/Bootzooka - application scaffolding by /);
 
-  await findAllByRole(/loader/i);
+  await findAllByRole("loader");
 
   const buildDate = await findByText(/testDate/i);
   const buildSha = await findByText(/testSha/i);
@@ -35,7 +35,7 @@ test("catches error of version data", async () => {
 
   const info = getByText(/Bootzooka - application scaffolding by /);
 
-  await findAllByRole(/loader/i);
+  await findAllByRole("loader");
 
   expect(info).toBeInTheDocument();
   expect(getByText("Test Error")).toBeInTheDocument();

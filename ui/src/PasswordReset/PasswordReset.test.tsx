@@ -2,12 +2,8 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import PasswordReset from "./PasswordReset";
 import passwordService from "../PasswordService/PasswordService";
-import { createMemoryHistory } from "history";
-
-const history = createMemoryHistory({ initialEntries: ["/password-reset"] });
 
 jest.mock("../PasswordService/PasswordService");
-const dispatch = jest.fn();
 
 delete (window as any).location;
 (window as any).location = new URL("https://www.example.com/password-reset?code=test-code");
@@ -34,7 +30,7 @@ test("handles password reset success", async () => {
   fireEvent.blur(getByLabelText("Repeat new password"));
   fireEvent.click(getByText("Update password"));
 
-  await findByRole(/loader/i);
+  await findByRole("loader");
 
   expect(passwordService.resetPassword).toBeCalledWith({ code: "test-code", password: "test-new-password" });
   expect(getByRole("success")).toBeInTheDocument();
@@ -53,7 +49,7 @@ test("handles password reset error", async () => {
   fireEvent.blur(getByLabelText("Repeat new password"));
   fireEvent.click(getByText("Update password"));
 
-  await findByRole(/loader/i);
+  await findByRole("loader");
 
   expect(passwordService.resetPassword).toBeCalledWith({ code: "test-code", password: "test-new-password" });
   expect(getByText("Test Error")).toBeInTheDocument();

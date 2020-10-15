@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import Login from "./Login";
+import Register from "./Register";
 import { UserContext, initialUserState } from "../UserContext/UserContext";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
@@ -19,19 +19,19 @@ test("renders header", () => {
   const { getByText } = render(
     <Router history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login />
+        <Register />
       </UserContext.Provider>
     </Router>
   );
 
-  expect(getByText("Please sign in")).toBeInTheDocument();
+  expect(getByText("Please sign up")).toBeInTheDocument();
 });
 
-test("redirects when logged in", () => {
+test("redirects when registered", () => {
   render(
     <Router history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
-        <Login />
+        <Register />
       </UserContext.Provider>
     </Router>
   );
@@ -39,56 +39,72 @@ test("redirects when logged in", () => {
   expect(history.location.pathname).toEqual("/main");
 });
 
-test("handles login success", async () => {
-  (userService.login as jest.Mock).mockResolvedValueOnce({
+test("handles register success", async () => {
+  (userService.registerUser as jest.Mock).mockResolvedValueOnce({
     apiKey: "test-api-key",
   });
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login />
+        <Register />
       </UserContext.Provider>
     </Router>
   );
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
+  fireEvent.blur(getByLabelText("Login"));
+  fireEvent.change(getByLabelText("Login"), { target: { value: "test-login" } });
+  fireEvent.blur(getByLabelText("Login"));
+  fireEvent.change(getByLabelText("Email address"), { target: { value: "test@email.address.pl" } });
+  fireEvent.blur(getByLabelText("Email address"));
   fireEvent.change(getByLabelText("Password"), { target: { value: "test-password" } });
   fireEvent.blur(getByLabelText("Password"));
-  fireEvent.click(getByText("Sign In"));
+  fireEvent.change(getByLabelText("Repeat password"), { target: { value: "test-password" } });
+  fireEvent.blur(getByLabelText("Repeat password"));
+  fireEvent.click(getByText("Register"));
 
   await findByRole("loader");
 
-  expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(userService.registerUser).toBeCalledWith({
+    login: "test-login",
+    email: "test@email.address.pl",
+    password: "test-password",
+  });
   expect(dispatch).toBeCalledTimes(1);
   expect(dispatch).toBeCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
   expect(history.location.pathname).toEqual("/main");
 });
 
-test("handles login error", async () => {
+test("handles register error", async () => {
   const testError = new Error("Test Error");
-  (userService.login as jest.Mock).mockRejectedValueOnce(testError);
+  (userService.registerUser as jest.Mock).mockRejectedValueOnce(testError);
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login />
+        <Register />
       </UserContext.Provider>
     </Router>
   );
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
+  fireEvent.blur(getByLabelText("Login"));
+  fireEvent.change(getByLabelText("Login"), { target: { value: "test-login" } });
+  fireEvent.blur(getByLabelText("Login"));
+  fireEvent.change(getByLabelText("Email address"), { target: { value: "test@email.address.pl" } });
+  fireEvent.blur(getByLabelText("Email address"));
   fireEvent.change(getByLabelText("Password"), { target: { value: "test-password" } });
   fireEvent.blur(getByLabelText("Password"));
-  fireEvent.click(getByText("Sign In"));
+  fireEvent.change(getByLabelText("Repeat password"), { target: { value: "test-password" } });
+  fireEvent.blur(getByLabelText("Repeat password"));
+  fireEvent.click(getByText("Register"));
 
   await findByRole("loader");
 
-  expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(userService.registerUser).toBeCalledWith({
+    login: "test-login",
+    email: "test@email.address.pl",
+    password: "test-password",
+  });
   expect(dispatch).not.toBeCalled();
   expect(getByText("Test Error")).toBeInTheDocument();
 });

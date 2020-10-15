@@ -4,6 +4,6 @@ import Loader from "./Loader";
 
 test("renders loader", () => {
   const { getByRole } = render(<Loader />);
-  const header = getByRole(/loader/i);
+  const header = getByRole("loader");
   expect(header).toBeInTheDocument();
 });

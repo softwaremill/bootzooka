@@ -33,8 +33,8 @@ const Register: React.FC = () => {
       .required("Required"),
   });
 
-  const [result, send, clear] = usePromise((values: RegisterParams) =>
-    userService.registerUser(values).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
+  const [result, send, clear] = usePromise(({ login, email, password }: RegisterParams) =>
+    userService.registerUser({ login, email, password }).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
   );
 
   if (loggedIn) return <Redirect to="/main" />;

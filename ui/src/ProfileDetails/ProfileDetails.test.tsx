@@ -1,10 +1,10 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import ProfileDetails from "./ProfileDetails";
-import { UserContext, AppState } from "../UserContext/UserContext";
+import { UserContext, UserState } from "../UserContext/UserContext";
 import userService from "../UserService/UserService";
 
-const mockState: AppState = {
+const mockState: UserState = {
   apiKey: "test-api-key",
   user: { login: "user-login", email: "email@address.pl", createdOn: "2020-10-09T09:57:17.995288Z" },
   loggedIn: true,
@@ -43,7 +43,7 @@ test("handles change details success", async () => {
   fireEvent.blur(getByLabelText("Email address"));
   fireEvent.click(getByText("Update profile data"));
 
-  await findByRole(/loader/i);
+  await findByRole("loader");
 
   expect(userService.changeProfileDetails).toBeCalledWith("test-api-key", {
     email: "test@email.address",
@@ -77,7 +77,7 @@ test("handles change details error", async () => {
   fireEvent.blur(getByLabelText("Email address"));
   fireEvent.click(getByText("Update profile data"));
 
-  await findByRole(/loader/i);
+  await findByRole("loader");
 
   expect(userService.changeProfileDetails).toBeCalledWith("test-api-key", {
     email: "test@email.address",
