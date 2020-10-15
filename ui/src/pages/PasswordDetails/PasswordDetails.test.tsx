@@ -1,8 +1,8 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import PasswordDetails from "../PasswordDetails/PasswordDetails";
-import { UserContext, UserState } from "../UserContext/UserContext";
-import userService from "../UserService/UserService";
+import PasswordDetails from "./PasswordDetails";
+import { UserContext, UserState } from "../../UserContext/UserContext";
+import userService from "../../UserService/UserService";
 
 const mockState: UserState = {
   apiKey: "test-api-key",
@@ -10,7 +10,7 @@ const mockState: UserState = {
   loggedIn: true,
 };
 
-jest.mock("../UserService/UserService");
+jest.mock("../../UserService/UserService");
 const dispatch = jest.fn();
 
 beforeEach(() => {

@@ -13,7 +13,7 @@ interface VersionData {
 }
 
 const Footer: React.FC = () => {
-  const [result, load] = usePromise<VersionData, any, any>(versionService.getVersion);
+  const [result, load] = usePromise<VersionData, any, any>(() => versionService.getVersion());
 
   React.useEffect(() => {
     load();

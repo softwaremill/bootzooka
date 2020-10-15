@@ -1,15 +1,15 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Welcome from "./Welcome/Welcome";
-import Login from "./Login/Login";
-import Register from "./Register/Register";
-import SecretMain from "./SecretMain/SecretMain";
-import ProfileDetails from "./ProfileDetails/ProfileDetails";
-import PasswordDetails from "./PasswordDetails/PasswordDetails";
-import RecoverLostPassword from "./RecoverLostPassword/RecoverLostPassword";
-import PasswordReset from "./PasswordReset/PasswordReset";
-import NotFound from "./NotFound/NotFound";
-import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
+import Welcome from "../pages/Welcome/Welcome";
+import Login from "../pages/Login/Login";
+import Register from "../pages/Register/Register";
+import SecretMain from "../pages/SecretMain/SecretMain";
+import ProfileDetails from "../pages/ProfileDetails/ProfileDetails";
+import PasswordDetails from "../pages/PasswordDetails/PasswordDetails";
+import RecoverLostPassword from "../pages/RecoverLostPassword/RecoverLostPassword";
+import PasswordReset from "../pages/PasswordReset/PasswordReset";
+import NotFound from "../pages/NotFound/NotFound";
+import ProtectedRoute from "./ProtectedRoute";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 

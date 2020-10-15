@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import Main from "./Main";
+import Main from "./Main/Main";
 import { UserContextProvider } from "./UserContext/UserContext";
 
 const App: React.FC = () => (

@@ -1,13 +1,13 @@
 import React from "react";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import passwordService from "../PasswordService/PasswordService";
+import passwordService from "../../PasswordService/PasswordService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
-import FormikInput from "../FormikInput/FormikInput";
-import FeedbackButton from "../FeedbackButton/FeedbackButton";
+import FormikInput from "../../FormikInput/FormikInput";
+import FeedbackButton from "../../FeedbackButton/FeedbackButton";
 
 interface PasswordResetParams {
   password: string;

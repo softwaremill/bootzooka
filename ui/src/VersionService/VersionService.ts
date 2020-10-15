@@ -7,6 +7,7 @@ interface VersionService {
 
 const versionService: VersionService = {
   context: "admin",
+
   async getVersion() {
     const { data } = await axios.get(`${this.context}/version`);
     return data;

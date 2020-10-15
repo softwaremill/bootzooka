@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, RouteProps } from "react-router-dom";
 import { UserContext } from "../UserContext/UserContext";
-import Login from "../Login/Login";
+import Login from "../pages/Login/Login";
 
 const ProtectedRoute: React.FC<RouteProps> = ({ children, ...props }) => {
   const {

@@ -1,8 +1,7 @@
 import React from "react";
-import { UserContext } from "./UserContext/UserContext";
-import userService from "./UserService/UserService";
+import { UserContext } from "../UserContext/UserContext";
 
-const useApiKeyManager = () => {
+const useLoginOnApiKey = () => {
   const {
     dispatch,
     state: { apiKey, loggedIn },
@@ -12,13 +11,6 @@ const useApiKeyManager = () => {
 
   React.useEffect(() => {
     apiKeyRef.current = apiKey;
-
-    if (!apiKey) return;
-
-    userService
-      .getCurrentUser(apiKey)
-      .then((user) => dispatch({ type: "LOG_IN", user }))
-      .catch(() => dispatch({ type: "LOG_OUT" }));
   }, [apiKey, dispatch]);
 
   React.useEffect(() => {
@@ -42,4 +34,4 @@ const useApiKeyManager = () => {
   }, [loggedIn]);
 };
 
-export default useApiKeyManager;
+export default useLoginOnApiKey;

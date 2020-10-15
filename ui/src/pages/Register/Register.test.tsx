@@ -1,14 +1,14 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import Register from "./Register";
-import { UserContext, initialUserState } from "../UserContext/UserContext";
+import { UserContext, initialUserState } from "../../UserContext/UserContext";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
-import userService from "../UserService/UserService";
+import userService from "../../UserService/UserService";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 
-jest.mock("../UserService/UserService");
+jest.mock("../../UserService/UserService");
 const dispatch = jest.fn();
 
 beforeEach(() => {
