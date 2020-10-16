@@ -65,7 +65,7 @@ test("handles change details error", async () => {
   const testError = new Error("Test Error");
   (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(testError);
 
-  const { getByLabelText, getByText, findByRole } = render(
+  const { getByLabelText, getByText, findByRole, queryByRole, queryByText } = render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>
@@ -86,4 +86,10 @@ test("handles change details error", async () => {
   });
   expect(dispatch).not.toBeCalled();
   expect(getByText("Test Error")).toBeInTheDocument();
+
+  fireEvent.change(getByLabelText("Email address"), { target: { value: "otherTest@email.address" } });
+  fireEvent.blur(getByLabelText("Email address"));
+
+  expect(queryByRole("error")).not.toBeInTheDocument();
+  expect(queryByText("Test Error")).not.toBeInTheDocument();
 });
