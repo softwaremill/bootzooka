@@ -92,3 +92,28 @@ test("handles login error", async () => {
   expect(dispatch).not.toBeCalled();
   expect(getByText("Test Error")).toBeInTheDocument();
 });
+
+test("handles login error 404", async () => {
+  (userService.login as jest.Mock).mockRejectedValueOnce({ response: { status: 404 } });
+
+  const { getByLabelText, getByText, findByRole } = render(
+    <Router history={history}>
+      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+        <Login />
+      </UserContext.Provider>
+    </Router>
+  );
+
+  fireEvent.blur(getByLabelText("Login or email"));
+  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
+  fireEvent.blur(getByLabelText("Login or email"));
+  fireEvent.change(getByLabelText("Password"), { target: { value: "test-password" } });
+  fireEvent.blur(getByLabelText("Password"));
+  fireEvent.click(getByText("Sign In"));
+
+  await findByRole("loader");
+
+  expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(dispatch).not.toBeCalled();
+  expect(getByText("Incorrect login/email or password!")).toBeInTheDocument();
+});

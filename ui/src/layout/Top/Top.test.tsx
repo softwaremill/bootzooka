@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import Top from "./Top";
 import { UserContext, UserState, initialUserState } from "../../contexts/UserContext/UserContext";
 import { Router } from "react-router-dom";
@@ -63,4 +63,20 @@ test("renders nav bar for logged user", () => {
   expect(getByText("Home")).toBeInTheDocument();
   expect(getByText("user-login")).toBeInTheDocument();
   expect(getByText("Logout")).toBeInTheDocument();
+});
+
+test("handles logout logged user", () => {
+  const history = createMemoryHistory({ initialEntries: ["/main"] });
+
+  const { getByText } = render(
+    <Router history={history}>
+      <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
+        <Top />
+      </UserContext.Provider>
+    </Router>
+  );
+
+  fireEvent.click(getByText("Logout"));
+
+  expect(dispatch).toBeCalledWith({ type: "LOG_OUT" });
 });
