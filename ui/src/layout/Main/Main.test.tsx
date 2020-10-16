@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import Main from "./Main";
-import { UserContext, initialUserState } from "../contexts/UserContext/UserContext";
+import { UserContext, initialUserState } from "../../contexts/UserContext/UserContext";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 

@@ -1,9 +1,9 @@
 import React from "react";
-import Footer from "../layout/Footer/Footer";
-import Top from "../layout/Top/Top";
-import ForkMe from "../layout/ForkMe/ForkMe";
-import { UserContext } from "../contexts/UserContext/UserContext";
-import Loader from "../layout/Loader/Loader";
+import Footer from "../Footer/Footer";
+import Top from "../Top/Top";
+import ForkMe from "../ForkMe/ForkMe";
+import { UserContext } from "../../contexts/UserContext/UserContext";
+import Loader from "../Loader/Loader";
 import Routes from "../Routes/Routes";
 import useLoginOnApiKey from "./useLoginOnApiKey";
 import useLocalStoragedApiKey from "./useLocalStoragedApiKey";

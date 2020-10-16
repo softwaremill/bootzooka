@@ -1,13 +1,13 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Welcome from "../pages/Welcome/Welcome";
-import Login from "../pages/Login/Login";
-import Register from "../pages/Register/Register";
-import SecretMain from "../pages/SecretMain/SecretMain";
-import Profile from "../pages/Profile/Profile";
-import RecoverLostPassword from "../pages/RecoverLostPassword/RecoverLostPassword";
-import PasswordReset from "../pages/PasswordReset/PasswordReset";
-import NotFound from "../pages/NotFound/NotFound";
+import Welcome from "../../pages/Welcome/Welcome";
+import Login from "../../pages/Login/Login";
+import Register from "../../pages/Register/Register";
+import SecretMain from "../../pages/SecretMain/SecretMain";
+import Profile from "../../pages/Profile/Profile";
+import RecoverLostPassword from "../../pages/RecoverLostPassword/RecoverLostPassword";
+import PasswordReset from "../../pages/PasswordReset/PasswordReset";
+import NotFound from "../../pages/NotFound/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
 
 const Routes: React.FC = () => (

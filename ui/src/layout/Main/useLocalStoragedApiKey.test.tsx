@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
-import { UserContextProvider, UserContext, UserAction } from "../contexts/UserContext/UserContext";
+import { UserContextProvider, UserContext, UserAction } from "../../contexts/UserContext/UserContext";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 
