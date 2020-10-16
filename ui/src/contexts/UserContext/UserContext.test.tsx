@@ -1,13 +1,13 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import { UserContextProvider, UserContext, UserState, UserAction } from "./UserContext";
+import { UserContextProvider, UserContext, UserAction } from "./UserContext";
 
-const TestComponent: React.FC<{ action: UserAction; label: string }> = ({ action, label }) => {
+const TestComponent: React.FC<{ action?: UserAction; label?: string }> = ({ action, label }) => {
   const { state, dispatch } = React.useContext(UserContext);
   return (
     <>
       <div>{JSON.stringify(state)}</div>
-      <a onClick={() => dispatch(action)}>{label}</a>
+      {action && <a onClick={() => dispatch(action)}>{label}</a>}
     </>
   );
 };
