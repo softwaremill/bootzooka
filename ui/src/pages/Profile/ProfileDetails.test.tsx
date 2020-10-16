@@ -4,7 +4,7 @@ import ProfileDetails from "./ProfileDetails";
 import { UserContext, UserState } from "../../contexts/UserContext/UserContext";
 import userService from "../../services/UserService/UserService";
 
-const mockState: UserState = {
+const loggedUserState: UserState = {
   apiKey: "test-api-key",
   user: { login: "user-login", email: "email@address.pl", createdOn: "2020-10-09T09:57:17.995288Z" },
   loggedIn: true,
@@ -17,21 +17,33 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-test("renders header", () => {
-  const { getByText } = render(
-    <UserContext.Provider value={{ state: mockState, dispatch }}>
+test("renders current user data", () => {
+  const { getByLabelText } = render(
+    <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>
   );
 
-  expect(getByText("Profile details")).toBeInTheDocument();
+  expect((getByLabelText("Login") as HTMLInputElement).value).toEqual("user-login");
+  expect((getByLabelText("Email address") as HTMLInputElement).value).toEqual("email@address.pl");
+});
+
+test("renders lack of current user data", () => {
+  const { getByLabelText } = render(
+    <UserContext.Provider value={{ state: { ...loggedUserState, user: null }, dispatch }}>
+      <ProfileDetails />
+    </UserContext.Provider>
+  );
+
+  expect((getByLabelText("Login") as HTMLInputElement).value).toEqual("");
+  expect((getByLabelText("Email address") as HTMLInputElement).value).toEqual("");
 });
 
 test("handles change details success", async () => {
   (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
 
   const { getByLabelText, getByText, getByRole, findByRole } = render(
-    <UserContext.Provider value={{ state: mockState, dispatch }}>
+    <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>
   );
@@ -66,7 +78,7 @@ test("handles change details error", async () => {
   (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(testError);
 
   const { getByLabelText, getByText, findByRole, queryByRole, queryByText } = render(
-    <UserContext.Provider value={{ state: mockState, dispatch }}>
+    <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>
   );
