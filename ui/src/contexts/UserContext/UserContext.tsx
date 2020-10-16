@@ -1,5 +1,6 @@
 import React from "react";
 import immer from "immer";
+import noop from "noop-ts";
 
 export interface UserDetails {
   createdOn: string;
@@ -19,7 +20,7 @@ export const initialUserState: UserState = {
   loggedIn: null,
 };
 
-type UserAction =
+export type UserAction =
   | { type: "SET_API_KEY"; apiKey: string | null }
   | { type: "UPDATE_USER_DATA"; user: Partial<UserDetails> }
   | { type: "LOG_IN"; user: UserDetails }
@@ -47,9 +48,6 @@ const UserReducer = (state: UserState, action: UserAction): UserState => {
         draftState.user = null;
         draftState.loggedIn = false;
       });
-
-    default:
-      return state;
   }
 };
 
@@ -58,7 +56,7 @@ export const UserContext = React.createContext<{
   dispatch: React.Dispatch<UserAction>;
 }>({
   state: initialUserState,
-  dispatch: () => null,
+  dispatch: noop,
 });
 
 export const UserContextProvider: React.FC = ({ children }) => {

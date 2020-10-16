@@ -7473,6 +7473,13 @@ node-releases@^1.1.52:
   dependencies:
     semver "^6.3.0"
 
+noop-ts@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/noop-ts/-/noop-ts-1.0.3.tgz#ded86bff3f291206881b54230f3a5338aeb7181d"
+  integrity sha512-R3DfoyuFCbaVoYfaE6yS+qON0GGqBcc3FeANDvMe4Z1Dd7fuqzMJrnjJx9if9hCP72+UlTxZ/DSP4BuP6/+p8A==
+  dependencies:
+    typescript "^3.4.3"
+
 normalize-package-data@^2.3.2:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.5.0.tgz#e66db1838b200c1dfc233225d12cb36520e234a8"
@@ -10851,6 +10858,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typescript@^3.4.3:
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
+  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
 
 typescript@^4.0.3:
   version "4.0.3"
