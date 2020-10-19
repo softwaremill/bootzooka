@@ -14,10 +14,10 @@ const FormikInput: React.FC<FormikInputProps> = ({ type = "text", name, label })
   <Field name={name}>
     {({ field, meta }: FieldProps<string>) => (
       <Form.Group as={Row}>
-        <Form.Label column sm={3} lg={2} htmlFor={name}>
+        <Form.Label column sm={3} htmlFor={name}>
           {label}
         </Form.Label>
-        <Col sm={9} lg={10}>
+        <Col sm={9}>
           <Form.Control
             id={name}
             type={type}
@@ -25,7 +25,9 @@ const FormikInput: React.FC<FormikInputProps> = ({ type = "text", name, label })
             isInvalid={!!meta.error && meta.touched}
             {...field}
           />
-          <Form.Control.Feedback type="invalid" className="text-right">{meta.error}</Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid" className="text-right">
+            {meta.error}
+          </Form.Control.Feedback>
         </Col>
       </Form.Group>
     )}

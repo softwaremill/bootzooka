@@ -5,6 +5,8 @@ import * as Yup from "yup";
 import userService from "../../services/UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import { UserContext } from "../../contexts/UserContext/UserContext";
 import { BiLogInCircle } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
@@ -42,24 +44,28 @@ const Login: React.FC = () => {
 
   return (
     <Container className="py-5">
-      <h3>Please sign in</h3>
-      <Formik<LoginParams>
-        initialValues={{
-          loginOrEmail: "",
-          password: "",
-        }}
-        onSubmit={send}
-        validationSchema={validationSchema}
-      >
-        <Form as={FormikForm}>
-          <FormikInput name="loginOrEmail" label="Login or email" />
-          <FormikInput name="password" type="password" label="Password" />
-          <Link className="float-right" to="/recover-lost-password">
-            Forgot password?
-          </Link>
-          <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />{" "}
-        </Form>
-      </Formik>
+      <Row>
+        <Col md={9} lg={7} xl={6} className="mx-auto">
+          <h3>Please sign in</h3>
+          <Formik<LoginParams>
+            initialValues={{
+              loginOrEmail: "",
+              password: "",
+            }}
+            onSubmit={send}
+            validationSchema={validationSchema}
+          >
+            <Form as={FormikForm}>
+              <FormikInput name="loginOrEmail" label="Login or email" />
+              <FormikInput name="password" type="password" label="Password" />
+              <Link className="float-right" to="/recover-lost-password">
+                Forgot password?
+              </Link>
+              <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />{" "}
+            </Form>
+          </Formik>
+        </Col>
+      </Row>
     </Container>
   );
 };

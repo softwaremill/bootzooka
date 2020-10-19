@@ -4,6 +4,8 @@ import * as Yup from "yup";
 import passwordService from "../../services/PasswordService/PasswordService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import { BiReset } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
@@ -24,26 +26,30 @@ const RecoverLostPassword: React.FC = () => {
 
   return (
     <Container className="py-5">
-      <h3>Recover lost password</h3>
-      <Formik<RecoverLostPasswordParams>
-        initialValues={{
-          loginOrEmail: "",
-        }}
-        onSubmit={send}
-        validationSchema={validationSchema}
-      >
-        <Form as={FormikForm}>
-          <FormikInput name="loginOrEmail" label="Login or email" />
-          <FeedbackButton
-            type="submit"
-            label="Reset password"
-            Icon={BiReset}
-            result={result}
-            clear={clear}
-            successLabel="Password reset claim success"
-          />
-        </Form>
-      </Formik>
+      <Row>
+        <Col md={9} lg={7} xl={6} className="mx-auto">
+          <h3>Recover lost password</h3>
+          <Formik<RecoverLostPasswordParams>
+            initialValues={{
+              loginOrEmail: "",
+            }}
+            onSubmit={send}
+            validationSchema={validationSchema}
+          >
+            <Form as={FormikForm}>
+              <FormikInput name="loginOrEmail" label="Login or email" />
+              <FeedbackButton
+                type="submit"
+                label="Reset password"
+                Icon={BiReset}
+                result={result}
+                clear={clear}
+                successLabel="Password reset claim success"
+              />
+            </Form>
+          </Formik>
+        </Col>
+      </Row>
     </Container>
   );
 };
