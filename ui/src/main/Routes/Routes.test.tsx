@@ -56,7 +56,7 @@ test("renders protected route for logged user", () => {
     </Router>
   );
 
-  expect(getByText("Shhhh, this is secret place")).toBeInTheDocument();
+  expect(getByText("Shhhh, this is a secret place.")).toBeInTheDocument();
 });
 
 test("renders not found page", () => {
