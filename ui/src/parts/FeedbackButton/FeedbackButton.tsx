@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import { IconType } from "react-icons";
 import { BsExclamationCircle, BsCheck } from "react-icons/bs";
 import { PromiseResultShape } from "react-use-promise-matcher";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import useFormikValuesChanged from "./useFormikValuesChanged";
 
 interface FeedbackButtonProps extends ButtonProps {
@@ -46,8 +47,8 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({
           <BsExclamationCircle role="error" />
           &nbsp;{label}
         </Button>
-        <Form.Text className="text-danger d-inline-block mx-3">
-          {(error?.response?.data?.error || error.message).toString()}
+        <Form.Text className="d-inline-block mx-3">
+          <ErrorMessage error={error} />
         </Form.Text>
       </>
     ),

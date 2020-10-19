@@ -40,3 +40,16 @@ test("catches error of version data", async () => {
   expect(info).toBeInTheDocument();
   expect(getByText("Test Error")).toBeInTheDocument();
 });
+
+test("catches undefined error of version data", async () => {
+  (versionService.getVersion as jest.Mock).mockRejectedValueOnce(undefined);
+
+  const { getByText, findAllByRole } = render(<Footer />);
+
+  const info = getByText(/Bootzooka - application scaffolding by /);
+
+  await findAllByRole("loader");
+
+  expect(info).toBeInTheDocument();
+  expect(getByText("Unknown error")).toBeInTheDocument();
+});

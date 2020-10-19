@@ -6,6 +6,7 @@ import versionService from "../../services/VersionService/VersionService";
 import Spinner from "react-bootstrap/Spinner";
 import { usePromise } from "react-use-promise-matcher";
 import { BsExclamationCircle } from "react-icons/bs";
+import ErrorMessage from "../../parts/ErrorMessage/ErrorMessage";
 
 interface VersionData {
   buildDate: string;
@@ -36,9 +37,9 @@ const Footer: React.FC = () => {
                 Idle: () => <></>,
                 Loading: () => <Spinner animation="border" size="sm" role="loader" />,
                 Rejected: (error) => (
-                  <small className="text-danger">
-                    <BsExclamationCircle className="mr-2" />
-                    {(error?.response?.data?.error || error.message).toString()}
+                  <small>
+                    <BsExclamationCircle className="text-danger mr-2" />
+                    <ErrorMessage error={error} />
                   </small>
                 ),
                 Resolved: ({ buildDate, buildSha }) => (
