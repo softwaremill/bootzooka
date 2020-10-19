@@ -15,11 +15,11 @@ interface RecoverLostPasswordParams {
   loginOrEmail: string;
 }
 
-const RecoverLostPassword: React.FC = () => {
-  const validationSchema: Yup.ObjectSchema<RecoverLostPasswordParams | undefined> = Yup.object({
-    loginOrEmail: Yup.string().required("Required"),
-  });
+const validationSchema: Yup.ObjectSchema<RecoverLostPasswordParams | undefined> = Yup.object({
+  loginOrEmail: Yup.string().required("Required"),
+});
 
+const RecoverLostPassword: React.FC = () => {
   const [result, send, clear] = usePromise((values: RecoverLostPasswordParams) =>
     passwordService.claimPasswordReset(values)
   );

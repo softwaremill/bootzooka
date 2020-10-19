@@ -16,14 +16,14 @@ interface PasswordResetParams {
   repeatedPassword: string;
 }
 
-const ProfileDetails: React.FC = () => {
-  const validationSchema: Yup.ObjectSchema<PasswordResetParams | undefined> = Yup.object({
-    password: Yup.string().min(3, "At least 3 characters required").required("Required"),
-    repeatedPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Passwords must match")
-      .required("Required"),
-  });
+const validationSchema: Yup.ObjectSchema<PasswordResetParams | undefined> = Yup.object({
+  password: Yup.string().min(3, "At least 3 characters required").required("Required"),
+  repeatedPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Required"),
+});
 
+const ProfileDetails: React.FC = () => {
   const code = new URLSearchParams(window.location.search).get("code") || "";
 
   const [result, send, clear] = usePromise(({ password }: PasswordResetParams) =>

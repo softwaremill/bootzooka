@@ -18,18 +18,18 @@ interface PasswordDetailsParams {
   repeatedPassword: string;
 }
 
+const validationSchema: Yup.ObjectSchema<PasswordDetailsParams | undefined> = Yup.object({
+  currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
+  newPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
+  repeatedPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword")], "Passwords must match")
+    .required("Required"),
+});
+
 const ProfileDetails: React.FC = () => {
   const {
     state: { apiKey },
   } = React.useContext(UserContext);
-
-  const validationSchema: Yup.ObjectSchema<PasswordDetailsParams | undefined> = Yup.object({
-    currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
-    newPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
-    repeatedPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword")], "Passwords must match")
-      .required("Required"),
-  });
 
   const [result, send, clear] = usePromise(({ currentPassword, newPassword }: PasswordDetailsParams) =>
     userService.changePassword(apiKey, { currentPassword, newPassword })

@@ -17,16 +17,16 @@ interface ProfileDetailsParams {
   email: string;
 }
 
+const validationSchema: Yup.ObjectSchema<ProfileDetailsParams | undefined> = Yup.object({
+  login: Yup.string().min(3, "At least 3 characters required").required("Required"),
+  email: Yup.string().email("Correct email address required").required("Required"),
+});
+
 const ProfileDetails: React.FC = () => {
   const {
     dispatch,
     state: { apiKey, user },
   } = React.useContext(UserContext);
-
-  const validationSchema: Yup.ObjectSchema<ProfileDetailsParams | undefined> = Yup.object({
-    login: Yup.string().min(3, "At least 3 characters required").required("Required"),
-    email: Yup.string().email("Correct email address required").required("Required"),
-  });
 
   const [result, send, clear] = usePromise((values: ProfileDetailsParams) =>
     userService.changeProfileDetails(apiKey, values).then(() => dispatch({ type: "UPDATE_USER_DATA", user: values }))

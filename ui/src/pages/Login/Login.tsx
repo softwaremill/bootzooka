@@ -18,16 +18,16 @@ interface LoginParams {
   password: string;
 }
 
+const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
+  loginOrEmail: Yup.string().required("Required"),
+  password: Yup.string().required("Required"),
+});
+
 const Login: React.FC = () => {
   const {
     dispatch,
     state: { loggedIn },
   } = React.useContext(UserContext);
-
-  const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
-    loginOrEmail: Yup.string().required("Required"),
-    password: Yup.string().required("Required"),
-  });
 
   const [result, send, clear] = usePromise((values: LoginParams) =>
     userService

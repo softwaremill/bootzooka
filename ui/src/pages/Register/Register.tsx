@@ -20,20 +20,20 @@ interface RegisterParams {
   repeatedPassword: string;
 }
 
+const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.object({
+  login: Yup.string().min(3, "At least 3 characters required").required("Required"),
+  email: Yup.string().email("Correct email address required").required("Required"),
+  password: Yup.string().min(5, "At least 5 characters required").required("Required"),
+  repeatedPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Required"),
+});
+
 const Register: React.FC = () => {
   const {
     dispatch,
     state: { loggedIn },
   } = React.useContext(UserContext);
-
-  const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.object({
-    login: Yup.string().min(3, "At least 3 characters required").required("Required"),
-    email: Yup.string().email("Correct email address required").required("Required"),
-    password: Yup.string().min(5, "At least 5 characters required").required("Required"),
-    repeatedPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Passwords must match")
-      .required("Required"),
-  });
 
   const [result, send, clear] = usePromise(({ login, email, password }: RegisterParams) =>
     userService.registerUser({ login, email, password }).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
