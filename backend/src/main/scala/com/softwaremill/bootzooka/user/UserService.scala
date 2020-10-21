@@ -108,7 +108,7 @@ class UserService(
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {
     op.flatMap {
       case Some(user) => user.pure[ConnectionIO]
-      case None       => Fail.NotFound("user").raiseError[ConnectionIO, User]
+      case None       => Fail.NotFound("Incorrect login/email or password").raiseError[ConnectionIO, User]
     }
   }
 
@@ -139,7 +139,7 @@ object UserRegisterValidator {
     """^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
   private def validEmail(email: String) =
-    if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid e-mail!")
+    if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid format of an e-mail!")
 
   private def validPassword(password: String) =
     if (password.nonEmpty) ValidationOk else Left("Password cannot be empty!")
