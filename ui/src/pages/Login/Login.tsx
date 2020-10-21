@@ -33,11 +33,6 @@ const Login: React.FC = () => {
     userService
       .login(values)
       .then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
-      .catch((error) => {
-        if (error?.response?.status === 404) throw new Error("Incorrect login/email or password!");
-
-        throw error;
-      })
   );
 
   if (loggedIn) return <Redirect to="/main" />;
