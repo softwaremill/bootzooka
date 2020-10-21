@@ -38,7 +38,7 @@ class Auth[T](
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
-        Timer[Task].sleep(random.nextInt(1000).millis) >> Task.raiseError(Fail.Unauthorized)
+        Timer[Task].sleep(random.nextInt(1000).millis) >> Task.raiseError(Fail.Unauthorized("Unauthorized"))
       case Some(token) =>
         val delete = if (authTokenOps.deleteWhenValid) authTokenOps.delete(token).transact(xa) else Task.unit
         delete >> Task.now(authTokenOps.userId(token))

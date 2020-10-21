@@ -18,11 +18,13 @@ import sttp.client3.SttpBackend
 class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
   lazy val modules: MainModule = new MainModule {
     override def xa: Transactor[Task] = currentDb.xa
+
     override lazy val baseSttpBackend: SttpBackend[Task, Any] = SttpBackendStub(TaskMonadAsyncError)
     override lazy val config: Config = TestConfig
   }
 
   val requests = new Requests(modules)
+
   import requests._
 
   "/passwordreset" should "reset the password" in {
@@ -35,7 +37,9 @@ class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Event
     response1.shouldDeserializeTo[ForgotPassword_OUT]
 
     // then
-    val code = eventually { codeSentToEmail(email) }
+    val code = eventually {
+      codeSentToEmail(email)
+    }
 
     // when
     val response2 = resetPassword(code, newPassword)
@@ -57,7 +61,9 @@ class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Event
     response1.shouldDeserializeTo[ForgotPassword_OUT]
 
     // then
-    val code = eventually { codeSentToEmail(email) }
+    val code = eventually {
+      codeSentToEmail(email)
+    }
 
     // when
     resetPassword(code, newPassword).shouldDeserializeTo[PasswordReset_OUT]
@@ -66,6 +72,20 @@ class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Event
     // then
     loginUser(login, newPassword, None).status shouldBe Status.Ok
     loginUser(login, newerPassword, None).status shouldBe Status.Unauthorized
+  }
+
+  "/passwordreset/forgot" should "end up with Ok HTTP status code and do not send and email if user was not found" in {
+    // given
+    val RegisteredUser(_, email, _, _) = newRegisteredUsed()
+
+    // when
+    val response1 = forgotPassword("wrongUser")
+
+    // then
+    response1.status shouldBe Status.Ok
+    eventually {
+      codeWasNotSentToEmail(email)
+    }
   }
 
   "/passwordreset" should "not reset the password given an invalid code" in {
@@ -105,6 +125,16 @@ class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Event
 
     codeFromResetPasswordEmail(emailData.content)
       .getOrElse(throw new IllegalStateException(s"No code found in: $emailData"))
+  }
+
+  def codeWasNotSentToEmail(email: String): Unit = {
+    modules.emailService.sendBatch().unwrap
+
+    val maybeEmail = DummyEmailSender.findSentEmail(email, "SoftwareMill Bootzooka password reset")
+    maybeEmail match {
+      case Some(emailData) => throw new IllegalStateException(s"There should be no password reset email sent to $email, but instead found $emailData")
+      case None => ()
+    }
   }
 
   def codeFromResetPasswordEmail(email: String): Option[String] = {
