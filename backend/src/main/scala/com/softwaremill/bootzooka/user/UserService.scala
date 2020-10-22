@@ -26,6 +26,7 @@ class UserService(
 
   private val LoginAlreadyUsed = "Login already in use!"
   private val EmailAlreadyUsed = "E-mail already in use!"
+  private val IncorrectLoginOrPassword = "Incorrect login/email or password"
 
   def registerNewUser(login: String, email: String, password: String): ConnectionIO[ApiKey] = {
     def failIfDefined(op: ConnectionIO[Option[User]], msg: String): ConnectionIO[Unit] = {
@@ -67,7 +68,7 @@ class UserService(
   def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] =
     for {
       user <- userOrNotFound(userModel.findByLoginOrEmail(loginOrEmail.lowerCased))
-      _ <- verifyPassword(user, password, validationErrorMsg = "Incorrect login/email or password")
+      _ <- verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword)
       apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
     } yield apiKey
 
@@ -108,7 +109,7 @@ class UserService(
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {
     op.flatMap {
       case Some(user) => user.pure[ConnectionIO]
-      case None       => Fail.Unauthorized("Incorrect login/email or password").raiseError[ConnectionIO, User]
+      case None       => Fail.Unauthorized(IncorrectLoginOrPassword).raiseError[ConnectionIO, User]
     }
   }
 
