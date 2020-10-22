@@ -26,6 +26,7 @@ class UserService(
 
   private val LoginAlreadyUsed = "Login already in use!"
   private val EmailAlreadyUsed = "E-mail already in use!"
+  private val IncorrectLoginOrPassword = "Incorrect login/email or password"
 
   def registerNewUser(login: String, email: String, password: String): ConnectionIO[ApiKey] = {
     def failIfDefined(op: ConnectionIO[Option[User]], msg: String): ConnectionIO[Unit] = {
@@ -67,7 +68,7 @@ class UserService(
   def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] =
     for {
       user <- userOrNotFound(userModel.findByLoginOrEmail(loginOrEmail.lowerCased))
-      _ <- verifyPassword(user, password)
+      _ <- verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword)
       apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
     } yield apiKey
 
@@ -100,7 +101,7 @@ class UserService(
   def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] =
     for {
       user <- userOrNotFound(userModel.findById(userId))
-      _ <- verifyPassword(user, currentPassword)
+      _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
       _ = logger.debug(s"Changing password for user: $userId")
       _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
     } yield ()
@@ -108,15 +109,15 @@ class UserService(
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {
     op.flatMap {
       case Some(user) => user.pure[ConnectionIO]
-      case None       => Fail.NotFound("user").raiseError[ConnectionIO, User]
+      case None       => Fail.Unauthorized(IncorrectLoginOrPassword).raiseError[ConnectionIO, User]
     }
   }
 
-  private def verifyPassword(user: User, password: String): ConnectionIO[Unit] = {
+  private def verifyPassword(user: User, password: String, validationErrorMsg: String): ConnectionIO[Unit] = {
     if (user.verifyPassword(password) == Verified) {
       ().pure[ConnectionIO]
     } else {
-      Fail.Unauthorized.raiseError[ConnectionIO, Unit]
+      Fail.Unauthorized(validationErrorMsg).raiseError[ConnectionIO, Unit]
     }
   }
 }
@@ -139,7 +140,7 @@ object UserRegisterValidator {
     """^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
   private def validEmail(email: String) =
-    if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid e-mail!")
+    if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid e-mail format!")
 
   private def validPassword(password: String) =
     if (password.nonEmpty) ValidationOk else Left("Password cannot be empty!")

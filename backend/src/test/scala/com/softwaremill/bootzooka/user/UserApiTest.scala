@@ -131,6 +131,26 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     getUser(apiKey).status shouldBe Status.Unauthorized
   }
 
+  "/user/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if user was not found" in {
+    // given
+    val RegisteredUser(_, _, password, _) = newRegisteredUsed()
+
+    // when
+    val response = loginUser("unknownLogin", password, Some(3))
+    response.status shouldBe Status.Unauthorized
+    response.shouldDeserializeToError shouldBe "Incorrect login/email or password"
+  }
+
+  "/user/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if password is incorrect for user" in {
+    // given
+    val RegisteredUser(login, _, _, _) = newRegisteredUsed()
+
+    // when
+    val response = loginUser(login, "wrongPassword", Some(3))
+    response.status shouldBe Status.Unauthorized
+    response.shouldDeserializeToError shouldBe "Incorrect login/email or password"
+  }
+
   "/user/info" should "respond with 403 if the token is invalid" in {
     getUser("invalid").status shouldBe Status.Unauthorized
   }
@@ -158,7 +178,9 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     val response1 = changePassword(apiKey, "invalid", newPassword)
 
     // then
-    response1.shouldDeserializeToError
+    response1.status shouldBe Status.Unauthorized
+    response1.shouldDeserializeToError shouldBe "Incorrect current password"
+
     loginUser(login, password, None).status shouldBe Status.Ok
     loginUser(login, newPassword, None).status shouldBe Status.Unauthorized
   }

@@ -46,7 +46,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
     case Fail.Conflict(msg)       => (StatusCode.Conflict, msg)
     case Fail.IncorrectInput(msg) => (StatusCode.BadRequest, msg)
     case Fail.Forbidden           => (StatusCode.Forbidden, "Forbidden")
-    case Fail.Unauthorized        => (StatusCode.Unauthorized, "Unauthorized")
+    case Fail.Unauthorized(msg)   => (StatusCode.Unauthorized, msg)
     case _                        => InternalServerError
   }
 
