@@ -2,7 +2,7 @@
 
 [See the docs](http://softwaremill.github.io/bootzooka/) for more information.
 
-[![Build Status](https://travis-ci.org/softwaremill/bootzooka.svg?branch=master)](https://travis-ci.org/softwaremill/bootzooka)
+![Bootzooka tests](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20tests/badge.svg)
 
 ## Quick start
 
