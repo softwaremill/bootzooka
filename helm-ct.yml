@@ -1,0 +1,4 @@
+remote: origin
+chart-dirs:
+  - helm
+helm-extra-args: --set bootzooka.sql.password=bootzooka,bootzooka.smtp.password=bootzooka
