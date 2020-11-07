@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ include "bootzooka.fullname" . }}-config
 data:
   SMTP_ENABLED: "{{ .Values.bootzooka.smtp.enabled }}"
   SMTP_HOST: "{{ .Values.bootzooka.smtp.host }}"
@@ -11,7 +11,7 @@ data:
   SMTP_VERIFY_SSL_CERTIFICATE: "{{ .Values.bootzooka.smtp.ssl_ver }}"
   SMTP_FROM: "{{ .Values.bootzooka.smtp.from }}"
   PASSWORD_RESET_LINK_PATTERN: "{{ .Values.bootzooka.reset_password_url }}"
-  SQL_USERNAME: "{{ .Values.bootzooka.sql.username }}"
-  SQL_DBNAME: "{{ .Values.bootzooka.sql.name }}"
-  SQL_HOST: "{{ .Values.bootzooka.sql.host }}"
-  SQL_PORT: "{{ .Values.bootzooka.sql.port }}"
+  SQL_USERNAME: "{{ tpl .Values.bootzooka.sql.username . }}"
+  SQL_DBNAME: "{{ tpl .Values.bootzooka.sql.name . }}"
+  SQL_HOST: "{{ tpl .Values.bootzooka.sql.host . }}"
+  SQL_PORT: "{{ tpl .Values.bootzooka.sql.port . }}"

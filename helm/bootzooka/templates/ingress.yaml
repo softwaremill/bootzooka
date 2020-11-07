@@ -1,23 +1,21 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "bootzooka.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
-apiVersion: extensions/v1beta1
+{{- if .Values.bootzooka.ingress.enabled }}
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ include "bootzooka.fullname" . }}-ingress
   labels:
     app.kubernetes.io/name: {{ include "bootzooka.name" . }}
     helm.sh/chart: {{ include "bootzooka.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- with .Values.ingress.annotations }}
+{{- with .Values.bootzooka.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-{{- if .Values.ingress.tls_enabled }}
+{{- if .Values.bootzooka.ingress.tls_enabled }}
   tls:
-  {{- range .Values.ingress.tls }}
+  {{- range .Values.bootzooka.ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
@@ -26,13 +24,14 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
-      http:
-        paths:
-          - path: {{ $ingressPath }}
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: http
+  {{- $serviceName := include "bootzooka.fullname" . -}}
+  {{- range .Values.bootzooka.ingress.hosts }}
+  - host: {{ .host.domain | quote }}
+    http:
+      paths:
+      - path: {{ .host.path }}
+        backend:
+          serviceName: {{ $serviceName }}
+          servicePort: {{ .host.port }}
   {{- end }}
 {{- end }}
