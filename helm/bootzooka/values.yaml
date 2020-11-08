@@ -9,6 +9,11 @@ postgresql:
   postgresqlDatabase: "bootzooka"
   service:
     port: 5432
+  connectionTest:
+    image:
+      repository: bitnami/postgresql
+      tag: 11
+      pullPolicy: IfNotPresent
 
 bootzooka:
   replicaCount: 1

@@ -3,39 +3,73 @@ name: Bootzooka tests
 on: [push, pull_request]
 
 jobs:
-  scala-test:
-    runs-on: ubuntu-latest
+  scala-lint:
+    name: Scala linting
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Check-out repository
+      id: repo-checkout
+      uses: actions/checkout@v2
+
+    - name: Run scalafmt
+      id: run-scalafmt
+      uses: openlawteam/scalafmt-ci@v2
+      with:
+        args: "--exclude=third_party --list"
+
+  scala-ts-tests:
+  # needs: scala-lint
+    name: Scala and TypeScript testing
+    runs-on: ubuntu-18.04
 
     steps:
     - name: Check-out repository
+      id: repo-checkout
       uses: actions/checkout@v2
-      
+
     - name: Set up JDK 11
+      id: jdk-setup
       uses: actions/setup-java@v1
       with:
         java-version: 11
-      
+
     - name: Cache SBT
+      id: cache-sbt
       uses: actions/cache@v2
       with:
         path: |
           ~/.sbt
           ~/.ivy2/cache
           ~/.coursier
-        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}    
-      
+        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+
     - name: Run tests
-      run: sbt test 
+      id: run-tests
+      run: sbt test
 
   helm-lint-test:
-    runs-on: ubuntu-latest
-    
+    name: Helm linting and testing
+    runs-on: ubuntu-18.04
+
     steps:
     - name: Check-out repository
+      id: repo-checkout
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0  
-    
+        fetch-depth: 0
+
+    - name: Set up Helm
+      id: helm-setup
+      uses: azure/setup-helm@v1
+      with:
+        version: v3.4.0
+
+    - name: Set up Python
+      id: python-setup
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+
     - name: Run chart-testing (lint)
       id: ct-lint
       uses: helm/chart-testing-action@v1.1.0
@@ -46,7 +80,8 @@ jobs:
     - name: Create kind cluster
       id: kind-cluster-setup
       uses: helm/kind-action@v1.0.0
-      if: steps.lint.outputs.changed == 'true'
+      with:
+        wait: "120s"
 
     - name: Run chart-testing (install)
       id: ct-install
