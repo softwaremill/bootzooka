@@ -2,7 +2,7 @@
 
 [See the docs](http://softwaremill.github.io/bootzooka/) for more information.
 
-[![Build Status](https://travis-ci.org/softwaremill/bootzooka.svg?branch=master)](https://travis-ci.org/softwaremill/bootzooka)
+[![ CI ](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20tests/badge.svg)](https://github.com/softwaremill/bootzooka/actions?query=workflow%3A%22Bootzooka+tests%22)
 
 ## Quick start
 
@@ -46,12 +46,3 @@ We offer commercial support for Bootzooka and related technologies, as well as d
 ## Copyright
 
 Copyright (C) 2013-2020 SoftwareMill [https://softwaremill.com](https://softwaremill.com).
-
-
-
-
-
-
-
-
-
