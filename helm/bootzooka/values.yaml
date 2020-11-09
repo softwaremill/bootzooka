@@ -1,0 +1,81 @@
+# Default values for Bootzooka.
+
+postgresql:
+  # disable if you already have PostgreSQL running in cluster where Bootzooka chart is being deployed
+  enabled: true
+  fullnameOverride: "bootzooka-pgsql-postgresql"
+  postgresqlUsername: "postgres"
+  postgresqlPassword: "bootzooka"
+  postgresqlDatabase: "bootzooka"
+  service:
+    port: 5432
+  connectionTest:
+    image:
+      repository: bitnami/postgresql
+      tag: 11
+      pullPolicy: IfNotPresent
+
+bootzooka:
+  replicaCount: 1
+  reset_password_url: "https://bootzooka.example.com/password-reset?code=%s"
+  sql:
+    host: '{{ .Values.postgresql.fullnameOverride }}'
+    port: '{{ .Values.postgresql.service.port }}'
+    username: '{{ .Values.postgresql.postgresqlUsername }}'
+    name: '{{ .Values.postgresql.postgresqlDatabase }}'
+    password: '{{ .Values.postgresql.postgresqlPassword }}'
+  smtp:
+    enabled: true
+    host: "server.example.com"
+    port: 465
+    ssl: "true"
+    ssl_ver: "false"
+    username: "server.example.com"
+    from: "hello@bootzooka.example.com"
+    password: "bootzooka"
+
+  image:
+    repository: softwaremill/bootzooka
+    tag: latest
+    pullPolicy: Always
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  service:
+    type: ClusterIP
+    port: 8080
+
+  ingress:
+    enabled: true
+    tls_enabled: false
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+    hosts:
+      - host:
+          domain: bootzooka.example.com
+          path: /
+          port: http
+    tls:
+      - secretName: bootzooka-tls
+        hosts:
+        - bootzooka.example.com
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

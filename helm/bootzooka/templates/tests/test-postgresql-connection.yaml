@@ -1,0 +1,45 @@
+{{- if .Values.postgresql.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-postgresql-test"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: {{ .Release.Name }}-postgresql-test
+      image: "{{ .Values.postgresql.connectionTest.image.repository }}:{{ .Values.postgresql.connectionTest.image.tag }}"
+      imagePullPolicy: {{ .Values.postgresql.connectionTest.image.pullPolicy | quote }}
+      env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "bootzooka.fullname" . }}-config
+              key: SQL_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "bootzooka.fullname" . }}-config
+              key: SQL_PORT
+        - name: DB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "bootzooka.fullname" . }}-config
+              key: SQL_DBNAME
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "bootzooka.fullname" . }}-config
+              key: SQL_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "bootzooka.fullname" . }}-secret
+              key: SQL_PASSWORD
+      command:
+        - /bin/bash
+        - -ec
+        - |
+          PGPASSWORD=$DB_PASSWORD psql --host $DB_HOST --port $DB_PORT -U $DB_USERNAME
+  restartPolicy: Never
+{{- end }}

@@ -1,0 +1,37 @@
+{{- if .Values.bootzooka.ingress.enabled }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "bootzooka.fullname" . }}-ingress
+  labels:
+    app.kubernetes.io/name: {{ include "bootzooka.name" . }}
+    helm.sh/chart: {{ include "bootzooka.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.bootzooka.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.bootzooka.ingress.tls_enabled }}
+  tls:
+  {{- range .Values.bootzooka.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- $serviceName := include "bootzooka.fullname" . -}}
+  {{- range .Values.bootzooka.ingress.hosts }}
+  - host: {{ .host.domain | quote }}
+    http:
+      paths:
+      - path: {{ .host.path }}
+        backend:
+          serviceName: {{ $serviceName }}
+          servicePort: {{ .host.port }}
+  {{- end }}
+{{- end }}

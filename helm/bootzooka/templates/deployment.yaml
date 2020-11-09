@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bootzooka.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "bootzooka.name" . }}
+    helm.sh/chart: {{ include "bootzooka.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.bootzooka.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bootzooka.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bootzooka.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.bootzooka.image.repository }}:{{ .Values.bootzooka.image.tag }}"
+          imagePullPolicy: {{ .Values.bootzooka.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ include "bootzooka.fullname" . }}-config
+          - secretRef:
+              name: {{ include "bootzooka.fullname" . }}-secret
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

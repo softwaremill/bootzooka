@@ -2,28 +2,99 @@ name: Bootzooka tests
 
 on: [push, pull_request]
 
+env:
+  SCALAFMT_ENABLE: false
+
 jobs:
-  scala-test:
-    runs-on: ubuntu-latest
+  scala-lint:
+    # using environment variables as condition on job level does not work yet in GitHub Actions (see e.g. https://github.com/actions/runner/issues/480)
+    #if: (env.SCALAFMT_ENABLE == 'true') && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository)
+    if: false
+    name: Scala linting
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Check-out repository
+      id: repo-checkout
+      uses: actions/checkout@v2
+
+    - name: Run scalafmt
+      id: run-scalafmt
+      uses: openlawteam/scalafmt-ci@v2
+      with:
+        args: "--exclude=third_party --list"
+
+  scala-ts-tests:
+    # run on external PRs, but not on internal PRs since those will be run by push to branch
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    name: Scala and TypeScript testing
+    runs-on: ubuntu-18.04
 
     steps:
     - name: Check-out repository
+      id: repo-checkout
       uses: actions/checkout@v2
-      
+
     - name: Set up JDK 11
+      id: jdk-setup
       uses: actions/setup-java@v1
       with:
         java-version: 11
-      
+
     - name: Cache SBT
+      id: cache-sbt
       uses: actions/cache@v2
       with:
         path: |
           ~/.sbt
           ~/.ivy2/cache
           ~/.coursier
-        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}    
-      
+        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+
     - name: Run tests
+      id: run-tests
       run: sbt test
-    
+
+  helm-lint-test:
+    # run on external PRs, but not on internal PRs since those will be run by push to branch
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository    
+    name: Helm linting and testing
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Check-out repository
+      id: repo-checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Helm
+      id: helm-setup
+      uses: azure/setup-helm@v1
+      with:
+        version: v3.4.0
+
+    - name: Set up Python
+      id: python-setup
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+
+    - name: Run chart-testing (lint)
+      id: ct-lint
+      uses: helm/chart-testing-action@v1.1.0
+      with:
+        command: lint
+        config: helm-ct.yml
+
+    - name: Create kind cluster
+      id: kind-cluster-setup
+      uses: helm/kind-action@v1.0.0
+      with:
+        wait: "120s"
+
+    - name: Run chart-testing (install)
+      id: ct-install
+      uses: helm/chart-testing-action@v1.1.0
+      with:
+        command: install
+        config: helm-ct.yml

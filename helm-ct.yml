@@ -1,0 +1,5 @@
+remote: origin
+chart-dirs:
+  - helm
+chart-repos:
+  - bitnami=https://charts.bitnami.com/bitnami

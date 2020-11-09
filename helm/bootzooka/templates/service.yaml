@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "bootzooka.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "bootzooka.name" . }}
+    helm.sh/chart: {{ include "bootzooka.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.bootzooka.service.type }}
+  ports:
+    - port: {{ .Values.bootzooka.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "bootzooka.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
