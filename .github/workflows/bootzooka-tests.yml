@@ -2,8 +2,14 @@ name: Bootzooka tests
 
 on: [push, pull_request]
 
+env:
+  SCALAFMT_ENABLE: false
+
 jobs:
   scala-lint:
+    # using environment variables as condition on job level does not work yet in GitHub Actions (see e.g. https://github.com/actions/runner/issues/480)
+    #if: (env.SCALAFMT_ENABLE == 'true') && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository)
+    if: false
     name: Scala linting
     runs-on: ubuntu-18.04
     steps:
@@ -18,7 +24,8 @@ jobs:
         args: "--exclude=third_party --list"
 
   scala-ts-tests:
-  # needs: scala-lint
+    # run on external PRs, but not on internal PRs since those will be run by push to branch
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     name: Scala and TypeScript testing
     runs-on: ubuntu-18.04
 
@@ -48,6 +55,8 @@ jobs:
       run: sbt test
 
   helm-lint-test:
+    # run on external PRs, but not on internal PRs since those will be run by push to branch
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository    
     name: Helm linting and testing
     runs-on: ubuntu-18.04
 
