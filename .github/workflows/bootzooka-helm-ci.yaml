@@ -79,6 +79,8 @@ jobs:
 
       - name: Run helm-docs
         id: helm-docs-run
-        # run: .github/helm-docs.sh
-        # TODO: switch to 'ideas-into-software/helm-docs-action@master' instead of running script
         uses: ideas-into-software/helm-docs-action@main
+
+      - name: Validate there's no diff
+        id: git-no-diff
+        run: git diff --exit-code
