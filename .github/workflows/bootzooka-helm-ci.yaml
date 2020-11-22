@@ -38,10 +38,10 @@ jobs:
     strategy:
       matrix:
         k8s:
-        #  - v1.15.12
-        #  - v1.16.15
-        #  - v1.17.11
-        #  - v1.18.8
+          - v1.15.12
+          - v1.16.15
+          - v1.17.11
+          - v1.18.8
           - v1.19.4
     steps:
       - name: Check-out repository
