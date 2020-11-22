@@ -3,3 +3,5 @@ chart-dirs:
   - helm
 chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami
+debug: true
+helm-extra-args: --timeout 600s

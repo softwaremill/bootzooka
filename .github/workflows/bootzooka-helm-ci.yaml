@@ -1,0 +1,144 @@
+name: Bootzooka Helm Chart CI
+
+on:
+  push:
+    paths:
+      - "helm/**"
+  pull_request:
+    paths:
+      - "helm/**"
+
+jobs:
+  lint-chart:
+    # run on external PRs, but not on internal PRs since those will be run by push to branch
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    name: Lint Helm Chart
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Check-out repository
+        id: repo-checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Run chart-testing (lint)
+        id: ct-lint
+        uses: helm/chart-testing-action@v1.1.0
+        with:
+          command: lint
+          config: .github/helm-ct.yml
+
+  validate-chart:
+    needs: lint-chart
+    name: Validate Helm Chart
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        k8s:
+        #  - v1.15.7
+        #  - v1.16.4
+        #  - v1.17.4
+          - v1.18.1
+    steps:
+      - name: Check-out repository
+        id: repo-checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Run Kubeval for K8 v. ${{ matrix.k8s }}
+        id: kubeval-run
+        env:
+          KUBERNETES_VERSION: ${{ matrix.k8s }}
+        run: .github/kubeval.sh
+      # TODO: switch to 'instrumenta/kubeval-action' instead of running script
+      # uses: instrumenta/kubeval-action@master
+      #  with:
+      #    version: ${{ matrix.k8s }}
+      #    files: "helm/*"
+
+  install-test-chart:
+    needs:
+      - lint-chart
+      - validate-chart
+    name: Install & Test Helm Chart
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        k8s:
+        #  - v1.15.12
+        #  - v1.16.15
+        #  - v1.17.11
+        #  - v1.18.8
+          - v1.19.4
+    steps:
+      - name: Check-out repository
+        id: repo-checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Create kind ${{ matrix.k8s }} cluster
+        id: kind-cluster-setup
+        uses: helm/kind-action@v1.1.0
+        with:
+          node_image: kindest/node:${{ matrix.k8s }}
+          wait: "120s"
+
+      - name: Run chart-testing (install)
+        id: ct-install
+        uses: helm/chart-testing-action@v1.1.0
+        with:
+          command: install
+          config: .github/helm-ct.yml
+
+  validate-chart-docs:
+    needs:
+      - lint-chart
+      - validate-chart
+      - install-test-chart
+    name: Validate Helm Chart Docs
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Check-out repository
+        id: repo-checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Run helm-docs
+        id: helm-docs-run
+        run: .github/helm-docs.sh
+        # TODO: switch to 'ideas-into-software/helm-docs-action@master' instead of running script
+        # uses: ideas-into-software/helm-docs-action@master
+
+  release-chart:
+    needs:
+      - lint-chart
+      - validate-chart
+      - install-test-chart
+      - validate-chart-docs
+    name: Release Helm Chart
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Check-out repository
+        id: repo-checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        id: git-configure
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Run chart-releaser
+        id: helm-release-chart
+        uses: helm/chart-releaser-action@v1.1.0
+        with:
+          charts_dir: helm
+          charts_repo_url: https://softwaremill.github.io/sml-helm-public-repo
+          config: .github/helm-cr.yml
+        env:
+          CR_TOKEN: '${{ secrets.CR_TOKEN }}'
