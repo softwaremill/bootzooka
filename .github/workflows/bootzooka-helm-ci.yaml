@@ -4,9 +4,11 @@ on:
   push:
     paths:
       - "helm/**"
+      - ".github/**"
   pull_request:
     paths:
       - "helm/**"
+      - ".github/**"
 
 jobs:
   lint-chart:
