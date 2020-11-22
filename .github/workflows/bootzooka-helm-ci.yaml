@@ -81,4 +81,4 @@ jobs:
         id: helm-docs-run
         # run: .github/helm-docs.sh
         # TODO: switch to 'ideas-into-software/helm-docs-action@master' instead of running script
-        uses: ideas-into-software/helm-docs-action@master
+        uses: ideas-into-software/helm-docs-action@main
