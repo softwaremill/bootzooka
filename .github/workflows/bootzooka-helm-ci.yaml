@@ -79,36 +79,6 @@ jobs:
 
       - name: Run helm-docs
         id: helm-docs-run
-        run: .github/helm-docs.sh
+        # run: .github/helm-docs.sh
         # TODO: switch to 'ideas-into-software/helm-docs-action@master' instead of running script
-        # uses: ideas-into-software/helm-docs-action@master
-
-  release-chart:
-    needs:
-      - lint-chart
-      - install-test-chart
-      - validate-chart-docs
-    name: Release Helm Chart
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Check-out repository
-        id: repo-checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Configure Git
-        id: git-configure
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Run chart-releaser
-        id: helm-release-chart
-        uses: helm/chart-releaser-action@v1.1.0
-        with:
-          charts_dir: helm
-          charts_repo_url: https://softwaremill.github.io/sml-helm-public-repo
-          config: .github/helm-cr.yml
-        env:
-          CR_TOKEN: '${{ secrets.CR_TOKEN }}'
+        uses: ideas-into-software/helm-docs-action@master
