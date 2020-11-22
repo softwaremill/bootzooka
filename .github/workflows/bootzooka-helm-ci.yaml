@@ -30,39 +30,9 @@ jobs:
           command: lint
           config: .github/helm-ct.yml
 
-  validate-chart:
-    needs: lint-chart
-    name: Validate Helm Chart
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        k8s:
-        #  - v1.15.7
-        #  - v1.16.4
-        #  - v1.17.4
-          - v1.18.1
-    steps:
-      - name: Check-out repository
-        id: repo-checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Run Kubeval for K8 v. ${{ matrix.k8s }}
-        id: kubeval-run
-        env:
-          KUBERNETES_VERSION: ${{ matrix.k8s }}
-        run: .github/kubeval.sh
-      # TODO: switch to 'instrumenta/kubeval-action' instead of running script
-      # uses: instrumenta/kubeval-action@master
-      #  with:
-      #    version: ${{ matrix.k8s }}
-      #    files: "helm/*"
-
   install-test-chart:
     needs:
       - lint-chart
-      - validate-chart
     name: Install & Test Helm Chart
     runs-on: ubuntu-18.04
     strategy:
@@ -97,7 +67,6 @@ jobs:
   validate-chart-docs:
     needs:
       - lint-chart
-      - validate-chart
       - install-test-chart
     name: Validate Helm Chart Docs
     runs-on: ubuntu-18.04
@@ -117,7 +86,6 @@ jobs:
   release-chart:
     needs:
       - lint-chart
-      - validate-chart
       - install-test-chart
       - validate-chart-docs
     name: Release Helm Chart
