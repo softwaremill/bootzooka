@@ -1,0 +1,33 @@
+version: '3'
+services:
+  bootzooka:
+    image: 'softwaremill/bootzooka:latest'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - bootzooka-db
+      - bootzooka-mailhog
+    environment:
+      SQL_USERNAME: 'postgres'
+      SQL_PASSWORD: 'b00t200k4'
+      SQL_DBNAME: 'bootzooka'
+      SQL_HOST: 'bootzooka-db'
+      SQL_PORT: '5432'
+      API_HOST: '0.0.0.0'
+      SMTP_ENABLED: 'true'
+      SMTP_HOST: 'bootzooka-mailhog'
+      SMTP_PORT: '1025'
+  bootzooka-db:
+    image: 'postgres'
+    ports:
+      - '25432:5432'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'b00t200k4'
+      POSTGRES_DB: 'bootzooka'
+  bootzooka-mailhog:
+    image: 'mailhog/mailhog'
+    ports:
+      - '11025:1025'
+      - '18025:8025'
+
