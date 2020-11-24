@@ -3,6 +3,6 @@ chart-dirs:
   - helm
 chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami
-debug: true
+debug: false
 helm-extra-args: --timeout 600s
 check-version-increment: false

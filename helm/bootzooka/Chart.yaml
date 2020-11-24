@@ -18,7 +18,7 @@ maintainers:
    url: https://github.com/tomusheq
  - name: ideas-into-software
    url: https://github.com/ideas-into-software
-icon: https://raw.githubusercontent.com/softwaremill/bootzooka/master/banner.svg
+icon: https://raw.githubusercontent.com/softwaremill/bootzooka/master/banner.png
 dependencies:
  - name: postgresql
    version: ^9
