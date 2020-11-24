@@ -2,17 +2,36 @@ apiVersion: v2
 appVersion: "1.0"
 description: "A Helm chart for Bootzooka"
 name: bootzooka
-version: 0.1.1
+version: 0.1.2
 type: application
-home: https://github.com/softwaremill/bootzooka
+keywords:
+ - scala
+ - microservice
+ - postgresql
+ - angular
+ - bootstrap
+home: https://softwaremill.github.io/bootzooka/
+sources:
+  - https://github.com/softwaremill/bootzooka
 maintainers:
   - name: tomusheq
     url: https://github.com/tomusheq
   - name: ideas-into-software
     url: https://github.com/ideas-into-software
-icon: https://raw.githubusercontent.com/softwaremill/bootzooka/master/banner.png
+icon: https://raw.githubusercontent.com/softwaremill/bootzooka/master/banner.svg
 dependencies:
   - name: postgresql
     version: ^9
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
+
+annotations:
+  artifacthub.io/links: |
+    - name: Docs
+      url: https://softwaremill.github.io/bootzooka/
+    - name: Source
+      url: https://github.com/softwaremill/bootzooka
+    - name: Demo
+      url: https://bootzooka.softwaremill.com/
+    - name: Home
+      url: https://softwaremill.com/
