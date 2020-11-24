@@ -12,19 +12,18 @@ keywords:
  - bootstrap
 home: https://softwaremill.github.io/bootzooka/
 sources:
-  - https://github.com/softwaremill/bootzooka
+ - https://github.com/softwaremill/bootzooka
 maintainers:
-  - name: tomusheq
-    url: https://github.com/tomusheq
-  - name: ideas-into-software
-    url: https://github.com/ideas-into-software
+ - name: tomusheq
+   url: https://github.com/tomusheq
+ - name: ideas-into-software
+   url: https://github.com/ideas-into-software
 icon: https://raw.githubusercontent.com/softwaremill/bootzooka/master/banner.svg
 dependencies:
-  - name: postgresql
-    version: ^9
-    repository: https://charts.bitnami.com/bitnami
-    condition: postgresql.enabled
-
+ - name: postgresql
+   version: ^9
+   repository: https://charts.bitnami.com/bitnami
+   condition: postgresql.enabled
 annotations:
   artifacthub.io/links: |
     - name: Docs
