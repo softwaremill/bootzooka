@@ -25,12 +25,12 @@ dependencies:
    repository: https://charts.bitnami.com/bitnami
    condition: postgresql.enabled
 annotations:
-  artifacthub.io/links: |
-    - name: Docs
-      url: https://softwaremill.github.io/bootzooka/
-    - name: Source
-      url: https://github.com/softwaremill/bootzooka
-    - name: Demo
-      url: https://bootzooka.softwaremill.com/
-    - name: Home
-      url: https://softwaremill.com/
+ artifacthub.io/links: |
+  - name: Docs
+    url: https://softwaremill.github.io/bootzooka/
+  - name: Source
+    url: https://github.com/softwaremill/bootzooka
+  - name: Demo
+    url: https://bootzooka.softwaremill.com/
+  - name: Home
+    url: https://softwaremill.com/
