@@ -1,0 +1,41 @@
+name: Bootzooka CI
+
+on:
+  push:
+    paths-ignore:
+      - "helm/**"
+  pull_request:
+    paths-ignore:
+      - "helm/**"
+
+jobs:
+  scala-ts-tests:
+    # run on external PRs, but not on internal PRs since those will be run by push to branch
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    name: Scala and TypeScript testing
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Check-out repository
+      id: repo-checkout
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 11
+      id: jdk-setup
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Cache SBT
+      id: cache-sbt
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.sbt
+          ~/.ivy2/cache
+          ~/.coursier
+        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+
+    - name: Run tests
+      id: run-tests
+      run: sbt test

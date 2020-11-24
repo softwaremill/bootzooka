@@ -1,0 +1,34 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+## Installation
+
+### Add Helm repository
+
+```
+helm repo add softwaremill https://charts.softwaremill.com/
+helm repo update
+```
+
+## Fetch and Customize Bootzooka chart
+```
+helm fetch softwaremill/bootzooka --untar
+```
+
+## Install Bootzooka chart
+
+```
+helm install --generate-name bootzooka
+```
+
+## Configuration
+
+The following table lists the configurable parameters of the chart and the default values.
+
+{{ template "chart.valuesSection" . }}

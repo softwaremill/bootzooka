@@ -1,7 +1,7 @@
 # Default values for Bootzooka.
 
 postgresql:
-  # disable if you already have PostgreSQL running in cluster where Bootzooka chart is being deployed
+  # -- Disable if you already have PostgreSQL running in cluster where Bootzooka chart is being deployed
   enabled: true
   fullnameOverride: "bootzooka-pgsql-postgresql"
   postgresqlUsername: "postgres"
@@ -19,10 +19,15 @@ bootzooka:
   replicaCount: 1
   reset_password_url: "https://bootzooka.example.com/password-reset?code=%s"
   sql:
+    # -- Value will be taken from 'postgresql.fullnameOverride' setting
     host: '{{ .Values.postgresql.fullnameOverride }}'
+    # -- Value will be taken from 'postgresql.service.port' setting
     port: '{{ .Values.postgresql.service.port }}'
+    # -- Value will be taken from 'postgresql.postgresqlUsername' setting
     username: '{{ .Values.postgresql.postgresqlUsername }}'
+    # -- Value will be taken from 'postgresql.postgresqlDatabase' setting
     name: '{{ .Values.postgresql.postgresqlDatabase }}'
+    # -- Value will be taken from 'postgresql.postgresqlPassword' setting
     password: '{{ .Values.postgresql.postgresqlPassword }}'
   smtp:
     enabled: true
