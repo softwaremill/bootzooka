@@ -2,7 +2,7 @@
 
 [See the docs](http://softwaremill.github.io/bootzooka/) for more information.
 
-[![ CI ](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20tests/badge.svg)](https://github.com/softwaremill/bootzooka/actions?query=workflow%3A%22Bootzooka+tests%22)
+[![ CI ](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20CI/badge.svg)](https://github.com/softwaremill/bootzooka/actions?query=workflow%3A%22Bootzooka+CI%22)
 
 ## Quick start
 
