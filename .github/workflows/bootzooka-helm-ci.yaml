@@ -79,7 +79,7 @@ jobs:
 
       - name: Run helm-docs
         id: helm-docs-run
-        uses: ideas-into-software/helm-docs-action@main
+        uses: softwaremill/helm-docs-action@main
 
       - name: Validate there's no diff
         id: git-no-diff
