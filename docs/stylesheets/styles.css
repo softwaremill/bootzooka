@@ -2,8 +2,10 @@
 
 body {
   padding:50px;
-  font:14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color:#777;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgb(23, 23, 23);
   font-weight:300;
 }
 
@@ -58,9 +60,9 @@ blockquote {
 }
 
 code, pre {
-  font-family:Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
+  font-family: Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal, sans-serif;
   color:#333;
-  font-size:12px;
+  font-size:13px;
 }
 
 pre {
