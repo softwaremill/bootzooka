@@ -14,9 +14,13 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
     extends EmailScheduler
     with StrictLogging {
 
-  def apply(data: EmailData): ConnectionIO[Unit] = {
+  def apply(data: EmailData): Task[ConnectionIO[Unit]] = {
     logger.debug(s"Scheduling email to be sent to: ${data.recipient}")
-    emailModel.insert(Email(idGenerator.nextId(), data))
+
+    for {
+      id <- idGenerator.nextId()
+    } yield emailModel.insert(Email(id, data))
+
   }
 
   def sendBatch(): Task[Unit] = {
@@ -55,5 +59,5 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
 }
 
 trait EmailScheduler {
-  def apply(data: EmailData): ConnectionIO[Unit]
+  def apply(data: EmailData): Task[ConnectionIO[Unit]]
 }

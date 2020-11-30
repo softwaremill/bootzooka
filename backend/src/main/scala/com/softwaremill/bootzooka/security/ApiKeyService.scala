@@ -8,18 +8,22 @@ import com.softwaremill.tagging.@@
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util.{Id, IdGenerator}
 import com.typesafe.scalalogging.StrictLogging
+import monix.eval.Task
 
 import scala.concurrent.duration.Duration
 
 class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: Clock) extends StrictLogging {
 
-  def create(userId: Id @@ User, valid: Duration): ConnectionIO[ApiKey] = {
+  def create(userId: Id @@ User, valid: Duration): Task[ConnectionIO[ApiKey]] = {
     val now = clock.instant()
     val validUntil = now.plus(valid.toMinutes, ChronoUnit.MINUTES)
-    val apiKey = ApiKey(idGenerator.nextId[ApiKey](), userId, now, validUntil)
+    for {
+      id <- idGenerator.nextId[ApiKey]()
+      apiKey = ApiKey(id, userId, now, validUntil)
+      _ = logger.debug(s"Creating a new api key for user $userId, valid until: $validUntil")
 
-    logger.debug(s"Creating a new api key for user $userId, valid until: $validUntil")
-    apiKeyModel.insert(apiKey).map(_ => apiKey)
+    } yield apiKeyModel.insert(apiKey).map(_ => apiKey)
+
   }
 }
 

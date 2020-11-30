@@ -3,14 +3,16 @@ package com.softwaremill.bootzooka.user
 import java.time.Clock
 
 import cats.implicits._
-import com.softwaremill.bootzooka._
-import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
+import com.softwaremill.bootzooka.{user, _}
+import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
 import tsec.common.Verified
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util._
+import monix.eval.Task
+import monix.execution.Scheduler.Implicits.global
 
 import scala.concurrent.duration.Duration
 
@@ -41,16 +43,21 @@ class UserService(
         failIfDefined(userModel.findByEmail(email.lowerCased), EmailAlreadyUsed)
     }
 
-    def doRegister(): ConnectionIO[ApiKey] = {
-      val user = User(idGenerator.nextId[User](), login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.instant())
-      val confirmationEmail = emailTemplates.registrationConfirmation(login)
+    def doRegister(): Task[ConnectionIO[ApiKey]] = {
+      val value: Task[(User, EmailSubjectContent)] = for {
+        id <- idGenerator.nextId[User]()
+        user = User(id, login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.instant())
+        confirmationEmail = emailTemplates.registrationConfirmation(login)
+        _ = logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
 
-      logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
+      } yield (user, confirmationEmail)
 
       for {
-        _ <- userModel.insert(user)
-        _ <- emailScheduler(EmailData(email, confirmationEmail))
-        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
+        userConfirmationTuple <- value
+        _ = userModel.insert(userConfirmationTuple._1)
+        _ = emailScheduler(EmailData(email, userConfirmationTuple._2))
+        apiKey <- apiKeyService.create(userConfirmationTuple._1.id, config.defaultApiKeyValid)
+
       } yield apiKey
     }
 
@@ -58,9 +65,9 @@ class UserService(
       _ <- UserRegisterValidator
         .validate(login, email, password)
         .fold(msg => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit], _ => ().pure[ConnectionIO])
-      _ <- checkUserDoesNotExist()
-      apiKey <- doRegister()
-    } yield apiKey
+      _ = checkUserDoesNotExist()
+      task <- doRegister()
+    } yield task
   }
 
   def findById(id: Id @@ User): ConnectionIO[User] = userOrNotFound(userModel.findById(id))
