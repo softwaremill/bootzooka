@@ -4,7 +4,6 @@ import java.time.Clock
 import java.time.temporal.ChronoUnit
 
 import cats.implicits._
-import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.Auth
@@ -12,6 +11,8 @@ import com.softwaremill.bootzooka.user.{User, UserModel}
 import com.softwaremill.bootzooka.util._
 import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
+import monix.execution.Scheduler.Implicits.global
+
 
 class PasswordResetService(
     userModel: UserModel,
@@ -38,8 +39,11 @@ class PasswordResetService(
   private def createCode(user: User): ConnectionIO[PasswordResetCode] = {
     logger.debug(s"Creating password reset code for user: ${user.id}")
     val validUntil = clock.instant().plus(config.codeValid.toMinutes, ChronoUnit.MINUTES)
-    val code = PasswordResetCode(idGenerator.nextId[PasswordResetCode](), user.id, validUntil)
-    passwordResetCodeModel.insert(code).map(_ => code)
+    for {
+      id <- idGenerator.nextId[PasswordResetCode]().to[ConnectionIO]
+      passwordResetCode = PasswordResetCode(id, user.id, validUntil)
+      connection <- passwordResetCodeModel.insert(passwordResetCode).map(_ => passwordResetCode)
+    } yield connection
   }
 
   private def sendCode(user: User, code: PasswordResetCode): ConnectionIO[Unit] = {

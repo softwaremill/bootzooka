@@ -11,6 +11,7 @@ import com.typesafe.scalalogging.StrictLogging
 import tsec.common.Verified
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util._
+import monix.execution.Scheduler.Implicits.global
 
 import scala.concurrent.duration.Duration
 
@@ -42,12 +43,11 @@ class UserService(
     }
 
     def doRegister(): ConnectionIO[ApiKey] = {
-      val user = User(idGenerator.nextId[User](), login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.instant())
-      val confirmationEmail = emailTemplates.registrationConfirmation(login)
-
-      logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
-
       for {
+        id <- idGenerator.nextId[User]().to[ConnectionIO]
+        user = User(id, login, login.lowerCased, email.lowerCased, User.hashPassword(password), clock.instant())
+        confirmationEmail = emailTemplates.registrationConfirmation(login)
+        _ = logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
         _ <- userModel.insert(user)
         _ <- emailScheduler(EmailData(email, confirmationEmail))
         apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
