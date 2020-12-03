@@ -48,7 +48,7 @@ class PasswordResetService(
     logger.debug(s"Scheduling e-mail with reset code for user: ${user.id}")
     for {
       mail <- prepareResetEmail(user, code).to[ConnectionIO]
-      conn <- emailScheduler(EmailData(user.emailLowerCased, mail)).to[ConnectionIO]
+      conn <- emailScheduler(EmailData(user.emailLowerCased, mail))
     } yield conn
   }
 

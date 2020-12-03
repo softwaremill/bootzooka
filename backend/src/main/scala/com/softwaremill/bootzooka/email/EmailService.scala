@@ -6,6 +6,7 @@ import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator
 import com.typesafe.scalalogging.StrictLogging
+import monix.execution.Scheduler.Implicits.global
 
 /**
   * Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches.
@@ -14,13 +15,9 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
     extends EmailScheduler
     with StrictLogging {
 
-  def apply(data: EmailData): Task[ConnectionIO[Unit]] = {
+  def apply(data: EmailData): ConnectionIO[Unit] = {
     logger.debug(s"Scheduling email to be sent to: ${data.recipient}")
-
-    for {
-      id <- idGenerator.nextId()
-    } yield emailModel.insert(Email(id, data))
-
+    idGenerator.nextId().to[ConnectionIO].flatMap(id => emailModel.insert(Email(id, data)))
   }
 
   def sendBatch(): Task[Unit] = {
@@ -59,5 +56,5 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
 }
 
 trait EmailScheduler {
-  def apply(data: EmailData): Task[ConnectionIO[Unit]]
+  def apply(data: EmailData): ConnectionIO[Unit]
 }

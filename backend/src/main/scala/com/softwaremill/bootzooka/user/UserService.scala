@@ -53,8 +53,8 @@ class UserService(
 
       for {
         mailAndUserTuple <- mailAndUserTask
-        _ = userModel.insert(mailAndUserTuple._1)
-        _ = emailScheduler(EmailData(email, mailAndUserTuple._2)).to[ConnectionIO]
+        _ <- userModel.insert(mailAndUserTuple._1)
+        _ <- emailScheduler(EmailData(email, mailAndUserTuple._2))
         apiKey <- apiKeyService.create(mailAndUserTuple._1.id, config.defaultApiKeyValid)
       } yield apiKey
 
