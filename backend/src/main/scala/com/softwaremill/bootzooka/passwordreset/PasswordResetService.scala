@@ -48,17 +48,12 @@ class PasswordResetService(
 
   private def sendCode(user: User, code: PasswordResetCode): ConnectionIO[Unit] = {
     logger.debug(s"Scheduling e-mail with reset code for user: ${user.id}")
-    for {
-      mail <- prepareResetEmail(user, code).to[ConnectionIO]
-      conn <- emailScheduler(EmailData(user.emailLowerCased, mail))
-    } yield conn
+    emailScheduler(EmailData(user.emailLowerCased, prepareResetEmail(user, code)))
   }
 
-  private def prepareResetEmail(user: User, code: PasswordResetCode): Task[EmailSubjectContent] = {
-    Task {
-      val resetLink = String.format(config.resetLinkPattern, code.id)
-      emailTemplates.passwordReset(user.login, resetLink)
-    }
+  private def prepareResetEmail(user: User, code: PasswordResetCode): EmailSubjectContent = {
+    val resetLink = String.format(config.resetLinkPattern, code.id)
+    emailTemplates.passwordReset(user.login, resetLink)
   }
 
   def resetPassword(code: String, newPassword: String): Task[Unit] = {
