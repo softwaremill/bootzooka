@@ -28,7 +28,9 @@ class PasswordResetService(
 
   def forgotPassword(loginOrEmail: String): ConnectionIO[Unit] = {
     userModel.findByLoginOrEmail(loginOrEmail.lowerCased).flatMap {
-      case None => ().pure[ConnectionIO]
+      case None =>
+        logger.debug(s"Could not find user with $loginOrEmail login/email")
+        ().pure[ConnectionIO]
       case Some(user) =>
         createCode(user).flatMap(sendCode(user, _))
     }
