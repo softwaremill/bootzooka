@@ -1,27 +1,32 @@
 package com.softwaremill.bootzooka.test
 
-import java.time.temporal.ChronoUnit
-import java.time.{Clock, Instant, ZoneId}
-import java.util.concurrent.atomic.AtomicReference
+import java.time.Instant
 
+import cats.effect.Clock
+import cats.effect.laws.util.TestContext
 import com.typesafe.scalalogging.StrictLogging
+import monix.eval.Task
+import monix.execution.Scheduler.Implicits.global
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{Duration, FiniteDuration, MILLISECONDS}
 
-class TestClock(nowRef: AtomicReference[Instant]) extends Clock with StrictLogging {
+class TestClock extends StrictLogging {
 
-  logger.info(s"New test clock, the time is: ${nowRef.get()}")
+  implicit lazy val ec: TestContext = TestContext.apply()
+  implicit lazy val clock: Clock[Task] = ec.timer[Task].clock
 
-  def this(now: Instant) = this(new AtomicReference(now))
-  def this() = this(Instant.now())
-
-  override def getZone: ZoneId = ZoneId.systemDefault()
-  override def withZone(zone: ZoneId): Clock = this
-  override def instant(): Instant = nowRef.get()
+  logger.info(s"New test clock, the time is: ${now().runToFuture}")
 
   def forward(d: Duration): Unit = {
-    val newNow = nowRef.get().plus(d.toMillis, ChronoUnit.MILLIS)
-    logger.info(s"The time is now $newNow")
-    nowRef.set(newNow)
+    ec.tick(FiniteDuration(d.toMillis, MILLISECONDS))
+    val newNow = clock.realTime(MILLISECONDS)
+    newNow.foreach(t => logger.info(s"The time is now ${Instant.ofEpochMilli(t)}") )
+  }
+
+  def now(): Task[Instant] = {
+    for {
+      now <- clock.realTime(MILLISECONDS)
+      instant = Instant.ofEpochMilli(now)
+    } yield instant
   }
 }

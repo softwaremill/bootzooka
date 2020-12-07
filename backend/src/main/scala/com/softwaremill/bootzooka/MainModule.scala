@@ -1,8 +1,7 @@
 package com.softwaremill.bootzooka
 
-import java.time.Clock
-
 import cats.data.NonEmptyList
+import cats.effect.{Clock, IO}
 import com.softwaremill.bootzooka.email.EmailModule
 import com.softwaremill.bootzooka.http.{Http, HttpApi}
 import com.softwaremill.bootzooka.infrastructure.InfrastructureModule
@@ -25,7 +24,7 @@ trait MainModule
     with InfrastructureModule {
 
   override lazy val idGenerator: IdGenerator = DefaultIdGenerator
-  override lazy val clock: Clock = Clock.systemUTC()
+  override lazy val clock: Clock[Task] = Clock.create
 
   lazy val http: Http = new Http()
 
