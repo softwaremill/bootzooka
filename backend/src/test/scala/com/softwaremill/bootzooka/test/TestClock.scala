@@ -1,27 +1,30 @@
 package com.softwaremill.bootzooka.test
 
-import java.time.temporal.ChronoUnit
-import java.time.{Clock, Instant, ZoneId}
-import java.util.concurrent.atomic.AtomicReference
+import java.time.Instant
 
+import cats.effect.laws.util.TestContext
+import cats.effect.{Clock, IO}
 import com.typesafe.scalalogging.StrictLogging
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{Duration, FiniteDuration, MILLISECONDS}
 
-class TestClock(nowRef: AtomicReference[Instant]) extends Clock with StrictLogging {
+class TestClock extends StrictLogging {
 
-  logger.info(s"New test clock, the time is: ${nowRef.get()}")
+  implicit lazy val ec: TestContext = TestContext.apply()
+  implicit lazy val clock: Clock[IO] = ec.timer[IO].clock
 
-  def this(now: Instant) = this(new AtomicReference(now))
-  def this() = this(Instant.now())
-
-  override def getZone: ZoneId = ZoneId.systemDefault()
-  override def withZone(zone: ZoneId): Clock = this
-  override def instant(): Instant = nowRef.get()
+  logger.info(s"New test clock, the time is: ${now().unsafeRunSync()}")
 
   def forward(d: Duration): Unit = {
-    val newNow = nowRef.get().plus(d.toMillis, ChronoUnit.MILLIS)
-    logger.info(s"The time is now $newNow")
-    nowRef.set(newNow)
+    ec.tick(FiniteDuration(d.toMillis, MILLISECONDS))
+    val newNow = clock.realTime(MILLISECONDS)
+    newNow.flatMap(t => IO { logger.info(s"The time is now ${Instant.ofEpochMilli(t)}") }).unsafeRunSync()
+  }
+
+  def now(): IO[Instant] = {
+    for {
+      now <- clock.realTime(MILLISECONDS)
+      instant = Instant.ofEpochMilli(now)
+    } yield instant
   }
 }

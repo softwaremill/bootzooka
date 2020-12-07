@@ -1,11 +1,10 @@
 package com.softwaremill.bootzooka.util
 
-import java.time.Clock
-
+import cats.effect.{Clock, IO}
 import com.softwaremill.bootzooka.config.Config
 
 trait BaseModule {
   def idGenerator: IdGenerator
-  def clock: Clock
+  def clock: Clock[IO]
   def config: Config
 }

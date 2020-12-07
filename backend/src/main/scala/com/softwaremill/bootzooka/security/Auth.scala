@@ -1,10 +1,10 @@
 package com.softwaremill.bootzooka.security
 
 import java.security.SecureRandom
-import java.time.{Clock, Instant}
+import java.time.Instant
 
 import cats.data.OptionT
-import cats.effect.Timer
+import cats.effect.{Clock, IO, Timer}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka._
@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 class Auth[T](
     authTokenOps: AuthTokenOps[T],
     xa: Transactor[Task],
-    clock: Clock
+    clock: Clock[IO]
 ) extends StrictLogging {
 
   // see https://hackernoon.com/hack-how-to-use-securerandom-with-kubernetes-and-docker-a375945a7b21
@@ -46,11 +46,14 @@ class Auth[T](
   }
 
   private def verifyValid(token: T): Task[Option[Unit]] = {
-    if (clock.instant().isAfter(authTokenOps.validUntil(token))) {
-      logger.info(s"${authTokenOps.tokenName} expired: $token")
-      authTokenOps.delete(token).transact(xa).map(_ => None)
-    } else {
-      Task(Some(()))
+
+    clock.realTime(MILLISECONDS).to[Task].flatMap { time =>
+      if(Instant.ofEpochMilli(time).isAfter(authTokenOps.validUntil(token))) {
+        logger.info(s"${authTokenOps.tokenName} expired: $token")
+        authTokenOps.delete(token).transact(xa).map(_ => None)
+      } else {
+        Task(Some(()))
+      }
     }
   }
 }
