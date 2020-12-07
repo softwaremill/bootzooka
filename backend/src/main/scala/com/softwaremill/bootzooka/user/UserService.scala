@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.user
 
 import java.time.Instant
 
-import cats.effect.{Clock, IO}
+import cats.effect.Clock
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
@@ -12,6 +12,7 @@ import com.typesafe.scalalogging.StrictLogging
 import tsec.common.Verified
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util._
+import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
 
 import scala.concurrent.duration.{Duration, MILLISECONDS}
@@ -22,7 +23,7 @@ class UserService(
     emailTemplates: EmailTemplates,
     apiKeyService: ApiKeyService,
     idGenerator: IdGenerator,
-    clock: Clock[IO],
+    clock: Clock[Task],
     config: UserConfig
 ) extends StrictLogging {
 

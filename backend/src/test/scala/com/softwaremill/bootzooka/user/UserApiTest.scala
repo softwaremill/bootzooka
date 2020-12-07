@@ -1,19 +1,19 @@
 package com.softwaremill.bootzooka.user
 
-import cats.effect.{Clock, IO}
+import cats.effect.Clock
+import com.softwaremill.bootzooka.MainModule
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
-import com.softwaremill.bootzooka.MainModule
-import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
-import monix.eval.Task
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.user.UserApi.{ChangePassword_OUT, GetUser_OUT, Login_OUT, Register_OUT, UpdateUser_OUT}
+import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
+import com.softwaremill.bootzooka.user.UserApi._
+import monix.eval.Task
 import org.http4s.Status
 import org.scalatest.concurrent.Eventually
+import sttp.client3.SttpBackend
 import sttp.client3.impl.monix.TaskMonadAsyncError
 import sttp.client3.testing.SttpBackendStub
-import sttp.client3.SttpBackend
 
 import scala.concurrent.duration._
 
@@ -23,7 +23,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     override def xa: Transactor[Task] = currentDb.xa
     override lazy val baseSttpBackend: SttpBackend[Task, Any] = SttpBackendStub(TaskMonadAsyncError)
     override lazy val config: Config = TestConfig
-    override lazy val clock: Clock[IO] = testClock.clock
+    override lazy val clock: Clock[Task] = testClock.clock
   }
 
   val requests = new Requests(modules)

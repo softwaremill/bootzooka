@@ -1,9 +1,8 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 
-import cats.effect.{Clock, IO}
+import cats.effect.Clock
 import cats.implicits._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
@@ -14,7 +13,7 @@ import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
 
-import scala.concurrent.duration.{MILLISECONDS, MINUTES}
+import scala.concurrent.duration.{MILLISECONDS}
 
 
 class PasswordResetService(
@@ -25,7 +24,7 @@ class PasswordResetService(
     auth: Auth[PasswordResetCode],
     idGenerator: IdGenerator,
     config: PasswordResetConfig,
-    clock: Clock[IO],
+    clock: Clock[Task],
     xa: Transactor[Task]
 ) extends StrictLogging {
 
@@ -42,13 +41,11 @@ class PasswordResetService(
   private def createCode(user: User): ConnectionIO[PasswordResetCode] = {
     logger.debug(s"Creating password reset code for user: ${user.id}")
 
-    val validUntilIO = clock.realTime(MILLISECONDS).flatMap(value => IO {
-      Instant.ofEpochSecond(value + config.codeValid.toMillis)
-    }).to[ConnectionIO]
-
     for {
       id <- idGenerator.nextId[PasswordResetCode]().to[ConnectionIO]
-      validUntil <- validUntilIO
+      validUntil <- clock.realTime(MILLISECONDS).map { value =>
+        Instant.ofEpochSecond(value + config.codeValid.toMillis)
+      }.to[ConnectionIO]
       passwordResetCode = PasswordResetCode(id, user.id, validUntil)
       connection <- passwordResetCodeModel.insert(passwordResetCode).map(_ => passwordResetCode)
     } yield connection

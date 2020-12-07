@@ -4,21 +4,21 @@ import java.security.SecureRandom
 import java.time.Instant
 
 import cats.data.OptionT
-import cats.effect.{Clock, IO, Timer}
+import cats.effect.{Clock, Timer}
+import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.user.User
-import com.softwaremill.bootzooka._
+import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
-import com.softwaremill.bootzooka.util._
 
 import scala.concurrent.duration._
 
 class Auth[T](
     authTokenOps: AuthTokenOps[T],
     xa: Transactor[Task],
-    clock: Clock[IO]
+    clock: Clock[Task]
 ) extends StrictLogging {
 
   // see https://hackernoon.com/hack-how-to-use-securerandom-with-kubernetes-and-docker-a375945a7b21

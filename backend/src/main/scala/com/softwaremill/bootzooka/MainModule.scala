@@ -24,7 +24,7 @@ trait MainModule
     with InfrastructureModule {
 
   override lazy val idGenerator: IdGenerator = DefaultIdGenerator
-  override lazy val clock: Clock[IO] = Clock.create
+  override lazy val clock: Clock[Task] = Clock.create
 
   lazy val http: Http = new Http()
 
