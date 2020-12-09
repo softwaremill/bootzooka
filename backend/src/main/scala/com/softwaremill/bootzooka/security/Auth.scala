@@ -4,7 +4,7 @@ import java.security.SecureRandom
 import java.time.Instant
 
 import cats.data.OptionT
-import cats.effect.{Clock, Timer}
+import cats.effect.Timer
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.user.User
@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 class Auth[T](
     authTokenOps: AuthTokenOps[T],
     xa: Transactor[Task],
-    clock: Clock[Task]
+    clock: ClockProvider
 ) extends StrictLogging {
 
   // see https://hackernoon.com/hack-how-to-use-securerandom-with-kubernetes-and-docker-a375945a7b21
@@ -47,8 +47,8 @@ class Auth[T](
 
   private def verifyValid(token: T): Task[Option[Unit]] = {
 
-    clock.realTime(MILLISECONDS).flatMap { time =>
-      if(Instant.ofEpochMilli(time).isAfter(authTokenOps.validUntil(token))) {
+    clock.now().flatMap { time =>
+      if(time.isAfter(authTokenOps.validUntil(token))) {
         logger.info(s"${authTokenOps.tokenName} expired: $token")
         authTokenOps.delete(token).transact(xa).map(_ => None)
       } else {
