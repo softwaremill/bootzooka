@@ -1,30 +1,26 @@
 package com.softwaremill.bootzooka.user
 
-import java.time.Instant
-
-import cats.effect.Clock
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
+import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
+import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
-import tsec.common.Verified
-import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.util._
-import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
+import tsec.common.Verified
 
-import scala.concurrent.duration.{Duration, MILLISECONDS}
+import scala.concurrent.duration.Duration
 
 class UserService(
-    userModel: UserModel,
-    emailScheduler: EmailScheduler,
-    emailTemplates: EmailTemplates,
-    apiKeyService: ApiKeyService,
-    idGenerator: IdGenerator,
-    clock: Clock[Task],
-    config: UserConfig
+                   userModel: UserModel,
+                   emailScheduler: EmailScheduler,
+                   emailTemplates: EmailTemplates,
+                   apiKeyService: ApiKeyService,
+                   idGenerator: IdGenerator,
+                   clock: Clock,
+                   config: UserConfig
 ) extends StrictLogging {
 
   private val LoginAlreadyUsed = "Login already in use!"
@@ -47,9 +43,8 @@ class UserService(
     def doRegister(): ConnectionIO[ApiKey] = {
       for {
         id <- idGenerator.nextId[User]().to[ConnectionIO]
-        now <- clock.realTime(MILLISECONDS).to[ConnectionIO]
-        nowInstant = Instant.ofEpochMilli(now)
-        user = User(id, login, login.lowerCased, email.lowerCased, User.hashPassword(password), nowInstant)
+        now <- clock.now().to[ConnectionIO]
+        user = User(id, login, login.lowerCased, email.lowerCased, User.hashPassword(password), now)
         confirmationEmail = emailTemplates.registrationConfirmation(login)
         _ = logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
         _ <- userModel.insert(user)

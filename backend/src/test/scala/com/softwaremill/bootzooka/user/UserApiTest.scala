@@ -1,6 +1,5 @@
 package com.softwaremill.bootzooka.user
 
-import cats.effect.Clock
 import com.softwaremill.bootzooka.MainModule
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
@@ -8,6 +7,7 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
 import com.softwaremill.bootzooka.user.UserApi._
+import com.softwaremill.bootzooka.util.Clock
 import monix.eval.Task
 import org.http4s.Status
 import org.scalatest.concurrent.Eventually
@@ -23,7 +23,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     override def xa: Transactor[Task] = currentDb.xa
     override lazy val baseSttpBackend: SttpBackend[Task, Any] = SttpBackendStub(TaskMonadAsyncError)
     override lazy val config: Config = TestConfig
-    override lazy val clock: Clock[Task] = testClock.clock
+    override lazy val clock: Clock = testClock
   }
 
   val requests = new Requests(modules)

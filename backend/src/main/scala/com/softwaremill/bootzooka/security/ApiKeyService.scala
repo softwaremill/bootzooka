@@ -3,24 +3,22 @@ package com.softwaremill.bootzooka.security
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-import cats.effect.Clock
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.user.User
-import com.softwaremill.bootzooka.util.{Id, IdGenerator}
+import com.softwaremill.bootzooka.util.{Clock, Id, IdGenerator}
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
-import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
 
-import scala.concurrent.duration.{Duration, MILLISECONDS}
+import scala.concurrent.duration.Duration
 
-class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: Clock[Task]) extends StrictLogging {
+class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: Clock) extends StrictLogging {
 
   def create(userId: Id @@ User, valid: Duration): ConnectionIO[ApiKey] = {
 
     for {
       id <- idGenerator.nextId[ApiKey]().to[ConnectionIO]
-      now <- clock.realTime(MILLISECONDS).map(Instant.ofEpochMilli(_)).to[ConnectionIO]
+      now <- clock.now().to[ConnectionIO]
       validUntil = now.plus(valid.toMillis, ChronoUnit.MILLIS)
       apiKey = ApiKey(id, userId, now, validUntil)
       _ = logger.debug(s"Creating a new api key for user $userId, valid until: $validUntil")
