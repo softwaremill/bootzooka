@@ -14,13 +14,13 @@ import tsec.common.Verified
 import scala.concurrent.duration.Duration
 
 class UserService(
-    userModel: UserModel,
-    emailScheduler: EmailScheduler,
-    emailTemplates: EmailTemplates,
-    apiKeyService: ApiKeyService,
-    idGenerator: IdGenerator,
-    clock: ClockProvider,
-    config: UserConfig
+                   userModel: UserModel,
+                   emailScheduler: EmailScheduler,
+                   emailTemplates: EmailTemplates,
+                   apiKeyService: ApiKeyService,
+                   idGenerator: IdGenerator,
+                   clock: Clock,
+                   config: UserConfig
 ) extends StrictLogging {
 
   private val LoginAlreadyUsed = "Login already in use!"

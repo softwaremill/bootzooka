@@ -8,7 +8,7 @@ import com.softwaremill.bootzooka.metrics.MetricsModule
 import com.softwaremill.bootzooka.passwordreset.PasswordResetModule
 import com.softwaremill.bootzooka.security.SecurityModule
 import com.softwaremill.bootzooka.user.UserModule
-import com.softwaremill.bootzooka.util.{ClockProvider, DefaultIdGenerator, IdGenerator, ServerEndpoints, DefaultClock}
+import com.softwaremill.bootzooka.util.{Clock, DefaultIdGenerator, IdGenerator, ServerEndpoints, DefaultClock}
 import monix.eval.Task
 
 /**
@@ -23,7 +23,7 @@ trait MainModule
     with InfrastructureModule {
 
   override lazy val idGenerator: IdGenerator = DefaultIdGenerator
-  override lazy val clock: ClockProvider = DefaultClock
+  override lazy val clock: Clock = DefaultClock
 
   lazy val http: Http = new Http()
 

@@ -4,6 +4,6 @@ import java.time.Instant
 
 import monix.eval.Task
 
-trait ClockProvider {
+trait Clock {
   def now(): Task[Instant]
 }

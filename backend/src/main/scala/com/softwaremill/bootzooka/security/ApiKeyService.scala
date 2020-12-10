@@ -5,14 +5,14 @@ import java.time.temporal.ChronoUnit
 
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.user.User
-import com.softwaremill.bootzooka.util.{ClockProvider, Id, IdGenerator}
+import com.softwaremill.bootzooka.util.{Clock, Id, IdGenerator}
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
 import monix.execution.Scheduler.Implicits.global
 
 import scala.concurrent.duration.Duration
 
-class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: ClockProvider) extends StrictLogging {
+class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: Clock) extends StrictLogging {
 
   def create(userId: Id @@ User, valid: Duration): ConnectionIO[ApiKey] = {
 

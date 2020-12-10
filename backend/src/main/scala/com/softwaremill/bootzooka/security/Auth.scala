@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 class Auth[T](
     authTokenOps: AuthTokenOps[T],
     xa: Transactor[Task],
-    clock: ClockProvider
+    clock: Clock
 ) extends StrictLogging {
 
   // see https://hackernoon.com/hack-how-to-use-securerandom-with-kubernetes-and-docker-a375945a7b21

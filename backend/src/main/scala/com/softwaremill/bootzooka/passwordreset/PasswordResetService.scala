@@ -12,15 +12,15 @@ import monix.execution.Scheduler.Implicits.global
 
 
 class PasswordResetService(
-    userModel: UserModel,
-    passwordResetCodeModel: PasswordResetCodeModel,
-    emailScheduler: EmailScheduler,
-    emailTemplates: EmailTemplates,
-    auth: Auth[PasswordResetCode],
-    idGenerator: IdGenerator,
-    config: PasswordResetConfig,
-    clock: ClockProvider,
-    xa: Transactor[Task]
+                            userModel: UserModel,
+                            passwordResetCodeModel: PasswordResetCodeModel,
+                            emailScheduler: EmailScheduler,
+                            emailTemplates: EmailTemplates,
+                            auth: Auth[PasswordResetCode],
+                            idGenerator: IdGenerator,
+                            config: PasswordResetConfig,
+                            clock: Clock,
+                            xa: Transactor[Task]
 ) extends StrictLogging {
 
   def forgotPassword(loginOrEmail: String): ConnectionIO[Unit] = {

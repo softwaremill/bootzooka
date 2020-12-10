@@ -2,14 +2,14 @@ package com.softwaremill.bootzooka.util
 
 import java.time.Instant
 
-import cats.effect.Clock
+import cats.effect.{Clock => CatsClock}
 import monix.eval.Task
 
 import scala.concurrent.duration.MILLISECONDS
 
-object DefaultClock extends ClockProvider {
+object DefaultClock extends Clock {
 
-  val clock: Clock[Task] = Clock.create
+  val clock: CatsClock[Task] = CatsClock.create
 
   override def now(): Task[Instant] = {
     for {
