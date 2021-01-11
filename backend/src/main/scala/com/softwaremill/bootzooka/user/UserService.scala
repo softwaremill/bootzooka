@@ -72,29 +72,47 @@ class UserService(
     } yield apiKey
 
   def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
-    def changeLogin(newLogin: String): ConnectionIO[Unit] = {
+    def changeLogin(newLogin: String): ConnectionIO[Boolean] = {
       val newLoginLowerCased = newLogin.lowerCased
       userModel.findByLogin(newLoginLowerCased).flatMap {
-        case Some(user) if user.id != userId => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Unit]
-        case Some(user) if user.login == newLogin => ().pure[ConnectionIO]
+        case Some(user) if user.id != userId => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Boolean]
+        case Some(user) if user.login == newLogin => false.pure[ConnectionIO]
         case _ =>
           logger.debug(s"Changing login for user: $userId, to: $newLogin")
-          userModel.updateLogin(userId, newLogin, newLoginLowerCased)
+          userModel.updateLogin(userId, newLogin, newLoginLowerCased).map(_ => true)
       }
     }
 
-    def changeEmail(newEmail: String): ConnectionIO[Unit] = {
+    def changeEmail(newEmail: String): ConnectionIO[Boolean] = {
       val newEmailLowerCased = newEmail.lowerCased
       userModel.findByEmail(newEmailLowerCased).flatMap {
-        case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Unit]
-        case Some(user) if user.emailLowerCased == newEmailLowerCased => ().pure[ConnectionIO]
+        case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Boolean]
+        case Some(user) if user.emailLowerCased == newEmailLowerCased => false.pure[ConnectionIO]
         case _ =>
           logger.debug(s"Changing email for user: $userId, to: $newEmail")
-          userModel.updateEmail(userId, newEmailLowerCased)
+          userModel.updateEmail(userId, newEmailLowerCased).map(_ => true)
       }
     }
 
-    changeLogin(newLogin) >> changeEmail(newEmail)
+    def doChange(newLogin: String, newEmail: String): ConnectionIO[Boolean] = {
+      for {
+        loginUpdated <- changeLogin(newLogin)
+        emailUpdated <- changeEmail(newEmail)
+      } yield loginUpdated || emailUpdated
+    }
+
+    def sendMail(user: User) = {
+      val confirmationEmail = emailTemplates.profileDetailsChangeNotification(user.login)
+      emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
+    }
+
+    doChange(newLogin, newEmail) flatMap { anyUpdate =>
+      if (anyUpdate) {
+        findById(userId).flatMap(user => sendMail(user))
+      } else {
+        ().pure[ConnectionIO]
+      }
+    }
   }
 
   def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] =
@@ -103,6 +121,8 @@ class UserService(
       _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
       _ = logger.debug(s"Changing password for user: $userId")
       _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
+      confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
+      _ <- emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
     } yield ()
 
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {
