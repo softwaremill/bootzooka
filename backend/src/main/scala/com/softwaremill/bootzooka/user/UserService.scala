@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.user
 
-import cats.{ApplicativeError, Monad}
+import cats.MonadError
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
@@ -15,13 +15,13 @@ import tsec.common.Verified
 import scala.concurrent.duration.Duration
 
 class UserService(
-                   userModel: UserModel,
-                   emailScheduler: EmailScheduler,
-                   emailTemplates: EmailTemplates,
-                   apiKeyService: ApiKeyService,
-                   idGenerator: IdGenerator,
-                   clock: Clock,
-                   config: UserConfig
+    userModel: UserModel,
+    emailScheduler: EmailScheduler,
+    emailTemplates: EmailTemplates,
+    apiKeyService: ApiKeyService,
+    idGenerator: IdGenerator,
+    clock: Clock,
+    config: UserConfig
 ) extends StrictLogging {
 
   private val LoginAlreadyUsed = "Login already in use!"
@@ -74,7 +74,7 @@ class UserService(
     def changeLogin(newLogin: String): ConnectionIO[Boolean] = {
       val newLoginLowerCased = newLogin.lowerCased
       userModel.findByLogin(newLoginLowerCased).flatMap {
-        case Some(user) if user.id != userId => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Boolean]
+        case Some(user) if user.id != userId      => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Boolean]
         case Some(user) if user.login == newLogin => false.pure[ConnectionIO]
         case _ =>
           for {
@@ -91,7 +91,7 @@ class UserService(
     def changeEmail(newEmail: String): ConnectionIO[Boolean] = {
       val newEmailLowerCased = newEmail.lowerCased
       userModel.findByEmail(newEmailLowerCased).flatMap {
-        case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Boolean]
+        case Some(user) if user.id != userId                          => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Boolean]
         case Some(user) if user.emailLowerCased == newEmailLowerCased => false.pure[ConnectionIO]
         case _ =>
           for {
@@ -174,8 +174,8 @@ case class UserValidator(loginOpt: Option[String], emailOpt: Option[String], pas
     } yield ()
   }
 
-  def as[F[_]: Monad](implicit G: ApplicativeError[F, _ >: Fail]): F[Unit] =
-    result.fold(msg => Fail.IncorrectInput(msg).raiseError[F, Unit](G), _ => ().pure[F](G))
+  def as[F[_]](implicit me: MonadError[F, Throwable]): F[Unit] =
+    result.fold(msg => Fail.IncorrectInput(msg).raiseError[F, Unit], _ => ().pure[F])
 
   private def validateLogin(loginOpt: Option[String]): Either[String, Unit] =
     loginOpt.map(_.trim) match {
