@@ -1,0 +1,4 @@
+SoftwareMill Bootzooka profile details change notification
+Dear {{userName}},
+
+Your user name and/or email has been changed.
