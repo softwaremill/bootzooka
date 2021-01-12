@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.user
 
+import cats.{ApplicativeError, Monad}
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
@@ -54,7 +55,7 @@ class UserService(
     }
 
     for {
-      _ <- UserValidator(Some(login), Some(email), Some(password)).asTask()
+      _ <- UserValidator(Some(login), Some(email), Some(password)).as[ConnectionIO]
       _ <- checkUserDoesNotExist()
       apiKey <- doRegister()
     } yield apiKey
@@ -85,7 +86,7 @@ class UserService(
     }
 
     def validateLogin(newLogin: String) =
-      UserValidator(Some(newLogin), None, None).asTask()
+      UserValidator(Some(newLogin), None, None).as[ConnectionIO]
 
     def changeEmail(newEmail: String): ConnectionIO[Boolean] = {
       val newEmailLowerCased = newEmail.lowerCased
@@ -102,7 +103,7 @@ class UserService(
     }
 
     def validateEmail(newEmailLowerCased: String) =
-      UserValidator(None, Some(newEmailLowerCased), None).asTask()
+      UserValidator(None, Some(newEmailLowerCased), None).as[ConnectionIO]
 
     def doChange(newLogin: String, newEmail: String): ConnectionIO[Boolean] = {
       for {
@@ -152,7 +153,7 @@ class UserService(
   }
 
   private def validatePassword(password: String) =
-    UserValidator(None, None, Some(password)).asTask()
+    UserValidator(None, None, Some(password)).as[ConnectionIO]
 }
 
 object UserValidator {
@@ -173,8 +174,8 @@ case class UserValidator(loginOpt: Option[String], emailOpt: Option[String], pas
     } yield ()
   }
 
-  def asTask(): ConnectionIO[Unit] =
-    result.fold(msg => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit], _ => ().pure[ConnectionIO])
+  def as[F[_]: Monad](implicit G: ApplicativeError[F, _ >: Fail]): F[Unit] =
+    result.fold(msg => Fail.IncorrectInput(msg).raiseError[F, Unit](G), _ => ().pure[F](G))
 
   private def validateLogin(loginOpt: Option[String]): Either[String, Unit] =
     loginOpt.map(_.trim) match {
