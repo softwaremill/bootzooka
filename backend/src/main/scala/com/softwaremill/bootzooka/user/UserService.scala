@@ -54,9 +54,7 @@ class UserService(
     }
 
     for {
-      _ <- UserRegisterValidator
-        .validate(login, email, password)
-        .fold(msg => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit], _ => ().pure[ConnectionIO])
+      _ <- UserValidator(Some(login), Some(email), Some(password)).asTask()
       _ <- checkUserDoesNotExist()
       apiKey <- doRegister()
     } yield apiKey
@@ -87,9 +85,7 @@ class UserService(
     }
 
     def validateLogin(newLogin: String) =
-      UserRegisterValidator
-        .validateLogin(newLogin)
-        .fold(msg => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit], _ => ().pure[ConnectionIO])
+      UserValidator(Some(newLogin), None, None).asTask()
 
     def changeEmail(newEmail: String): ConnectionIO[Boolean] = {
       val newEmailLowerCased = newEmail.lowerCased
@@ -106,9 +102,7 @@ class UserService(
     }
 
     def validateEmail(newEmailLowerCased: String) =
-      UserRegisterValidator
-        .validateEmail(newEmailLowerCased)
-        .fold(msg => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit], _ => ().pure[ConnectionIO])
+      UserValidator(None, Some(newEmailLowerCased), None).asTask()
 
     def doChange(newLogin: String, newEmail: String): ConnectionIO[Boolean] = {
       for {
@@ -158,31 +152,48 @@ class UserService(
   }
 
   private def validatePassword(password: String) =
-    UserRegisterValidator
-      .validatePassword(password)
-      .fold(msg => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit], _ => ().pure[ConnectionIO])
+    UserValidator(None, None, Some(password)).asTask()
 }
 
-object UserRegisterValidator {
-  private val ValidationOk = Right(())
+object UserValidator {
   val MinLoginLength = 3
+}
 
-  def validate(login: String, email: String, password: String): Either[String, Unit] =
-    for {
-      _ <- validateLogin(login.trim)
-      _ <- validateEmail(email.trim)
-      _ <- validatePassword(password.trim)
-    } yield ()
-
-  def validateLogin(login: String): Either[String, Unit] =
-    if (login.length >= MinLoginLength) ValidationOk else Left("Login is too short!")
+case class UserValidator(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]) {
+  private val ValidationOk = Right(())
 
   private val emailRegex =
     """^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
-  def validateEmail(email: String): Either[String, Unit] =
-    if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid e-mail format!")
+  val result: Either[String, Unit] = {
+    for {
+      _ <- validateLogin(loginOpt)
+      _ <- validateEmail(emailOpt)
+      _ <- validatePassword(passwordOpt)
+    } yield ()
+  }
 
-  def validatePassword(password: String): Either[String, Unit] =
-    if (password.nonEmpty) ValidationOk else Left("Password cannot be empty!")
+  def asTask(): ConnectionIO[Unit] =
+    result.fold(msg => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit], _ => ().pure[ConnectionIO])
+
+  private def validateLogin(loginOpt: Option[String]): Either[String, Unit] =
+    loginOpt.map(_.trim) match {
+      case Some(login) =>
+        if (login.length >= UserValidator.MinLoginLength) ValidationOk else Left("Login is too short!")
+      case None => ValidationOk
+    }
+
+  private def validateEmail(emailOpt: Option[String]): Either[String, Unit] =
+    emailOpt.map(_.trim) match {
+      case Some(email) =>
+        if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid e-mail format!")
+      case None => ValidationOk
+    }
+
+  private def validatePassword(passwordOpt: Option[String]): Either[String, Unit] =
+    passwordOpt.map(_.trim) match {
+      case Some(password) =>
+        if (password.nonEmpty) ValidationOk else Left("Password cannot be empty!")
+      case None => ValidationOk
+    }
 }
