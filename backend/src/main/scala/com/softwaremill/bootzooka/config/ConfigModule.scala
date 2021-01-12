@@ -7,8 +7,7 @@ import pureconfig.generic.auto._
 
 import scala.collection.immutable.TreeMap
 
-/**
-  * Reads and gives access to the configuration object.
+/** Reads and gives access to the configuration object.
   */
 trait ConfigModule extends StrictLogging {
 
@@ -28,8 +27,8 @@ trait ConfigModule extends StrictLogging {
                    |-----------------
                    |""".stripMargin
 
-    val info = TreeMap(BuildInfo.toMap.toSeq: _*).foldLeft(baseInfo) {
-      case (str, (k, v)) => str + s"$k: $v\n"
+    val info = TreeMap(BuildInfo.toMap.toSeq: _*).foldLeft(baseInfo) { case (str, (k, v)) =>
+      str + s"$k: $v\n"
     }
 
     logger.info(info)

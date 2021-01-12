@@ -14,8 +14,8 @@ import sttp.tapir.openapi.Server
 import sttp.tapir.swagger.http4s.SwaggerHttp4s
 
 class EndpointsToRoutes(http: Http, apiContextPath: String) {
-  /**
-    * Interprets the given endpoint descriptions as http4s routes
+
+  /** Interprets the given endpoint descriptions as http4s routes
     */
   def apply(es: ServerEndpoints): HttpRoutes[Task] = {
     implicit val serverOptions: Http4sServerOptions[Task] = Http4sServerOptions
@@ -26,8 +26,7 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     es.toList.toRoutes
   }
 
-  /**
-    * tapir's Codecs parse inputs - query parameters, JSON bodies, headers - to their desired types. This might fail,
+  /** tapir's Codecs parse inputs - query parameters, JSON bodies, headers - to their desired types. This might fail,
     * and then a decode failure is returned, instead of a value. How such a failure is handled can be customised.
     *
     * We want to return responses in the same JSON format (corresponding to [[Error_OUT]]) as other errors returned
@@ -55,8 +54,7 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     }
   }
 
-  /**
-    * Interprets the given endpoint descriptions as docs, and returns http4s routes which expose the documentation
+  /** Interprets the given endpoint descriptions as docs, and returns http4s routes which expose the documentation
     * using Swagger.
     */
   def toDocsRoutes(es: ServerEndpoints): HttpRoutes[Task] = {

@@ -24,8 +24,7 @@ class Auth[T](
   // see https://hackernoon.com/hack-how-to-use-securerandom-with-kubernetes-and-docker-a375945a7b21
   private val random = SecureRandom.getInstance("NativePRNGNonBlocking")
 
-  /**
-    * Authenticates using the given authentication token. If the token is invalid, a failed [[Task]] is returned,
+  /** Authenticates using the given authentication token. If the token is invalid, a failed [[Task]] is returned,
     * with an instance of the [[Fail]] class. Otherwise, the id of the authenticated user is given.
     */
   def apply(id: Id): Task[Id @@ User] = {
@@ -48,7 +47,7 @@ class Auth[T](
   private def verifyValid(token: T): Task[Option[Unit]] = {
 
     clock.now().flatMap { time =>
-      if(time.isAfter(authTokenOps.validUntil(token))) {
+      if (time.isAfter(authTokenOps.validUntil(token))) {
         logger.info(s"${authTokenOps.tokenName} expired: $token")
         authTokenOps.delete(token).transact(xa).map(_ => None)
       } else {
@@ -58,8 +57,7 @@ class Auth[T](
   }
 }
 
-/**
-  * A set of operations on an authentication token, which are performed during authentication. Supports both
+/** A set of operations on an authentication token, which are performed during authentication. Supports both
   * one-time tokens (when `deleteWhenValid=true`) and multi-use tokens.
   */
 trait AuthTokenOps[T] {

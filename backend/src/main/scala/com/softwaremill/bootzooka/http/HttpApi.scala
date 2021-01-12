@@ -25,8 +25,7 @@ import monix.execution.Scheduler
 
 import scala.concurrent.ExecutionContext
 
-/**
-  * Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs
+/** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs
   * and correlation id support.
   *
   * The following endpoints are exposed:
@@ -52,8 +51,7 @@ class HttpApi(
 
   private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
 
-  /**
-    * The resource describing the HTTP server; binds when the resource is allocated.
+  /** The resource describing the HTTP server; binds when the resource is allocated.
     */
   lazy val resource: Resource[Task, org.http4s.server.Server[Task]] = {
     val prometheusHttp4sMetrics = Prometheus.metricsOps[Task](collectorRegistry)
@@ -92,14 +90,13 @@ class HttpApi(
     } yield r)
   }
 
-  /**
-    * Serves the webapp resources (html, js, css files), from the /webapp directory on the classpath.
+  /** Serves the webapp resources (html, js, css files), from the /webapp directory on the classpath.
     */
   private lazy val webappRoutes: HttpRoutes[Task] = {
     val dsl = Http4sDsl[Task]
     import dsl._
-    val rootRoute = HttpRoutes.of[Task] {
-      case request @ GET -> Root => indexResponse(request)
+    val rootRoute = HttpRoutes.of[Task] { case request @ GET -> Root =>
+      indexResponse(request)
     }
     val resourcesRoutes = resourceService[Task](ResourceService.Config("/webapp", staticFileBlocker))
     rootRoute <+> resourcesRoutes

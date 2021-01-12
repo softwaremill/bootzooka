@@ -7,8 +7,7 @@ import io.circe.{Decoder, Encoder, Printer}
 import tsec.passwordhashers.PasswordHash
 import tsec.passwordhashers.jca.SCrypt
 
-/**
-  * Import the members of this object when doing JSON serialisation or deserialisation.
+/** Import the members of this object when doing JSON serialisation or deserialisation.
   */
 object Json extends AutoDerivation {
   val noNullsPrinter: Printer = Printer.noSpaces.copy(dropNullValues = true)

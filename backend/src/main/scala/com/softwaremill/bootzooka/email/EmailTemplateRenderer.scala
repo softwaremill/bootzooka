@@ -15,9 +15,8 @@ object EmailTemplateRenderer {
     try {
       val rawTemplate = source.getLines().mkString("\n")
 
-      params.foldLeft(rawTemplate) {
-        case (template, (param, paramValue)) =>
-          template.replaceAll(s"\\{\\{$param\\}\\}", paramValue.toString)
+      params.foldLeft(rawTemplate) { case (template, (param, paramValue)) =>
+        template.replaceAll(s"\\{\\{$param\\}\\}", paramValue.toString)
       }
     } finally {
       source.close()

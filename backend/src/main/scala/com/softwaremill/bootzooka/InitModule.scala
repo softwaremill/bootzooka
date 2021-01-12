@@ -9,8 +9,7 @@ import sttp.capabilities.monix.MonixStreams
 import sttp.client3.SttpBackend
 import sttp.client3.asynchttpclient.monix.AsyncHttpClientMonixBackend
 
-/**
-  * Initialised resources needed by the application to start.
+/** Initialised resources needed by the application to start.
   */
 trait InitModule extends ConfigModule {
   lazy val db: DB = new DB(config.db)

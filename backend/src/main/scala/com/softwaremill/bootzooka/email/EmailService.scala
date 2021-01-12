@@ -8,8 +8,7 @@ import com.softwaremill.bootzooka.util.IdGenerator
 import com.typesafe.scalalogging.StrictLogging
 import monix.execution.Scheduler.Implicits.global
 
-/**
-  * Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches.
+/** Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches.
   */
 class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[Task])
     extends EmailScheduler
@@ -29,8 +28,7 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
     } yield ()
   }
 
-  /**
-    * Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates
+  /** Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates
     * a metric which holds the size of the email queue.
     */
   def startProcesses(): Task[(Fiber[Nothing], Fiber[Nothing])] = {

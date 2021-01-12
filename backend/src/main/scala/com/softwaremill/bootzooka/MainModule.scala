@@ -11,8 +11,7 @@ import com.softwaremill.bootzooka.user.UserModule
 import com.softwaremill.bootzooka.util.{Clock, DefaultIdGenerator, IdGenerator, ServerEndpoints, DefaultClock}
 import monix.eval.Task
 
-/**
-  * Main application module. Depends on resources initialised in [[InitModule]].
+/** Main application module. Depends on resources initialised in [[InitModule]].
   */
 trait MainModule
     extends SecurityModule

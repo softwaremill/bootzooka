@@ -7,14 +7,12 @@ import monix.eval.Task
 import sttp.capabilities.Effect
 import sttp.monad.MonadError
 
-/**
-  * Correlation id support. The `init()` method should be called when the application starts.
+/** Correlation id support. The `init()` method should be called when the application starts.
   * See [[https://github.com/softwaremill/correlator]] for details.
   */
 object CorrelationId extends com.softwaremill.correlator.CorrelationIdDecorator()
 
-/**
-  * An sttp backend wrapper, which sets the current correlation id on all outgoing requests.
+/** An sttp backend wrapper, which sets the current correlation id on all outgoing requests.
   */
 class SetCorrelationIdBackend[P](delegate: SttpBackend[Task, P]) extends SttpBackend[Task, P] {
   override def send[T, R >: P with Effect[Task]](request: Request[T, R]): Task[Response[T]] = {

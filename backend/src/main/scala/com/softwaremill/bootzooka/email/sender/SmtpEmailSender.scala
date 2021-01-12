@@ -8,8 +8,7 @@ import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail.{Address, Message, Session, Transport}
 import monix.eval.Task
 
-/**
-  * Sends emails synchronously using SMTP.
+/** Sends emails synchronously using SMTP.
   */
 class SmtpEmailSender(config: SmtpConfig) extends EmailSender with StrictLogging {
   def apply(email: EmailData): Task[Unit] = Task {
@@ -30,8 +29,7 @@ class SmtpEmailSender(config: SmtpConfig) extends EmailSender with StrictLogging
   }
 }
 
-/**
-  * Copied from softwaremill-common:
+/** Copied from softwaremill-common:
   * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
   */
 object SmtpEmailSender extends StrictLogging {

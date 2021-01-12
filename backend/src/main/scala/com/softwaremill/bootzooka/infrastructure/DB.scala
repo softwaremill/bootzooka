@@ -12,8 +12,7 @@ import scala.concurrent.duration._
 import Doobie._
 import com.softwaremill.bootzooka.config.Sensitive
 
-/**
-  * Configures the database, setting up the connection pool and performing migrations.
+/** Configures the database, setting up the connection pool and performing migrations.
   */
 class DB(_config: DBConfig) extends StrictLogging {
 
