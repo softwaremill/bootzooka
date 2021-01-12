@@ -185,6 +185,22 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     loginUser(login, newPassword, None).status shouldBe Status.Unauthorized
   }
 
+  "/user/changepassword" should "not change the password if the new password is invalid" in {
+    // given
+    val RegisteredUser(login, _, password, apiKey) = newRegisteredUsed()
+    val newPassword = ""
+
+    // when
+    val response1 = changePassword(apiKey, password, newPassword)
+
+    // then
+    response1.status shouldBe Status.BadRequest
+    response1.shouldDeserializeToError shouldBe "Password cannot be empty!"
+
+    loginUser(login, password, None).status shouldBe Status.Ok
+    loginUser(login, newPassword, None).status shouldBe Status.Unauthorized
+  }
+
   "/user" should "update the login" in {
     // given
     val RegisteredUser(login, email, _, apiKey) = newRegisteredUsed()
@@ -196,6 +212,22 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]
     getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe newLogin
+    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe email
+  }
+
+  "/user" should "update the login if the new login is invalid" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = newRegisteredUsed()
+    val newLogin = "a"
+
+    // when
+    val response1 = updateUser(apiKey, newLogin, email)
+
+    // then
+    response1.status shouldBe Status.BadRequest
+    response1.shouldDeserializeToError shouldBe "Login is too short!"
+
+    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe login
     getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe email
   }
 
@@ -211,5 +243,21 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     response1.shouldDeserializeTo[UpdateUser_OUT]
     getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe login
     getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe newEmail
+  }
+
+  "/user" should "not update the email if the new email is invalid" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = newRegisteredUsed()
+    val newEmail = "aaa"
+
+    // when
+    val response1 = updateUser(apiKey, login, newEmail)
+
+    // then
+    response1.status shouldBe Status.BadRequest
+    response1.shouldDeserializeToError shouldBe "Invalid e-mail format!"
+
+    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe login
+    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe email
   }
 }
