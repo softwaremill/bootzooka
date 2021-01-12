@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.user
 
+import cats.{ApplicativeError, Monad}
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
@@ -54,9 +55,7 @@ class UserService(
     }
 
     for {
-      _ <- UserRegisterValidator
-        .validate(login, email, password)
-        .fold(msg => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit], _ => ().pure[ConnectionIO])
+      _ <- UserValidator(Some(login), Some(email), Some(password)).as[ConnectionIO]
       _ <- checkUserDoesNotExist()
       apiKey <- doRegister()
     } yield apiKey
@@ -78,10 +77,16 @@ class UserService(
         case Some(user) if user.id != userId => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Boolean]
         case Some(user) if user.login == newLogin => false.pure[ConnectionIO]
         case _ =>
-          logger.debug(s"Changing login for user: $userId, to: $newLogin")
-          userModel.updateLogin(userId, newLogin, newLoginLowerCased).map(_ => true)
+          for {
+            _ <- validateLogin(newLogin)
+            _ = logger.debug(s"Changing login for user: $userId, to: $newLogin")
+            _ <- userModel.updateLogin(userId, newLogin, newLoginLowerCased)
+          } yield true
       }
     }
+
+    def validateLogin(newLogin: String) =
+      UserValidator(Some(newLogin), None, None).as[ConnectionIO]
 
     def changeEmail(newEmail: String): ConnectionIO[Boolean] = {
       val newEmailLowerCased = newEmail.lowerCased
@@ -89,10 +94,16 @@ class UserService(
         case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Boolean]
         case Some(user) if user.emailLowerCased == newEmailLowerCased => false.pure[ConnectionIO]
         case _ =>
-          logger.debug(s"Changing email for user: $userId, to: $newEmail")
-          userModel.updateEmail(userId, newEmailLowerCased).map(_ => true)
+          for {
+            _ <- validateEmail(newEmailLowerCased)
+            _ = logger.debug(s"Changing email for user: $userId, to: $newEmail")
+            _ <- userModel.updateEmail(userId, newEmailLowerCased)
+          } yield true
       }
     }
+
+    def validateEmail(newEmailLowerCased: String) =
+      UserValidator(None, Some(newEmailLowerCased), None).as[ConnectionIO]
 
     def doChange(newLogin: String, newEmail: String): ConnectionIO[Boolean] = {
       for {
@@ -119,6 +130,7 @@ class UserService(
     for {
       user <- userOrNotFound(userModel.findById(userId))
       _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
+      _ <- validatePassword(newPassword)
       _ = logger.debug(s"Changing password for user: $userId")
       _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
       confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
@@ -139,28 +151,50 @@ class UserService(
       Fail.Unauthorized(validationErrorMsg).raiseError[ConnectionIO, Unit]
     }
   }
+
+  private def validatePassword(password: String) =
+    UserValidator(None, None, Some(password)).as[ConnectionIO]
 }
 
-object UserRegisterValidator {
-  private val ValidationOk = Right(())
+object UserValidator {
   val MinLoginLength = 3
+}
 
-  def validate(login: String, email: String, password: String): Either[String, Unit] =
-    for {
-      _ <- validLogin(login.trim)
-      _ <- validEmail(email.trim)
-      _ <- validPassword(password.trim)
-    } yield ()
-
-  private def validLogin(login: String): Either[String, Unit] =
-    if (login.length >= MinLoginLength) ValidationOk else Left("Login is too short!")
+case class UserValidator(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]) {
+  private val ValidationOk = Right(())
 
   private val emailRegex =
     """^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
-  private def validEmail(email: String) =
-    if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid e-mail format!")
+  val result: Either[String, Unit] = {
+    for {
+      _ <- validateLogin(loginOpt)
+      _ <- validateEmail(emailOpt)
+      _ <- validatePassword(passwordOpt)
+    } yield ()
+  }
 
-  private def validPassword(password: String) =
-    if (password.nonEmpty) ValidationOk else Left("Password cannot be empty!")
+  def as[F[_]: Monad](implicit G: ApplicativeError[F, _ >: Fail]): F[Unit] =
+    result.fold(msg => Fail.IncorrectInput(msg).raiseError[F, Unit](G), _ => ().pure[F](G))
+
+  private def validateLogin(loginOpt: Option[String]): Either[String, Unit] =
+    loginOpt.map(_.trim) match {
+      case Some(login) =>
+        if (login.length >= UserValidator.MinLoginLength) ValidationOk else Left("Login is too short!")
+      case None => ValidationOk
+    }
+
+  private def validateEmail(emailOpt: Option[String]): Either[String, Unit] =
+    emailOpt.map(_.trim) match {
+      case Some(email) =>
+        if (emailRegex.findFirstMatchIn(email).isDefined) ValidationOk else Left("Invalid e-mail format!")
+      case None => ValidationOk
+    }
+
+  private def validatePassword(passwordOpt: Option[String]): Either[String, Unit] =
+    passwordOpt.map(_.trim) match {
+      case Some(password) =>
+        if (password.nonEmpty) ValidationOk else Left("Password cannot be empty!")
+      case None => ValidationOk
+    }
 }
