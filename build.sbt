@@ -10,8 +10,8 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val doobieVersion = "0.9.4"
-val http4sVersion = "0.21.15"
+val doobieVersion = "0.10.0"
+val http4sVersion = "0.21.14"
 val circeVersion = "0.13.0"
 val tsecVersion = "0.2.1"
 val sttpVersion = "3.0.0-RC13"
@@ -22,7 +22,7 @@ val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "7.3.2"
+  "org.flywaydb" % "flyway-core" % "7.5.0"
 )
 
 val httpDependencies = Seq(
