@@ -11,6 +11,7 @@ import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import doobie.util.transactor.Transactor
 import monix.eval.Task
+import sttp.tapir.generic.auto._
 
 import scala.concurrent.duration._
 
