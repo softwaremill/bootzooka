@@ -83,7 +83,7 @@ val emailDependencies = Seq(
   "com.sun.mail" % "javax.mail" % "1.6.2"
 )
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.2" % Test
+val scalatest = "org.scalatest" %% "scalatest" % "3.2.3" % Test
 val unitTestingStack = Seq(scalatest)
 
 val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.3" % Test
