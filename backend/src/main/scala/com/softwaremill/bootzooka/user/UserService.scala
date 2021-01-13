@@ -29,6 +29,9 @@ class UserService(
   private val IncorrectLoginOrPassword = "Incorrect login/email or password"
 
   def registerNewUser(login: String, email: String, password: String): ConnectionIO[ApiKey] = {
+    val loginClean = login.trim()
+    val emailClean = email.trim()
+
     def failIfDefined(op: ConnectionIO[Option[User]], msg: String): ConnectionIO[Unit] = {
       op.flatMap {
         case None    => ().pure[ConnectionIO]
@@ -37,25 +40,25 @@ class UserService(
     }
 
     def checkUserDoesNotExist(): ConnectionIO[Unit] = {
-      failIfDefined(userModel.findByLogin(login.lowerCased), LoginAlreadyUsed) >>
-        failIfDefined(userModel.findByEmail(email.lowerCased), EmailAlreadyUsed)
+      failIfDefined(userModel.findByLogin(loginClean.lowerCased), LoginAlreadyUsed) >>
+        failIfDefined(userModel.findByEmail(emailClean.lowerCased), EmailAlreadyUsed)
     }
 
     def doRegister(): ConnectionIO[ApiKey] = {
       for {
         id <- idGenerator.nextId[User]().to[ConnectionIO]
         now <- clock.now().to[ConnectionIO]
-        user = User(id, login, login.lowerCased, email.lowerCased, User.hashPassword(password), now)
-        confirmationEmail = emailTemplates.registrationConfirmation(login)
+        user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
+        confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
         _ = logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
         _ <- userModel.insert(user)
-        _ <- emailScheduler(EmailData(email, confirmationEmail))
+        _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
         apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
       } yield apiKey
     }
 
     for {
-      _ <- UserValidator(Some(login), Some(email), Some(password)).as[ConnectionIO]
+      _ <- UserValidator(Some(loginClean), Some(emailClean), Some(password)).as[ConnectionIO]
       _ <- checkUserDoesNotExist()
       apiKey <- doRegister()
     } yield apiKey
@@ -63,52 +66,57 @@ class UserService(
 
   def findById(id: Id @@ User): ConnectionIO[User] = userOrNotFound(userModel.findById(id))
 
-  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] =
+  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] = {
+    val loginOrEmailClean = loginOrEmail.trim()
     for {
-      user <- userOrNotFound(userModel.findByLoginOrEmail(loginOrEmail.lowerCased))
+      user <- userOrNotFound(userModel.findByLoginOrEmail(loginOrEmailClean.lowerCased))
       _ <- verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword)
       apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
     } yield apiKey
+  }
 
   def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
-    def changeLogin(newLogin: String): ConnectionIO[Boolean] = {
-      val newLoginLowerCased = newLogin.lowerCased
+    val newLoginClean = newLogin.trim()
+    val newEmailClean = newEmail.trim()
+    val newEmailLowerCased = newEmailClean.lowerCased
+
+    def changeLogin(): ConnectionIO[Boolean] = {
+      val newLoginLowerCased = newLoginClean.lowerCased
       userModel.findByLogin(newLoginLowerCased).flatMap {
         case Some(user) if user.id != userId      => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Boolean]
-        case Some(user) if user.login == newLogin => false.pure[ConnectionIO]
+        case Some(user) if user.login == newLoginClean => false.pure[ConnectionIO]
         case _ =>
           for {
-            _ <- validateLogin(newLogin)
-            _ = logger.debug(s"Changing login for user: $userId, to: $newLogin")
-            _ <- userModel.updateLogin(userId, newLogin, newLoginLowerCased)
+            _ <- validateLogin()
+            _ = logger.debug(s"Changing login for user: $userId, to: $newLoginClean")
+            _ <- userModel.updateLogin(userId, newLoginClean, newLoginLowerCased)
           } yield true
       }
     }
 
-    def validateLogin(newLogin: String) =
-      UserValidator(Some(newLogin), None, None).as[ConnectionIO]
+    def validateLogin() =
+      UserValidator(Some(newLoginClean), None, None).as[ConnectionIO]
 
-    def changeEmail(newEmail: String): ConnectionIO[Boolean] = {
-      val newEmailLowerCased = newEmail.lowerCased
+    def changeEmail(): ConnectionIO[Boolean] = {
       userModel.findByEmail(newEmailLowerCased).flatMap {
         case Some(user) if user.id != userId                          => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Boolean]
         case Some(user) if user.emailLowerCased == newEmailLowerCased => false.pure[ConnectionIO]
         case _ =>
           for {
-            _ <- validateEmail(newEmailLowerCased)
-            _ = logger.debug(s"Changing email for user: $userId, to: $newEmail")
+            _ <- validateEmail()
+            _ = logger.debug(s"Changing email for user: $userId, to: $newEmailClean")
             _ <- userModel.updateEmail(userId, newEmailLowerCased)
           } yield true
       }
     }
 
-    def validateEmail(newEmailLowerCased: String) =
+    def validateEmail() =
       UserValidator(None, Some(newEmailLowerCased), None).as[ConnectionIO]
 
-    def doChange(newLogin: String, newEmail: String): ConnectionIO[Boolean] = {
+    def doChange(): ConnectionIO[Boolean] = {
       for {
-        loginUpdated <- changeLogin(newLogin)
-        emailUpdated <- changeEmail(newEmail)
+        loginUpdated <- changeLogin()
+        emailUpdated <- changeEmail()
       } yield loginUpdated || emailUpdated
     }
 
@@ -117,7 +125,7 @@ class UserService(
       emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
     }
 
-    doChange(newLogin, newEmail) flatMap { anyUpdate =>
+    doChange() flatMap { anyUpdate =>
       if (anyUpdate) {
         findById(userId).flatMap(user => sendMail(user))
       } else {
@@ -126,16 +134,20 @@ class UserService(
     }
   }
 
-  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] =
+  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] = {
+    def validateNewPassword() =
+      UserValidator(None, None, Some(newPassword)).as[ConnectionIO]
+
     for {
       user <- userOrNotFound(userModel.findById(userId))
       _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
-      _ <- validatePassword(newPassword)
+      _ <- validateNewPassword()
       _ = logger.debug(s"Changing password for user: $userId")
       _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
       confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
       _ <- emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
     } yield ()
+  }
 
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {
     op.flatMap {
@@ -151,9 +163,6 @@ class UserService(
       Fail.Unauthorized(validationErrorMsg).raiseError[ConnectionIO, Unit]
     }
   }
-
-  private def validatePassword(password: String) =
-    UserValidator(None, None, Some(password)).as[ConnectionIO]
 }
 
 object UserValidator {
