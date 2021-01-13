@@ -80,7 +80,7 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2"
+  "com.sun.mail" % "javax.mail" % "1.6.2" exclude("javax.activation", "activation")
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.3" % Test
@@ -147,8 +147,9 @@ lazy val fatJarSettings = Seq(
   assemblyJarName in assembly := "bootzooka.jar",
   assembly := assembly.dependsOn(copyWebapp).value,
   assemblyMergeStrategy in assembly := {
-    case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
-    case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.first
+    case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties"       => MergeStrategy.first
+    case PathList(ps @ _*) if ps.last endsWith "pom.properties"                     => MergeStrategy.first
+    case PathList(ps @ _*) if ps.last endsWith "scala-collection-compat.properties" => MergeStrategy.first
     case x =>
       val oldStrategy = (assemblyMergeStrategy in assembly).value
       oldStrategy(x)
