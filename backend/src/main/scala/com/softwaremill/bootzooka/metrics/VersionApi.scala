@@ -6,6 +6,7 @@ import com.softwaremill.bootzooka.version.BuildInfo
 import monix.eval.Task
 import sttp.model.StatusCode
 import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.generic.auto._
 
 /** Defines an endpoint which exposes the current application version information.
   */
