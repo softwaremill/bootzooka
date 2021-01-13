@@ -47,6 +47,24 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
     response4.shouldDeserializeTo[GetUser_OUT].email shouldBe email
   }
 
+  "/user/register" should "register and ignore leading and trailing spaces" in {
+    // given
+    val (login, email, password) = randomLoginEmailPassword()
+
+    // when
+    val response1 = registerUser("   " + login + "   ", "   " + email + "   ", password)
+
+    // then
+    response1.status shouldBe Status.Ok
+    val apiKey = response1.shouldDeserializeTo[Register_OUT].apiKey
+
+    // when
+    val response4 = getUser(apiKey)
+
+    // then
+    response4.shouldDeserializeTo[GetUser_OUT].email shouldBe email
+  }
+
   "/user/register" should "not register if data is invalid" in {
     // given
     val (_, email, password) = randomLoginEmailPassword()
@@ -109,6 +127,17 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
 
     // when
     val response1 = loginUser(email.toUpperCase, password)
+
+    // then
+    response1.shouldDeserializeTo[Login_OUT]
+  }
+
+  "/user/login" should "login the user with leading or trailing spaces" in {
+    // given
+    val RegisteredUser(login, _, password, _) = newRegisteredUsed()
+
+    // when
+    val response1 = loginUser("   " + login + "   ", password)
 
     // then
     response1.shouldDeserializeTo[Login_OUT]
@@ -259,5 +288,20 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
 
     getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe login
     getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe email
+  }
+
+  "/user" should "update the login and email with leading or trailing spaces" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = newRegisteredUsed()
+    val newLogin = login + login
+    val (_, newEmail, _) = randomLoginEmailPassword()
+
+    // when
+    val response1 = updateUser(apiKey, "   " + newLogin + "   ", "   " + newEmail + "   ")
+
+    // then
+    response1.shouldDeserializeTo[UpdateUser_OUT]
+    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe newLogin
+    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe newEmail
   }
 }
