@@ -137,7 +137,6 @@ lazy val buildInfoSettings = Seq(
       Try("git rev-parse HEAD".!!.trim).getOrElse("?")
     }
   ),
-  buildInfoOptions += BuildInfoOption.BuildTime,
   buildInfoOptions += BuildInfoOption.ToJson,
   buildInfoOptions += BuildInfoOption.ToMap,
   buildInfoPackage := "com.softwaremill.bootzooka.version",

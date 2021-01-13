@@ -18,10 +18,10 @@ class VersionApi(http: Http) {
     .in("version")
     .out(jsonBody[Version_OUT])
     .serverLogic { _ =>
-      Task.now(Version_OUT(BuildInfo.builtAtString, BuildInfo.lastCommitHash)).toOut
+      Task.now(Version_OUT(BuildInfo.lastCommitHash)).toOut
     }
 }
 
 object VersionApi {
-  case class Version_OUT(buildDate: String, buildSha: String)
+  case class Version_OUT(buildSha: String)
 }
