@@ -1,27 +1,22 @@
 import React from "react";
 import immer from "immer";
 import noop from "noop-ts";
-
-export interface UserDetails {
-  createdOn: string;
-  email: string;
-  login: string;
-}
+import { ApiKey, UserDetails } from "../../services/UserService/UserServiceFP";
 
 export interface UserState {
-  apiKey: string | null;
+  apiKey: ApiKey;
   user: UserDetails | null;
   loggedIn: boolean | null;
 }
 
 export const initialUserState: UserState = {
-  apiKey: null,
+  apiKey: '',
   user: null,
   loggedIn: null,
 };
 
 export type UserAction =
-  | { type: "SET_API_KEY"; apiKey: string | null }
+  | { type: "SET_API_KEY"; apiKey: ApiKey }
   | { type: "UPDATE_USER_DATA"; user: Partial<UserDetails> }
   | { type: "LOG_IN"; user: UserDetails }
   | { type: "LOG_OUT" };
@@ -44,7 +39,7 @@ const UserReducer = (state: UserState, action: UserAction): UserState => {
       });
     case "LOG_OUT":
       return immer(state, (draftState) => {
-        draftState.apiKey = null;
+        draftState.apiKey = '';
         draftState.user = null;
         draftState.loggedIn = false;
       });

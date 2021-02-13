@@ -1,7 +1,7 @@
 import React from "react";
-import { Formik, Form as FormikForm } from "formik";
+import { Form as FormikForm, Formik } from "formik";
 import * as Yup from "yup";
-import userService from "../../services/UserService/UserService";
+import userServiceFP from "../../services/UserService/UserServiceFP";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -29,7 +29,7 @@ const ProfileDetails: React.FC = () => {
   } = React.useContext(UserContext);
 
   const [result, send, clear] = usePromise((values: ProfileDetailsParams) =>
-    userService.changeProfileDetails(apiKey, values).then(() => dispatch({ type: "UPDATE_USER_DATA", user: values }))
+    userServiceFP.changeProfileDetails(values).then((value) => dispatch({ type: "UPDATE_USER_DATA", user: values }))
   );
 
   return (
@@ -46,8 +46,8 @@ const ProfileDetails: React.FC = () => {
             validationSchema={validationSchema}
           >
             <Form as={FormikForm}>
-              <FormikInput name="login" label="Login" />
-              <FormikInput name="email" label="Email address" />
+              <FormikInput name="login" label="Login"/>
+              <FormikInput name="email" label="Email address"/>
 
               <FeedbackButton
                 type="submit"
