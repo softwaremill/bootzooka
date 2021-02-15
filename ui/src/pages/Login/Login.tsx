@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
-import { Formik, Form as FormikForm } from "formik";
+import { Form as FormikForm, Formik } from "formik";
 import * as Yup from "yup";
 import userService from "../../services/UserService/UserService";
 import Form from "react-bootstrap/Form";
@@ -12,6 +12,8 @@ import { BiLogInCircle } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
+import { fold, some } from "fp-ts/Option";
+import { pipe } from "fp-ts/pipeable";
 
 interface LoginParams {
   loginOrEmail: string;
@@ -26,42 +28,44 @@ const validationSchema: Yup.ObjectSchema<LoginParams | undefined> = Yup.object({
 const Login: React.FC = () => {
   const {
     dispatch,
-    state: { loggedIn },
+    state: { user },
   } = React.useContext(UserContext);
 
   const [result, send, clear] = usePromise((values: LoginParams) =>
     userService
       .login(values)
-      .then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
+      .then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey: some(apiKey) }))
   );
 
-  if (loggedIn) return <Redirect to="/main" />;
-
-  return (
-    <Container className="py-5">
-      <Row>
-        <Col md={9} lg={7} xl={6} className="mx-auto">
-          <h3>Please sign in</h3>
-          <Formik<LoginParams>
-            initialValues={{
-              loginOrEmail: "",
-              password: "",
-            }}
-            onSubmit={send}
-            validationSchema={validationSchema}
-          >
-            <Form as={FormikForm}>
-              <FormikInput name="loginOrEmail" label="Login or email" />
-              <FormikInput name="password" type="password" label="Password" />
-              <Link className="float-right" to="/recover-lost-password">
-                Forgot password?
-              </Link>
-              <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />{" "}
-            </Form>
-          </Formik>
-        </Col>
-      </Row>
-    </Container>
+  return pipe(
+    user,
+    fold(
+      () => <Container className="py-5">
+        <Row>
+          <Col md={9} lg={7} xl={6} className="mx-auto">
+            <h3>Please sign in</h3>
+            <Formik<LoginParams>
+              initialValues={{
+                loginOrEmail: "",
+                password: "",
+              }}
+              onSubmit={send}
+              validationSchema={validationSchema}
+            >
+              <Form as={FormikForm}>
+                <FormikInput name="loginOrEmail" label="Login or email" />
+                <FormikInput name="password" type="password" label="Password" />
+                <Link className="float-right" to="/recover-lost-password">
+                  Forgot password?
+                </Link>
+                <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />{" "}
+              </Form>
+            </Formik>
+          </Col>
+        </Row>
+      </Container>,
+      _ => <Redirect to="/main" />
+    )
   );
 };
 

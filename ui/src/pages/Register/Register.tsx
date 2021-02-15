@@ -2,7 +2,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import { Form as FormikForm, Formik } from "formik";
 import * as Yup from "yup";
-import userServiceFP from "../../services/UserService/UserServiceFP";
+import userService from "../../services/UserService/UserServiceFP";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -13,7 +13,7 @@ import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
 import { pipe } from "fp-ts/pipeable";
-import * as E from 'fp-ts/Either';
+import { fold, some } from "fp-ts/Option";
 
 interface RegisterParams {
   login: string;
@@ -34,53 +34,48 @@ const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.objec
 const Register: React.FC = () => {
   const {
     dispatch,
-    state: { loggedIn },
+    state: { user },
   } = React.useContext(UserContext);
 
+  // TODO: usePromise takes a function that works as a loader function. It's a function that makes an asynchronous computation
   const [result, send, clear] = usePromise(({ login, email, password }: RegisterParams) =>
-    userServiceFP.registerUser({
-      login,
-      email,
-      password
-    }).then((value) =>
-      pipe(
-        value,
-        E.map(key => dispatch({ type: "SET_API_KEY", apiKey: key }))
-      )
-    )
+    userService
+      .registerUser({ login, email, password })
+      .then((value) => dispatch({ type: "SET_API_KEY", apiKey: some('') }))
   );
 
-if (loggedIn) return <Redirect to="/main"/>;
+  return pipe(
+    user,
+    fold(
+      () => <Container className="py-5">
+        <Row>
+          <Col md={9} lg={7} xl={6} className="mx-auto">
+            <h3>Please sign up</h3>
+            <Formik<RegisterParams>
+              initialValues={{
+                login: "",
+                email: "",
+                password: "",
+                repeatedPassword: "",
+              }}
+              onSubmit={send}
+              validationSchema={validationSchema}
+            >
+              <Form as={FormikForm}>
+                <FormikInput name="login" label="Login" />
+                <FormikInput name="email" label="Email address" />
+                <FormikInput name="password" label="Password" type="password" />
+                <FormikInput name="repeatedPassword" label="Repeat password" type="password" />
 
-return (
-  <Container className="py-5">
-    <Row>
-      <Col md={9} lg={7} xl={6} className="mx-auto">
-        <h3>Please sign up</h3>
-        <Formik<RegisterParams>
-          initialValues={{
-            login: "",
-            email: "",
-            password: "",
-            repeatedPassword: "",
-          }}
-          onSubmit={send}
-          validationSchema={validationSchema}
-        >
-          <Form as={FormikForm}>
-            <FormikInput name="login" label="Login"/>
-            <FormikInput name="email" label="Email address"/>
-            <FormikInput name="password" label="Password" type="password"/>
-            <FormikInput name="repeatedPassword" label="Repeat password" type="password"/>
-
-            <FeedbackButton type="submit" label="Register" Icon={BiUserPlus} result={result} clear={clear}/>
-          </Form>
-        </Formik>
-      </Col>
-    </Row>
-  </Container>
-);
-}
-;
+                <FeedbackButton type="submit" label="Register" Icon={BiUserPlus} result={result} clear={clear} />
+              </Form>
+            </Formik>
+          </Col>
+        </Row>
+      </Container>,
+      _ => <Redirect to="/main" />
+    )
+  )
+};
 
 export default Register;

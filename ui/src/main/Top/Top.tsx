@@ -4,11 +4,12 @@ import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import { LinkContainer } from "react-router-bootstrap";
 import { UserContext } from "../../contexts/UserContext/UserContext";
-import { BiPowerOff, BiHappy } from "react-icons/bi";
+import { BiHappy, BiPowerOff } from "react-icons/bi";
+import { pipe } from "fp-ts/pipeable";
 
 const Top: React.FC = () => {
   const {
-    state: { user, loggedIn },
+    state: { user },
     dispatch,
   } = React.useContext(UserContext);
 
@@ -30,29 +31,31 @@ const Top: React.FC = () => {
               <Nav.Link>Home</Nav.Link>
             </LinkContainer>
             <div className="flex-grow-1" />
-            {loggedIn ? (
-              <>
-                <LinkContainer to="/profile">
-                  <Nav.Link className="text-right">
-                    <BiHappy />
-                    &nbsp;{user?.login}
+            {pipe(
+              user,
+              () => (
+                <>
+                  <LinkContainer to="/register">
+                    <Nav.Link className="text-right">Register</Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to="/login">
+                    <Nav.Link className="text-right">Login</Nav.Link>
+                  </LinkContainer>
+                </>),
+              u => (
+                <>
+                  <LinkContainer to="/profile">
+                    <Nav.Link className="text-right">
+                      <BiHappy />
+                      &nbsp;{}
+                    </Nav.Link>
+                  </LinkContainer>{" "}
+                  <Nav.Link className="text-right" onClick={handleLogOut}>
+                    <BiPowerOff />
+                    &nbsp;Logout
                   </Nav.Link>
-                </LinkContainer>{" "}
-                <Nav.Link className="text-right" onClick={handleLogOut}>
-                  <BiPowerOff />
-                  &nbsp;Logout
-                </Nav.Link>
-              </>
-            ) : (
-              <>
-                <LinkContainer to="/register">
-                  <Nav.Link className="text-right">Register</Nav.Link>
-                </LinkContainer>
-                <LinkContainer to="/login">
-                  <Nav.Link className="text-right">Login</Nav.Link>
-                </LinkContainer>
-              </>
-            )}
+                </>))
+            }
           </Nav>
         </Navbar.Collapse>
       </Container>

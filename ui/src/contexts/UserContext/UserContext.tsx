@@ -2,23 +2,25 @@ import React from "react";
 import immer from "immer";
 import noop from "noop-ts";
 import { ApiKey, UserDetails } from "../../services/UserService/UserServiceFP";
+import { none, Option } from "fp-ts/es6/Option";
 
 export interface UserState {
-  apiKey: ApiKey;
-  user: UserDetails | null;
-  loggedIn: boolean | null;
+  apiKey: Option<ApiKey>;
+  user: Option<UserDetails>;
+  // TODO: do we really need this flag??
+  // loggedIn: boolean;
 }
 
 export const initialUserState: UserState = {
-  apiKey: '',
-  user: null,
-  loggedIn: null,
+  apiKey: none,
+  user: none,
+  // loggedIn: false,
 };
 
 export type UserAction =
-  | { type: "SET_API_KEY"; apiKey: ApiKey }
+  | { type: "SET_API_KEY"; apiKey: Option<ApiKey> }
   | { type: "UPDATE_USER_DATA"; user: Partial<UserDetails> }
-  | { type: "LOG_IN"; user: UserDetails }
+  | { type: "LOG_IN"; user: Option<UserDetails> }
   | { type: "LOG_OUT" };
 
 const UserReducer = (state: UserState, action: UserAction): UserState => {
@@ -35,13 +37,11 @@ const UserReducer = (state: UserState, action: UserAction): UserState => {
     case "LOG_IN":
       return immer(state, (draftState) => {
         draftState.user = action.user;
-        draftState.loggedIn = true;
       });
     case "LOG_OUT":
       return immer(state, (draftState) => {
-        draftState.apiKey = '';
-        draftState.user = null;
-        draftState.loggedIn = false;
+        draftState.apiKey = none;
+        draftState.user = none;
       });
   }
 };
