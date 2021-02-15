@@ -15,7 +15,6 @@ const Main: React.FC = () => {
   useLocalStoragedApiKey();
   useLoginOnApiKey();
 
-  console.log('user', user);
   return <>
     <Top />
     <ForkMe>
