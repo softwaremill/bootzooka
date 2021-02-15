@@ -11,7 +11,7 @@ import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
-import { fold } from 'fp-ts/Option';
+import { getOrElse } from 'fp-ts/Option';
 import { pipe } from "fp-ts/pipeable";
 
 interface ProfileDetailsParams {
@@ -43,10 +43,9 @@ const ProfileDetails: React.FC = () => {
             initialValues={
               pipe(
                 user,
-                fold(
-                  () => ({ login: '', email: '' }),
-                  _ => ({ login: _.login, email: _.email }))
-              )}
+                getOrElse(() => ({ login: '', email: '' })),
+              )
+            }
             onSubmit={send}
             validationSchema={validationSchema}
           >
