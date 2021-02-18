@@ -1,39 +1,35 @@
 import React from "react";
 import { UserContext } from "../../contexts/UserContext/UserContext";
-import { fold, fromNullable, some } from "fp-ts/Option";
+import {fold, fromNullable, map, some} from "fp-ts/Option";
 import { pipe } from "fp-ts/pipeable";
 
-const useLocalStoragedApiKey = () => {
+const useLocalStorageApiKey = () => {
   const {
     dispatch,
-    state: { user, apiKey },
+    user,
   } = React.useContext(UserContext);
 
-  const apiKeyRef = React.useRef(apiKey);
-
   React.useEffect(() => {
-    apiKeyRef.current = apiKey;
-  }, [apiKey, dispatch]);
-
-  React.useEffect(() => {
-
     pipe(
-      fromNullable(localStorage.getItem("apiKey")),
-      fold(
-        () => dispatch({ type: 'LOG_OUT' }),
-        key => dispatch({ type: 'SET_API_KEY', apiKey: some(key) })
-      )
-    );
-  }, [dispatch]);
-
-  React.useEffect(() => {
-    pipe(apiKeyRef.current,
+      user,
+      map(({ apiKey }) => apiKey),
       fold(
         () => localStorage.removeItem('apiKey'),
         key => localStorage.setItem('apiKey', key),
       )
     )
   }, [user]);
+
+  React.useEffect(() => {
+    pipe(
+      fromNullable(localStorage.getItem("apiKey")),
+      fold(
+        () => dispatch({ type: 'LOG_OUT' }),
+        apiKey => dispatch({ type: 'SET_LOGIN_STATUS_UNKNOWN', apiKey })
+      )
+    );
+  }, [dispatch]);
+
 };
 
 export default useLocalStoragedApiKey;

@@ -7,23 +7,23 @@ import { map, some } from "fp-ts/Option";
 const useLoginOnApiKey = () => {
   const {
     dispatch,
-    state: { apiKey },
+    user,
   } = React.useContext(UserContext);
 
   React.useEffect(() => {
     console.log('useLoginOnApiKey');
     pipe(
-      apiKey,
-      map(key => {
+      user,
+      map(({ apiKey }) => {
         userService
-          .getCurrentUser(key)
-          .then((user) => dispatch({ type: "LOG_IN", user: some(user) }))
+          .getCurrentUser(apiKey)
+          .then((user) => dispatch({ type: "LOG_IN", payload: { apiKey, tag: "logged_in", user: user } }))
           .catch(() => dispatch({ type: "LOG_OUT" }));
       })
     )
 
 
-  }, [apiKey, dispatch]);
+  }, [user, dispatch]);
 };
 
 export default useLoginOnApiKey;

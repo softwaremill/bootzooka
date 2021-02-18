@@ -9,8 +9,8 @@ import { pipe } from "fp-ts/pipeable";
 
 const Top: React.FC = () => {
   const {
-    state: { user },
-    dispatch,
+    user,
+    dispatch
   } = React.useContext(UserContext);
 
   const handleLogOut = () => dispatch({ type: "LOG_OUT" });

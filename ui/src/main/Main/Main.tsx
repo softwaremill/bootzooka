@@ -9,7 +9,7 @@ import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
 
 const Main: React.FC = () => {
   const {
-    state: { user },
+    user,
   } = React.useContext(UserContext);
 
   useLocalStoragedApiKey();
