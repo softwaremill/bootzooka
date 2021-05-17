@@ -120,7 +120,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   },
   copyWebapp := {
     streams.value.log.info("Copying the webapp resources")
-    IO.copyDirectory(uiDirectory.value / "build", (classDirectory in Compile).value / "webapp")
+    IO.copyDirectory(uiDirectory.value / "build", (Compile / classDirectory).value / "webapp")
   },
   copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value
 )
@@ -144,14 +144,14 @@ lazy val buildInfoSettings = Seq(
 )
 
 lazy val fatJarSettings = Seq(
-  assemblyJarName in assembly := "bootzooka.jar",
+  assembly / assemblyJarName := "bootzooka.jar",
   assembly := assembly.dependsOn(copyWebapp).value,
-  assemblyMergeStrategy in assembly := {
+  assembly / assemblyMergeStrategy := {
     case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties"       => MergeStrategy.first
     case PathList(ps @ _*) if ps.last endsWith "pom.properties"                     => MergeStrategy.first
     case PathList(ps @ _*) if ps.last endsWith "scala-collection-compat.properties" => MergeStrategy.first
     case x =>
-      val oldStrategy = (assemblyMergeStrategy in assembly).value
+      val oldStrategy = (assembly / assemblyMergeStrategy).value
       oldStrategy(x)
   }
 )
@@ -159,7 +159,7 @@ lazy val fatJarSettings = Seq(
 lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),
   dockerBaseImage := "adoptopenjdk:11.0.5_10-jdk-hotspot",
-  packageName in Docker := "bootzooka",
+  Docker / packageName := "bootzooka",
   dockerUsername := Some("softwaremill"),
   dockerCommands := {
     dockerCommands.value.flatMap {
@@ -170,15 +170,15 @@ lazy val dockerSettings = Seq(
       case other => Seq(other)
     }
   },
-  mappings in Docker ++= {
+  Docker / mappings ++= {
     val scriptDir = baseDirectory.value / ".." / "scripts"
     val entrypointScript = scriptDir / "docker-entrypoint.sh"
     val entrypointScriptTargetPath = "/opt/docker/docker-entrypoint.sh"
     Seq(entrypointScript -> entrypointScriptTargetPath)
   },
   dockerUpdateLatest := true,
-  publishLocal in Docker := (publishLocal in Docker).dependsOn(copyWebapp).value,
-  version in Docker := git.gitHeadCommit.value.map(head => now() + "-" + head.take(8)).getOrElse("latest")
+  Docker / publishLocal := (Docker / publishLocal).dependsOn(copyWebapp).value,
+  Docker / version := git.gitHeadCommit.value.map(head => now() + "-" + head.take(8)).getOrElse("latest")
 )
 
 def haltOnCmdResultError(result: Int) {
@@ -197,15 +197,15 @@ lazy val rootProject = (project in file("."))
   .settings(commonSettings)
   .settings(
     name := "bootzooka",
-    herokuFatJar in Compile := Some((assemblyOutputPath in backend in assembly).value),
-    deployHeroku in Compile := ((deployHeroku in Compile) dependsOn (assembly in backend)).value
+    Compile / herokuFatJar := Some((backend / assembly / assemblyOutputPath).value),
+    Compile / deployHeroku := ((Compile / deployHeroku) dependsOn (backend / assembly)).value
   )
   .aggregate(backend, ui)
 
 lazy val backend: Project = (project in file("backend"))
   .settings(
     libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies ++ catsEffectStack,
-    mainClass in Compile := Some("com.softwaremill.bootzooka.Main")
+    Compile / mainClass := Some("com.softwaremill.bootzooka.Main")
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)
@@ -218,7 +218,7 @@ lazy val backend: Project = (project in file("backend"))
 
 lazy val ui = (project in file(uiProjectName))
   .settings(commonSettings)
-  .settings(test in Test := (test in Test).dependsOn(yarnTask.toTask(" test:ci")).value)
+  .settings(Test / test := (Test / test).dependsOn(yarnTask.toTask(" test:ci")).value)
   .settings(cleanFiles += baseDirectory.value / "build")
 
 RenameProject.settings
