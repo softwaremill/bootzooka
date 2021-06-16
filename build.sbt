@@ -1,7 +1,6 @@
 import sbtbuildinfo.BuildInfoKey.action
 import sbtbuildinfo.BuildInfoKeys.{buildInfoKeys, buildInfoOptions, buildInfoPackage}
 import sbtbuildinfo.{BuildInfoKey, BuildInfoOption}
-import com.typesafe.sbt.packager.docker.ExecCmd
 
 import sbt._
 import Keys._
@@ -156,29 +155,24 @@ lazy val fatJarSettings = Seq(
   }
 )
 
+git.uncommittedSignifier := Some("dirty")
+git.formattedShaVersion in ThisBuild := {
+  val base = git.baseVersion.?.value
+  val suffix =
+    git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
+  git.gitHeadCommit.value.map { sha =>
+    git.defaultFormatShaVersion(base, sha.take(7), suffix)
+  }
+}
+
 lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),
   dockerBaseImage := "adoptopenjdk:11.0.5_10-jdk-hotspot",
   Docker / packageName := "bootzooka",
   dockerUsername := Some("softwaremill"),
-  dockerCommands := {
-    dockerCommands.value.flatMap {
-      case ep @ ExecCmd("ENTRYPOINT", _*) =>
-        Seq(
-          ExecCmd("ENTRYPOINT", "/opt/docker/docker-entrypoint.sh" :: ep.args.toList: _*)
-        )
-      case other => Seq(other)
-    }
-  },
-  Docker / mappings ++= {
-    val scriptDir = baseDirectory.value / ".." / "scripts"
-    val entrypointScript = scriptDir / "docker-entrypoint.sh"
-    val entrypointScriptTargetPath = "/opt/docker/docker-entrypoint.sh"
-    Seq(entrypointScript -> entrypointScriptTargetPath)
-  },
   dockerUpdateLatest := true,
   Docker / publishLocal := (Docker / publishLocal).dependsOn(copyWebapp).value,
-  Docker / version := git.gitHeadCommit.value.map(head => now() + "-" + head.take(8)).getOrElse("latest")
+  Docker / version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest")),
 )
 
 def haltOnCmdResultError(result: Int) {

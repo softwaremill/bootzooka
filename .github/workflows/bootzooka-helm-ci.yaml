@@ -5,6 +5,8 @@ on:
     paths:
       - "helm/**"
       - ".github/**"
+    branches:
+      - master
   pull_request:
     paths:
       - "helm/**"
@@ -12,8 +14,6 @@ on:
 
 jobs:
   lint-chart:
-    # run on external PRs, but not on internal PRs since those will be run by push to branch
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     name: Lint Helm Chart
     runs-on: ubuntu-18.04
     steps:
@@ -86,6 +86,8 @@ jobs:
         run: git diff --exit-code
 
   publish-chart:
+    # run only on push to master
+    if: github.event_name == 'push'
     needs:
       - lint-chart
       - install-test-chart
