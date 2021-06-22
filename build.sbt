@@ -155,15 +155,6 @@ lazy val fatJarSettings = Seq(
   }
 )
 
-git.uncommittedSignifier := Some("dirty")
-git.formattedShaVersion in ThisBuild := {
-  val base = git.baseVersion.?.value
-  val suffix =
-    git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
-  git.gitHeadCommit.value.map { sha =>
-    git.defaultFormatShaVersion(base, sha.take(7), suffix)
-  }
-}
 
 lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),
@@ -173,6 +164,14 @@ lazy val dockerSettings = Seq(
   dockerUpdateLatest := true,
   Docker / publishLocal := (Docker / publishLocal).dependsOn(copyWebapp).value,
   Docker / version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest")),
+  git.uncommittedSignifier := Some("dirty"),
+  ThisBuild / git.formattedShaVersion := {
+    val base = git.baseVersion.?.value
+    val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
+    git.gitHeadCommit.value.map { sha =>
+      git.defaultFormatShaVersion(base, sha.take(7), suffix)
+    }
+  }
 )
 
 def haltOnCmdResultError(result: Int) {
