@@ -90,4 +90,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish docker image
-        run: sbt docker:publish
+        run: sbt backend/docker:publish
