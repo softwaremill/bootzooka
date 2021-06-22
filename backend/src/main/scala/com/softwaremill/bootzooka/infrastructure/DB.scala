@@ -53,7 +53,7 @@ class DB(_config: DBConfig) extends StrictLogging {
         connectEC,
         Blocker.liftExecutionContext(transactEC)
       )
-      _ <- Resource.liftF(connectAndMigrate(xa))
+      _ <- Resource.eval(connectAndMigrate(xa))
     } yield xa
   }
 
