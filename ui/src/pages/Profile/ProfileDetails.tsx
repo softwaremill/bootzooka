@@ -1,7 +1,7 @@
 import React from "react";
-import { Formik, Form as FormikForm } from "formik";
+import { Form as FormikForm, Formik } from "formik";
 import * as Yup from "yup";
-import userService from "../../services/UserService/UserService";
+import userServiceFP from "../../services/UserService/UserServiceFP";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -11,6 +11,8 @@ import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
+import { getOrElse } from 'fp-ts/Option';
+import { pipe } from "fp-ts/pipeable";
 
 interface ProfileDetailsParams {
   login: string;
@@ -25,11 +27,11 @@ const validationSchema: Yup.ObjectSchema<ProfileDetailsParams | undefined> = Yup
 const ProfileDetails: React.FC = () => {
   const {
     dispatch,
-    state: { apiKey, user },
+    state: { user },
   } = React.useContext(UserContext);
 
   const [result, send, clear] = usePromise((values: ProfileDetailsParams) =>
-    userService.changeProfileDetails(apiKey, values).then(() => dispatch({ type: "UPDATE_USER_DATA", user: values }))
+    userServiceFP.changeProfileDetails(values).then((value) => dispatch({ type: "UPDATE_USER_DATA", user: values }))
   );
 
   return (
@@ -38,10 +40,12 @@ const ProfileDetails: React.FC = () => {
         <Col md={9} lg={7} xl={6} className="mx-auto">
           <h3>Profile details</h3>
           <Formik<ProfileDetailsParams>
-            initialValues={{
-              login: user?.login || "",
-              email: user?.email || "",
-            }}
+            initialValues={
+              pipe(
+                user,
+                getOrElse(() => ({ login: '', email: '' })),
+              )
+            }
             onSubmit={send}
             validationSchema={validationSchema}
           >
