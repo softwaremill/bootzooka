@@ -15,7 +15,7 @@ val circeVersion = "0.14.1"
 val tsecVersion = "0.2.1"
 val sttpVersion = "3.3.7"
 val prometheusVersion = "0.11.0"
-val tapirVersion = "0.17.19"
+val tapirVersion = "0.17.20"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
