@@ -1,13 +1,11 @@
 package com.softwaremill.bootzooka.http
 
 import java.util.concurrent.Executors
-
 import cats.data.{Kleisli, OptionT}
 import cats.effect.{Blocker, Resource}
 import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
-import com.softwaremill.bootzooka.util.ServerEndpoints
-import com.softwaremill.correlator.Http4sCorrelationMiddleware
+import com.softwaremill.bootzooka.util.{Http4sCorrelationMiddleware, ServerEndpoints}
 import com.typesafe.scalalogging.StrictLogging
 import io.prometheus.client.CollectorRegistry
 import monix.eval.Task
@@ -16,12 +14,12 @@ import org.http4s.{HttpApp, HttpRoutes, Request, Response, StaticFile}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.metrics.prometheus.Prometheus
 import org.http4s.server.Router
-import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
 import org.http4s.server.staticcontent.{ResourceService, _}
 import org.http4s.syntax.kleisli._
-import Http4sCorrelationMiddleware.source
+import com.softwaremill.bootzooka.util.Http4sCorrelationMiddleware.source
 import monix.execution.Scheduler
+import org.http4s.blaze.server.BlazeServerBuilder
 
 import scala.concurrent.ExecutionContext
 
@@ -49,11 +47,11 @@ class HttpApi(
   private lazy val adminRoutes: HttpRoutes[Task] = endpointsToRoutes(adminEndpoints)
   private lazy val docsRoutes: HttpRoutes[Task] = endpointsToRoutes.toDocsRoutes(endpoints)
 
-  private lazy val corsConfig: CORSConfig = CORS.DefaultCORSConfig
+  private lazy val corsConfig: CORSConfig = CORSConfig.default
 
   /** The resource describing the HTTP server; binds when the resource is allocated.
     */
-  lazy val resource: Resource[Task, org.http4s.server.Server[Task]] = {
+  lazy val resource: Resource[Task, org.http4s.server.Server] = {
     val prometheusHttp4sMetrics = Prometheus.metricsOps[Task](collectorRegistry)
     prometheusHttp4sMetrics
       .map(m => Metrics[Task](m)(mainRoutes))
