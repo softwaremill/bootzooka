@@ -6,6 +6,7 @@ import monix.eval.Task
 import org.http4s.Request
 import org.typelevel.ci.CIString
 
+// TODO: use the correlator project once it's updated
 class Http4sCorrelationMiddleware(correlationId: CorrelationIdDecorator) {
 
   def withCorrelationId[T, R](
