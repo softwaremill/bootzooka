@@ -5,7 +5,7 @@ import com.softwaremill.bootzooka.util.ServerEndpoints
 import monix.eval.Task
 import org.http4s.HttpRoutes
 import sttp.model.{Header, StatusCode}
-import sttp.tapir.DecodeResult
+import sttp.tapir.{DecodeResult, headers}
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Server
 import sttp.tapir.openapi.circe.yaml._
@@ -41,7 +41,7 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     */
   private val decodeFailureHandler: DecodeFailureHandler = {
     def failResponse: (StatusCode, List[Header], String) => ValuedEndpointOutput[_] =
-      (c, _, m) => ValuedEndpointOutput(http.failOutput, (c, Error_OUT(m)))
+      (c, _, m) => ValuedEndpointOutput(headers.and(http.failOutput), (c, Error_OUT(m)))
 
     val defaultHandler = DefaultDecodeFailureHandler(
       respond(_, badRequestOnPathErrorIfPathShapeMatches = false, badRequestOnPathInvalidIfPathShapeMatches = true),
