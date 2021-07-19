@@ -4,12 +4,17 @@ import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import monix.eval.Task
 import org.http4s.HttpRoutes
-import sttp.tapir.DecodeResult
-import sttp.tapir.server.{DecodeFailureContext, DecodeFailureHandler, DecodeFailureHandling, DefaultDecodeFailureResponse, ServerDefaults}
-import sttp.tapir.server.http4s._
+import sttp.model.{Header, StatusCode}
+import sttp.tapir.{DecodeResult, headers}
 import sttp.tapir.docs.openapi._
-import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.openapi.Server
+import sttp.tapir.openapi.circe.yaml._
+import sttp.tapir.server.http4s.Http4sServerOptions.Log
+import sttp.tapir.server.http4s._
+import sttp.tapir.server.interceptor.decodefailure.DefaultDecodeFailureHandler.{FailureMessages, respond}
+import sttp.tapir.server.interceptor.{DecodeFailureContext, ValuedEndpointOutput}
+import sttp.tapir.server.interceptor.decodefailure.{DecodeFailureHandler, DefaultDecodeFailureHandler}
+import sttp.tapir.server.interceptor.exception.DefaultExceptionHandler
 import sttp.tapir.swagger.http4s.SwaggerHttp4s
 
 class EndpointsToRoutes(http: Http, apiContextPath: String) {
@@ -17,12 +22,9 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
   /** Interprets the given endpoint descriptions as http4s routes
     */
   def apply(es: ServerEndpoints): HttpRoutes[Task] = {
-    implicit val serverOptions: Http4sServerOptions[Task] = Http4sServerOptions
-      .default[Task]
-      .copy(
-        decodeFailureHandler = decodeFailureHandler
-      )
-    Http4sServerInterpreter.toRoutes(es.toList)
+    val serverOptions: Http4sServerOptions[Task, Task] = Http4sServerOptions
+      .customInterceptors(Option(DefaultExceptionHandler), Some(Log.defaultServerLog[Task]), decodeFailureHandler = decodeFailureHandler)
+    Http4sServerInterpreter(serverOptions).toRoutes(es.toList)
   }
 
   /** tapir's Codecs parse inputs - query parameters, JSON bodies, headers - to their desired types. This might fail,
@@ -38,15 +40,19 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     * code, by translating it using the `http.exceptionToErrorOut` method and using that to create the response.
     */
   private val decodeFailureHandler: DecodeFailureHandler = {
-    def failResponse(defaultDecodeFailureResponse: DefaultDecodeFailureResponse, msg: String): DecodeFailureHandling =
-      DecodeFailureHandling.response(http.failOutput)((defaultDecodeFailureResponse.status, Error_OUT(msg)))
+    def failResponse: (StatusCode, List[Header], String) => ValuedEndpointOutput[_] =
+      (c, hs, m) => ValuedEndpointOutput(headers.and(http.failOutput), (hs, c, Error_OUT(m)))
 
-    val defaultHandler = ServerDefaults.decodeFailureHandler.copy(response = failResponse)
+    val defaultHandler = DefaultDecodeFailureHandler(
+      respond(_, badRequestOnPathErrorIfPathShapeMatches = false, badRequestOnPathInvalidIfPathShapeMatches = true),
+      FailureMessages.failureMessage,
+      failResponse
+    )
 
     {
       // if an exception is thrown when decoding an input, and the exception is a Fail, responding basing on the Fail
-      case DecodeFailureContext(_, DecodeResult.Error(_, f: Fail), _) =>
-        DecodeFailureHandling.response(http.failOutput)(http.exceptionToErrorOut(f))
+      case DecodeFailureContext(_, DecodeResult.Error(_, f: Fail), _, _) =>
+        Some(ValuedEndpointOutput(http.failOutput, http.exceptionToErrorOut(f)))
       // otherwise, converting the decode input failure into a response using tapir's defaults
       case ctx =>
         defaultHandler(ctx)
@@ -57,8 +63,8 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     * using Swagger.
     */
   def toDocsRoutes(es: ServerEndpoints): HttpRoutes[Task] = {
-    val openapi = OpenAPIDocsInterpreter
-      .serverEndpointsToOpenAPI(es.toList,"Bootzooka", "1.0")
+    val openapi = OpenAPIDocsInterpreter()
+      .serverEndpointsToOpenAPI(es.toList, "Bootzooka", "1.0")
       .servers(List(Server(s"$apiContextPath", None)))
     val yaml = openapi.toYaml
     new SwaggerHttp4s(yaml).routes[Task]

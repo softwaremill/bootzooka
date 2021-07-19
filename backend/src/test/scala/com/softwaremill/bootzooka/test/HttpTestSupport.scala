@@ -11,9 +11,9 @@ import monix.execution.Scheduler.Implicits.global
 import org.http4s.Credentials.Token
 import org.http4s.dsl.Http4sDsl
 import org.http4s.headers.Authorization
-import org.http4s.util.CaseInsensitiveString
 import org.http4s.{EntityDecoder, EntityEncoder, Headers, Request, Response, Status}
 import org.scalatest.matchers.should.Matchers
+import org.typelevel.ci.CIString
 
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
@@ -65,7 +65,7 @@ trait HttpTestSupport extends Http4sDsl[Task] with Matchers {
   }
 
   def authorizedRequest(token: String, request: Request[Task]): Request[Task] = {
-    val authHeader = Authorization(Token(CaseInsensitiveString("Bearer"), token))
-    request.withHeaders(request.headers ++ Headers.of(authHeader))
+    val authHeader = Authorization(Token(CIString("Bearer"), token))
+    request.withHeaders(request.headers ++ Headers.apply(authHeader))
   }
 }

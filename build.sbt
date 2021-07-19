@@ -10,18 +10,18 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "0.13.4"
-val http4sVersion = "0.21.24"
+val http4sVersion = "0.22.0-RC1"
 val circeVersion = "0.14.1"
 val tsecVersion = "0.2.1"
-val sttpVersion = "3.3.7"
+val sttpVersion = "3.3.11"
 val prometheusVersion = "0.11.0"
-val tapirVersion = "0.17.19"
+val tapirVersion = "0.18.0"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "7.10.0"
+  "org.flywaydb" % "flyway-core" % "7.11.2"
 )
 
 val httpDependencies = Seq(
@@ -53,8 +53,7 @@ val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.codehaus.janino" % "janino" % "3.1.4",
-  "de.siegmar" % "logback-gelf" % "3.0.0",
-  "com.softwaremill.correlator" %% "monix-logback-http4s" % "0.1.9"
+  "de.siegmar" % "logback-gelf" % "3.0.0"
 )
 
 val configDependencies = Seq(
