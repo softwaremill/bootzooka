@@ -24,7 +24,7 @@ pull_request_rules:
   - name: semi-automatic merge for scala-steward pull requests
     conditions:
       - author=scala-steward
-      - status-success=continuous-integration/travis-ci/pr
+      - status-success=Bootzooka CI
       - "#approved-reviews-by>=1"
     actions:
       merge:
