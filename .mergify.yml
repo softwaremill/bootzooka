@@ -6,7 +6,7 @@ pull_request_rules:
   - name: automatic merge for scala-steward pull requests affecting build.sbt
     conditions:
       - author=scala-steward
-      - status-success=CI
+      - status-success=Bootzooka CI
       - "#files=1"
       - files=build.sbt
     actions:
@@ -15,7 +15,7 @@ pull_request_rules:
   - name: automatic merge for scala-steward pull requests affecting project plugins.sbt
     conditions:
       - author=scala-steward
-      - status-success=CI
+      - status-success=Bootzooka CI
       - "#files=1"
       - files=project/plugins.sbt
     actions:
@@ -32,7 +32,7 @@ pull_request_rules:
   - name: automatic merge for scala-steward pull requests affecting project build.properties
     conditions:
       - author=scala-steward
-      - status-success=CI
+      - status-success=Bootzooka CI
       - "#files=1"
       - files=project/build.properties
     actions:
@@ -41,7 +41,7 @@ pull_request_rules:
   - name: automatic merge for scala-steward pull requests affecting .scalafmt.conf
     conditions:
       - author=scala-steward
-      - status-success=CI
+      - status-success=Bootzooka CI
       - "#files=1"
       - files=.scalafmt.conf
     actions:
