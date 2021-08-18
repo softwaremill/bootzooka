@@ -96,7 +96,7 @@ class HttpApi(
     val rootRoute = HttpRoutes.of[Task] { case request @ GET -> Root =>
       indexResponse(request)
     }
-    val resourcesRoutes = resourceService[Task](ResourceService.Config("/webapp", staticFileBlocker))
+    val resourcesRoutes = resourceServiceBuilder[Task]("/webapp", staticFileBlocker).toRoutes
     rootRoute <+> resourcesRoutes
   }
 }
