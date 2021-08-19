@@ -13,8 +13,7 @@ import org.flywaydb.core.Flyway
 import scala.annotation.tailrec
 import scala.concurrent.duration._
 
-/**
-  * A work-around to use the `xaResource` imperatively.
+/** A work-around to use the `xaResource` imperatively.
   */
 class TestDB(config: DBConfig) extends StrictLogging {
 
