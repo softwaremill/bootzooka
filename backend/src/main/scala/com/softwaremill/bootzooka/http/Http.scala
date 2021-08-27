@@ -23,14 +23,14 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
     */
   val failOutput: EndpointOutput[(StatusCode, Error_OUT)] = statusCode and jsonBody[Error_OUT]
 
-  /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values
-    * corresponding to the [[Error_OUT]] class.
+  /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
+    * [[Error_OUT]] class.
     */
   val baseEndpoint: Endpoint[Unit, (StatusCode, Error_OUT), Unit, Any] =
     endpoint.errorOut(failOutput)
 
-  /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values
-    * corresponding to the [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
+  /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
+    * [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
     */
   val secureEndpoint: Endpoint[Id, (StatusCode, Error_OUT), Unit, Any] =
     baseEndpoint.in(auth.bearer[String]().map(_.asInstanceOf[Id])(identity))
@@ -64,8 +64,8 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
 
   implicit class TaskOut[T](f: Task[T]) {
 
-    /** An extension method for [[Task]], which converts a possibly failed task, to a task which either returns
-      * the error converted to an [[Error_OUT]] instance, or returns the successful value unchanged.
+    /** An extension method for [[Task]], which converts a possibly failed task, to a task which either returns the error converted to an
+      * [[Error_OUT]] instance, or returns the successful value unchanged.
       */
     def toOut: Task[Either[(StatusCode, Error_OUT), T]] = {
       f.map(t => t.asRight[(StatusCode, Error_OUT)]).recover { case e: Exception =>
