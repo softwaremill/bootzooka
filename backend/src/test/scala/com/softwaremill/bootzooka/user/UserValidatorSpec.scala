@@ -21,14 +21,14 @@ class UserValidatorSpec extends AnyFlatSpec with Matchers {
 
   "validate" should "not accept too short login" in {
     val tooShortLogin = "a" * (UserValidator.MinLoginLength - 1)
-    val dataIsValid   = validate(tooShortLogin, "admin@bootzooka.com", "password")
+    val dataIsValid = validate(tooShortLogin, "admin@bootzooka.com", "password")
 
     dataIsValid.isLeft shouldBe true
   }
 
   "validate" should "not accept too short login after trimming" in {
     val loginTooShortAfterTrim = "a" * (UserValidator.MinLoginLength - 1) + "   "
-    val dataIsValid            = validate(loginTooShortAfterTrim, "admin@bootzooka.com", "password")
+    val dataIsValid = validate(loginTooShortAfterTrim, "admin@bootzooka.com", "password")
 
     dataIsValid.isLeft shouldBe true
   }
