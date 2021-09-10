@@ -12,8 +12,8 @@ object RenameProject {
     (Space ~>
       token(NotSpace, "top level package, for example com.softwaremill") ~
       Space ~
-      token(NotSpace, "project name, single word like bootzooka")).map {
-      case ((pkg, _), proj) => RenameCommand(pkg, proj)
+      token(NotSpace, "project name, single word like bootzooka")).map { case ((pkg, _), proj) =>
+      RenameCommand(pkg, proj)
     }
   }
 
@@ -74,7 +74,7 @@ object RenameProject {
       }
 
       def updateFileContent(updateFun: (String, File) => String, file: File) = {
-        val content        = read(file)
+        val content = read(file)
         val updatedContent = updateFun(content, file)
         if (!content.eq(updatedContent)) {
           info(s"Writing updated ${file.getPath}")
@@ -95,7 +95,7 @@ object RenameProject {
         def appendSubDirs(initialPath: Path, subdirectories: Seq[String]) =
           subdirectories.foldLeft(initialPath)((path, subDir) => path.resolve(subDir))
 
-        val scalaRoots        = List(List("src", "main", "scala"), List("src", "test", "scala"))
+        val scalaRoots = List(List("src", "main", "scala"), List("src", "test", "scala"))
         val srcPackageDirStrs = initialPackage.split('.')
         val dstPackageDirStrs = newPackage.split('.')
         val projectSubDirs = ((baseDir * "*") filter { file =>
@@ -103,10 +103,10 @@ object RenameProject {
         }).get
         for {
           projectSubDir <- projectSubDirs
-          scalaRoot     <- scalaRoots
+          scalaRoot <- scalaRoots
         } {
           val moduleBaseDir = projectSubDir.toPath
-          val srcScalaDir   = appendSubDirs(moduleBaseDir, scalaRoot)
+          val srcScalaDir = appendSubDirs(moduleBaseDir, scalaRoot)
           val srcPackageDir = appendSubDirs(srcScalaDir, srcPackageDirStrs).toFile
           val dstPackageDir = appendSubDirs(srcScalaDir, dstPackageDirStrs).toFile
           if (srcPackageDir.exists()) {
@@ -117,11 +117,11 @@ object RenameProject {
         }
       }
 
-      val cmd                = renameArgsParser.parsed
-      val initialName        = name.value
+      val cmd = renameArgsParser.parsed
+      val initialName = name.value
       val initialRootPackage = "com.softwaremill.bootzooka"
-      val targetRootPackage  = cmd.packageName + "." + cmd.projectName
-      val excludes           = List("README.md", "RenameProject.scala", "rename.sbt", "out", "node_modules", "target")
+      val targetRootPackage = cmd.packageName + "." + cmd.projectName
+      val excludes = List("README.md", "RenameProject.scala", "rename.sbt", "out", "node_modules", "target")
       info("Removing scaffolding in HTML elements...")
       val baseDir: File = baseDirectory.value
       updateDirContent(
