@@ -27,17 +27,17 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     Http4sServerInterpreter(serverOptions).toRoutes(es.toList)
   }
 
-  /** tapir's Codecs parse inputs - query parameters, JSON bodies, headers - to their desired types. This might fail,
-    * and then a decode failure is returned, instead of a value. How such a failure is handled can be customised.
+  /** tapir's Codecs parse inputs - query parameters, JSON bodies, headers - to their desired types. This might fail, and then a decode
+    * failure is returned, instead of a value. How such a failure is handled can be customised.
     *
-    * We want to return responses in the same JSON format (corresponding to [[Error_OUT]]) as other errors returned
-    * during normal request processing.
+    * We want to return responses in the same JSON format (corresponding to [[Error_OUT]]) as other errors returned during normal request
+    * processing.
     *
-    * We use the default behavior of tapir (`ServerDefaults.decodeFailureHandler`), customising the format
-    * used for returning errors (`http.failOutput`). This will cause `400 Bad Request` to be returned in most cases.
+    * We use the default behavior of tapir (`ServerDefaults.decodeFailureHandler`), customising the format used for returning errors
+    * (`http.failOutput`). This will cause `400 Bad Request` to be returned in most cases.
     *
-    * Additionally, if the error thrown is a `Fail` we might get additional information, such as a custom status
-    * code, by translating it using the `http.exceptionToErrorOut` method and using that to create the response.
+    * Additionally, if the error thrown is a `Fail` we might get additional information, such as a custom status code, by translating it
+    * using the `http.exceptionToErrorOut` method and using that to create the response.
     */
   private val decodeFailureHandler: DecodeFailureHandler = {
     def failResponse: (StatusCode, List[Header], String) => ValuedEndpointOutput[_] =
@@ -59,8 +59,7 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     }
   }
 
-  /** Interprets the given endpoint descriptions as docs, and returns http4s routes which expose the documentation
-    * using Swagger.
+  /** Interprets the given endpoint descriptions as docs, and returns http4s routes which expose the documentation using Swagger.
     */
   def toDocsRoutes(es: ServerEndpoints): HttpRoutes[Task] = {
     val openapi = OpenAPIDocsInterpreter()

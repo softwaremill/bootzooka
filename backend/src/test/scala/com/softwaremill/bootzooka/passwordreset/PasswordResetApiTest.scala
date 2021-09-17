@@ -3,7 +3,12 @@ package com.softwaremill.bootzooka.passwordreset
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_IN, ForgotPassword_OUT, PasswordReset_IN, PasswordReset_OUT}
+import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{
+  ForgotPassword_IN,
+  ForgotPassword_OUT,
+  PasswordReset_IN,
+  PasswordReset_OUT
+}
 import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
 import com.softwaremill.bootzooka.MainModule
 import com.softwaremill.bootzooka.config.Config
@@ -132,7 +137,8 @@ class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Event
 
     val maybeEmail = DummyEmailSender.findSentEmail(email, "SoftwareMill Bootzooka password reset")
     maybeEmail match {
-      case Some(emailData) => throw new IllegalStateException(s"There should be no password reset email sent to $email, but instead found $emailData")
+      case Some(emailData) =>
+        throw new IllegalStateException(s"There should be no password reset email sent to $email, but instead found $emailData")
       case None => ()
     }
   }
