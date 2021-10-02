@@ -23,14 +23,13 @@ import org.http4s.blaze.server.BlazeServerBuilder
 
 import scala.concurrent.ExecutionContext
 
-/** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs
-  * and correlation id support.
+/** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs and correlation id support.
   *
   * The following endpoints are exposed:
-  * - `/api/v1` - the main API
-  * - `/api/v1/docs` - swagger UI for the main API
-  * - `/admin` - admin API
-  * - `/` - serving frontend resources
+  *   - `/api/v1` - the main API
+  *   - `/api/v1/docs` - swagger UI for the main API
+  *   - `/admin` - admin API
+  *   - `/` - serving frontend resources
   */
 class HttpApi(
     http: Http,
