@@ -28,8 +28,8 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
     } yield ()
   }
 
-  /** Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates
-    * a metric which holds the size of the email queue.
+  /** Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates a metric which holds
+    * the size of the email queue.
     */
   def startProcesses(): Task[(Fiber[Nothing], Fiber[Nothing])] = {
     val sendProcess = runForeverPeriodically("Exception when sending emails") {
