@@ -28,4 +28,3 @@ class TestClock(nowRef: AtomicReference[Instant]) extends Clock with StrictLoggi
     nowRef.get()
   }
 }
-
