@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.infrastructure
 
 import java.net.URI
 
-import cats.effect.{Blocker, Resource}
+import cats.effect.Resource
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
 import monix.eval.Task

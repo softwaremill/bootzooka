@@ -1,6 +1,5 @@
 package com.softwaremill.bootzooka.test
 
-import cats.effect.{Blocker, ContextShift}
 import com.softwaremill.bootzooka.infrastructure.DBConfig
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.typesafe.scalalogging.StrictLogging

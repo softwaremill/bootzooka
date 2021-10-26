@@ -4,7 +4,6 @@ import java.security.SecureRandom
 import java.time.Instant
 
 import cats.data.OptionT
-import cats.effect.Timer
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.user.User
@@ -14,6 +13,7 @@ import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
 
 import scala.concurrent.duration._
+import cats.effect.Temporal
 
 class Auth[T](
     authTokenOps: AuthTokenOps[T],
@@ -37,7 +37,7 @@ class Auth[T](
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
-        Timer[Task].sleep(random.nextInt(1000).millis) >> Task.raiseError(Fail.Unauthorized("Unauthorized"))
+        Temporal[Task].sleep(random.nextInt(1000).millis) >> Task.raiseError(Fail.Unauthorized("Unauthorized"))
       case Some(token) =>
         val delete = if (authTokenOps.deleteWhenValid) authTokenOps.delete(token).transact(xa) else Task.unit
         delete >> Task.now(authTokenOps.userId(token))

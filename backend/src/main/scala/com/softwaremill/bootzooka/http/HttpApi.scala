@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.http
 
 import java.util.concurrent.Executors
 import cats.data.{Kleisli, OptionT}
-import cats.effect.{Blocker, Resource}
+import cats.effect.Resource
 import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import com.softwaremill.bootzooka.util.{Http4sCorrelationMiddleware, ServerEndpoints}
