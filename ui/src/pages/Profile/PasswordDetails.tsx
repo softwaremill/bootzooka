@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import userService from "../../services/UserService/UserService";
+import userService from "../../services/UserService/UserServiceFP";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -32,7 +32,7 @@ const ProfileDetails: React.FC = () => {
   } = React.useContext(UserContext);
 
   const [result, send, clear] = usePromise(({ currentPassword, newPassword }: PasswordDetailsParams) =>
-    userService.changePassword(apiKey, { currentPassword, newPassword })
+    userService.changePassword({ currentPassword, newPassword })
   );
 
   return (

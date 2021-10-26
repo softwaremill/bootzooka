@@ -18,7 +18,7 @@ beforeEach(() => {
 test("renders header", () => {
   const { getByText } = render(
     <Router history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialUserState }, dispatch }}>
         <Login />
       </UserContext.Provider>
     </Router>
@@ -30,7 +30,7 @@ test("renders header", () => {
 test("redirects when logged in", () => {
   render(
     <Router history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialUserState }, dispatch }}>
         <Login />
       </UserContext.Provider>
     </Router>
@@ -73,7 +73,7 @@ test("handles login error", async () => {
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialUserState }, dispatch }}>
         <Login />
       </UserContext.Provider>
     </Router>

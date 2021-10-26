@@ -18,7 +18,7 @@ beforeEach(() => {
 test("renders header", () => {
   const { getByText } = render(
     <Router history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialUserState }, dispatch }}>
         <Register />
       </UserContext.Provider>
     </Router>
@@ -30,7 +30,7 @@ test("renders header", () => {
 test("redirects when registered", () => {
   render(
     <Router history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialUserState }, dispatch }}>
         <Register />
       </UserContext.Provider>
     </Router>
@@ -46,7 +46,7 @@ test("handles register success", async () => {
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialUserState }, dispatch }}>
         <Register />
       </UserContext.Provider>
     </Router>
@@ -81,7 +81,7 @@ test("handles register error", async () => {
 
   const { getByLabelText, getByText, findByRole } = render(
     <Router history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+      <UserContext.Provider value={{ state: { ...initialUserState }, dispatch }}>
         <Register />
       </UserContext.Provider>
     </Router>
