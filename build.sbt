@@ -89,7 +89,7 @@ val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.4"
 val dbTestingStack = Seq(embeddedPostgres)
 
 val catsEffectStack = Seq(
-  "org.typelevel" %% "cats-effect-laws" % "2.5.4" % Test
+  "org.typelevel" %% "cats-effect-laws" % "3.2.9" % Test
 )
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
