@@ -1,6 +1,7 @@
 import sbtbuildinfo.BuildInfoKey.action
 import sbtbuildinfo.BuildInfoKeys.{buildInfoKeys, buildInfoOptions, buildInfoPackage}
 import sbtbuildinfo.{BuildInfoKey, BuildInfoOption}
+import com.softwaremill.SbtSoftwareMillCommon.commonSmlBuildSettings
 
 import sbt._
 import Keys._
