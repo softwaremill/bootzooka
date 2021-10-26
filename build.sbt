@@ -88,10 +88,6 @@ val unitTestingStack = Seq(scalatest)
 val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.4" % Test
 val dbTestingStack = Seq(embeddedPostgres)
 
-val catsEffectStack = Seq(
-  "org.typelevel" %% "cats-effect-laws" % "2.5.4" % Test
-)
-
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
 
 lazy val uiProjectName = "ui"
@@ -196,7 +192,7 @@ lazy val rootProject = (project in file("."))
 
 lazy val backend: Project = (project in file("backend"))
   .settings(
-    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies ++ catsEffectStack,
+    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
     Compile / mainClass := Some("com.softwaremill.bootzooka.Main")
   )
   .enablePlugins(BuildInfoPlugin)
