@@ -78,7 +78,7 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2" exclude("javax.activation", "activation")
+  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.9" % Test
@@ -153,7 +153,6 @@ lazy val fatJarSettings = Seq(
       oldStrategy(x)
   }
 )
-
 
 lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),

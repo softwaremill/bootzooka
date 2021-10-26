@@ -9,9 +9,8 @@ import org.slf4j.{Logger, LoggerFactory, MDC}
 
 import scala.util.Random
 
-/**
-  * Correlation id support. The `init()` method should be called when the application starts.
-  * See [[https://blog.softwaremill.com/correlation-ids-in-scala-using-monix-3aa11783db81]] for details.
+/** Correlation id support. The `init()` method should be called when the application starts. See
+  * [[https://blog.softwaremill.com/correlation-ids-in-scala-using-monix-3aa11783db81]] for details.
   */
 class CorrelationIdDecorator(newCorrelationId: () => String = CorrelationIdDecorator.DefaultGenerator, mdcKey: String = "cid") {
 
@@ -51,9 +50,7 @@ object CorrelationIdDecorator {
   }
 }
 
-/**
-  * Based on [[https://olegpy.com/better-logging-monix-1/]]. Makes the current correlation id available for logback
-  * loggers.
+/** Based on [[https://olegpy.com/better-logging-monix-1/]]. Makes the current correlation id available for logback loggers.
   */
 class MonixMDCAdapter extends LogbackMDCAdapter {
   private[this] val map = Local[ju.Map[String, String]](ju.Collections.emptyMap())
