@@ -10,11 +10,11 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "0.13.4"
-val http4sVersion = "0.22.0-RC1"
+val http4sVersion = "0.22.7"
 val circeVersion = "0.14.1"
 val tsecVersion = "0.2.1"
-val sttpVersion = "3.3.11"
-val prometheusVersion = "0.11.0"
+val sttpVersion = "3.3.16"
+val prometheusVersion = "0.12.0"
 val tapirVersion = "0.18.0"
 
 val dbDependencies = Seq(
@@ -52,18 +52,18 @@ val jsonDependencies = Seq(
 val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
   "ch.qos.logback" % "logback-classic" % "1.2.6",
-  "org.codehaus.janino" % "janino" % "3.1.4",
-  "de.siegmar" % "logback-gelf" % "3.0.0"
+  "org.codehaus.janino" % "janino" % "3.1.6",
+  "de.siegmar" % "logback-gelf" % "4.0.0"
 )
 
 val configDependencies = Seq(
-  "com.github.pureconfig" %% "pureconfig" % "0.16.0"
+  "com.github.pureconfig" %% "pureconfig" % "0.17.0"
 )
 
 val baseDependencies = Seq(
   "io.monix" %% "monix" % "3.4.0",
   "com.softwaremill.common" %% "tagging" % "2.3.1",
-  "com.softwaremill.quicklens" %% "quicklens" % "1.7.4"
+  "com.softwaremill.quicklens" %% "quicklens" % "1.7.5"
 )
 
 val apiDocsDependencies = Seq(
@@ -78,17 +78,17 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2" exclude("javax.activation", "activation")
+  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
 )
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.9" % Test
+val scalatest = "org.scalatest" %% "scalatest" % "3.2.10" % Test
 val unitTestingStack = Seq(scalatest)
 
 val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.4" % Test
 val dbTestingStack = Seq(embeddedPostgres)
 
 val catsEffectStack = Seq(
-  "org.typelevel" %% "cats-effect-laws" % "2.3.3" % Test
+  "org.typelevel" %% "cats-effect-laws" % "2.5.4" % Test
 )
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
@@ -153,7 +153,6 @@ lazy val fatJarSettings = Seq(
       oldStrategy(x)
   }
 )
-
 
 lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),
