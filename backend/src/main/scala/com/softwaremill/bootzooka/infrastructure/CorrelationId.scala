@@ -7,8 +7,8 @@ import monix.eval.Task
 import sttp.capabilities.Effect
 import sttp.monad.MonadError
 
-/** Correlation id support. The `init()` method should be called when the application starts.
-  * See [[https://github.com/softwaremill/correlator]] for details.
+/** Correlation id support. The `init()` method should be called when the application starts. See
+  * [[https://github.com/softwaremill/correlator]] for details.
   */
 object CorrelationId extends CorrelationIdDecorator()
 

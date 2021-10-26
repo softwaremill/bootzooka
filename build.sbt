@@ -10,10 +10,10 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "0.13.4"
-val http4sVersion = "0.22.0-RC1"
+val http4sVersion = "0.22.7"
 val circeVersion = "0.14.1"
-val tsecVersion = "0.4.0"
-val sttpVersion = "3.3.11"
+val tsecVersion = "0.2.1"
+val sttpVersion = "3.3.16"
 val prometheusVersion = "0.11.0"
 val tapirVersion = "0.18.0"
 
@@ -53,7 +53,7 @@ val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.codehaus.janino" % "janino" % "3.1.4",
-  "de.siegmar" % "logback-gelf" % "3.0.0"
+  "de.siegmar" % "logback-gelf" % "4.0.0"
 )
 
 val configDependencies = Seq(
@@ -78,7 +78,7 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2" exclude("javax.activation", "activation")
+  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.9" % Test
@@ -153,7 +153,6 @@ lazy val fatJarSettings = Seq(
       oldStrategy(x)
   }
 )
-
 
 lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),
