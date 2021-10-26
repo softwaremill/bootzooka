@@ -12,4 +12,4 @@ addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.9.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.2")
 
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.5.3")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.0")
