@@ -1,13 +1,10 @@
 package com.softwaremill.bootzooka.test
 
-import cats.effect.{Blocker, ContextShift}
+import cats.effect.{Async, IO, Spawn}
 import com.softwaremill.bootzooka.infrastructure.DBConfig
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
-import monix.catnap.MVar
-import monix.eval.Task
-import monix.execution.Scheduler.Implicits.global
 import org.flywaydb.core.Flyway
 
 import scala.annotation.tailrec
@@ -17,23 +14,20 @@ import scala.concurrent.duration._
   */
 class TestDB(config: DBConfig) extends StrictLogging {
 
-  var xa: Transactor[Task] = _
-  private val xaReady: MVar[Task, Transactor[Task]] = MVar.empty[Task, Transactor[Task]]().runSyncUnsafe()
-  private val done: MVar[Task, Unit] = MVar.empty[Task, Unit]().runSyncUnsafe()
+  var xa: Transactor[IO] = _
+  private val xaReady: MVar[IO, Transactor[IO]] = MVar.empty[IO, Transactor[IO]]().runSyncUnsafe()
+  private val done: MVar[IO, Unit] = MVar.empty[IO, Unit]().runSyncUnsafe()
 
   {
-    implicit val contextShift: ContextShift[Task] = Task.contextShift(monix.execution.Scheduler.global)
-
     val xaResource = for {
-      connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[Task](config.connectThreadPoolSize)
-      transactEC <- doobie.util.ExecutionContexts.cachedThreadPool[Task]
-      xa <- HikariTransactor.newHikariTransactor[Task](
+      connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize)
+      transactEC <- doobie.util.ExecutionContexts.cachedThreadPool[IO]
+      xa <- HikariTransactor.newHikariTransactor[IO](
         config.driver,
         config.url,
         config.username,
         config.password.value,
-        connectEC,
-        Blocker.liftExecutionContext(transactEC)
+        connectEC
       )
     } yield xa
 

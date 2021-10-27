@@ -1,11 +1,9 @@
 package com.softwaremill.bootzooka.infrastructure
 
 import java.net.URI
-
-import cats.effect.{Blocker, Resource}
+import cats.effect.{IO, Resource}
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
-import monix.eval.Task
 import org.flywaydb.core.Flyway
 
 import scala.concurrent.duration._
@@ -30,7 +28,7 @@ class DB(_config: DBConfig) extends StrictLogging {
     } else _config
   }
 
-  val transactorResource: Resource[Task, Transactor[Task]] = {
+  val transactorResource: Resource[IO, Transactor[IO]] = {
     /*
      * When running DB operations, there are three thread pools at play:
      * (1) connectEC: this is a thread pool for awaiting connections to the database. There might be an arbitrary
@@ -38,30 +36,29 @@ class DB(_config: DBConfig) extends StrictLogging {
      * (2) transactEC: this is a thread pool for executing JDBC operations. As the connection pool is limited,
      * this can be unbounded pool
      * (3) contextShift: pool for executing non-blocking operations, to which control shifts after completing
-     * DB operations. This is provided by Monix for Task.
+     * DB operations. This is provided by Monix for IO.
      *
      * See also: https://tpolecat.github.io/doobie/docs/14-Managing-Connections.html#about-threading
      */
     for {
-      connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[Task](config.connectThreadPoolSize)
-      transactEC <- doobie.util.ExecutionContexts.cachedThreadPool[Task]
-      xa <- HikariTransactor.newHikariTransactor[Task](
+      connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize)
+      transactEC <- doobie.util.ExecutionContexts.cachedThreadPool[IO]
+      xa <- HikariTransactor.newHikariTransactor[IO](
         config.driver,
         config.url,
         config.username,
         config.password.value,
-        connectEC,
-        Blocker.liftExecutionContext(transactEC)
+        connectEC
       )
       _ <- Resource.eval(connectAndMigrate(xa))
     } yield xa
   }
 
-  private def connectAndMigrate(xa: Transactor[Task]): Task[Unit] = {
-    (migrate() >> testConnection(xa) >> Task(logger.info("Database migration & connection test complete"))).onErrorRecoverWith {
+  private def connectAndMigrate(xa: Transactor[IO]): IO[Unit] = {
+    (migrate() >> testConnection(xa) >> IO(logger.info("Database migration & connection test complete"))).onError {
       case e: Exception =>
         logger.warn("Database not available, waiting 5 seconds to retry...", e)
-        Task.sleep(5.seconds) >> connectAndMigrate(xa)
+        IO.sleep(5.seconds) >> connectAndMigrate(xa)
     }
   }
 
@@ -72,14 +69,14 @@ class DB(_config: DBConfig) extends StrictLogging {
       .load()
   }
 
-  private def migrate(): Task[Unit] = {
+  private def migrate(): IO[Unit] = {
     if (config.migrateOnStart) {
-      Task(flyway.migrate()).void
-    } else Task.unit
+      IO(flyway.migrate()).void
+    } else IO.unit
   }
 
-  private def testConnection(xa: Transactor[Task]): Task[Unit] =
-    Task {
+  private def testConnection(xa: Transactor[IO]): IO[Unit] =
+    IO {
       sql"select 1".query[Int].unique.transact(xa)
     }.void
 }

@@ -26,7 +26,7 @@ React is one of the most popular JavaScript framework right now, developed and s
 
 ### Why Monix?
 
-Monix is a concurrency toolkit, thanks to which working with side-effects is concurrency-safe and type-safe. The basic datatype, `Task`, is a lazily evaluated description of side effects. It offers a number of combinators to sequence, handle errors, allocate resources and run effects asynchronously.
+Monix is a concurrency toolkit, thanks to which working with side-effects is concurrency-safe and type-safe. The basic datatype, `IO`, is a lazily evaluated description of side effects. It offers a number of combinators to sequence, handle errors, allocate resources and run effects asynchronously.
 
 ### Why http4s + tapir?
 

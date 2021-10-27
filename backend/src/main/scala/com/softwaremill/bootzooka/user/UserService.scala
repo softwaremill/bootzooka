@@ -1,15 +1,19 @@
 package com.softwaremill.bootzooka.user
 
 import cats.MonadError
+import cats.effect.unsafe.implicits.global
+import cats.effect.{IO, LiftIO}
+import cats.free.Free
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
+import com.softwaremill.bootzooka.infrastructure.Doobie
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
-import monix.execution.Scheduler.Implicits.global
+import doobie.free.connection
 import tsec.common.Verified
 
 import scala.concurrent.duration.Duration
@@ -45,16 +49,18 @@ class UserService(
     }
 
     def doRegister(): ConnectionIO[ApiKey] = {
-      for {
-        id <- idGenerator.nextId[User]().to[ConnectionIO]
-        now <- clock.now().to[ConnectionIO]
-        user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
-        confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
-        _ = logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
-        _ <- userModel.insert(user)
-        _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
-        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
-      } yield apiKey
+      val apiKeyIO = for {
+        id <- idGenerator.nextId[User]()
+        now <- clock.now()
+      } yield {
+        val user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
+        val confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
+        logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
+        userModel.insert(user)
+        emailScheduler(EmailData(emailClean, confirmationEmail))
+        apiKeyService.create(user.id, config.defaultApiKeyValid)
+      }
+      apiKeyIO.unsafeRunSync()
     }
 
     for {

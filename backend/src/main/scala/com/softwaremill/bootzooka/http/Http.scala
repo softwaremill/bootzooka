@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.http
 
+import cats.effect.IO
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.infrastructure.Json._
@@ -7,7 +8,6 @@ import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import io.circe.Printer
-import monix.eval.Task
 import sttp.tapir.Codec.PlainCodec
 import sttp.tapir.json.circe.TapirJsonCirce
 import sttp.model.StatusCode
@@ -62,12 +62,12 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
 
   //
 
-  implicit class TaskOut[T](f: Task[T]) {
+  implicit class TaskOut[T](f: IO[T]) {
 
-    /** An extension method for [[Task]], which converts a possibly failed task, to a task which either returns the error converted to an
+    /** An extension method for [[IO]], which converts a possibly failed task, to a task which either returns the error converted to an
       * [[Error_OUT]] instance, or returns the successful value unchanged.
       */
-    def toOut: Task[Either[(StatusCode, Error_OUT), T]] = {
+    def toOut: IO[Either[(StatusCode, Error_OUT), T]] = {
       f.map(t => t.asRight[(StatusCode, Error_OUT)]).recover { case e: Exception =>
         exceptionToErrorOut(e).asLeft[T]
       }

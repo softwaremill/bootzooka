@@ -1,29 +1,38 @@
 package com.softwaremill.bootzooka.http
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.util.ServerEndpoints
-import monix.eval.Task
 import org.http4s.HttpRoutes
+import sttp.capabilities.WebSockets
+import sttp.capabilities.fs2.Fs2Streams
 import sttp.model.{Header, StatusCode}
 import sttp.tapir.{DecodeResult, headers}
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Server
 import sttp.tapir.openapi.circe.yaml._
+import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.http4s.Http4sServerOptions.Log
 import sttp.tapir.server.http4s._
 import sttp.tapir.server.interceptor.decodefailure.DefaultDecodeFailureHandler.{FailureMessages, respond}
 import sttp.tapir.server.interceptor.{DecodeFailureContext, ValuedEndpointOutput}
 import sttp.tapir.server.interceptor.decodefailure.{DecodeFailureHandler, DefaultDecodeFailureHandler}
 import sttp.tapir.server.interceptor.exception.DefaultExceptionHandler
-import sttp.tapir.swagger.http4s.SwaggerHttp4s
+import sttp.tapir.swagger.SwaggerUI
+import sttp.ws.WebSocket
+
+import scala.concurrent.Future
 
 class EndpointsToRoutes(http: Http, apiContextPath: String) {
 
   /** Interprets the given endpoint descriptions as http4s routes
     */
-  def apply(es: ServerEndpoints): HttpRoutes[Task] = {
-    val serverOptions: Http4sServerOptions[Task, Task] = Http4sServerOptions
-      .customInterceptors(Option(DefaultExceptionHandler), Some(Log.defaultServerLog[Task]), decodeFailureHandler = decodeFailureHandler)
+  def apply(es: ServerEndpoints): HttpRoutes[IO] = {
+    val serverOptions: Http4sServerOptions[IO, IO] = Http4sServerOptions
+      .customInterceptors[IO, IO]
+      .decodeFailureHandler(decodeFailureHandler)
+      .serverLog(Log.defaultServerLog[IO])
+      .options
     Http4sServerInterpreter(serverOptions).toRoutes(es.toList)
   }
 
@@ -61,11 +70,12 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
 
   /** Interprets the given endpoint descriptions as docs, and returns http4s routes which expose the documentation using Swagger.
     */
-  def toDocsRoutes(es: ServerEndpoints): HttpRoutes[Task] = {
+  def toDocsRoutes(es: ServerEndpoints): HttpRoutes[IO] = {
     val openapi = OpenAPIDocsInterpreter()
       .serverEndpointsToOpenAPI(es.toList, "Bootzooka", "1.0")
       .servers(List(Server(s"$apiContextPath", None)))
     val yaml = openapi.toYaml
-    new SwaggerHttp4s(yaml).routes[Task]
+    val value: List[ServerEndpoint[_, _, _, Any, IO]] = SwaggerUI[IO](yaml)
+    Http4sServerInterpreter[IO]().toRoutes(value)
   }
 }

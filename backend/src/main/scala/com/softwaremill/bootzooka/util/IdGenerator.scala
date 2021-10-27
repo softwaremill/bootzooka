@@ -1,13 +1,13 @@
 package com.softwaremill.bootzooka.util
 
+import cats.effect.IO
 import com.softwaremill.tagging._
-import monix.eval.Task
 import tsec.common.SecureRandomId
 
 trait IdGenerator {
-  def nextId[U](): Task[Id @@ U]
+  def nextId[U](): IO[Id @@ U]
 }
 
 object DefaultIdGenerator extends IdGenerator {
-  override def nextId[U](): Task[Id @@ U] = Task { SecureRandomId.Strong.generate.taggedWith[U] }
+  override def nextId[U](): IO[Id @@ U] = IO { SecureRandomId.Strong.generate.taggedWith[U] }
 }

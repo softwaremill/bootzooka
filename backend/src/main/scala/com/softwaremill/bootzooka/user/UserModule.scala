@@ -1,11 +1,11 @@
 package com.softwaremill.bootzooka.user
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.email.{EmailScheduler, EmailTemplates}
 import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService, Auth}
 import com.softwaremill.bootzooka.util.BaseModule
 import doobie.util.transactor.Transactor
-import monix.eval.Task
 
 trait UserModule extends BaseModule {
   lazy val userModel = new UserModel
@@ -17,5 +17,5 @@ trait UserModule extends BaseModule {
   def emailScheduler: EmailScheduler
   def emailTemplates: EmailTemplates
   def apiKeyService: ApiKeyService
-  def xa: Transactor[Task]
+  def xa: Transactor[IO]
 }

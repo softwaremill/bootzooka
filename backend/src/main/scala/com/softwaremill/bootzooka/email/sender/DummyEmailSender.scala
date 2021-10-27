@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.email.sender
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.email.EmailData
 import com.typesafe.scalalogging.StrictLogging
-import monix.eval.Task
 
 import scala.collection.mutable.ListBuffer
 
@@ -14,7 +14,7 @@ object DummyEmailSender extends EmailSender with StrictLogging {
     sentEmails.clear()
   }
 
-  override def apply(email: EmailData): Task[Unit] = Task {
+  override def apply(email: EmailData): IO[Unit] = IO {
     this.synchronized {
       sentEmails += email
     }

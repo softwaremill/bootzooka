@@ -1,10 +1,11 @@
 package com.softwaremill.bootzooka.util
 
+import cats.effect.IO
+import cats.effect.IO.Local
+
 import java.{util => ju}
 import ch.qos.logback.classic.util.LogbackMDCAdapter
 import com.softwaremill.bootzooka.util.CorrelationIdDecorator.CorrelationIdSource
-import monix.eval.Task
-import monix.execution.misc.Local
 import org.slf4j.{Logger, LoggerFactory, MDC}
 
 import scala.util.Random
@@ -18,19 +19,19 @@ class CorrelationIdDecorator(newCorrelationId: () => String = CorrelationIdDecor
     MonixMDCAdapter.init()
   }
 
-  def apply(): Task[Option[String]] = Task(Option(MDC.get(mdcKey)))
+  def apply(): IO[Option[String]] = IO(Option(MDC.get(mdcKey)))
 
   def applySync(): Option[String] = Option(MDC.get(mdcKey))
 
-  def withCorrelationId[T, R](service: T => Task[R])(implicit source: CorrelationIdSource[T]): T => Task[R] = { req: T =>
+  def withCorrelationId[T, R](service: T => IO[R])(implicit source: CorrelationIdSource[T]): T => IO[R] = { req: T =>
     val cid = source.extractCid(req).getOrElse(newCorrelationId())
 
     val setupAndService = for {
-      _ <- Task(MDC.put(mdcKey, cid))
+      _ <- IO(MDC.put(mdcKey, cid))
       r <- service(req)
     } yield r
 
-    setupAndService.guarantee(Task(MDC.remove(mdcKey)))
+    setupAndService.guarantee(IO(MDC.remove(mdcKey)))
   }
 }
 

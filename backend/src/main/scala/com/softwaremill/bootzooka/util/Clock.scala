@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.util
 
+import cats.effect.IO
+
 import java.time.Instant
 
-import monix.eval.Task
-
 trait Clock {
-  def now(): Task[Instant]
+  def now(): IO[Instant]
 }
