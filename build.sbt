@@ -10,13 +10,13 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val doobieVersion = "0.13.4"
-val http4sVersion = "0.22.7"
+val doobieVersion = "1.0.0-RC1"
+val http4sVersion = "0.23.6"
 val circeVersion = "0.14.1"
-val tsecVersion = "0.2.1"
+val tsecVersion = "0.4.0"
 val sttpVersion = "3.3.16"
 val prometheusVersion = "0.12.0"
-val tapirVersion = "0.18.3"
+val tapirVersion = "0.19.0-M13"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
@@ -31,7 +31,7 @@ val httpDependencies = Seq(
   "org.http4s" %% "http4s-blaze-client" % http4sVersion,
   "org.http4s" %% "http4s-circe" % http4sVersion,
   "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
-  "com.softwaremill.sttp.client3" %% "async-http-client-backend-monix" % sttpVersion,
+  "com.softwaremill.sttp.client3" %% "async-http-client-backend-fs2" % sttpVersion,
   "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion
 )
@@ -62,7 +62,7 @@ val configDependencies = Seq(
 )
 
 val baseDependencies = Seq(
-  "io.monix" %% "monix" % "3.4.0",
+  "org.typelevel" %% "cats-effect" % "3.2.9",
   "com.softwaremill.common" %% "tagging" % "2.3.1",
   "com.softwaremill.quicklens" %% "quicklens" % "1.7.5"
 )
@@ -70,7 +70,7 @@ val baseDependencies = Seq(
 val apiDocsDependencies = Seq(
   "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % tapirVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-http4s" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % tapirVersion
 )
 
 val securityDependencies = Seq(
