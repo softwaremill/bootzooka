@@ -1,6 +1,8 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import cats.effect.IO
+import com.softwaremill.bootzooka.MainModule
+import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
@@ -11,19 +13,17 @@ import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{
   PasswordReset_OUT
 }
 import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
-import com.softwaremill.bootzooka.{CatsMonadError, MainModule}
-import com.softwaremill.bootzooka.config.Config
 import org.http4s._
 import org.http4s.syntax.all._
 import org.scalatest.concurrent.Eventually
-import sttp.client3.testing.SttpBackendStub
 import sttp.client3.SttpBackend
+import sttp.client3.asynchttpclient.fs2.AsyncHttpClientFs2Backend
 
 class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
   lazy val modules: MainModule = new MainModule {
     override def xa: Transactor[IO] = currentDb.xa
 
-    override lazy val baseSttpBackend: SttpBackend[IO, Any] = SttpBackendStub(CatsMonadError.monadError)
+    override lazy val baseSttpBackend: SttpBackend[IO, Any] = AsyncHttpClientFs2Backend.stub[IO]
     override lazy val config: Config = TestConfig
   }
 
