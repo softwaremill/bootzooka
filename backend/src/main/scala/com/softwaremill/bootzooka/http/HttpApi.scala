@@ -1,24 +1,23 @@
 package com.softwaremill.bootzooka.http
 
-import java.util.concurrent.Executors
-import cats.data.{Kleisli, OptionT}
+import cats.data.{Kleisli, NonEmptyList, OptionT}
 import cats.effect.{IO, Resource}
 import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
+import com.softwaremill.bootzooka.util.Http4sCorrelationMiddleware.source
 import com.softwaremill.bootzooka.util.{Http4sCorrelationMiddleware, ServerEndpoints}
 import com.typesafe.scalalogging.StrictLogging
 import io.prometheus.client.CollectorRegistry
-import org.http4s.{HttpApp, HttpRoutes, Request, Response, StaticFile}
+import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.metrics.prometheus.Prometheus
 import org.http4s.server.Router
 import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
-import org.http4s.server.staticcontent.{ResourceService, _}
+import org.http4s.server.staticcontent._
 import org.http4s.syntax.kleisli._
-import com.softwaremill.bootzooka.util.Http4sCorrelationMiddleware.source
-import org.http4s.blaze.server.BlazeServerBuilder
-
-import scala.concurrent.ExecutionContext
+import org.http4s.{HttpApp, HttpRoutes, Request, Response}
+import sttp.tapir.resourceGetServerEndpoint
+import sttp.tapir.server.ServerEndpoint
 
 /** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs and correlation id support.
   *
@@ -59,7 +58,7 @@ class HttpApi(
           // for all other requests, first trying getting existing webapp resource;
           // otherwise, returning index.html; this is needed to support paths in the frontend apps (e.g. /login)
           // the frontend app will handle displaying appropriate error messages
-          "" -> (webappRoutes <+> respondWithIndex)
+          "" -> (webappRoutes <+> indexResponse())
         ).orNotFound
 
         BlazeServerBuilder[IO]
@@ -69,11 +68,13 @@ class HttpApi(
       }
   }
 
-  private def indexResponse(r: Request[IO]): IO[Response[IO]] =
-    StaticFile.fromResource(s"/webapp/index.html", Some(r)).getOrElseF(IO.pure(Response.notFound[IO]))
+  private def indexResponse(): HttpRoutes[IO] = {
+    val loader = classOf[HttpApi].getClassLoader
+    val indexEndpoint: ServerEndpoint[_, _, _, Any, IO] = resourceGetServerEndpoint("")(loader, s"/webapp/index.html")
+    endpointsToRoutes(NonEmptyList.one(indexEndpoint))
+  }
 
   private val respondWithNotFound: HttpRoutes[IO] = Kleisli(_ => OptionT.pure(Response.notFound))
-  private val respondWithIndex: HttpRoutes[IO] = Kleisli(req => OptionT.liftF(indexResponse(req)))
 
   private def loggingMiddleware(service: HttpRoutes[IO]): HttpRoutes[IO] = Kleisli { req: Request[IO] =>
     OptionT(for {
@@ -86,10 +87,7 @@ class HttpApi(
     */
   private lazy val webappRoutes: HttpRoutes[IO] = {
     val dsl = Http4sDsl[IO]
-    import dsl._
-    val rootRoute = HttpRoutes.of[IO] { case request @ GET -> Root =>
-      indexResponse(request)
-    }
+    val rootRoute = indexResponse()
     val resourcesRoutes = resourceServiceBuilder[IO]("/webapp").toRoutes
     rootRoute <+> resourcesRoutes
   }
