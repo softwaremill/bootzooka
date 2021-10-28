@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.test
 
 import cats.data.OptionT
-import cats.effect.unsafe.IORuntime
+import cats.effect.kernel.Concurrent
 import cats.effect.{IO, Sync}
 import com.softwaremill.bootzooka.MainModule
 import com.softwaremill.bootzooka.http.Error_OUT
@@ -13,7 +13,7 @@ import org.http4s.headers.Authorization
 import org.http4s.{EntityDecoder, EntityEncoder, Headers, Request, Response, Status}
 import org.scalatest.matchers.should.Matchers
 import org.typelevel.ci.CIString
-import cats.effect.unsafe.IORuntime.global
+import cats.effect.unsafe.implicits.global
 
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
@@ -27,12 +27,12 @@ trait HttpTestSupport extends Http4sDsl[IO] with Matchers {
     org.http4s.circe.jsonEncoderWithPrinterOf[F, T](noNullsPrinter)
   }
 
-  implicit def entityDecoderFromCirce[F[_]: Sync, T: Decoder]: EntityDecoder[F, T] = {
+  implicit def entityDecoderFromCirce[F[_]: Sync: Concurrent, T: Decoder]: EntityDecoder[F, T] = {
     org.http4s.circe.jsonOf[F, T]
   }
 
   implicit class RichTask[T](t: IO[T]) {
-    def unwrap: T = t.runSyncUnsafe(1.minute)
+    def unwrap: T = t.unsafeRunTimed(1.minute).get
   }
 
   implicit class RichOptionTResponse(t: OptionT[IO, Response[IO]]) {

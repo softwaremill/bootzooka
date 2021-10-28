@@ -1,7 +1,9 @@
 package com.softwaremill.bootzooka.test
 
+import cats.effect.std.Queue
+import cats.effect.unsafe.implicits.global
 import cats.effect.{Async, IO, Spawn}
-import com.softwaremill.bootzooka.infrastructure.DBConfig
+import com.softwaremill.bootzooka.infrastructure.{DBConfig, Doobie}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
@@ -15,13 +17,12 @@ import scala.concurrent.duration._
 class TestDB(config: DBConfig) extends StrictLogging {
 
   var xa: Transactor[IO] = _
-  private val xaReady: MVar[IO, Transactor[IO]] = MVar.empty[IO, Transactor[IO]]().runSyncUnsafe()
-  private val done: MVar[IO, Unit] = MVar.empty[IO, Unit]().runSyncUnsafe()
+  private val xaReady: Queue[IO, Transactor[IO]] = Queue.unbounded[IO, Transactor[IO]].unsafeRunSync()
+  private val done: Queue[IO, Unit] = Queue.unbounded[IO, Unit].unsafeRunSync()
 
   {
     val xaResource = for {
       connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize)
-      transactEC <- doobie.util.ExecutionContexts.cachedThreadPool[IO]
       xa <- HikariTransactor.newHikariTransactor[IO](
         config.driver,
         config.url,
@@ -34,12 +35,12 @@ class TestDB(config: DBConfig) extends StrictLogging {
     // first extracting it from the use method, then stopping when the `done` mvar is filled (when `close()` is invoked)
     xaResource
       .use { _xa =>
-        xaReady.put(_xa) >> done.take
+        xaReady.offer(_xa) >> done.take
       }
-      .startAndForget
-      .runSyncUnsafe()
+      .start
+      .unsafeRunSync()
 
-    xa = xaReady.take.runSyncUnsafe()
+    xa = xaReady.take.unsafeRunSync()
   }
 
   private val flyway = {
@@ -75,11 +76,11 @@ class TestDB(config: DBConfig) extends StrictLogging {
   }
 
   def testConnection(): Unit = {
-    sql"select 1".query[Int].unique.transact(xa).runSyncUnsafe(1.minute)
+    sql"select 1".query[Int].unique.transact(xa).unsafeRunTimed(1.minute)
     ()
   }
 
   def close(): Unit = {
-    done.put(()).runSyncUnsafe(1.minute)
+    done.offer(()).unsafeRunTimed(1.minute)
   }
 }

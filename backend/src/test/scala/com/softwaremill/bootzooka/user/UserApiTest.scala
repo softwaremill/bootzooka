@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.user
 
 import cats.effect.IO
-import com.softwaremill.bootzooka.MainModule
+import com.softwaremill.bootzooka.{CatsMonadError, MainModule}
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Doobie._
@@ -20,7 +20,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
 
   lazy val modules: MainModule = new MainModule {
     override def xa: Transactor[IO] = currentDb.xa
-    override lazy val baseSttpBackend: SttpBackend[IO, Any] = SttpBackendStub(TaskMonadAsyncError)
+    override lazy val baseSttpBackend: SttpBackend[IO, Any] = SttpBackendStub(CatsMonadError.monadError)
     override lazy val config: Config = TestConfig
     override lazy val clock: Clock = testClock
   }
