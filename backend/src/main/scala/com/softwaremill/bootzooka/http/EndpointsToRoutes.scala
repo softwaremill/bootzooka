@@ -31,7 +31,6 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     val serverOptions: Http4sServerOptions[IO, IO] = Http4sServerOptions
       .customInterceptors[IO, IO]
       .decodeFailureHandler(decodeFailureHandler)
-      .serverLog(Log.defaultServerLog[IO])
       .options
     Http4sServerInterpreter(serverOptions).toRoutes(es.toList)
   }
@@ -74,8 +73,7 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
     val openapi = OpenAPIDocsInterpreter()
       .serverEndpointsToOpenAPI(es.toList, "Bootzooka", "1.0")
       .servers(List(Server(s"$apiContextPath", None)))
-    val yaml = openapi.toYaml
-    val value: List[ServerEndpoint[_, _, _, Any, IO]] = SwaggerUI[IO](yaml)
-    Http4sServerInterpreter[IO]().toRoutes(value)
+    val swaggerRoutes: List[ServerEndpoint[_, _, _, Any, IO]] = SwaggerUI[IO](openapi.toYaml)
+    Http4sServerInterpreter[IO]().toRoutes(swaggerRoutes)
   }
 }
