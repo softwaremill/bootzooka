@@ -1,6 +1,7 @@
 package com.softwaremill.bootzooka.email.sender
 
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import com.softwaremill.bootzooka.email.EmailData
 import com.typesafe.scalalogging.StrictLogging
 
@@ -14,7 +15,7 @@ object DummyEmailSender extends EmailSender with StrictLogging {
     sentEmails.clear()
   }
 
-  override def apply(email: EmailData): IO[Unit] = IO {
+  override def apply(email: EmailData): IO[Unit] = IO.pure {
     this.synchronized {
       sentEmails += email
     }

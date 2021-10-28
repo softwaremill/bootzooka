@@ -49,16 +49,18 @@ class UserService(
     }
 
     def doRegister(): ConnectionIO[ApiKey] = {
-      val apiKeyIO = for {
+      val apiKeyIO: IO[Free[connection.ConnectionOp, ApiKey]] = for {
         id <- idGenerator.nextId[User]()
         now <- clock.now()
       } yield {
         val user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
         val confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
         logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
-        userModel.insert(user)
-        emailScheduler(EmailData(emailClean, confirmationEmail))
-        apiKeyService.create(user.id, config.defaultApiKeyValid)
+        for {
+          _ <- userModel.insert(user)
+          _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
+          apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
+        } yield apiKey
       }
       apiKeyIO.unsafeRunSync()
     }
