@@ -85,7 +85,6 @@ trait TapirSchemas {
   implicit def taggedPlainCodec[U, T](implicit uc: PlainCodec[U]): PlainCodec[U @@ T] =
     uc.map(_.taggedWith[T])(identity)
 
-  implicit val schemaForBigDecimal: Schema[BigDecimal] = Schema(SchemaType.SString[BigDecimal]())
   implicit val schemaForId: Schema[Id] = Schema(SchemaType.SString[Id]())
   implicit def schemaForTagged[U, T](implicit uc: Schema[U]): Schema[U @@ T] = uc.asInstanceOf[Schema[U @@ T]]
 }

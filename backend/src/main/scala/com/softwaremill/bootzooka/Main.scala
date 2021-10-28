@@ -11,7 +11,6 @@ import sttp.client3.SttpBackend
 
 object Main extends StrictLogging {
   def main(args: Array[String]): Unit = {
-    CorrelationId.init()
     Metrics.init()
     Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 

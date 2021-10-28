@@ -55,10 +55,9 @@ class DB(_config: DBConfig) extends StrictLogging {
   }
 
   private def connectAndMigrate(xa: Transactor[IO]): IO[Unit] = {
-    (migrate() >> testConnection(xa) >> IO(logger.info("Database migration & connection test complete"))).onError {
-      case e: Exception =>
-        logger.warn("Database not available, waiting 5 seconds to retry...", e)
-        IO.sleep(5.seconds) >> connectAndMigrate(xa)
+    (migrate() >> testConnection(xa) >> IO(logger.info("Database migration & connection test complete"))).onError { e: Throwable =>
+      logger.warn("Database not available, waiting 5 seconds to retry...", e)
+      IO.sleep(5.seconds) >> connectAndMigrate(xa)
     }
   }
 
