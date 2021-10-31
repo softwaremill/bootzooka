@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.security
 import java.security.SecureRandom
 import java.time.Instant
 import cats.data.OptionT
-import cats.effect.{IO, Temporal}
+import cats.effect.IO
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.user.User
@@ -35,7 +35,7 @@ class Auth[T](
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
-        Temporal[IO].sleep(random.nextInt(1000).millis) >> IO.raiseError(Fail.Unauthorized("Unauthorized"))
+        IO.sleep(random.nextInt(1000).millis) >> IO.raiseError(Fail.Unauthorized("Unauthorized"))
       case Some(token) =>
         val delete = if (authTokenOps.deleteWhenValid) authTokenOps.delete(token).transact(xa) else IO.unit
         delete >> IO(authTokenOps.userId(token))
