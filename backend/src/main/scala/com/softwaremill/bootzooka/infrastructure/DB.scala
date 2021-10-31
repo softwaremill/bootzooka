@@ -33,16 +33,11 @@ class DB(_config: DBConfig) extends StrictLogging {
      * When running DB operations, there are three thread pools at play:
      * (1) connectEC: this is a thread pool for awaiting connections to the database. There might be an arbitrary
      * number of clients waiting for a connection, so this should be bounded.
-     * (2) transactEC: this is a thread pool for executing JDBC operations. As the connection pool is limited,
-     * this can be unbounded pool
-     * (3) contextShift: pool for executing non-blocking operations, to which control shifts after completing
-     * DB operations. This is provided by Monix for IO.
      *
      * See also: https://tpolecat.github.io/doobie/docs/14-Managing-Connections.html#about-threading
      */
     for {
       connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize)
-      transactEC <- doobie.util.ExecutionContexts.cachedThreadPool[IO]
       xa <- HikariTransactor.newHikariTransactor[IO](
         config.driver,
         config.url,
