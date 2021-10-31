@@ -11,7 +11,7 @@ Bootzooka's stack consists of the following technologies/tools:
 * [http4s](https://http4s.org) (lightweight HTTP library) + [tapir](https://github.com/softwaremill/tapir) (endpoint description library)
 * SQL database, by default [PostgreSQL](https://www.postgresql.org) (persistence)
 * [doobie](https://tpolecat.github.io/doobie/) (query SQL database using strictly typed DSL) + [flyway](https://flywaydb.org) (easy schema evolution)
-* [monix](https://monix.io) (managing side-effects and concurrency in the backend)
+* [Cats Effect](https://typelevel.org/cats-effect/) (managing side-effects and concurrency in the backend)
 * [react](https://reactjs.org) (frontend)
 * [SBT](https://www.scala-sbt.org) & [Webpack](https://webpack.js.org) (build tools)
 * [Swagger](https://swagger.io) (interactive API docs)
@@ -24,9 +24,9 @@ A lot of the projects that we develop at [SoftwareMill](http://softwaremill.com)
 
 React is one of the most popular JavaScript framework right now, developed and supported by Facebook; we use it frequently at [SoftwareMill](http://softwaremill.com) (also because it's really good). It offers a complete solution to build dynamic and modern HTML5 based web applications, with a "functional" approach.
 
-### Why Monix?
+### Why Cats Effect?
 
-Monix is a concurrency toolkit, thanks to which working with side-effects is concurrency-safe and type-safe. The basic datatype, `IO`, is a lazily evaluated description of side effects. It offers a number of combinators to sequence, handle errors, allocate resources and run effects asynchronously.
+Cats Effect is a toolkit for working with side-effects in pure and type-safe way. The basic datatype, `IO`, is a lazily evaluated description of side effects. It offers a number of combinators to sequence, handle errors, allocate resources and run effects asynchronously.
 
 ### Why http4s + tapir?
 
