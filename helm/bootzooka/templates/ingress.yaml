@@ -1,5 +1,5 @@
 {{- if .Values.bootzooka.ingress.enabled }}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "bootzooka.fullname" . }}-ingress
@@ -30,8 +30,11 @@ spec:
     http:
       paths:
       - path: {{ .host.path }}
+        pathType: {{ .host.pathType }}
         backend:
-          serviceName: {{ $serviceName }}
-          servicePort: {{ .host.port }}
+          service:
+            name: {{ $serviceName }}
+            port:
+              name: {{ .host.port }}
   {{- end }}
 {{- end }}
