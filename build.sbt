@@ -13,8 +13,8 @@ import complete.DefaultParsers._
 val doobieVersion = "0.13.4"
 val http4sVersion = "0.22.7"
 val circeVersion = "0.14.1"
-val tsecVersion = "0.4.0"
-val sttpVersion = "3.3.17"
+val tsecVersion = "0.2.1"
+val sttpVersion = "3.3.18"
 val prometheusVersion = "0.12.0"
 val tapirVersion = "0.18.3"
 
@@ -22,7 +22,7 @@ val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "8.0.5"
+  "org.flywaydb" % "flyway-core" % "8.2.0"
 )
 
 val httpDependencies = Seq(

@@ -38,11 +38,9 @@ jobs:
     strategy:
       matrix:
         k8s:
-          - v1.15.12
-          - v1.16.15
-          - v1.17.11
-          - v1.18.8
-          - v1.19.4
+          - v1.20.7
+          - v1.21.2
+          - v1.22.4
     steps:
       - name: Check-out repository
         id: repo-checkout
@@ -52,7 +50,7 @@ jobs:
 
       - name: Create kind ${{ matrix.k8s }} cluster
         id: kind-cluster-setup
-        uses: helm/kind-action@v1.1.0
+        uses: helm/kind-action@v1.2.0
         with:
           node_image: kindest/node:${{ matrix.k8s }}
           wait: "120s"
@@ -110,5 +108,5 @@ jobs:
           charts_url: https://softwaremill.github.io/sml-helm-public-repo
           owner: softwaremill
           repository: sml-helm-public-repo
-          helm_version: 3.4.1
+          helm_version: 3.7.1
           linting: off
