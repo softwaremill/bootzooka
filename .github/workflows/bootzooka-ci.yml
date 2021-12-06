@@ -1,0 +1,45 @@
+name: Bootzooka CI
+
+on:
+  pull_request:
+  push:
+    tags: [v*]
+    branches:
+      - master
+    paths-ignore:
+      - "helm/**"
+  release:
+    types:
+      - released
+    paths-ignore:
+      - "helm/**"
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Check-out repository
+      id: repo-checkout
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 11
+      id: jdk-setup
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Cache SBT
+      id: cache-sbt
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.sbt
+          ~/.ivy2/cache
+          ~/.coursier
+        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+
+    - name: Run tests
+      id: run-tests
+      run: sbt test
