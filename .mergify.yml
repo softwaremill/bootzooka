@@ -6,7 +6,7 @@ pull_request_rules:
   - name: automatic merge for scala-steward pull requests affecting build.sbt
     conditions:
       - author=scala-steward
-      - check-success=Bootzooka CI
+      - check-success=Test
       - "#files=1"
       - files=build.sbt
     actions:
