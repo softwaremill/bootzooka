@@ -3,7 +3,7 @@ name: Bootzooka CI
 on:
   pull_request:
   push:
-    tags: [ v* ]
+    tags: [v*]
     branches:
       - master
     paths-ignore:
