@@ -15,7 +15,7 @@ val http4sVersion = "0.22.8"
 val circeVersion = "0.14.1"
 val tsecVersion = "0.2.1"
 val sttpVersion = "3.3.18"
-val prometheusVersion = "0.12.0"
+val prometheusVersion = "0.13.0"
 val tapirVersion = "0.18.3"
 
 val dbDependencies = Seq(
