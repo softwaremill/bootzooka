@@ -25,14 +25,15 @@ class UserService(
     apiKeyService: ApiKeyService,
     idGenerator: IdGenerator,
     clock: Clock,
-    config: UserConfig
+    config: UserConfig,
+    xa: Transactor[IO]
 ) extends StrictLogging {
 
   private val LoginAlreadyUsed = "Login already in use!"
   private val EmailAlreadyUsed = "E-mail already in use!"
   private val IncorrectLoginOrPassword = "Incorrect login/email or password"
 
-  def registerNewUser(login: String, email: String, password: String): ConnectionIO[ApiKey] = {
+  def registerNewUser(login: String, email: String, password: String): IO[ConnectionIO[ApiKey]] = {
     val loginClean = login.trim()
     val emailClean = email.trim()
 
@@ -48,39 +49,45 @@ class UserService(
         failIfDefined(userModel.findByEmail(emailClean.lowerCased), EmailAlreadyUsed)
     }
 
-    def doRegister(): ConnectionIO[ApiKey] = {
-      val apiKeyIO: IO[Free[connection.ConnectionOp, ApiKey]] = for {
+    def doRegister(): IO[ConnectionIO[ApiKey]] = {
+      val apiKeyIO  = for {
         id <- idGenerator.nextId[User]()
         now <- clock.now()
       } yield {
         val user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
         val confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
         logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
-        for {
-          _ <- userModel.insert(user)
-          _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
-          apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
-        } yield apiKey
+        userModel.insert(user)
+          .map(_ => emailScheduler(EmailData(emailClean, confirmationEmail)))
+          .map(d =>
+            d.flatMap(h =>
+              h.map(_ => apiKeyService.create(user.id, config.defaultApiKeyValid))
+                .transact(xa)
+                .flatten
+            )
+          )
+          .transact(xa)
+          .flatten
       }
-      apiKeyIO.unsafeRunSync()
+      apiKeyIO.flatten
     }
 
-    for {
+    val value = for {
       _ <- UserValidator(Some(loginClean), Some(emailClean), Some(password)).as[ConnectionIO]
       _ <- checkUserDoesNotExist()
-      apiKey <- doRegister()
-    } yield apiKey
+    } yield doRegister()
+    value.transact(xa).flatten
   }
 
   def findById(id: Id @@ User): ConnectionIO[User] = userOrNotFound(userModel.findById(id))
 
-  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] = {
+  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): IO[ConnectionIO[ApiKey]] = {
     val loginOrEmailClean = loginOrEmail.trim()
-    for {
+    val value = for {
       user <- userOrNotFound(userModel.findByLoginOrEmail(loginOrEmailClean.lowerCased))
       _ <- verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword)
-      apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
-    } yield apiKey
+    } yield apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
+    value.transact(xa).flatten
   }
 
   def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
@@ -128,33 +135,35 @@ class UserService(
       } yield loginUpdated || emailUpdated
     }
 
-    def sendMail(user: User) = {
+    def sendMail(user: User): IO[ConnectionIO[Unit]] = {
       val confirmationEmail = emailTemplates.profileDetailsChangeNotification(user.login)
       emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
     }
 
-    doChange() flatMap { anyUpdate =>
+    doChange() map { anyUpdate =>
       if (anyUpdate) {
-        findById(userId).flatMap(user => sendMail(user))
+        findById(userId).map(user => sendMail(user)).transact(xa).flatten
       } else {
-        ().pure[ConnectionIO]
+        IO(().pure[ConnectionIO])
       }
     }
   }
 
-  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] = {
+  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): IO[ConnectionIO[Unit]] = {
     def validateNewPassword() =
       UserValidator(None, None, Some(newPassword)).as[ConnectionIO]
 
-    for {
+    val value = for {
       user <- userOrNotFound(userModel.findById(userId))
       _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
       _ <- validateNewPassword()
       _ = logger.debug(s"Changing password for user: $userId")
       _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
-      confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
-      _ <- emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
-    } yield ()
+    } yield {
+      val confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
+      emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
+    }
+    value.transact(xa).flatten
   }
 
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {

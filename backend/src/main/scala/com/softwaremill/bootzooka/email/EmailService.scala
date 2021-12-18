@@ -1,17 +1,11 @@
 package com.softwaremill.bootzooka.email
 
 import cats.effect.{Fiber, IO}
-import cats.free.Free
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.metrics.Metrics
-import com.softwaremill.bootzooka.util.{Id, IdGenerator}
+import com.softwaremill.bootzooka.util.IdGenerator
 import com.typesafe.scalalogging.StrictLogging
-import doobie.free.connection.ConnectionOp
-import org.checkerframework.checker.units.qual.A
-import cats.effect.unsafe.implicits.global
-import com.softwaremill.bootzooka.infrastructure.Doobie
-import com.softwaremill.tagging.@@
 
 /** Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches.
   */
@@ -19,12 +13,11 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
     extends EmailScheduler
     with StrictLogging {
 
-  def apply(data: EmailData): ConnectionIO[Unit] = {
+  def apply(data: EmailData): IO[ConnectionIO[Unit]] = {
     logger.debug(s"Scheduling email to be sent to: ${data.recipient}")
     idGenerator
       .nextId[Email]()
       .map(id => emailModel.insert(Email(id, data)))
-      .unsafeRunSync()
   }
 
   def sendBatch(): IO[Unit] = {
@@ -62,5 +55,5 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
 }
 
 trait EmailScheduler {
-  def apply(data: EmailData): ConnectionIO[Unit]
+  def apply(data: EmailData): IO[ConnectionIO[Unit]]
 }

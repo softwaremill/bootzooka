@@ -1,17 +1,17 @@
 package com.softwaremill.bootzooka.user
 
-import java.time.Instant
 import cats.data.NonEmptyList
 import cats.effect.IO
 import com.softwaremill.bootzooka.http.Http
-import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import doobie.util.transactor.Transactor
 import sttp.tapir.generic.auto._
 
+import java.time.Instant
 import scala.concurrent.duration._
 
 class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Transactor[IO]) {
@@ -26,7 +26,8 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .out(jsonBody[Register_OUT])
     .serverLogic { data =>
       (for {
-        apiKey <- userService.registerNewUser(data.login, data.email, data.password).transact(xa)
+        apiKeyConn <- userService.registerNewUser(data.login, data.email, data.password)
+        apiKey <- apiKeyConn.transact(xa)
         _ <- IO(Metrics.registeredUsersCounter.inc())
       } yield Register_OUT(apiKey.id)).toOut
     }
@@ -37,9 +38,9 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .out(jsonBody[Login_OUT])
     .serverLogic { data =>
       (for {
-        apiKey <- userService
+        apiKeyConn <- userService
           .login(data.loginOrEmail, data.password, data.apiKeyValidHours.map(h => Duration(h.toLong, HOURS)))
-          .transact(xa)
+        apiKey <- apiKeyConn.transact(xa)
       } yield Login_OUT(apiKey.id)).toOut
     }
 
@@ -50,7 +51,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .serverLogic { case (authData, data) =>
       (for {
         userId <- auth(authData)
-        _ <- userService.changePassword(userId, data.currentPassword, data.newPassword).transact(xa)
+        _ <- userService.changePassword(userId, data.currentPassword, data.newPassword)
       } yield ChangePassword_OUT()).toOut
     }
 
