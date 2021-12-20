@@ -31,8 +31,7 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, x
     .out(jsonBody[ForgotPassword_OUT])
     .serverLogic { data =>
       (for {
-        conn <- passwordResetService.forgotPassword(data.loginOrEmail)
-        _ <- conn.transact(xa)
+        _ <- passwordResetService.forgotPassword(data.loginOrEmail).transact(xa)
       } yield ForgotPassword_OUT()).toOut
     }
 

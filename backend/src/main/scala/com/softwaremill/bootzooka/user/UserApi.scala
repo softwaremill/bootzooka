@@ -26,8 +26,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .out(jsonBody[Register_OUT])
     .serverLogic { data =>
       (for {
-        apiKeyConn <- userService.registerNewUser(data.login, data.email, data.password)
-        apiKey <- apiKeyConn.transact(xa)
+        apiKey <- userService.registerNewUser(data.login, data.email, data.password).transact(xa)
         _ <- IO(Metrics.registeredUsersCounter.inc())
       } yield Register_OUT(apiKey.id)).toOut
     }
@@ -38,9 +37,9 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .out(jsonBody[Login_OUT])
     .serverLogic { data =>
       (for {
-        apiKeyConn <- userService
+        apiKey <- userService
           .login(data.loginOrEmail, data.password, data.apiKeyValidHours.map(h => Duration(h.toLong, HOURS)))
-        apiKey <- apiKeyConn.transact(xa)
+          .transact(xa)
       } yield Login_OUT(apiKey.id)).toOut
     }
 
@@ -51,7 +50,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .serverLogic { case (authData, data) =>
       (for {
         userId <- auth(authData)
-        _ <- userService.changePassword(userId, data.currentPassword, data.newPassword)
+        _ <- userService.changePassword(userId, data.currentPassword, data.newPassword).transact(xa)
       } yield ChangePassword_OUT()).toOut
     }
 
@@ -89,7 +88,6 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
 }
 
 object UserApi {
-
   case class Register_IN(login: String, email: String, password: String)
   case class Register_OUT(apiKey: String)
 

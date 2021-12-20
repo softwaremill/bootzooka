@@ -7,17 +7,16 @@ import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator
 import com.typesafe.scalalogging.StrictLogging
 
-/** Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches.
-  */
+/** Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches. */
 class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[IO])
     extends EmailScheduler
     with StrictLogging {
 
-  def apply(data: EmailData): IO[ConnectionIO[Unit]] = {
+  def apply(data: EmailData): ConnectionIO[Unit] = {
     logger.debug(s"Scheduling email to be sent to: ${data.recipient}")
     idGenerator
-      .nextId[Email]()
-      .map(id => emailModel.insert(Email(id, data)))
+      .nextId[ConnectionIO, Email]()
+      .flatMap(id => emailModel.insert(Email(id, data)))
   }
 
   def sendBatch(): IO[Unit] = {
@@ -55,5 +54,5 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
 }
 
 trait EmailScheduler {
-  def apply(data: EmailData): IO[ConnectionIO[Unit]]
+  def apply(data: EmailData): ConnectionIO[Unit]
 }

@@ -1,13 +1,15 @@
 package com.softwaremill.bootzooka.util
 
+import cats.effect.{Sync, Clock => CatsClock}
+import cats.syntax.all._
+
 import java.time.Instant
-import cats.effect.{Clock => CatsClock, IO}
 
 object DefaultClock extends Clock {
 
-  override def now(): IO[Instant] = {
+  override def now[F[_]: Sync](): F[Instant] = {
     for {
-      now <- CatsClock[IO].realTime.map(_.length)
+      now <- CatsClock[F].realTime.map(_.length)
       instant = Instant.ofEpochMilli(now)
     } yield instant
   }

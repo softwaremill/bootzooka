@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.test
 
-import cats.effect.IO
+import cats.effect.Sync
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -24,7 +24,7 @@ class TestClock(nowRef: AtomicReference[Instant]) extends Clock with StrictLoggi
     nowRef.set(newNow)
   }
 
-  override def now(): IO[Instant] = IO {
+  override def now[F[_]: Sync](): F[Instant] = Sync[F].delay {
     nowRef.get()
   }
 }

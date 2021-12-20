@@ -43,8 +43,7 @@ class Auth[T](
   }
 
   private def verifyValid(token: T): IO[Option[Unit]] = {
-
-    clock.now().flatMap { time =>
+    clock.now[IO]().flatMap { time =>
       if (time.isAfter(authTokenOps.validUntil(token))) {
         logger.info(s"${authTokenOps.tokenName} expired: $token")
         authTokenOps.delete(token).transact(xa).map(_ => None)

@@ -1,19 +1,15 @@
 package com.softwaremill.bootzooka.user
 
 import cats.MonadError
-import cats.effect.unsafe.implicits.global
-import cats.effect.{IO, LiftIO}
-import cats.free.Free
+import cats.effect.IO
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
-import com.softwaremill.bootzooka.infrastructure.Doobie
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
-import doobie.free.connection
 import tsec.common.Verified
 
 import scala.concurrent.duration.Duration
@@ -25,15 +21,14 @@ class UserService(
     apiKeyService: ApiKeyService,
     idGenerator: IdGenerator,
     clock: Clock,
-    config: UserConfig,
-    xa: Transactor[IO]
+    config: UserConfig
 ) extends StrictLogging {
 
   private val LoginAlreadyUsed = "Login already in use!"
   private val EmailAlreadyUsed = "E-mail already in use!"
   private val IncorrectLoginOrPassword = "Incorrect login/email or password"
 
-  def registerNewUser(login: String, email: String, password: String): IO[ConnectionIO[ApiKey]] = {
+  def registerNewUser(login: String, email: String, password: String): ConnectionIO[ApiKey] = {
     val loginClean = login.trim()
     val emailClean = email.trim()
 
@@ -49,45 +44,33 @@ class UserService(
         failIfDefined(userModel.findByEmail(emailClean.lowerCased), EmailAlreadyUsed)
     }
 
-    def doRegister(): IO[ConnectionIO[ApiKey]] = {
-      val apiKeyIO  = for {
-        id <- idGenerator.nextId[User]()
-        now <- clock.now()
-      } yield {
-        val user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
-        val confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
-        logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
-        userModel.insert(user)
-          .map(_ => emailScheduler(EmailData(emailClean, confirmationEmail)))
-          .map(d =>
-            d.flatMap(h =>
-              h.map(_ => apiKeyService.create(user.id, config.defaultApiKeyValid))
-                .transact(xa)
-                .flatten
-            )
-          )
-          .transact(xa)
-          .flatten
-      }
-      apiKeyIO.flatten
-    }
+    def doRegister(): ConnectionIO[ApiKey] = for {
+      id <- idGenerator.nextId[ConnectionIO, User]()
+      now <- clock.now[ConnectionIO]()
+      user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
+      confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
+      _ = logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
+      _ <- userModel.insert(user)
+      _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
+      apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
+    } yield apiKey
 
-    val value = for {
+    for {
       _ <- UserValidator(Some(loginClean), Some(emailClean), Some(password)).as[ConnectionIO]
       _ <- checkUserDoesNotExist()
-    } yield doRegister()
-    value.transact(xa).flatten
+      apiKey <- doRegister()
+    } yield apiKey
   }
 
   def findById(id: Id @@ User): ConnectionIO[User] = userOrNotFound(userModel.findById(id))
 
-  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): IO[ConnectionIO[ApiKey]] = {
+  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] = {
     val loginOrEmailClean = loginOrEmail.trim()
-    val value = for {
+    for {
       user <- userOrNotFound(userModel.findByLoginOrEmail(loginOrEmailClean.lowerCased))
       _ <- verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword)
-    } yield apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
-    value.transact(xa).flatten
+      apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
+    } yield apiKey
   }
 
   def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
@@ -135,25 +118,25 @@ class UserService(
       } yield loginUpdated || emailUpdated
     }
 
-    def sendMail(user: User): IO[ConnectionIO[Unit]] = {
+    def sendMail(user: User): ConnectionIO[Unit] = {
       val confirmationEmail = emailTemplates.profileDetailsChangeNotification(user.login)
       emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
     }
 
-    doChange() map { anyUpdate =>
+    doChange().map { anyUpdate =>
       if (anyUpdate) {
-        findById(userId).map(user => sendMail(user)).transact(xa).flatten
+        findById(userId).flatMap(user => sendMail(user))
       } else {
         IO(().pure[ConnectionIO])
       }
     }
   }
 
-  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): IO[ConnectionIO[Unit]] = {
+  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] = {
     def validateNewPassword() =
       UserValidator(None, None, Some(newPassword)).as[ConnectionIO]
 
-    val value = for {
+    for {
       user <- userOrNotFound(userModel.findById(userId))
       _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
       _ <- validateNewPassword()
@@ -163,7 +146,6 @@ class UserService(
       val confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
       emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
     }
-    value.transact(xa).flatten
   }
 
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {

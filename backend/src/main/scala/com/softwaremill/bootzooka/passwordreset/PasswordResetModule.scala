@@ -6,8 +6,7 @@ import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.UserModel
 import com.softwaremill.bootzooka.util.BaseModule
-import doobie.util.transactor.Transactor
-
+import com.softwaremill.bootzooka.infrastructure.Doobie._
 
 trait PasswordResetModule extends BaseModule {
   lazy val passwordResetCodeModel = new PasswordResetCodeModel

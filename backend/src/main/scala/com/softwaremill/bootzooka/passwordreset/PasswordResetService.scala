@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import cats.effect.IO
-import cats.implicits._
+import cats.syntax.all._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.Auth
@@ -21,37 +21,33 @@ class PasswordResetService(
     xa: Transactor[IO]
 ) extends StrictLogging {
 
-  def forgotPassword(loginOrEmail: String): IO[ConnectionIO[Unit]] = {
-    userModel.findByLoginOrEmail(loginOrEmail.lowerCased)
+  def forgotPassword(loginOrEmail: String): ConnectionIO[Unit] = {
+    userModel
+      .findByLoginOrEmail(loginOrEmail.lowerCased)
       .map {
         case None =>
           logger.debug(s"Could not find user with $loginOrEmail login/email")
           IO(().pure[ConnectionIO])
         case Some(user) =>
-          createCode(user)
-            .flatMap(_.transact(xa).flatMap(pcr => sendCode(user, pcr)))
+          createCode(user).flatMap(pcr => sendCode(user, pcr))
       }
-      .transact(xa)
-      .flatten
-
   }
 
-  private def createCode(user: User): IO[ConnectionIO[PasswordResetCode]] = {
+  private def createCode(user: User): ConnectionIO[PasswordResetCode] = {
     logger.debug(s"Creating password reset code for user: ${user.id}")
     for {
-      id <- idGenerator.nextId[PasswordResetCode]()
+      id <- idGenerator.nextId[ConnectionIO, PasswordResetCode]()
       validUntil <- clock
-        .now()
+        .now[ConnectionIO]()
         .map { value =>
           value.plusMillis(config.codeValid.toMillis)
         }
-    } yield {
-      val passwordResetCode: PasswordResetCode = PasswordResetCode(id, user.id, validUntil)
-      passwordResetCodeModel.insert(passwordResetCode).map(_ => passwordResetCode)
-    }
+      passwordResetCode = PasswordResetCode(id, user.id, validUntil)
+      _ <- passwordResetCodeModel.insert(passwordResetCode)
+    } yield passwordResetCode
   }
 
-  private def sendCode(user: User, code: PasswordResetCode): IO[ConnectionIO[Unit]] = {
+  private def sendCode(user: User, code: PasswordResetCode): ConnectionIO[Unit] = {
     logger.debug(s"Scheduling e-mail with reset code for user: ${user.id}")
     emailScheduler(EmailData(user.emailLowerCased, prepareResetEmail(user, code)))
   }
