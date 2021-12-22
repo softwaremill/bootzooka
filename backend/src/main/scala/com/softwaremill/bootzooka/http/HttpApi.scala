@@ -12,7 +12,7 @@ import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.metrics.prometheus.Prometheus
 import org.http4s.server.Router
-import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
+import org.http4s.server.middleware.{CORS, Metrics}
 import org.http4s.server.staticcontent._
 import org.http4s.syntax.kleisli._
 import org.http4s.{HttpApp, HttpRoutes, Request, Response}
@@ -42,8 +42,6 @@ class HttpApi(
   private lazy val adminRoutes: HttpRoutes[IO] = endpointsToRoutes(adminEndpoints)
   private lazy val docsRoutes: HttpRoutes[IO] = endpointsToRoutes.toDocsRoutes(endpoints)
 
-  private lazy val corsConfig: CORSConfig = CORSConfig.default
-
   /** The resource describing the HTTP server; binds when the resource is allocated.
     */
   lazy val resource: Resource[IO, org.http4s.server.Server] = {
@@ -53,7 +51,12 @@ class HttpApi(
       .flatMap { monitoredRoutes =>
         val app: HttpApp[IO] = Router(
           // for /api/v1 requests, first trying the API; then the docs; then, returning 404
-          s"$apiContextPath" -> CORS(monitoredRoutes <+> docsRoutes <+> respondWithNotFound, corsConfig),
+          s"$apiContextPath" -> {
+            CORS.policy
+              .withAllowOriginAll
+              .withAllowCredentials(false)
+              .apply(monitoredRoutes <+> docsRoutes <+> respondWithNotFound)
+          },
           "/admin" -> adminRoutes,
           // for all other requests, first trying getting existing webapp resource;
           // otherwise, returning index.html; this is needed to support paths in the frontend apps (e.g. /login)
