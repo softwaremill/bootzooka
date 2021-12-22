@@ -9,12 +9,10 @@ import com.softwaremill.bootzooka.util.{Http4sCorrelationMiddleware, ServerEndpo
 import com.typesafe.scalalogging.StrictLogging
 import io.prometheus.client.CollectorRegistry
 import org.http4s.blaze.server.BlazeServerBuilder
-import org.http4s.dsl.Http4sDsl
 import org.http4s.metrics.prometheus.Prometheus
 import org.http4s.server.Router
 import org.http4s.server.middleware.{CORS, Metrics}
 import org.http4s.server.staticcontent._
-import org.http4s.syntax.kleisli._
 import org.http4s.{HttpApp, HttpRoutes, Request, Response}
 import sttp.tapir.resourceGetServerEndpoint
 import sttp.tapir.server.ServerEndpoint
@@ -35,7 +33,7 @@ class HttpApi(
     config: HttpConfig
 ) extends StrictLogging {
   private val apiContextPath = "/api/v1"
-  private val endpointsToRoutes = new EndpointsToRoutes(http, apiContextPath)
+  private val endpointsToRoutes = new EndpointsToRoutes(http)
 
   lazy val mainRoutes: HttpRoutes[IO] =
     Http4sCorrelationMiddleware(CorrelationId).withCorrelationId(loggingMiddleware(endpointsToRoutes(endpoints)))
@@ -89,7 +87,6 @@ class HttpApi(
   /** Serves the webapp resources (html, js, css files), from the /webapp directory on the classpath.
     */
   private lazy val webappRoutes: HttpRoutes[IO] = {
-    val dsl = Http4sDsl[IO]
     val rootRoute = indexResponse()
     val resourcesRoutes = resourceServiceBuilder[IO]("/webapp").toRoutes
     rootRoute <+> resourcesRoutes

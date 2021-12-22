@@ -12,7 +12,7 @@ import sttp.tapir.server.interceptor.{DecodeFailureContext, ValuedEndpointOutput
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import sttp.tapir.{DecodeResult, headers}
 
-class EndpointsToRoutes(http: Http, apiContextPath: String) {
+class EndpointsToRoutes(http: Http) {
 
   /** Interprets the given endpoint descriptions as http4s routes
     */
