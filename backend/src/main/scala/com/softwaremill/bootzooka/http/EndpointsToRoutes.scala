@@ -4,24 +4,17 @@ import cats.effect.IO
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import org.http4s.HttpRoutes
-import sttp.capabilities.WebSockets
-import sttp.capabilities.fs2.Fs2Streams
 import sttp.model.{Header, StatusCode}
-import sttp.tapir.{DecodeResult, headers}
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Server
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.server.ServerEndpoint
-import sttp.tapir.server.http4s.Http4sServerOptions.Log
 import sttp.tapir.server.http4s._
 import sttp.tapir.server.interceptor.decodefailure.DefaultDecodeFailureHandler.{FailureMessages, respond}
-import sttp.tapir.server.interceptor.{DecodeFailureContext, ValuedEndpointOutput}
 import sttp.tapir.server.interceptor.decodefailure.{DecodeFailureHandler, DefaultDecodeFailureHandler}
-import sttp.tapir.server.interceptor.exception.DefaultExceptionHandler
+import sttp.tapir.server.interceptor.{DecodeFailureContext, ValuedEndpointOutput}
 import sttp.tapir.swagger.SwaggerUI
-import sttp.ws.WebSocket
-
-import scala.concurrent.Future
+import sttp.tapir.{DecodeResult, headers}
 
 class EndpointsToRoutes(http: Http, apiContextPath: String) {
 

@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.softwaremill.bootzooka.config.Config
-import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.typesafe.scalalogging.StrictLogging
 import doobie.util.transactor
