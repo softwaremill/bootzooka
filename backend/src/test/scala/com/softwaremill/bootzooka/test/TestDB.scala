@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.test
 
+import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
-import cats.effect.{Async, IO, Spawn}
-import com.softwaremill.bootzooka.infrastructure.{DBConfig, Doobie}
+import com.softwaremill.bootzooka.infrastructure.DBConfig
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
