@@ -26,13 +26,13 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
   /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class.
     */
-  val baseEndpoint: Endpoint[Unit, (StatusCode, Error_OUT), Unit, Any] =
+  val baseEndpoint: Endpoint[Unit, Unit, (StatusCode, Error_OUT), Unit, Any] =
     endpoint.errorOut(failOutput)
 
   /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
     */
-  val secureEndpoint: Endpoint[Id, (StatusCode, Error_OUT), Unit, Any] =
+  val secureEndpoint: Endpoint[Unit, Id, (StatusCode, Error_OUT), Unit, Any] =
     baseEndpoint.in(auth.bearer[String]().map(_.asInstanceOf[Id])(identity))
 
   //

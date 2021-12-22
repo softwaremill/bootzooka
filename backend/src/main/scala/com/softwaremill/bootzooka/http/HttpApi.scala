@@ -70,7 +70,7 @@ class HttpApi(
 
   private def indexResponse(): HttpRoutes[IO] = {
     val loader = classOf[HttpApi].getClassLoader
-    val indexEndpoint: ServerEndpoint[_, _, _, Any, IO] = resourceGetServerEndpoint("")(loader, s"/webapp/index.html")
+    val indexEndpoint: ServerEndpoint[Any, IO] = resourceGetServerEndpoint("")(loader, s"/webapp/index.html")
     endpointsToRoutes(NonEmptyList.one(indexEndpoint))
   }
 

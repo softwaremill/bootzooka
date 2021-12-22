@@ -5,15 +5,11 @@ import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import org.http4s.HttpRoutes
 import sttp.model.{Header, StatusCode}
-import sttp.tapir.docs.openapi._
-import sttp.tapir.openapi.Server
-import sttp.tapir.openapi.circe.yaml._
-import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.http4s._
 import sttp.tapir.server.interceptor.decodefailure.DefaultDecodeFailureHandler.{FailureMessages, respond}
 import sttp.tapir.server.interceptor.decodefailure.{DecodeFailureHandler, DefaultDecodeFailureHandler}
 import sttp.tapir.server.interceptor.{DecodeFailureContext, ValuedEndpointOutput}
-import sttp.tapir.swagger.SwaggerUI
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import sttp.tapir.{DecodeResult, headers}
 
 class EndpointsToRoutes(http: Http, apiContextPath: String) {
@@ -63,10 +59,7 @@ class EndpointsToRoutes(http: Http, apiContextPath: String) {
   /** Interprets the given endpoint descriptions as docs, and returns http4s routes which expose the documentation using Swagger.
     */
   def toDocsRoutes(es: ServerEndpoints): HttpRoutes[IO] = {
-    val openapi = OpenAPIDocsInterpreter()
-      .serverEndpointsToOpenAPI(es.toList, "Bootzooka", "1.0")
-      .servers(List(Server(s"$apiContextPath", None)))
-    val swaggerRoutes: List[ServerEndpoint[_, _, _, Any, IO]] = SwaggerUI[IO](openapi.toYaml)
-    Http4sServerInterpreter[IO]().toRoutes(swaggerRoutes)
+    val swaggerEndpoints = SwaggerInterpreter().fromServerEndpoints(es.toList, "My App", "1.0")
+   Http4sServerInterpreter[IO]().toRoutes(swaggerEndpoints)
   }
 }
