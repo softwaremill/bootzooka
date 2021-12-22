@@ -291,7 +291,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
 
   "/user" should "update the login and email with leading or trailing spaces" in {
     // given
-    val RegisteredUser(login, email, _, apiKey) = newRegisteredUsed()
+    val RegisteredUser(login, _, _, apiKey) = newRegisteredUsed()
     val newLogin = login + login
     val (_, newEmail, _) = randomLoginEmailPassword()
 
