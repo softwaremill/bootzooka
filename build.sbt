@@ -14,15 +14,15 @@ val doobieVersion = "1.0.0-RC1"
 val http4sVersion = "0.23.6"
 val circeVersion = "0.14.1"
 val tsecVersion = "0.4.0"
-val sttpVersion = "3.3.16"
-val prometheusVersion = "0.12.0"
+val sttpVersion = "3.3.18"
+val prometheusVersion = "0.14.1"
 val tapirVersion = "0.19.0-M13"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "8.0.2"
+  "org.flywaydb" % "flyway-core" % "8.2.3"
 )
 
 val httpDependencies = Seq(
@@ -52,19 +52,19 @@ val jsonDependencies = Seq(
 
 val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
-  "ch.qos.logback" % "logback-classic" % "1.2.6",
+  "ch.qos.logback" % "logback-classic" % "1.2.9",
   "org.codehaus.janino" % "janino" % "3.1.6",
-  "de.siegmar" % "logback-gelf" % "4.0.0"
+  "de.siegmar" % "logback-gelf" % "4.0.2"
 )
 
 val configDependencies = Seq(
-  "com.github.pureconfig" %% "pureconfig" % "0.17.0"
+  "com.github.pureconfig" %% "pureconfig" % "0.17.1"
 )
 
 val baseDependencies = Seq(
   "org.typelevel" %% "cats-effect" % "3.2.9",
-  "com.softwaremill.common" %% "tagging" % "2.3.1",
-  "com.softwaremill.quicklens" %% "quicklens" % "1.7.5"
+  "com.softwaremill.common" %% "tagging" % "2.3.2",
+  "com.softwaremill.quicklens" %% "quicklens" % "1.8.2"
 )
 
 val apiDocsDependencies = Seq(
@@ -98,7 +98,7 @@ lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "2.13.6",
+  scalaVersion := "2.13.7",
   libraryDependencies ++= commonDependencies,
   uiDirectory := baseDirectory.value.getParentFile / uiProjectName,
   updateYarn := {

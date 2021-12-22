@@ -61,6 +61,7 @@ bootzooka:
       - host:
           domain: bootzooka.example.com
           path: /
+          pathType: ImplementationSpecific
           port: http
     tls:
       - secretName: bootzooka-tls
