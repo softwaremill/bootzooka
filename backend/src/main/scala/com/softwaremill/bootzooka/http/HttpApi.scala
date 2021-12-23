@@ -32,7 +32,7 @@ class HttpApi(
     collectorRegistry: CollectorRegistry,
     config: HttpConfig
 ) extends StrictLogging {
-  private val apiContextPath = "/api/v1"
+  private val apiContextPath = List("api", "v1")
   private val endpointsToRoutes = new EndpointsToRoutes(http, apiContextPath)
 
   lazy val mainRoutes: HttpRoutes[IO] =
@@ -49,7 +49,7 @@ class HttpApi(
       .flatMap { monitoredRoutes =>
         val app: HttpApp[IO] = Router(
           // for /api/v1 requests, first trying the API; then the docs; then, returning 404
-          s"$apiContextPath" -> {
+          s"/${apiContextPath.mkString("/")}" -> {
             CORS.policy
               .withAllowOriginAll
               .withAllowCredentials(false)
