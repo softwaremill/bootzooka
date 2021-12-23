@@ -2,6 +2,7 @@ package com.softwaremill.bootzooka.email
 
 import cats.Parallel
 import cats.effect.{Fiber, IO}
+import cats.syntax.all._
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.metrics.Metrics
@@ -24,7 +25,7 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
     for {
       emails <- emailModel.find(config.batchSize).transact(xa)
       _ = if (emails.nonEmpty) logger.info(s"Sending ${emails.size} emails")
-      _ <- IO(emails.map(_.data).map(emailSender.apply))
+      _ <- emails.map(_.data).map(emailSender.apply).sequence
       _ <- emailModel.delete(emails.map(_.id)).transact(xa)
     } yield ()
   }
