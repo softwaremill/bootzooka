@@ -142,10 +142,9 @@ class UserService(
       _ <- validateNewPassword()
       _ = logger.debug(s"Changing password for user: $userId")
       _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
-    } yield {
-      val confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
-      emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
-    }
+      confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
+      _ <- emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
+    } yield ()
   }
 
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {
