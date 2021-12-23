@@ -14,7 +14,7 @@ object DummyEmailSender extends EmailSender with StrictLogging {
     sentEmails.clear()
   }
 
-  override def apply(email: EmailData): IO[Unit] = IO.pure {
+  override def apply(email: EmailData): IO[Unit] = IO {
     this.synchronized {
       sentEmails += email
     }

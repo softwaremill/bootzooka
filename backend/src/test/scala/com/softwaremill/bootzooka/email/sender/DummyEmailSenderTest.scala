@@ -5,7 +5,7 @@ import com.softwaremill.bootzooka.test.BaseTest
 
 class DummyEmailSenderTest extends BaseTest {
   it should "send scheduled email" in {
-    DummyEmailSender(EmailData("test@sml.com", "subject", "content"))
+    DummyEmailSender(EmailData("test@sml.com", "subject", "content")).unsafeRunSync()
     DummyEmailSender.findSentEmail("test@sml.com", "subject").isDefined shouldBe true
   }
 }
