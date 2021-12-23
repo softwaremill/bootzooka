@@ -33,7 +33,7 @@ class HttpApi(
     config: HttpConfig
 ) extends StrictLogging {
   private val apiContextPath = "/api/v1"
-  private val endpointsToRoutes = new EndpointsToRoutes(http)
+  private val endpointsToRoutes = new EndpointsToRoutes(http, apiContextPath)
 
   lazy val mainRoutes: HttpRoutes[IO] =
     Http4sCorrelationMiddleware(CorrelationId).withCorrelationId(loggingMiddleware(endpointsToRoutes(endpoints)))

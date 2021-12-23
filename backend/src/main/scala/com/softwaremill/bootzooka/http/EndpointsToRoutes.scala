@@ -12,7 +12,7 @@ import sttp.tapir.server.interceptor.{DecodeFailureContext, ValuedEndpointOutput
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import sttp.tapir.{DecodeResult, headers}
 
-class EndpointsToRoutes(http: Http) {
+class EndpointsToRoutes(http: Http, apiContextPath: String) {
 
   /** Interprets the given endpoint descriptions as http4s routes
     */
@@ -59,7 +59,7 @@ class EndpointsToRoutes(http: Http) {
   /** Interprets the given endpoint descriptions as docs, and returns http4s routes which expose the documentation using Swagger.
     */
   def toDocsRoutes(es: ServerEndpoints): HttpRoutes[IO] = {
-    val swaggerEndpoints = SwaggerInterpreter().fromServerEndpoints(es.toList, "My App", "1.0")
+    val swaggerEndpoints = SwaggerInterpreter(customiseDocsModel = _.addServer(s"$apiContextPath")).fromServerEndpoints(es.toList, "My App", "1.0")
    Http4sServerInterpreter[IO]().toRoutes(swaggerEndpoints)
   }
 }
