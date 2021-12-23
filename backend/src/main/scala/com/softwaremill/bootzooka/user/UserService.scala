@@ -123,11 +123,11 @@ class UserService(
       emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
     }
 
-    doChange().map { anyUpdate =>
+    doChange().flatMap { anyUpdate =>
       if (anyUpdate) {
         findById(userId).flatMap(user => sendMail(user))
       } else {
-        IO(().pure[ConnectionIO])
+        ().pure[ConnectionIO]
       }
     }
   }
