@@ -14,11 +14,12 @@ on:
     paths-ignore:
       - "helm/**"
 
+env:
+  scala: 2.13.7
+
 jobs:
   verify:
     runs-on: ubuntu-18.04
-    env:
-      scala: 2.13.7
     steps:
       - name: Check-out repository
         id: repo-checkout
@@ -48,8 +49,6 @@ jobs:
     if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
     needs: [ verify ]
     runs-on: ubuntu-latest
-    env:
-      scala: 2.13.7
     steps:
       - name: Check-out repository
         id: repo-checkout
