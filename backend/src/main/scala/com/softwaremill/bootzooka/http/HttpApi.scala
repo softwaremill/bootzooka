@@ -8,7 +8,7 @@ import com.typesafe.scalalogging.StrictLogging
 import io.prometheus.client.CollectorRegistry
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.metrics.prometheus.Prometheus
-import org.http4s.server.Router
+import org.http4s.server.{Router, Server}
 import org.http4s.server.middleware.{CORS, Metrics}
 import org.http4s.server.staticcontent._
 import org.http4s.{HttpApp, HttpRoutes, Request, Response}
@@ -40,29 +40,36 @@ class HttpApi(
   /** The resource describing the HTTP server; binds when the resource is allocated.
     */
   lazy val resource: Resource[IO, org.http4s.server.Server] = {
-    val prometheusHttp4sMetrics = Prometheus.metricsOps[IO](collectorRegistry)
-    prometheusHttp4sMetrics
-      .map(m => Metrics[IO](m)(mainRoutes))
-      .flatMap { monitoredRoutes =>
-        val app: HttpApp[IO] = Router(
-          // for /api/v1 requests, first trying the API; then the docs; then, returning 404
-          s"/${apiContextPath.mkString("/")}" -> {
-            CORS.policy.withAllowOriginAll
-              .withAllowCredentials(false)
-              .apply(monitoredRoutes <+> docsRoutes <+> respondWithNotFound)
-          },
-          "/admin" -> adminRoutes,
-          // for all other requests, first trying getting existing webapp resource;
-          // otherwise, returning index.html; this is needed to support paths in the frontend apps (e.g. /login)
-          // the frontend app will handle displaying appropriate error messages
-          "" -> (webappRoutes <+> indexResponse())
-        ).orNotFound
+    import com.softwaremill.macwire.autocats._
 
-        BlazeServerBuilder[IO]
-          .bindHttp(config.port, config.host)
-          .withHttpApp(app)
-          .resource
-      }
+    val monitoredRoues =
+      Prometheus.metricsOps[IO](collectorRegistry).map(m => Metrics[IO](m)(mainRoutes))
+
+    def buildApp(monitoredRoutes: HttpRoutes[IO]): HttpApp[IO] = Router(
+      // for /api/v1 requests, first trying the API; then the docs; then, returning 404
+      s"/${apiContextPath.mkString("/")}" -> {
+        CORS.policy
+          .withAllowOriginAll
+          .withAllowCredentials(false)
+          .apply(monitoredRoutes <+> docsRoutes <+> respondWithNotFound)
+      },
+      "/admin" -> adminRoutes,
+      // for all other requests, first trying getting existing webapp resource;
+      // otherwise, returning index.html; this is needed to support paths in the frontend apps (e.g. /login)
+      // the frontend app will handle displaying appropriate error messages
+      "" -> (webappRoutes <+> indexResponse())
+    ).orNotFound
+
+    def buildServer(app: HttpApp[IO]): Resource[IO, Server] =         BlazeServerBuilder[IO]
+      .bindHttp(config.port, config.host)
+      .withHttpApp(app)
+      .resource
+
+    autowire[Server](
+      monitoredRoues,
+      buildApp _,
+      buildServer _
+    )
   }
 
   private def indexResponse(): HttpRoutes[IO] = {

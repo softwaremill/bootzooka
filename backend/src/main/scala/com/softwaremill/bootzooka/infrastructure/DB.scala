@@ -10,6 +10,9 @@ import scala.concurrent.duration._
 import Doobie._
 import com.softwaremill.bootzooka.config.Sensitive
 
+import scala.concurrent.ExecutionContext
+import com.softwaremill.macwire.autocats._
+
 /** Configures the database, setting up the connection pool and performing migrations.
   */
 class DB(_config: DBConfig) extends StrictLogging {
@@ -36,17 +39,17 @@ class DB(_config: DBConfig) extends StrictLogging {
      *
      * See also: https://tpolecat.github.io/doobie/docs/14-Managing-Connections.html#about-threading
      */
-    for {
-      connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize)
-      xa <- HikariTransactor.newHikariTransactor[IO](
-        config.driver,
-        config.url,
-        config.username,
-        config.password.value,
-        connectEC
-      )
-      _ <- Resource.eval(connectAndMigrate(xa))
-    } yield xa
+    def buildTransactor(ec: ExecutionContext) = HikariTransactor.newHikariTransactor[IO](
+      config.driver,
+      config.url,
+      config.username,
+      config.password.value,
+      ec
+    )
+    autowire[Transactor[IO]](
+      doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize),
+      buildTransactor _
+    ).evalTap(connectAndMigrate)
   }
 
   private def connectAndMigrate(xa: Transactor[IO]): IO[Unit] = {

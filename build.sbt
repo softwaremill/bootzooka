@@ -17,6 +17,7 @@ val tsecVersion = "0.4.0"
 val sttpVersion = "3.5.0"
 val prometheusVersion = "0.15.0"
 val tapirVersion = "0.20.0-M9"
+val macwireVersion = "2.5.3"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
@@ -81,6 +82,11 @@ val emailDependencies = Seq(
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.11" % Test
+val macwireDependencies = Seq(
+  "com.softwaremill.macwire" %% "macros" % macwireVersion,
+  "com.softwaremill.macwire" %% "macrosautocats" % macwireVersion
+).map(_ % Provided)
+
 val unitTestingStack = Seq(scalatest)
 
 val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.0" % Test
@@ -190,7 +196,7 @@ lazy val rootProject = (project in file("."))
 
 lazy val backend: Project = (project in file("backend"))
   .settings(
-    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
+    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies ++ macwireDependencies,
     Compile / mainClass := Some("com.softwaremill.bootzooka.Main")
   )
   .enablePlugins(BuildInfoPlugin)
