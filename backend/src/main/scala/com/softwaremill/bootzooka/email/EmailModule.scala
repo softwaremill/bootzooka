@@ -3,12 +3,14 @@ package com.softwaremill.bootzooka.email
 import cats.effect.IO
 import com.softwaremill.bootzooka.email.sender.{DummyEmailSender, EmailSender, MailgunEmailSender, SmtpEmailSender}
 import com.softwaremill.bootzooka.util.BaseModule
+import com.softwaremill.macwire._
 import sttp.client3.SttpBackend
 import doobie.util.transactor.Transactor
 
 trait EmailModule extends BaseModule {
   lazy val emailModel = new EmailModel
-  lazy val emailService = new EmailService(emailModel, idGenerator, emailSender, config.email, xa)
+  private lazy val emailConfig = config.email
+  lazy val emailService = wire[EmailService]
   // the EmailService implements the EmailScheduler functionality - hence, creating an alias for this dependency
   lazy val emailScheduler: EmailScheduler = emailService
   lazy val emailTemplates = new EmailTemplates()

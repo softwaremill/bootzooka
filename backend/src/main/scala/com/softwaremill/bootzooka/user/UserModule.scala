@@ -5,12 +5,15 @@ import com.softwaremill.bootzooka.email.{EmailScheduler, EmailTemplates}
 import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService, Auth}
 import com.softwaremill.bootzooka.util.BaseModule
+import com.softwaremill.macwire._
 import doobie.util.transactor.Transactor
 
 trait UserModule extends BaseModule {
   lazy val userModel = new UserModel
-  lazy val userApi = new UserApi(http, apiKeyAuth, userService, xa)
-  lazy val userService = new UserService(userModel, emailScheduler, emailTemplates, apiKeyService, idGenerator, clock, config.user)
+  private lazy val userConfig = config.user
+
+  lazy val userService = wire[UserService]
+  lazy val userApi = wire[UserApi]
 
   def http: Http
   def apiKeyAuth: Auth[ApiKey]

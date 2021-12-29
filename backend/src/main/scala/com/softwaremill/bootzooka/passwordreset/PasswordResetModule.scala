@@ -7,22 +7,14 @@ import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.UserModel
 import com.softwaremill.bootzooka.util.BaseModule
 import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.softwaremill.macwire._
 
 trait PasswordResetModule extends BaseModule {
   lazy val passwordResetCodeModel = new PasswordResetCodeModel
-  lazy val passwordResetService =
-    new PasswordResetService(
-      userModel,
-      passwordResetCodeModel,
-      emailScheduler,
-      emailTemplates,
-      passwordResetCodeAuth,
-      idGenerator,
-      config.passwordReset,
-      clock,
-      xa
-    )
-  lazy val passwordResetApi = new PasswordResetApi(http, passwordResetService, xa)
+  private lazy val passwordResetConfig = config.passwordReset
+  lazy val passwordResetService = wire[PasswordResetService]
+
+  lazy val passwordResetApi = wire[PasswordResetApi]
 
   def userModel: UserModel
   def http: Http
