@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.user
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.MainModule
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
@@ -8,20 +9,18 @@ import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
 import com.softwaremill.bootzooka.user.UserApi._
 import com.softwaremill.bootzooka.util.Clock
-import monix.eval.Task
 import org.http4s.Status
 import org.scalatest.concurrent.Eventually
 import sttp.client3.SttpBackend
-import sttp.client3.impl.monix.TaskMonadAsyncError
-import sttp.client3.testing.SttpBackendStub
+import sttp.client3.asynchttpclient.fs2.AsyncHttpClientFs2Backend
 
 import scala.concurrent.duration._
 
 class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
 
   lazy val modules: MainModule = new MainModule {
-    override def xa: Transactor[Task] = currentDb.xa
-    override lazy val baseSttpBackend: SttpBackend[Task, Any] = SttpBackendStub(TaskMonadAsyncError)
+    override def xa: Transactor[IO] = currentDb.xa
+    override lazy val baseSttpBackend: SttpBackend[IO, Any] = AsyncHttpClientFs2Backend.stub[IO]
     override lazy val config: Config = TestConfig
     override lazy val clock: Clock = testClock
   }
@@ -292,7 +291,7 @@ class UserApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
 
   "/user" should "update the login and email with leading or trailing spaces" in {
     // given
-    val RegisteredUser(login, email, _, apiKey) = newRegisteredUsed()
+    val RegisteredUser(login, _, _, apiKey) = newRegisteredUsed()
     val newLogin = login + login
     val (_, newEmail, _) = randomLoginEmailPassword()
 

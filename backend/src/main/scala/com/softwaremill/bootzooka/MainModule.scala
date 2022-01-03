@@ -1,6 +1,7 @@
 package com.softwaremill.bootzooka
 
 import cats.data.NonEmptyList
+import cats.effect.IO
 import com.softwaremill.bootzooka.email.EmailModule
 import com.softwaremill.bootzooka.http.{Http, HttpApi}
 import com.softwaremill.bootzooka.infrastructure.InfrastructureModule
@@ -8,8 +9,7 @@ import com.softwaremill.bootzooka.metrics.MetricsModule
 import com.softwaremill.bootzooka.passwordreset.PasswordResetModule
 import com.softwaremill.bootzooka.security.SecurityModule
 import com.softwaremill.bootzooka.user.UserModule
-import com.softwaremill.bootzooka.util.{Clock, DefaultIdGenerator, IdGenerator, ServerEndpoints, DefaultClock}
-import monix.eval.Task
+import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator, IdGenerator, ServerEndpoints}
 
 /** Main application module. Depends on resources initialised in [[InitModule]].
   */
@@ -31,5 +31,5 @@ trait MainModule
 
   lazy val httpApi: HttpApi = new HttpApi(http, endpoints, adminEndpoints, collectorRegistry, config.api)
 
-  lazy val startBackgroundProcesses: Task[Unit] = emailService.startProcesses().void
+  lazy val startBackgroundProcesses: IO[Unit] = emailService.startProcesses().void
 }

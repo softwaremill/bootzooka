@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka
 
+import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.typesafe.scalalogging.StrictLogging
 import doobie.util.transactor
-import monix.eval.Task
-import monix.execution.Scheduler.Implicits.global
 import sttp.client3.SttpBackend
 
 object Main extends StrictLogging {
@@ -21,8 +21,8 @@ object Main extends StrictLogging {
     val mainTask = initModule.db.transactorResource.use { _xa =>
       initModule.baseSttpBackend.use { _baseSttpBackend =>
         val modules = new MainModule {
-          override def xa: transactor.Transactor[Task] = _xa
-          override def baseSttpBackend: SttpBackend[Task, Any] = _baseSttpBackend
+          override def xa: transactor.Transactor[IO] = _xa
+          override def baseSttpBackend: SttpBackend[IO, Any] = _baseSttpBackend
           override def config: Config = initModule.config
         }
 
@@ -32,9 +32,9 @@ object Main extends StrictLogging {
         - the second allocates the http api resource, and never releases it (so that the http server is available
           as long as our application runs)
          */
-        modules.startBackgroundProcesses >> modules.httpApi.resource.use(_ => Task.never)
+        modules.startBackgroundProcesses >> modules.httpApi.resource.use(_ => IO.never)
       }
     }
-    mainTask.runSyncUnsafe()
+    mainTask.unsafeRunSync()
   }
 }

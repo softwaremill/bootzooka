@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka.passwordreset
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.email.{EmailScheduler, EmailTemplates}
 import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.UserModel
 import com.softwaremill.bootzooka.util.BaseModule
-import doobie.util.transactor.Transactor
-import monix.eval.Task
+import com.softwaremill.bootzooka.infrastructure.Doobie._
 
 trait PasswordResetModule extends BaseModule {
   lazy val passwordResetCodeModel = new PasswordResetCodeModel
@@ -29,5 +29,5 @@ trait PasswordResetModule extends BaseModule {
   def passwordResetCodeAuth: Auth[PasswordResetCode]
   def emailScheduler: EmailScheduler
   def emailTemplates: EmailTemplates
-  def xa: Transactor[Task]
+  def xa: Transactor[IO]
 }

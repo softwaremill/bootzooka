@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.http
 
+import cats.effect.IO
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.infrastructure.Json._
@@ -7,7 +8,6 @@ import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import io.circe.Printer
-import monix.eval.Task
 import sttp.tapir.Codec.PlainCodec
 import sttp.tapir.json.circe.TapirJsonCirce
 import sttp.model.StatusCode
@@ -26,13 +26,13 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
   /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class.
     */
-  val baseEndpoint: Endpoint[Unit, (StatusCode, Error_OUT), Unit, Any] =
+  val baseEndpoint: Endpoint[Unit, Unit, (StatusCode, Error_OUT), Unit, Any] =
     endpoint.errorOut(failOutput)
 
   /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
     */
-  val secureEndpoint: Endpoint[Id, (StatusCode, Error_OUT), Unit, Any] =
+  val secureEndpoint: Endpoint[Unit, Id, (StatusCode, Error_OUT), Unit, Any] =
     baseEndpoint.in(auth.bearer[String]().map(_.asInstanceOf[Id])(identity))
 
   //
@@ -62,12 +62,12 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
 
   //
 
-  implicit class TaskOut[T](f: Task[T]) {
+  implicit class TaskOut[T](f: IO[T]) {
 
-    /** An extension method for [[Task]], which converts a possibly failed task, to a task which either returns the error converted to an
+    /** An extension method for [[IO]], which converts a possibly failed task, to a task which either returns the error converted to an
       * [[Error_OUT]] instance, or returns the successful value unchanged.
       */
-    def toOut: Task[Either[(StatusCode, Error_OUT), T]] = {
+    def toOut: IO[Either[(StatusCode, Error_OUT), T]] = {
       f.map(t => t.asRight[(StatusCode, Error_OUT)]).recover { case e: Exception =>
         exceptionToErrorOut(e).asLeft[T]
       }
@@ -85,7 +85,6 @@ trait TapirSchemas {
   implicit def taggedPlainCodec[U, T](implicit uc: PlainCodec[U]): PlainCodec[U @@ T] =
     uc.map(_.taggedWith[T])(identity)
 
-  implicit val schemaForBigDecimal: Schema[BigDecimal] = Schema(SchemaType.SString[BigDecimal]())
   implicit val schemaForId: Schema[Id] = Schema(SchemaType.SString[Id]())
   implicit def schemaForTagged[U, T](implicit uc: Schema[U]): Schema[U @@ T] = uc.asInstanceOf[Schema[U @@ T]]
 }

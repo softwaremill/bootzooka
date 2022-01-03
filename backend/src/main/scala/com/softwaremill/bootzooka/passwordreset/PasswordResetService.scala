@@ -1,14 +1,13 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import cats.implicits._
+import cats.effect.IO
+import cats.syntax.all._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.{User, UserModel}
 import com.softwaremill.bootzooka.util._
 import com.typesafe.scalalogging.StrictLogging
-import monix.eval.Task
-import monix.execution.Scheduler.Implicits.global
 
 class PasswordResetService(
     userModel: UserModel,
@@ -19,33 +18,32 @@ class PasswordResetService(
     idGenerator: IdGenerator,
     config: PasswordResetConfig,
     clock: Clock,
-    xa: Transactor[Task]
+    xa: Transactor[IO]
 ) extends StrictLogging {
 
   def forgotPassword(loginOrEmail: String): ConnectionIO[Unit] = {
-    userModel.findByLoginOrEmail(loginOrEmail.lowerCased).flatMap {
-      case None =>
-        logger.debug(s"Could not find user with $loginOrEmail login/email")
-        ().pure[ConnectionIO]
-      case Some(user) =>
-        createCode(user).flatMap(sendCode(user, _))
-    }
+    userModel
+      .findByLoginOrEmail(loginOrEmail.lowerCased)
+      .flatMap {
+        case None =>
+          logger.debug(s"Could not find user with $loginOrEmail login/email")
+          ().pure[ConnectionIO]
+        case Some(user) => createCode(user).flatMap(pcr => sendCode(user, pcr))
+      }
   }
 
   private def createCode(user: User): ConnectionIO[PasswordResetCode] = {
     logger.debug(s"Creating password reset code for user: ${user.id}")
-
     for {
-      id <- idGenerator.nextId[PasswordResetCode]().to[ConnectionIO]
+      id <- idGenerator.nextId[ConnectionIO, PasswordResetCode]()
       validUntil <- clock
-        .now()
+        .now[ConnectionIO]()
         .map { value =>
           value.plusMillis(config.codeValid.toMillis)
         }
-        .to[ConnectionIO]
       passwordResetCode = PasswordResetCode(id, user.id, validUntil)
-      connection <- passwordResetCodeModel.insert(passwordResetCode).map(_ => passwordResetCode)
-    } yield connection
+      _ <- passwordResetCodeModel.insert(passwordResetCode)
+    } yield passwordResetCode
   }
 
   private def sendCode(user: User, code: PasswordResetCode): ConnectionIO[Unit] = {
@@ -58,7 +56,7 @@ class PasswordResetService(
     emailTemplates.passwordReset(user.login, resetLink)
   }
 
-  def resetPassword(code: String, newPassword: String): Task[Unit] = {
+  def resetPassword(code: String, newPassword: String): IO[Unit] = {
     for {
       userId <- auth(code.asInstanceOf[Id])
       _ = logger.debug(s"Resetting password for user: $userId")

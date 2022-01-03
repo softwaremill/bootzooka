@@ -1,12 +1,12 @@
 package com.softwaremill.bootzooka.test
 
+import cats.effect.Sync
+
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.atomic.AtomicReference
-
 import com.softwaremill.bootzooka.util.Clock
 import com.typesafe.scalalogging.StrictLogging
-import monix.eval.Task
 
 import scala.concurrent.duration.Duration
 
@@ -24,7 +24,7 @@ class TestClock(nowRef: AtomicReference[Instant]) extends Clock with StrictLoggi
     nowRef.set(newNow)
   }
 
-  override def now(): Task[Instant] = Task {
+  override def now[F[_]: Sync](): F[Instant] = Sync[F].delay {
     nowRef.get()
   }
 }

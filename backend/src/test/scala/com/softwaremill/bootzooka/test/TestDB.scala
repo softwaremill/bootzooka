@@ -1,13 +1,12 @@
 package com.softwaremill.bootzooka.test
 
-import cats.effect.{Blocker, ContextShift}
+import cats.effect.IO
+import cats.effect.std.Queue
+import cats.effect.unsafe.implicits.global
 import com.softwaremill.bootzooka.infrastructure.DBConfig
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
-import monix.catnap.MVar
-import monix.eval.Task
-import monix.execution.Scheduler.Implicits.global
 import org.flywaydb.core.Flyway
 
 import scala.annotation.tailrec
@@ -17,35 +16,31 @@ import scala.concurrent.duration._
   */
 class TestDB(config: DBConfig) extends StrictLogging {
 
-  var xa: Transactor[Task] = _
-  private val xaReady: MVar[Task, Transactor[Task]] = MVar.empty[Task, Transactor[Task]]().runSyncUnsafe()
-  private val done: MVar[Task, Unit] = MVar.empty[Task, Unit]().runSyncUnsafe()
+  var xa: Transactor[IO] = _
+  private val xaReady: Queue[IO, Transactor[IO]] = Queue.unbounded[IO, Transactor[IO]].unsafeRunSync()
+  private val done: Queue[IO, Unit] = Queue.unbounded[IO, Unit].unsafeRunSync()
 
   {
-    implicit val contextShift: ContextShift[Task] = Task.contextShift(monix.execution.Scheduler.global)
-
     val xaResource = for {
-      connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[Task](config.connectThreadPoolSize)
-      transactEC <- doobie.util.ExecutionContexts.cachedThreadPool[Task]
-      xa <- HikariTransactor.newHikariTransactor[Task](
+      connectEC <- doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize)
+      xa <- HikariTransactor.newHikariTransactor[IO](
         config.driver,
         config.url,
         config.username,
         config.password.value,
-        connectEC,
-        Blocker.liftExecutionContext(transactEC)
+        connectEC
       )
     } yield xa
 
     // first extracting it from the use method, then stopping when the `done` mvar is filled (when `close()` is invoked)
     xaResource
       .use { _xa =>
-        xaReady.put(_xa) >> done.take
+        xaReady.offer(_xa) >> done.take
       }
-      .startAndForget
-      .runSyncUnsafe()
+      .start
+      .unsafeRunSync()
 
-    xa = xaReady.take.runSyncUnsafe()
+    xa = xaReady.take.unsafeRunSync()
   }
 
   private val flyway = {
@@ -81,11 +76,11 @@ class TestDB(config: DBConfig) extends StrictLogging {
   }
 
   def testConnection(): Unit = {
-    sql"select 1".query[Int].unique.transact(xa).runSyncUnsafe(1.minute)
+    sql"select 1".query[Int].unique.transact(xa).unsafeRunTimed(1.minute)
     ()
   }
 
   def close(): Unit = {
-    done.put(()).runSyncUnsafe(1.minute)
+    done.offer(()).unsafeRunTimed(1.minute)
   }
 }

@@ -1,13 +1,14 @@
 package com.softwaremill.bootzooka.util
 
+import cats.effect.Sync
 import com.softwaremill.tagging._
-import monix.eval.Task
 import tsec.common.SecureRandomId
 
+/** Any effects that are run as part of transactions and outside of transactions, need to be parametrised with the effect type. */
 trait IdGenerator {
-  def nextId[U](): Task[Id @@ U]
+  def nextId[F[_]: Sync, U](): F[Id @@ U]
 }
 
 object DefaultIdGenerator extends IdGenerator {
-  override def nextId[U](): Task[Id @@ U] = Task { SecureRandomId.Strong.generate.taggedWith[U] }
+  override def nextId[F[_]: Sync, U](): F[Id @@ U] = Sync[F].delay { SecureRandomId.Strong.generate.taggedWith[U] }
 }
