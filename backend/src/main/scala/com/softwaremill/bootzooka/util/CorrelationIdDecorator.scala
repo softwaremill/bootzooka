@@ -1,6 +1,8 @@
 package com.softwaremill.bootzooka.util
 
-import cats.effect.IO
+
+import cats.effect.unsafe.implicits.global
+import cats.effect.{IO, IOLocal}
 import ch.qos.logback.classic.util.LogbackMDCAdapter
 import com.softwaremill.bootzooka.util.CorrelationIdDecorator.CorrelationIdSource
 import org.slf4j.{Logger, LoggerFactory, MDC}
@@ -48,40 +50,45 @@ object CorrelationIdDecorator {
 
 class MDCAdapter extends LogbackMDCAdapter {
 
-  private[this] var map: ju.Map[String, String] = ju.Collections.emptyMap()
+  private[this] val map = IOLocal(ju.Collections.emptyMap[String, String]).unsafeRunSync()
 
-  override def put(key: String, `val`: String): Unit = {
-    if (map eq ju.Collections.EMPTY_MAP) {
-      val map1: ju.HashMap[String, String] = new ju.HashMap()
-      map = map1
-    }
-    map.put(key, `val`)
-    ()
-  }
+  override def put(key: String, `val`: String): Unit =
+    map.update(map => {
+      if (map eq ju.Collections.EMPTY_MAP) {
+        val newMap = new ju.HashMap[String, String]()
+        newMap.put(key, `val`)
+        newMap
+      } else {
+        map.put(key, `val`)
+        map
+      }
+    }).unsafeRunSync()
 
-  override def get(key: String): String = map.get(key)
+  override def get(key: String): String = map.get.unsafeRunSync().get(key)
 
-  override def remove(key: String): Unit = {
-    map.remove(key)
-    ()
-  }
+
+  override def remove(key: String): Unit =
+    map.update(map => {
+      map.remove(key)
+      map
+    }).unsafeRunSync()
+
   // Note: we're resetting the Local to default, not clearing the actual hashmap
-  override def clear(): Unit = map.clear()
+  override def clear(): Unit = map.reset.unsafeRunSync()
 
-  override def getCopyOfContextMap: ju.Map[String, String] = new ju.HashMap(map)
+  override def getCopyOfContextMap: ju.Map[String, String] = new ju.HashMap(map.get.unsafeRunSync())
 
-  override def setContextMap(contextMap: ju.Map[String, String]): Unit =
-    map = new ju.HashMap(contextMap)
+  override def setContextMap(contextMap: ju.Map[String, String]): Unit = map.set(new ju.HashMap(contextMap)).unsafeRunSync()
 
-  override def getPropertyMap: ju.Map[String, String] = map
+  override def getPropertyMap: ju.Map[String, String] = map.get.unsafeRunSync()
 
-  override def getKeys: ju.Set[String] = map.keySet()
+  override def getKeys: ju.Set[String] = map.get.unsafeRunSync().keySet()
 }
 
-  object MDCAdapter {
-    def init(): Unit = {
-      val field = classOf[MDC].getDeclaredField("mdcAdapter")
-      field.setAccessible(true)
-      field.set(null, new MDCAdapter)
-    }
+object MDCAdapter {
+  def init(): Unit = {
+    val field = classOf[MDC].getDeclaredField("mdcAdapter")
+    field.setAccessible(true)
+    field.set(null, new MDCAdapter)
   }
+}
