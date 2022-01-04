@@ -50,10 +50,10 @@ object CorrelationIdDecorator {
 
 class MDCAdapter extends LogbackMDCAdapter {
 
-  private[this] val map = IOLocal(ju.Collections.emptyMap[String, String]).unsafeRunSync()
+  private[this] val localMap = IOLocal(ju.Collections.emptyMap[String, String]).unsafeRunSync()
 
   override def put(key: String, `val`: String): Unit =
-    map.update(map => {
+    localMap.update(map => {
       if (map eq ju.Collections.EMPTY_MAP) {
         val newMap = new ju.HashMap[String, String]()
         newMap.put(key, `val`)
@@ -64,25 +64,25 @@ class MDCAdapter extends LogbackMDCAdapter {
       }
     }).unsafeRunSync()
 
-  override def get(key: String): String = map.get.unsafeRunSync().get(key)
+  override def get(key: String): String = localMap.get.unsafeRunSync().get(key)
 
 
   override def remove(key: String): Unit =
-    map.update(map => {
+    localMap.update(map => {
       map.remove(key)
       map
     }).unsafeRunSync()
 
   // Note: we're resetting the Local to default, not clearing the actual hashmap
-  override def clear(): Unit = map.reset.unsafeRunSync()
+  override def clear(): Unit = localMap.reset.unsafeRunSync()
 
-  override def getCopyOfContextMap: ju.Map[String, String] = new ju.HashMap(map.get.unsafeRunSync())
+  override def getCopyOfContextMap: ju.Map[String, String] = new ju.HashMap(localMap.get.unsafeRunSync())
 
-  override def setContextMap(contextMap: ju.Map[String, String]): Unit = map.set(new ju.HashMap(contextMap)).unsafeRunSync()
+  override def setContextMap(contextMap: ju.Map[String, String]): Unit = localMap.set(new ju.HashMap(contextMap)).unsafeRunSync()
 
-  override def getPropertyMap: ju.Map[String, String] = map.get.unsafeRunSync()
+  override def getPropertyMap: ju.Map[String, String] = localMap.get.unsafeRunSync()
 
-  override def getKeys: ju.Set[String] = map.get.unsafeRunSync().keySet()
+  override def getKeys: ju.Set[String] = localMap.get.unsafeRunSync().keySet()
 }
 
 object MDCAdapter {
