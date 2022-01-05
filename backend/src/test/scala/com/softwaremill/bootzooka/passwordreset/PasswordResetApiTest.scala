@@ -1,33 +1,16 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import cats.effect.IO
-import com.softwaremill.bootzooka.MainModule
-import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
-import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{
-  ForgotPassword_IN,
-  ForgotPassword_OUT,
-  PasswordReset_IN,
-  PasswordReset_OUT
-}
-import com.softwaremill.bootzooka.test.{BaseTest, Requests, TestConfig, TestEmbeddedPostgres}
+import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_IN, ForgotPassword_OUT, PasswordReset_IN, PasswordReset_OUT}
+import com.softwaremill.bootzooka.test.{AppDependencies, BaseTest, Requests}
 import org.http4s._
 import org.http4s.syntax.all._
 import org.scalatest.concurrent.Eventually
-import sttp.client3.SttpBackend
-import sttp.client3.asynchttpclient.fs2.AsyncHttpClientFs2Backend
 
-class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Eventually {
-  lazy val modules: MainModule = new MainModule {
-    override def xa: Transactor[IO] = currentDb.xa
-
-    override lazy val baseSttpBackend: SttpBackend[IO, Any] = AsyncHttpClientFs2Backend.stub[IO]
-    override lazy val config: Config = TestConfig
-  }
-
-  val requests = new Requests(modules)
+class PasswordResetApiTest extends BaseTest with Eventually with AppDependencies {
+  val requests = new Requests(httpApi)
 
   import requests._
 
@@ -110,18 +93,18 @@ class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Event
     val request = Request[IO](method = POST, uri = uri"/passwordreset/forgot")
       .withEntity(ForgotPassword_IN(loginOrEmail))
 
-    modules.httpApi.mainRoutes(request).unwrap
+    httpApi.mainRoutes(request).unwrap
   }
 
   def resetPassword(code: String, password: String): Response[IO] = {
     val request = Request[IO](method = POST, uri = uri"/passwordreset/reset")
       .withEntity(PasswordReset_IN(code, password))
 
-    modules.httpApi.mainRoutes(request).unwrap
+    httpApi.mainRoutes(request).unwrap
   }
 
   def codeSentToEmail(email: String): String = {
-    modules.emailService.sendBatch().unwrap
+    emailService.sendBatch().unwrap
 
     val emailData = DummyEmailSender
       .findSentEmail(email, "SoftwareMill Bootzooka password reset")
@@ -132,7 +115,7 @@ class PasswordResetApiTest extends BaseTest with TestEmbeddedPostgres with Event
   }
 
   def codeWasNotSentToEmail(email: String): Unit = {
-    modules.emailService.sendBatch().unwrap
+    emailService.sendBatch().unwrap
 
     val maybeEmail = DummyEmailSender.findSentEmail(email, "SoftwareMill Bootzooka password reset")
     maybeEmail match {

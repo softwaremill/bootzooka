@@ -9,9 +9,9 @@ import org.flywaydb.core.Flyway
 import scala.concurrent.duration._
 import Doobie._
 import com.softwaremill.bootzooka.config.Sensitive
+import com.softwaremill.macwire.autocats.autowire
 
 import scala.concurrent.ExecutionContext
-import com.softwaremill.macwire.autocats._
 
 /** Configures the database, setting up the connection pool and performing migrations.
   */
