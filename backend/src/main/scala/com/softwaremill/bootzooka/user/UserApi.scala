@@ -1,21 +1,20 @@
 package com.softwaremill.bootzooka.user
 
-import java.time.Instant
-
 import cats.data.NonEmptyList
+import cats.effect.IO
 import com.softwaremill.bootzooka.http.Http
-import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import doobie.util.transactor.Transactor
-import monix.eval.Task
 import sttp.tapir.generic.auto._
 
+import java.time.Instant
 import scala.concurrent.duration._
 
-class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Transactor[Task]) {
+class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Transactor[IO]) {
   import UserApi._
   import http._
 
@@ -28,7 +27,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .serverLogic { data =>
       (for {
         apiKey <- userService.registerNewUser(data.login, data.email, data.password).transact(xa)
-        _ <- Task(Metrics.registeredUsersCounter.inc())
+        _ <- IO(Metrics.registeredUsersCounter.inc())
       } yield Register_OUT(apiKey.id)).toOut
     }
 
@@ -89,7 +88,6 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
 }
 
 object UserApi {
-
   case class Register_IN(login: String, email: String, password: String)
   case class Register_OUT(apiKey: String)
 

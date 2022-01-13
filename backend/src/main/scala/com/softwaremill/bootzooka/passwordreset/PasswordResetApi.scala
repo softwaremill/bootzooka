@@ -6,10 +6,10 @@ import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import doobie.util.transactor.Transactor
-import monix.eval.Task
+import cats.effect.IO
 import sttp.tapir.generic.auto._
 
-class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, xa: Transactor[Task]) {
+class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, xa: Transactor[IO]) {
   import PasswordResetApi._
   import http._
 

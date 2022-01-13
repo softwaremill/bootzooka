@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.security
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetAuthToken, PasswordResetCode, PasswordResetCodeModel}
 import com.softwaremill.bootzooka.util.BaseModule
 import doobie.util.transactor.Transactor
-import monix.eval.Task
 
 trait SecurityModule extends BaseModule {
   lazy val apiKeyModel = new ApiKeyModel
@@ -12,5 +12,5 @@ trait SecurityModule extends BaseModule {
   lazy val passwordResetCodeAuth: Auth[PasswordResetCode] = new Auth(new PasswordResetAuthToken(passwordResetCodeModel), xa, clock)
 
   def passwordResetCodeModel: PasswordResetCodeModel
-  def xa: Transactor[Task]
+  def xa: Transactor[IO]
 }

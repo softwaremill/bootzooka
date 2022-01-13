@@ -1,10 +1,10 @@
 package com.softwaremill.bootzooka.email
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.email.sender.{DummyEmailSender, EmailSender, MailgunEmailSender, SmtpEmailSender}
 import com.softwaremill.bootzooka.util.BaseModule
 import sttp.client3.SttpBackend
 import doobie.util.transactor.Transactor
-import monix.eval.Task
 
 trait EmailModule extends BaseModule {
   lazy val emailModel = new EmailModel
@@ -21,6 +21,6 @@ trait EmailModule extends BaseModule {
     DummyEmailSender
   }
 
-  def xa: Transactor[Task]
-  def sttpBackend: SttpBackend[Task, Any]
+  def xa: Transactor[IO]
+  def sttpBackend: SttpBackend[IO, Any]
 }

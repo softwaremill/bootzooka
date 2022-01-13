@@ -1,17 +1,18 @@
 package com.softwaremill.bootzooka.email.sender
 
-import java.util.{Date, Properties}
+import cats.effect.IO
 
+import java.util.{Date, Properties}
 import com.softwaremill.bootzooka.email.{EmailData, SmtpConfig}
 import com.typesafe.scalalogging.StrictLogging
+
 import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail.{Address, Message, Session, Transport}
-import monix.eval.Task
 
 /** Sends emails synchronously using SMTP.
   */
 class SmtpEmailSender(config: SmtpConfig) extends EmailSender with StrictLogging {
-  def apply(email: EmailData): Task[Unit] = Task {
+  def apply(email: EmailData): IO[Unit] = IO {
     val emailToSend = new SmtpEmailSender.EmailDescription(List(email.recipient), email.content, email.subject)
     SmtpEmailSender.send(
       config.host,

@@ -1,27 +1,21 @@
 package com.softwaremill.bootzooka.http
 
-import java.util.concurrent.Executors
-import cats.data.{Kleisli, OptionT}
-import cats.effect.{Blocker, Resource}
+import cats.data.{Kleisli, NonEmptyList, OptionT}
+import cats.effect.{IO, Resource}
 import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.CorrelationId
+import com.softwaremill.bootzooka.util.Http4sCorrelationMiddleware.source
 import com.softwaremill.bootzooka.util.{Http4sCorrelationMiddleware, ServerEndpoints}
 import com.typesafe.scalalogging.StrictLogging
 import io.prometheus.client.CollectorRegistry
-import monix.eval.Task
-import monix.execution.Scheduler.Implicits.global
-import org.http4s.{HttpApp, HttpRoutes, Request, Response, StaticFile}
-import org.http4s.dsl.Http4sDsl
+import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.metrics.prometheus.Prometheus
 import org.http4s.server.Router
-import org.http4s.server.middleware.{CORS, CORSConfig, Metrics}
-import org.http4s.server.staticcontent.{ResourceService, _}
-import org.http4s.syntax.kleisli._
-import com.softwaremill.bootzooka.util.Http4sCorrelationMiddleware.source
-import monix.execution.Scheduler
-import org.http4s.blaze.server.BlazeServerBuilder
-
-import scala.concurrent.ExecutionContext
+import org.http4s.server.middleware.{CORS, Metrics}
+import org.http4s.server.staticcontent._
+import org.http4s.{HttpApp, HttpRoutes, Request, Response}
+import sttp.tapir.resourceGetServerEndpoint
+import sttp.tapir.server.ServerEndpoint
 
 /** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs and correlation id support.
   *
@@ -38,64 +32,63 @@ class HttpApi(
     collectorRegistry: CollectorRegistry,
     config: HttpConfig
 ) extends StrictLogging {
-  private val apiContextPath = "/api/v1"
+  private val apiContextPath = List("api", "v1")
   private val endpointsToRoutes = new EndpointsToRoutes(http, apiContextPath)
 
-  lazy val mainRoutes: HttpRoutes[Task] =
+  lazy val mainRoutes: HttpRoutes[IO] =
     Http4sCorrelationMiddleware(CorrelationId).withCorrelationId(loggingMiddleware(endpointsToRoutes(endpoints)))
-  private lazy val adminRoutes: HttpRoutes[Task] = endpointsToRoutes(adminEndpoints)
-  private lazy val docsRoutes: HttpRoutes[Task] = endpointsToRoutes.toDocsRoutes(endpoints)
-
-  private lazy val corsConfig: CORSConfig = CORSConfig.default
+  private lazy val adminRoutes: HttpRoutes[IO] = endpointsToRoutes(adminEndpoints)
+  private lazy val docsRoutes: HttpRoutes[IO] = endpointsToRoutes.toDocsRoutes(endpoints)
 
   /** The resource describing the HTTP server; binds when the resource is allocated.
     */
-  lazy val resource: Resource[Task, org.http4s.server.Server] = {
-    val prometheusHttp4sMetrics = Prometheus.metricsOps[Task](collectorRegistry)
+  lazy val resource: Resource[IO, org.http4s.server.Server] = {
+    val prometheusHttp4sMetrics = Prometheus.metricsOps[IO](collectorRegistry)
     prometheusHttp4sMetrics
-      .map(m => Metrics[Task](m)(mainRoutes))
+      .map(m => Metrics[IO](m)(mainRoutes))
       .flatMap { monitoredRoutes =>
-        val app: HttpApp[Task] = Router(
+        val app: HttpApp[IO] = Router(
           // for /api/v1 requests, first trying the API; then the docs; then, returning 404
-          s"$apiContextPath" -> CORS(monitoredRoutes <+> docsRoutes <+> respondWithNotFound, corsConfig),
+          s"/${apiContextPath.mkString("/")}" -> {
+            CORS.policy
+              .withAllowOriginAll
+              .withAllowCredentials(false)
+              .apply(monitoredRoutes <+> docsRoutes <+> respondWithNotFound)
+          },
           "/admin" -> adminRoutes,
           // for all other requests, first trying getting existing webapp resource;
           // otherwise, returning index.html; this is needed to support paths in the frontend apps (e.g. /login)
           // the frontend app will handle displaying appropriate error messages
-          "" -> (webappRoutes <+> respondWithIndex)
+          "" -> (webappRoutes <+> indexResponse())
         ).orNotFound
 
-        BlazeServerBuilder[Task](Scheduler.global)
+        BlazeServerBuilder[IO]
           .bindHttp(config.port, config.host)
           .withHttpApp(app)
           .resource
       }
   }
 
-  private val staticFileBlocker = Blocker.liftExecutionContext(ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(4)))
+  private def indexResponse(): HttpRoutes[IO] = {
+    val loader = classOf[HttpApi].getClassLoader
+    val indexEndpoint: ServerEndpoint[Any, IO] = resourceGetServerEndpoint("")(loader, s"/webapp/index.html")
+    endpointsToRoutes(NonEmptyList.one(indexEndpoint))
+  }
 
-  private def indexResponse(r: Request[Task]): Task[Response[Task]] =
-    StaticFile.fromResource(s"/webapp/index.html", staticFileBlocker, Some(r)).getOrElseF(Task.pure(Response.notFound[Task]))
+  private val respondWithNotFound: HttpRoutes[IO] = Kleisli(_ => OptionT.pure(Response.notFound))
 
-  private val respondWithNotFound: HttpRoutes[Task] = Kleisli(_ => OptionT.pure(Response.notFound))
-  private val respondWithIndex: HttpRoutes[Task] = Kleisli(req => OptionT.liftF(indexResponse(req)))
-
-  private def loggingMiddleware(service: HttpRoutes[Task]): HttpRoutes[Task] = Kleisli { req: Request[Task] =>
+  private def loggingMiddleware(service: HttpRoutes[IO]): HttpRoutes[IO] = Kleisli { req: Request[IO] =>
     OptionT(for {
-      _ <- Task(logger.debug(s"Starting request to: ${req.uri.path}"))
+      _ <- IO(logger.debug(s"Starting request to: ${req.uri.path}"))
       r <- service(req).value
     } yield r)
   }
 
   /** Serves the webapp resources (html, js, css files), from the /webapp directory on the classpath.
     */
-  private lazy val webappRoutes: HttpRoutes[Task] = {
-    val dsl = Http4sDsl[Task]
-    import dsl._
-    val rootRoute = HttpRoutes.of[Task] { case request @ GET -> Root =>
-      indexResponse(request)
-    }
-    val resourcesRoutes = resourceServiceBuilder[Task]("/webapp", staticFileBlocker).toRoutes
+  private lazy val webappRoutes: HttpRoutes[IO] = {
+    val rootRoute = indexResponse()
+    val resourcesRoutes = resourceServiceBuilder[IO]("/webapp").toRoutes
     rootRoute <+> resourcesRoutes
   }
 }

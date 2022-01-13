@@ -10,19 +10,19 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val doobieVersion = "0.13.4"
+val doobieVersion = "1.0.0-RC2"
 val http4sVersion = "0.23.7"
 val circeVersion = "0.14.1"
-val tsecVersion = "0.2.1"
+val tsecVersion = "0.4.0"
 val sttpVersion = "3.3.18"
-val prometheusVersion = "0.12.0"
-val tapirVersion = "0.18.3"
+val prometheusVersion = "0.14.1"
+val tapirVersion = "0.20.0-M3"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "8.2.1"
+  "org.flywaydb" % "flyway-core" % "8.4.1"
 )
 
 val httpDependencies = Seq(
@@ -31,7 +31,7 @@ val httpDependencies = Seq(
   "org.http4s" %% "http4s-blaze-client" % http4sVersion,
   "org.http4s" %% "http4s-circe" % http4sVersion,
   "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
-  "com.softwaremill.sttp.client3" %% "async-http-client-backend-monix" % sttpVersion,
+  "com.softwaremill.sttp.client3" %% "async-http-client-backend-fs2" % sttpVersion,
   "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion
 )
@@ -52,9 +52,9 @@ val jsonDependencies = Seq(
 
 val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
-  "ch.qos.logback" % "logback-classic" % "1.2.7",
+  "ch.qos.logback" % "logback-classic" % "1.2.10",
   "org.codehaus.janino" % "janino" % "3.1.6",
-  "de.siegmar" % "logback-gelf" % "4.0.0"
+  "de.siegmar" % "logback-gelf" % "4.0.2"
 )
 
 val configDependencies = Seq(
@@ -62,15 +62,13 @@ val configDependencies = Seq(
 )
 
 val baseDependencies = Seq(
-  "io.monix" %% "monix" % "3.4.0",
+  "org.typelevel" %% "cats-effect" % "3.3.4",
   "com.softwaremill.common" %% "tagging" % "2.3.2",
-  "com.softwaremill.quicklens" %% "quicklens" % "1.7.5"
+  "com.softwaremill.quicklens" %% "quicklens" % "1.8.2"
 )
 
 val apiDocsDependencies = Seq(
-  "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-http4s" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion
 )
 
 val securityDependencies = Seq(

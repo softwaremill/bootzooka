@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.email.sender
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.email.EmailData
-import monix.eval.Task
 
 trait EmailSender {
-  def apply(email: EmailData): Task[Unit]
+  def apply(email: EmailData): IO[Unit]
 }

@@ -1,6 +1,7 @@
 package com.softwaremill.bootzooka.user
 
 import cats.MonadError
+import cats.effect.IO
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
@@ -9,7 +10,6 @@ import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
-import monix.execution.Scheduler.Implicits.global
 import tsec.common.Verified
 
 import scala.concurrent.duration.Duration
@@ -44,18 +44,16 @@ class UserService(
         failIfDefined(userModel.findByEmail(emailClean.lowerCased), EmailAlreadyUsed)
     }
 
-    def doRegister(): ConnectionIO[ApiKey] = {
-      for {
-        id <- idGenerator.nextId[User]().to[ConnectionIO]
-        now <- clock.now().to[ConnectionIO]
-        user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
-        confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
-        _ = logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
-        _ <- userModel.insert(user)
-        _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
-        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
-      } yield apiKey
-    }
+    def doRegister(): ConnectionIO[ApiKey] = for {
+      id <- idGenerator.nextId[ConnectionIO, User]()
+      now <- clock.now[ConnectionIO]()
+      user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
+      confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
+      _ = logger.debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
+      _ <- userModel.insert(user)
+      _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
+      apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
+    } yield apiKey
 
     for {
       _ <- UserValidator(Some(loginClean), Some(emailClean), Some(password)).as[ConnectionIO]
@@ -120,12 +118,12 @@ class UserService(
       } yield loginUpdated || emailUpdated
     }
 
-    def sendMail(user: User) = {
+    def sendMail(user: User): ConnectionIO[Unit] = {
       val confirmationEmail = emailTemplates.profileDetailsChangeNotification(user.login)
       emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
     }
 
-    doChange() flatMap { anyUpdate =>
+    doChange().flatMap { anyUpdate =>
       if (anyUpdate) {
         findById(userId).flatMap(user => sendMail(user))
       } else {

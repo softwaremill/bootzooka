@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.infrastructure
 
+import cats.effect.IO
 import com.softwaremill.bootzooka.util.{CorrelationIdDecorator, Http4sCorrelationMiddleware}
 import sttp.client3._
 import sttp.client3.{Response, SttpBackend}
-import monix.eval.Task
 import sttp.capabilities.Effect
 import sttp.monad.MonadError
 
@@ -14,8 +14,8 @@ object CorrelationId extends CorrelationIdDecorator()
 
 /** An sttp backend wrapper, which sets the current correlation id on all outgoing requests.
   */
-class SetCorrelationIdBackend[P](delegate: SttpBackend[Task, P]) extends SttpBackend[Task, P] {
-  override def send[T, R >: P with Effect[Task]](request: Request[T, R]): Task[Response[T]] = {
+class SetCorrelationIdBackend[P](delegate: SttpBackend[IO, P]) extends SttpBackend[IO, P] {
+  override def send[T, R >: P with Effect[IO]](request: Request[T, R]): IO[Response[T]] = {
     // suspending the calculation of the correlation id until the request send is evaluated
     CorrelationId()
       .map {
@@ -25,7 +25,7 @@ class SetCorrelationIdBackend[P](delegate: SttpBackend[Task, P]) extends SttpBac
       .flatMap(delegate.send)
   }
 
-  override def close(): Task[Unit] = delegate.close()
+  override def close(): IO[Unit] = delegate.close()
 
-  override def responseMonad: MonadError[Task] = delegate.responseMonad
+  override def responseMonad: MonadError[IO] = delegate.responseMonad
 }
