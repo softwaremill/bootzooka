@@ -83,7 +83,6 @@ val emailDependencies = Seq(
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.11" % Test
 val macwireDependencies = Seq(
-  "com.softwaremill.macwire" %% "macros" % macwireVersion,
   "com.softwaremill.macwire" %% "macrosautocats" % macwireVersion
 ).map(_ % Provided)
 
