@@ -3,10 +3,9 @@ package com.softwaremill.bootzooka
 import cats.data.NonEmptyList
 import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.config.Config
+import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.email.{EmailConfig, EmailModel, EmailService}
-import com.softwaremill.bootzooka.email.sender.{DummyEmailSender, EmailSender, MailgunEmailSender, SmtpEmailSender}
 import com.softwaremill.bootzooka.http.{Http, HttpApi, HttpConfig}
-import com.softwaremill.bootzooka.infrastructure.{DB, DBConfig}
 import com.softwaremill.bootzooka.metrics.{MetricsApi, VersionApi}
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken, PasswordResetCodeModel}
 import com.softwaremill.bootzooka.security.{ApiKeyAuthToken, ApiKeyModel}
@@ -36,14 +35,6 @@ object DependenciesFactory {
 
     def buildPasswordResetAuthToken(passwordResetCodeModel: PasswordResetCodeModel): PasswordResetAuthToken = new PasswordResetAuthToken(passwordResetCodeModel)
 
-    def buildEmailSender(sttpBackend: SttpBackend[IO, Any], config: EmailConfig): EmailSender = if (config.mailgun.enabled) {
-      new MailgunEmailSender(config.mailgun, sttpBackend)
-    } else if (config.smtp.enabled) {
-      new SmtpEmailSender(config.smtp)
-    } else {
-      DummyEmailSender
-    }
-
     def buildEmailScheduler(emailModel: EmailModel, idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[IO]) =
       new EmailService(emailModel, idGenerator, emailSender, config, xa)
 
@@ -60,7 +51,7 @@ object DependenciesFactory {
       buildHttpApi _,
       buildApiKeyAuthToken _,
       buildEmailScheduler _,
-      buildEmailSender _,
+      EmailSender.create _,
       buildPasswordResetAuthToken _
     ).map(modules => (modules.api, modules.emailService))
   }
