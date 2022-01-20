@@ -2,12 +2,12 @@ package com.softwaremill.bootzooka
 
 import cats.effect.unsafe.implicits.global
 import cats.effect.{IO, Resource}
-import com.softwaremill.bootzooka.config.ConfigModule
+import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.EmailService
 import com.softwaremill.bootzooka.http.HttpApi
 import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.metrics.Metrics
-import com.softwaremill.bootzooka.util.{Clock, DefaultClock}
+import com.softwaremill.bootzooka.util.DefaultClock
 import com.typesafe.scalalogging.StrictLogging
 import sttp.capabilities.WebSockets
 import sttp.capabilities.fs2.Fs2Streams
@@ -21,25 +21,22 @@ object Main extends StrictLogging {
     Metrics.init()
     Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 
-    val configModule = new ConfigModule {}
-    configModule.logConfig()
-    val config = configModule.config
-
-    lazy val clock: Clock = DefaultClock
+    val config = Config.read
+    Config.log(config)
 
     lazy val sttpBackend: Resource[IO, SttpBackend[IO, Fs2Streams[IO] with WebSockets]] =
       AsyncHttpClientFs2Backend
         .resource[IO]()
         .map(baseSttpBackend => Slf4jLoggingBackend(PrometheusBackend(baseSttpBackend), includeTiming = true))
 
-    lazy val xa = new DB(config.db).transactorResource
+    val xa = new DB(config.db).transactorResource
 
     val mainTask = DependenciesFactory
       .resource(
         config = config,
         sttpBackend = sttpBackend,
         xa = xa,
-        clock = clock
+        clock = DefaultClock
       )
       .use { case (httpApi, emailService) =>
         /*

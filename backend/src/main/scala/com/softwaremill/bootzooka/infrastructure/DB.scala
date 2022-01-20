@@ -13,8 +13,7 @@ import com.softwaremill.macwire.autocats.autowire
 
 import scala.concurrent.ExecutionContext
 
-/** Configures the database, setting up the connection pool and performing migrations.
-  */
+/** Configures the database, setting up the connection pool and performing migrations. */
 class DB(_config: DBConfig) extends StrictLogging {
 
   private val config: DBConfig = {
