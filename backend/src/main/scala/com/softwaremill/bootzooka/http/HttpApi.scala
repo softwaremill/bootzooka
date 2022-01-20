@@ -3,9 +3,7 @@ package com.softwaremill.bootzooka.http
 import cats.data.{Kleisli, NonEmptyList, OptionT}
 import cats.effect.{IO, Resource}
 import cats.implicits._
-import com.softwaremill.bootzooka.infrastructure.CorrelationId
-import com.softwaremill.bootzooka.util.Http4sCorrelationMiddleware.source
-import com.softwaremill.bootzooka.util.{Http4sCorrelationMiddleware, ServerEndpoints}
+import com.softwaremill.bootzooka.util.ServerEndpoints
 import com.typesafe.scalalogging.StrictLogging
 import io.prometheus.client.CollectorRegistry
 import org.http4s.blaze.server.BlazeServerBuilder
@@ -17,7 +15,7 @@ import org.http4s.{HttpApp, HttpRoutes, Request, Response}
 import sttp.tapir.resourceGetServerEndpoint
 import sttp.tapir.server.ServerEndpoint
 
-/** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs and correlation id support.
+/** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs support.
   *
   * The following endpoints are exposed:
   *   - `/api/v1` - the main API
@@ -35,8 +33,7 @@ class HttpApi(
   private val apiContextPath = List("api", "v1")
   private val endpointsToRoutes = new EndpointsToRoutes(http, apiContextPath)
 
-  lazy val mainRoutes: HttpRoutes[IO] =
-    Http4sCorrelationMiddleware(CorrelationId).withCorrelationId(loggingMiddleware(endpointsToRoutes(endpoints)))
+  lazy val mainRoutes: HttpRoutes[IO] = loggingMiddleware(endpointsToRoutes(endpoints))
   private lazy val adminRoutes: HttpRoutes[IO] = endpointsToRoutes(adminEndpoints)
   private lazy val docsRoutes: HttpRoutes[IO] = endpointsToRoutes.toDocsRoutes(endpoints)
 
