@@ -3,11 +3,11 @@ package com.softwaremill.bootzooka
 import cats.data.NonEmptyList
 import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.config.Config
+import com.softwaremill.bootzooka.email.EmailService
 import com.softwaremill.bootzooka.email.sender.EmailSender
-import com.softwaremill.bootzooka.email.{EmailConfig, EmailModel, EmailService}
 import com.softwaremill.bootzooka.http.{Http, HttpApi, HttpConfig}
 import com.softwaremill.bootzooka.metrics.{MetricsApi, VersionApi}
-import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken, PasswordResetCodeModel}
+import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken}
 import com.softwaremill.bootzooka.security.{ApiKeyAuthToken, ApiKeyModel}
 import com.softwaremill.bootzooka.user.UserApi
 import com.softwaremill.bootzooka.util.{Clock, DefaultIdGenerator, IdGenerator}
@@ -33,11 +33,6 @@ object DependenciesFactory {
 
     def buildApiKeyAuthToken(apiKeyModel: ApiKeyModel): ApiKeyAuthToken = new ApiKeyAuthToken(apiKeyModel)
 
-    def buildPasswordResetAuthToken(passwordResetCodeModel: PasswordResetCodeModel): PasswordResetAuthToken = new PasswordResetAuthToken(passwordResetCodeModel)
-
-    def buildEmailScheduler(emailModel: EmailModel, idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[IO]) =
-      new EmailService(emailModel, idGenerator, emailSender, config, xa)
-
     autowire[Modules](
       config.api,
       config.user,
@@ -50,9 +45,9 @@ object DependenciesFactory {
       xa,
       buildHttpApi _,
       buildApiKeyAuthToken _,
-      buildEmailScheduler _,
+      new EmailService(_, _, _, _, _),
       EmailSender.create _,
-      buildPasswordResetAuthToken _
+      new PasswordResetAuthToken(_),
     ).map(modules => (modules.api, modules.emailService))
   }
 }
