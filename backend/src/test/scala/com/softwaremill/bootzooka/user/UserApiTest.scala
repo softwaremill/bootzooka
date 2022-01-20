@@ -2,16 +2,15 @@ package com.softwaremill.bootzooka.user
 
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.test.{BaseTest, AppDependencies, Requests}
+import com.softwaremill.bootzooka.test.{BaseTest, TestDependencies, Requests}
 import com.softwaremill.bootzooka.user.UserApi._
 import org.http4s.Status
 import org.scalatest.concurrent.Eventually
 
 import scala.concurrent.duration._
 
-class UserApiTest extends BaseTest with Eventually with AppDependencies {
-  val requests = new Requests(httpApi)
-
+class UserApiTest extends BaseTest with Eventually with TestDependencies {
+  lazy val requests = new Requests(dependencies.api)
   import requests._
 
   "/user/register" should "register" in {
@@ -80,7 +79,7 @@ class UserApiTest extends BaseTest with Eventually with AppDependencies {
     val RegisteredUser(login, email, _, _) = newRegisteredUsed()
 
     // then
-    emailService.sendBatch().unwrap
+    dependencies.emailService.sendBatch().unwrap
     DummyEmailSender.findSentEmail(email, s"registration confirmation for user $login").isDefined shouldBe true
   }
 

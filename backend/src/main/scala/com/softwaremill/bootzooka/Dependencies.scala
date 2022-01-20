@@ -16,10 +16,10 @@ import doobie.util.transactor.Transactor
 import io.prometheus.client.CollectorRegistry
 import sttp.client3.SttpBackend
 
-object DependenciesFactory {
-  private case class Modules(api: HttpApi, emailService: EmailService)
+case class Dependencies(api: HttpApi, emailService: EmailService)
 
-  def resource(config: Config, sttpBackend: Resource[IO, SttpBackend[IO, Any]], xa: Resource[IO, Transactor[IO]], clock: Clock): Resource[IO, (HttpApi, EmailService)] = {
+object Dependencies {
+  def wire(config: Config, sttpBackend: Resource[IO, SttpBackend[IO, Any]], xa: Resource[IO, Transactor[IO]], clock: Clock): Resource[IO, Dependencies] = {
     def buildHttpApi(http: Http, userApi: UserApi, passwordResetApi: PasswordResetApi, metricsApi: MetricsApi, versionApi: VersionApi, collectorRegistry: CollectorRegistry, cfg: HttpConfig) =
       new HttpApi(
         http,
@@ -28,7 +28,7 @@ object DependenciesFactory {
         collectorRegistry,
         cfg)
 
-    autowire[Modules](
+    autowire[Dependencies](
       config.api,
       config.user,
       config.passwordReset,
@@ -43,6 +43,6 @@ object DependenciesFactory {
       new EmailService(_, _, _, _, _),
       EmailSender.create _,
       new PasswordResetAuthToken(_),
-    ).map(modules => (modules.api, modules.emailService))
+    )
   }
 }

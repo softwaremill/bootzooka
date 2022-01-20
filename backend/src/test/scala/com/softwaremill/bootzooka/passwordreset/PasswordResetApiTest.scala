@@ -4,14 +4,13 @@ import cats.effect.IO
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_IN, ForgotPassword_OUT, PasswordReset_IN, PasswordReset_OUT}
-import com.softwaremill.bootzooka.test.{AppDependencies, BaseTest, Requests}
+import com.softwaremill.bootzooka.test.{TestDependencies, BaseTest, Requests}
 import org.http4s._
 import org.http4s.syntax.all._
 import org.scalatest.concurrent.Eventually
 
-class PasswordResetApiTest extends BaseTest with Eventually with AppDependencies {
-  val requests = new Requests(httpApi)
-
+class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies {
+  lazy val requests = new Requests(dependencies.api)
   import requests._
 
   "/passwordreset" should "reset the password" in {
@@ -93,18 +92,18 @@ class PasswordResetApiTest extends BaseTest with Eventually with AppDependencies
     val request = Request[IO](method = POST, uri = uri"/passwordreset/forgot")
       .withEntity(ForgotPassword_IN(loginOrEmail))
 
-    httpApi.mainRoutes(request).unwrap
+    dependencies.api.mainRoutes(request).unwrap
   }
 
   def resetPassword(code: String, password: String): Response[IO] = {
     val request = Request[IO](method = POST, uri = uri"/passwordreset/reset")
       .withEntity(PasswordReset_IN(code, password))
 
-    httpApi.mainRoutes(request).unwrap
+    dependencies.api.mainRoutes(request).unwrap
   }
 
   def codeSentToEmail(email: String): String = {
-    emailService.sendBatch().unwrap
+    dependencies.emailService.sendBatch().unwrap
 
     val emailData = DummyEmailSender
       .findSentEmail(email, "SoftwareMill Bootzooka password reset")
@@ -115,7 +114,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with AppDependencies
   }
 
   def codeWasNotSentToEmail(email: String): Unit = {
-    emailService.sendBatch().unwrap
+    dependencies.emailService.sendBatch().unwrap
 
     val maybeEmail = DummyEmailSender.findSentEmail(email, "SoftwareMill Bootzooka password reset")
     maybeEmail match {
