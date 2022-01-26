@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka.user
 
 import cats.MonadError
-import cats.effect.IO
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
