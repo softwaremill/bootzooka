@@ -35,7 +35,11 @@ class Auth[T](
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
-        IO.sleep(random.nextInt(1000).millis) >> IO.raiseError(Fail.Unauthorized("Unauthorized"))
+        val value = IO.sleep(random.nextInt(1000).millis)
+        value.flatMap(_ => {
+          val unauthorized: Fail.Unauthorized = Fail.Unauthorized("Unauthorized")
+          IO.raiseError(unauthorized)
+        })
       case Some(token) =>
         val delete = if (authTokenOps.deleteWhenValid) authTokenOps.delete(token).transact(xa) else IO.unit
         delete >> IO(authTokenOps.userId(token))

@@ -7,7 +7,8 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
-import com.softwaremill.bootzooka.util.ServerEndpoints
+import com.softwaremill.bootzooka.util.{Id, ServerEndpoints}
+import com.softwaremill.tagging.@@
 import doobie.util.transactor.Transactor
 import sttp.tapir.generic.auto._
 
@@ -44,36 +45,36 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     }
 
   private val changePasswordEndpoint = secureEndpoint.post
-    .in(UserPath / "changepassword")
+    .securityIn(UserPath / "changepassword")
     .in(jsonBody[ChangePassword_IN])
     .out(jsonBody[ChangePassword_OUT])
-    .serverLogic { case (authData, data) =>
+    .serverSecurityLogic[Id @@ User, IO](authData => auth(authData).map(id => Right(id)))
+    .serverLogic(id => data =>
       (for {
-        userId <- auth(authData)
-        _ <- userService.changePassword(userId, data.currentPassword, data.newPassword).transact(xa)
+        _ <- userService.changePassword(id, data.currentPassword, data.newPassword).transact(xa)
       } yield ChangePassword_OUT()).toOut
-    }
+    )
 
   private val getUserEndpoint = secureEndpoint.get
     .in(UserPath)
     .out(jsonBody[GetUser_OUT])
-    .serverLogic { authData =>
+    .serverSecurityLogic[Id @@ User, IO](authData => auth(authData).map(id => Right(id)))
+    .serverLogic(id => (_: Unit) =>
       (for {
-        userId <- auth(authData)
-        user <- userService.findById(userId).transact(xa)
+        user <- userService.findById(id).transact(xa)
       } yield GetUser_OUT(user.login, user.emailLowerCased, user.createdOn)).toOut
-    }
+    )
 
   private val updateUserEndpoint = secureEndpoint.post
     .in(UserPath)
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
-    .serverLogic { case (authData, data) =>
+    .serverSecurityLogic[Id @@ User, IO](authData => auth(authData).map(id => Right(id)))
+    .serverLogic(id => data =>
       (for {
-        userId <- auth(authData)
-        _ <- userService.changeUser(userId, data.login, data.email).transact(xa)
+        _ <- userService.changeUser(id, data.login, data.email).transact(xa)
       } yield UpdateUser_OUT()).toOut
-    }
+    )
 
   val endpoints: ServerEndpoints =
     NonEmptyList
