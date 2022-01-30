@@ -1,7 +1,5 @@
 package com.softwaremill.bootzooka.security
 
-import java.security.SecureRandom
-import java.time.Instant
 import cats.data.OptionT
 import cats.effect.IO
 import com.softwaremill.bootzooka._
@@ -11,6 +9,8 @@ import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 
+import java.security.SecureRandom
+import java.time.Instant
 import scala.concurrent.duration._
 
 class Auth[T](
@@ -35,16 +35,17 @@ class Auth[T](
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
-        val value = IO.sleep(random.nextInt(1000).millis)
-        value.flatMap(_ => {
-          val unauthorized: Fail.Unauthorized = Fail.Unauthorized("Unauthorized")
-          IO.raiseError(unauthorized)
-        })
+        IO.sleep(random.nextInt(1000).millis) >> IO.raiseError(Fail.Unauthorized("Unauthorized"))
       case Some(token) =>
         val delete = if (authTokenOps.deleteWhenValid) authTokenOps.delete(token).transact(xa) else IO.unit
         delete >> IO(authTokenOps.userId(token))
     }
   }
+
+  def applyEither(id: Id): IO[Either[Fail.Unauthorized, Id @@ User]] =
+    apply(id)
+      .map(i => Right(i))
+      .handleError(_ => Left(Fail.Unauthorized("Unauthorized")))
 
   private def verifyValid(token: T): IO[Option[Unit]] = {
     clock.now[IO]().flatMap { time =>

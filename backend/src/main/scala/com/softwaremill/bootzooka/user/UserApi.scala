@@ -7,8 +7,7 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
-import com.softwaremill.bootzooka.util.{Id, ServerEndpoints}
-import com.softwaremill.tagging.@@
+import com.softwaremill.bootzooka.util.ServerEndpoints
 import doobie.util.transactor.Transactor
 import sttp.tapir.generic.auto._
 
@@ -48,7 +47,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .securityIn(UserPath / "changepassword")
     .in(jsonBody[ChangePassword_IN])
     .out(jsonBody[ChangePassword_OUT])
-    .serverSecurityLogic[Id @@ User, IO](authData => auth(authData).map(id => Right(id)))
+    .serverSecurityLogic(authData => auth.applyEither(authData).map(_.left.map(exceptionToErrorOut)))
     .serverLogic(id => data =>
       (for {
         _ <- userService.changePassword(id, data.currentPassword, data.newPassword).transact(xa)
@@ -58,7 +57,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
   private val getUserEndpoint = secureEndpoint.get
     .in(UserPath)
     .out(jsonBody[GetUser_OUT])
-    .serverSecurityLogic[Id @@ User, IO](authData => auth(authData).map(id => Right(id)))
+    .serverSecurityLogic(authData => auth.applyEither(authData).map(_.left.map(exceptionToErrorOut)))
     .serverLogic(id => (_: Unit) =>
       (for {
         user <- userService.findById(id).transact(xa)
@@ -69,7 +68,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .in(UserPath)
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
-    .serverSecurityLogic[Id @@ User, IO](authData => auth(authData).map(id => Right(id)))
+    .serverSecurityLogic(authData => auth.applyEither(authData).map(_.left.map(exceptionToErrorOut)))
     .serverLogic(id => data =>
       (for {
         _ <- userService.changeUser(id, data.login, data.email).transact(xa)
