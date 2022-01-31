@@ -42,11 +42,6 @@ class Auth[T](
     }
   }
 
-  def applyEither(id: Id): IO[Either[Fail.Unauthorized, Id @@ User]] =
-    apply(id)
-      .map(i => Right(i))
-      .handleError(_ => Left(Fail.Unauthorized("Unauthorized")))
-
   private def verifyValid(token: T): IO[Option[Unit]] = {
     clock.now[IO]().flatMap { time =>
       if (time.isAfter(authTokenOps.validUntil(token))) {
