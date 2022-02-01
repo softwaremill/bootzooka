@@ -83,7 +83,7 @@ val emailDependencies = Seq(
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.11" % Test
 val unitTestingStack = Seq(scalatest)
 
-val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.4" % Test
+val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.0" % Test
 val dbTestingStack = Seq(embeddedPostgres)
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
