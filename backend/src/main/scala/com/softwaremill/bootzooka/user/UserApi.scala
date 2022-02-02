@@ -44,7 +44,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     }
 
   private val changePasswordEndpoint = secureEndpoint.post
-    .securityIn(UserPath / "changepassword")
+    .in(UserPath / "changepassword")
     .in(jsonBody[ChangePassword_IN])
     .out(jsonBody[ChangePassword_OUT])
     .serverSecurityLogic(authData => auth(authData).toOut)
