@@ -17,7 +17,7 @@ trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll wit
   override protected def beforeAll(): Unit = {
     super.beforeAll()
     postgres = EmbeddedPostgres.builder().start()
-    val url = postgres.getJdbcUrl("postgres", "postgres")
+    val url = postgres.getJdbcUrl("postgres")
     postgres.getPostgresDatabase.getConnection.asInstanceOf[PgConnection].setPrepareThreshold(100)
     currentDbConfig = TestConfig.db.copy(
       username = "postgres",
