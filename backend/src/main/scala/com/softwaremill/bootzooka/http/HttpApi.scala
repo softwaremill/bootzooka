@@ -47,8 +47,7 @@ class HttpApi(
         val app: HttpApp[IO] = Router(
           // for /api/v1 requests, first trying the API; then the docs; then, returning 404
           s"/${apiContextPath.mkString("/")}" -> {
-            CORS.policy
-              .withAllowOriginAll
+            CORS.policy.withAllowOriginAll
               .withAllowCredentials(false)
               .apply(monitoredRoutes <+> docsRoutes <+> respondWithNotFound)
           },
