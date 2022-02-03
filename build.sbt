@@ -11,7 +11,7 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "1.0.0-RC2"
-val http4sVersion = "0.23.8"
+val http4sVersion = "0.23.9"
 val circeVersion = "0.14.1"
 val tsecVersion = "0.4.0"
 val sttpVersion = "3.4.1"
@@ -83,7 +83,7 @@ val emailDependencies = Seq(
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.11" % Test
 val unitTestingStack = Seq(scalatest)
 
-val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "0.13.4" % Test
+val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.0" % Test
 val dbTestingStack = Seq(embeddedPostgres)
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies

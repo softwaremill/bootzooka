@@ -1,7 +1,5 @@
 package com.softwaremill.bootzooka.security
 
-import java.security.SecureRandom
-import java.time.Instant
 import cats.data.OptionT
 import cats.effect.IO
 import com.softwaremill.bootzooka._
@@ -11,6 +9,8 @@ import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 
+import java.security.SecureRandom
+import java.time.Instant
 import scala.concurrent.duration._
 
 class Auth[T](
