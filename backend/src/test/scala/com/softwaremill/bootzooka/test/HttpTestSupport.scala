@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.test
 import cats.data.OptionT
 import cats.effect.kernel.Concurrent
 import cats.effect.{IO, Sync}
-import com.softwaremill.bootzooka.MainModule
 import com.softwaremill.bootzooka.http.Error_OUT
 import com.softwaremill.bootzooka.infrastructure.Json._
 import io.circe.{Decoder, Encoder}
@@ -19,8 +18,6 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 trait HttpTestSupport extends Http4sDsl[IO] with Matchers {
-
-  val modules: MainModule
 
   // in tests we are using the http4s client, hence we need http4s entity encoders/decoders to send/receive data
   implicit def entityEncoderFromCirce[F[_]: Sync, T: Encoder]: EntityEncoder[F, T] = {

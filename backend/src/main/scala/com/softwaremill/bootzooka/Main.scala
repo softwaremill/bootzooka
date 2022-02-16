@@ -1,38 +1,45 @@
 package com.softwaremill.bootzooka
 
-import cats.effect.IO
 import cats.effect.unsafe.implicits.global
+import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.config.Config
+import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.metrics.Metrics
+import com.softwaremill.bootzooka.util.DefaultClock
 import com.typesafe.scalalogging.StrictLogging
-import doobie.util.transactor
+import sttp.capabilities.WebSockets
+import sttp.capabilities.fs2.Fs2Streams
 import sttp.client3.SttpBackend
+import sttp.client3.asynchttpclient.fs2.AsyncHttpClientFs2Backend
+import sttp.client3.logging.slf4j.Slf4jLoggingBackend
+import sttp.client3.prometheus.PrometheusBackend
 
 object Main extends StrictLogging {
   def main(args: Array[String]): Unit = {
     Metrics.init()
     Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 
-    val initModule = new InitModule {}
-    initModule.logConfig()
+    val config = Config.read
+    Config.log(config)
 
-    val mainTask = initModule.db.transactorResource.use { _xa =>
-      initModule.baseSttpBackend.use { _baseSttpBackend =>
-        val modules = new MainModule {
-          override def xa: transactor.Transactor[IO] = _xa
-          override def baseSttpBackend: SttpBackend[IO, Any] = _baseSttpBackend
-          override def config: Config = initModule.config
-        }
+    lazy val sttpBackend: Resource[IO, SttpBackend[IO, Fs2Streams[IO] with WebSockets]] =
+      AsyncHttpClientFs2Backend
+        .resource[IO]()
+        .map(baseSttpBackend => Slf4jLoggingBackend(PrometheusBackend(baseSttpBackend), includeTiming = true))
 
+    val xa = new DB(config.db).transactorResource
+
+    Dependencies
+      .wire(config, sttpBackend, xa, DefaultClock)
+      .use { case Dependencies(httpApi, emailService) =>
         /*
         Sequencing two tasks using the >> operator:
         - the first starts the background processes (such as an email sender)
         - the second allocates the http api resource, and never releases it (so that the http server is available
           as long as our application runs)
          */
-        modules.startBackgroundProcesses >> modules.httpApi.resource.use(_ => IO.never)
+        emailService.startProcesses().void >> httpApi.resource.use(_ => IO.never)
       }
-    }
-    mainTask.unsafeRunSync()
+      .unsafeRunSync()
   }
 }
