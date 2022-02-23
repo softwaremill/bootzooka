@@ -43,11 +43,12 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
       } yield Login_OUT(apiKey.id)).toOut
     }
 
-  private val changePasswordEndpoint = secureEndpoint.post
+  private val authedEndpoint = secureEndpoint.serverSecurityLogic(authData => auth(authData).toOut)
+
+  private val changePasswordEndpoint = authedEndpoint.post
     .in(UserPath / "changepassword")
     .in(jsonBody[ChangePassword_IN])
     .out(jsonBody[ChangePassword_OUT])
-    .serverSecurityLogic(authData => auth(authData).toOut)
     .serverLogic(id =>
       data =>
         (for {
@@ -55,10 +56,9 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
         } yield ChangePassword_OUT()).toOut
     )
 
-  private val getUserEndpoint = secureEndpoint.get
+  private val getUserEndpoint = authedEndpoint.get
     .in(UserPath)
     .out(jsonBody[GetUser_OUT])
-    .serverSecurityLogic(authData => auth(authData).toOut)
     .serverLogic(id =>
       (_: Unit) =>
         (for {
@@ -66,11 +66,10 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
         } yield GetUser_OUT(user.login, user.emailLowerCased, user.createdOn)).toOut
     )
 
-  private val updateUserEndpoint = secureEndpoint.post
+  private val updateUserEndpoint = authedEndpoint.post
     .in(UserPath)
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
-    .serverSecurityLogic(authData => auth(authData).toOut)
     .serverLogic(id =>
       data =>
         (for {

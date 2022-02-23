@@ -8,11 +8,11 @@ import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import io.circe.Printer
-import sttp.tapir.Codec.PlainCodec
-import sttp.tapir.json.circe.TapirJsonCirce
 import sttp.model.StatusCode
-import sttp.tapir.{Codec, Endpoint, EndpointOutput, Schema, SchemaType, Tapir}
+import sttp.tapir.Codec.PlainCodec
 import sttp.tapir.generic.auto._
+import sttp.tapir.json.circe.TapirJsonCirce
+import sttp.tapir.{Codec, Endpoint, EndpointOutput, Schema, SchemaType, Tapir}
 import tsec.common.SecureRandomId
 
 /** Helper class for defining HTTP endpoints. Import the members of this class when defining an HTTP API using tapir. */
@@ -64,7 +64,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
 
   implicit class IOOut[T](f: IO[T]) {
 
-    /** An extension method for [[IO]], which converts a possibly failed IO, to a task which either returns the error converted to an
+    /** An extension method for [[IO]], which converts a possibly failed IO, to one which either returns the error converted to an
       * [[Error_OUT]] instance, or returns the successful value unchanged.
       */
     def toOut: IO[Either[(StatusCode, Error_OUT), T]] = {

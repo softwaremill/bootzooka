@@ -53,9 +53,9 @@ object Dependencies {
       sttpBackend,
       xa,
       buildHttpApi _,
-      new ApiKeyAuthToken(_),
       new EmailService(_, _, _, _, _),
       EmailSender.create _,
+      new ApiKeyAuthToken(_),
       new PasswordResetAuthToken(_)
     )
   }
