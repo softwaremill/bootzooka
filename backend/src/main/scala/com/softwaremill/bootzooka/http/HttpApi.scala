@@ -40,9 +40,7 @@ class HttpApi(
   /** The resource describing the HTTP server; binds when the resource is allocated.
     */
   lazy val resource: Resource[IO, org.http4s.server.Server] = {
-    import com.softwaremill.macwire.autocats._
-
-    val monitoredRoues =
+    val monitoredRoutes =
       Prometheus.metricsOps[IO](collectorRegistry).map(m => Metrics[IO](m)(mainRoutes))
 
     def buildApp(monitoredRoutes: HttpRoutes[IO]): HttpApp[IO] = Router(
@@ -64,11 +62,7 @@ class HttpApi(
       .withHttpApp(app)
       .resource
 
-    autowire[Server](
-      monitoredRoues,
-      buildApp _,
-      buildServer _
-    )
+    monitoredRoutes.flatMap(routes => buildServer(buildApp(routes)))
   }
 
   private def indexResponse(): HttpRoutes[IO] = {

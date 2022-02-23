@@ -15,13 +15,13 @@ import sttp.tapir.{Codec, Endpoint, EndpointOutput, Schema, SchemaType, Tapir}
 import sttp.tapir.generic.auto._
 import tsec.common.SecureRandomId
 
-/** Helper class for defining HTTP endpoints. Import the members of this class when defining an HTTP API using tapir.
-  */
+/** Helper class for defining HTTP endpoints. Import the members of this class when defining an HTTP API using tapir. */
 class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogging {
 
-  /** Description of the output, that is used to represent an error that occurred during endpoint invocation.
-    */
-  val failOutput: EndpointOutput[(StatusCode, Error_OUT)] = statusCode and jsonBody[Error_OUT]
+  val jsonErrorOutOutput: EndpointOutput[Error_OUT] = jsonBody[Error_OUT]
+
+  /** Description of the output, that is used to represent an error that occurred during endpoint invocation. */
+  val failOutput: EndpointOutput[(StatusCode, Error_OUT)] = statusCode.and(jsonErrorOutOutput)
 
   /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class.
@@ -47,7 +47,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
     case _                        => InternalServerError
   }
 
-  def exceptionToErrorOut(e: Exception): (StatusCode, Error_OUT) = {
+  private def exceptionToErrorOut(e: Exception): (StatusCode, Error_OUT) = {
     val (statusCode, message) = e match {
       case f: Fail => failToResponseData(f)
       case _ =>
@@ -77,8 +77,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
   override def jsonPrinter: Printer = noNullsPrinter
 }
 
-/** Schemas for custom types used in endpoint descriptions (as parts of query parameters, JSON bodies, etc.)
-  */
+/** Schemas for custom types used in endpoint descriptions (as parts of query parameters, JSON bodies, etc.) */
 trait TapirSchemas {
   implicit val idPlainCodec: PlainCodec[SecureRandomId] =
     Codec.string.map(_.asInstanceOf[SecureRandomId])(identity)
