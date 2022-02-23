@@ -19,14 +19,28 @@ import sttp.client3.SttpBackend
 case class Dependencies(api: HttpApi, emailService: EmailService)
 
 object Dependencies {
-  def wire(config: Config, sttpBackend: Resource[IO, SttpBackend[IO, Any]], xa: Resource[IO, Transactor[IO]], clock: Clock): Resource[IO, Dependencies] = {
-    def buildHttpApi(http: Http, userApi: UserApi, passwordResetApi: PasswordResetApi, metricsApi: MetricsApi, versionApi: VersionApi, collectorRegistry: CollectorRegistry, cfg: HttpConfig) =
+  def wire(
+      config: Config,
+      sttpBackend: Resource[IO, SttpBackend[IO, Any]],
+      xa: Resource[IO, Transactor[IO]],
+      clock: Clock
+  ): Resource[IO, Dependencies] = {
+    def buildHttpApi(
+        http: Http,
+        userApi: UserApi,
+        passwordResetApi: PasswordResetApi,
+        metricsApi: MetricsApi,
+        versionApi: VersionApi,
+        collectorRegistry: CollectorRegistry,
+        cfg: HttpConfig
+    ) =
       new HttpApi(
         http,
         userApi.endpoints concatNel passwordResetApi.endpoints,
         NonEmptyList.of(metricsApi.metricsEndpoint, versionApi.versionEndpoint),
         collectorRegistry,
-        cfg)
+        cfg
+      )
 
     autowire[Dependencies](
       config.api,
@@ -42,7 +56,7 @@ object Dependencies {
       new ApiKeyAuthToken(_),
       new EmailService(_, _, _, _, _),
       EmailSender.create _,
-      new PasswordResetAuthToken(_),
+      new PasswordResetAuthToken(_)
     )
   }
 }

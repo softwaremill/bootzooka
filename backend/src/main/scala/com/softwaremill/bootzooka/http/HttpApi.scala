@@ -48,8 +48,7 @@ class HttpApi(
     def buildApp(monitoredRoutes: HttpRoutes[IO]): HttpApp[IO] = Router(
       // for /api/v1 requests, first trying the API; then the docs; then, returning 404
       s"/${apiContextPath.mkString("/")}" -> {
-        CORS.policy
-          .withAllowOriginAll
+        CORS.policy.withAllowOriginAll
           .withAllowCredentials(false)
           .apply(monitoredRoutes <+> docsRoutes <+> respondWithNotFound)
       },
@@ -60,7 +59,7 @@ class HttpApi(
       "" -> (webappRoutes <+> indexResponse())
     ).orNotFound
 
-    def buildServer(app: HttpApp[IO]): Resource[IO, Server] =         BlazeServerBuilder[IO]
+    def buildServer(app: HttpApp[IO]): Resource[IO, Server] = BlazeServerBuilder[IO]
       .bindHttp(config.port, config.host)
       .withHttpApp(app)
       .resource
