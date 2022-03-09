@@ -103,7 +103,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "2.13.8",
   libraryDependencies ++= commonDependencies,
-  uiDirectory := baseDirectory.value.getParentFile / uiProjectName,
+  uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
     streams.value.log("Updating npm/yarn dependencies")
     haltOnCmdResultError(Process("yarn install", uiDirectory.value).!)
@@ -115,12 +115,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
     def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
     streams.value.log("Running yarn task: " + taskName)
     haltOnCmdResultError(runYarnTask())
-  },
-  copyWebapp := {
-    streams.value.log.info("Copying the webapp resources")
-    IO.copyDirectory(uiDirectory.value / "build", (Compile / classDirectory).value / "webapp")
-  },
-  copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value
+  }
 )
 
 lazy val buildInfoSettings = Seq(
@@ -196,7 +191,14 @@ lazy val rootProject = (project in file("."))
 lazy val backend: Project = (project in file("backend"))
   .settings(
     libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies ++ macwireDependencies,
-    Compile / mainClass := Some("com.softwaremill.bootzooka.Main")
+    Compile / mainClass := Some("com.softwaremill.bootzooka.Main"),
+    copyWebapp := {
+      val source = uiDirectory.value / "build"
+      val target = (Compile / classDirectory).value / "webapp"
+      streams.value.log.info(s"Copying the webapp resources from $source to $target")
+      IO.copyDirectory(source, target)
+    },
+    copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)
