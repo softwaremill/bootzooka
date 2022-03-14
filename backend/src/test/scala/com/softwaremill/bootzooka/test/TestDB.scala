@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.test
 import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
-import com.softwaremill.bootzooka.infrastructure.DBConfig
+import com.softwaremill.bootzooka.infrastructure.{CorrelationId, DBConfig}
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.hikari.HikariTransactor
@@ -30,7 +30,7 @@ class TestDB(config: DBConfig) extends StrictLogging {
         config.password.value,
         connectEC
       )
-    } yield xa
+    } yield CorrelationId.correlationIdTransactor(xa)
 
     // first extracting it from the use method, then stopping when the `done` mvar is filled (when `close()` is invoked)
     xaResource
