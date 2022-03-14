@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka
 import cats.effect.unsafe.implicits.global
 import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.config.Config
-import com.softwaremill.bootzooka.infrastructure.DB
+import com.softwaremill.bootzooka.infrastructure.{CorrelationId, DB}
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.DefaultClock
 import com.typesafe.scalalogging.StrictLogging
@@ -27,7 +27,7 @@ object Main extends StrictLogging {
         .resource[IO]()
         .map(baseSttpBackend => Slf4jLoggingBackend(PrometheusBackend(baseSttpBackend), includeTiming = true))
 
-    val xa = new DB(config.db).transactorResource
+    val xa = new DB(config.db).transactorResource.map(CorrelationId.correlationIdTransactor)
 
     Dependencies
       .wire(config, sttpBackend, xa, DefaultClock)
