@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka
 import cats.effect.unsafe.implicits.global
 import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.config.Config
-import com.softwaremill.bootzooka.infrastructure.{CorrelationId, DB}
+import com.softwaremill.bootzooka.infrastructure.{CorrelationId, DB, SetCorrelationIdBackend}
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.DefaultClock
 import com.typesafe.scalalogging.StrictLogging
@@ -25,7 +25,7 @@ object Main extends StrictLogging {
     lazy val sttpBackend: Resource[IO, SttpBackend[IO, Fs2Streams[IO] with WebSockets]] =
       AsyncHttpClientFs2Backend
         .resource[IO]()
-        .map(baseSttpBackend => Slf4jLoggingBackend(PrometheusBackend(baseSttpBackend), includeTiming = true))
+        .map(baseSttpBackend => Slf4jLoggingBackend(PrometheusBackend(new SetCorrelationIdBackend(baseSttpBackend)), includeTiming = true))
 
     val xa = new DB(config.db).transactorResource.map(CorrelationId.correlationIdTransactor)
 
