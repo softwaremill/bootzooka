@@ -25,14 +25,14 @@ class PasswordResetService(
     userModel
       .findByLoginOrEmail(loginOrEmail.lowerCased)
       .flatMap {
-        case None       => logger[ConnectionIO].debug(s"Could not find user with $loginOrEmail login/email")
+        case None       => logger.debug(s"Could not find user with $loginOrEmail login/email")
         case Some(user) => createCode(user).flatMap(pcr => sendCode(user, pcr))
       }
   }
 
   private def createCode(user: User): ConnectionIO[PasswordResetCode] = {
     for {
-      _ <- logger[ConnectionIO].debug(s"Creating password reset code for user: ${user.id}")
+      _ <- logger.debug[ConnectionIO](s"Creating password reset code for user: ${user.id}")
       id <- idGenerator.nextId[ConnectionIO, PasswordResetCode]()
       validUntil <- clock
         .now[ConnectionIO]()
@@ -45,7 +45,7 @@ class PasswordResetService(
   }
 
   private def sendCode(user: User, code: PasswordResetCode): ConnectionIO[Unit] = {
-    logger[ConnectionIO].debug(s"Scheduling e-mail with reset code for user: ${user.id}") >>
+    logger.debug[ConnectionIO](s"Scheduling e-mail with reset code for user: ${user.id}") >>
       emailScheduler(EmailData(user.emailLowerCased, prepareResetEmail(user, code)))
   }
 
@@ -57,7 +57,7 @@ class PasswordResetService(
   def resetPassword(code: String, newPassword: String): IO[Unit] = {
     for {
       userId <- auth(code.asInstanceOf[Id])
-      _ <- logger[IO].debug(s"Resetting password for user: $userId")
+      _ <- logger.debug[IO](s"Resetting password for user: $userId")
       _ <- userModel.updatePassword(userId, User.hashPassword(newPassword)).transact(xa)
     } yield ()
   }

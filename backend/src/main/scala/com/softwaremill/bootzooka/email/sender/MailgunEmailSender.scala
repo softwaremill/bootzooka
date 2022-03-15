@@ -22,6 +22,6 @@ class MailgunEmailSender(config: MailgunConfig, sttpBackend: SttpBackend[IO, Any
         )
       )
       .send(sttpBackend)
-      .flatMap(_ => logger[IO].debug(s"Email to: ${email.recipient} sent"))
+      .flatMap(_ => logger.debug(s"Email to: ${email.recipient} sent"))
   }
 }

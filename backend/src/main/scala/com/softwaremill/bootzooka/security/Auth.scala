@@ -33,7 +33,7 @@ class Auth[T](
 
     tokenOpt.flatMap {
       case None =>
-        logger[IO].debug(s"Auth failed for: ${authTokenOps.tokenName} $id") >>
+        logger.debug[IO](s"Auth failed for: ${authTokenOps.tokenName} $id") >>
           // random sleep to prevent timing attacks
           IO.sleep(random.nextInt(1000).millis) >> IO.raiseError(Fail.Unauthorized("Unauthorized"))
       case Some(token) =>
@@ -45,7 +45,7 @@ class Auth[T](
   private def verifyValid(token: T): IO[Option[Unit]] = {
     clock.now[IO]().flatMap { time =>
       if (time.isAfter(authTokenOps.validUntil(token))) {
-        logger[IO].info(s"${authTokenOps.tokenName} expired: $token") >>
+        logger.info[IO](s"${authTokenOps.tokenName} expired: $token") >>
           authTokenOps.delete(token).transact(xa).map(_ => None)
       } else {
         IO(Some(()))

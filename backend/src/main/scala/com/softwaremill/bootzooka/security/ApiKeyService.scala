@@ -18,7 +18,7 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
       now <- clock.now[ConnectionIO]()
       validUntil: Instant = now.plus(valid.toMillis, ChronoUnit.MILLIS)
       apiKey: ApiKey = ApiKey(id, userId, now, validUntil)
-      _ = logger[ConnectionIO].debug(s"Creating a new api key for user $userId, valid until: $validUntil")
+      _ <- logger.debug[ConnectionIO](s"Creating a new api key for user $userId, valid until: $validUntil")
       _ <- apiKeyModel.insert(apiKey)
     } yield apiKey
 }

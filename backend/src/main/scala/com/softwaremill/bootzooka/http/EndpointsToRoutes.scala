@@ -20,10 +20,10 @@ class EndpointsToRoutes(http: Http, apiContextPath: List[String]) extends FLoggi
       .serverLog(
         Http4sServerOptions.Log
           .defaultServerLog[IO]
-          .doLogWhenHandled((msg, e) => e.fold(logger[IO].debug(msg))(logger[IO].debug(msg, _)))
-          .doLogAllDecodeFailures((msg, e) => e.fold(logger[IO].debug(msg))(logger[IO].debug(msg, _)))
-          .doLogExceptions((msg, e) => logger[IO].error(msg, e))
-          .copy(doLogWhenReceived = msg => logger[IO].debug(msg)) // TODO
+          .doLogWhenHandled((msg, e) => e.fold(logger.debug[IO](msg))(logger.debug(msg, _)))
+          .doLogAllDecodeFailures((msg, e) => e.fold(logger.debug[IO](msg))(logger.debug(msg, _)))
+          .doLogExceptions((msg, e) => logger.error[IO](msg, e))
+          .copy(doLogWhenReceived = msg => logger.debug[IO](msg)) // TODO
       )
       .options
       .prependInterceptor(CorrelationIdInterceptor)

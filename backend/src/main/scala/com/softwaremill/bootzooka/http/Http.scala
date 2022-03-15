@@ -57,7 +57,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
     def toOut: IO[Either[(StatusCode, Error_OUT), T]] = {
       f.map(t => t.asRight[(StatusCode, Error_OUT)]).recoverWith { case f: Fail =>
         val (statusCode, message) = failToResponseData(f)
-        logger[IO].warn(s"Request fail: $message").map(_ => (statusCode, Error_OUT(message)).asLeft[T])
+        logger.warn[IO](s"Request fail: $message").map(_ => (statusCode, Error_OUT(message)).asLeft[T])
       }
     }
   }

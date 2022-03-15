@@ -18,7 +18,7 @@ object DummyEmailSender extends EmailSender with FLogging {
     this.synchronized {
       sentEmails += email
     }
-  } >> logger[IO].info(s"Would send email, if this wasn't a dummy email service implementation: $email")
+  } >> logger.info(s"Would send email, if this wasn't a dummy email service implementation: $email")
 
   def findSentEmail(recipient: String, subjectContains: String): Option[EmailData] = this.synchronized {
     sentEmails.find(email => email.recipient == recipient && email.subject.contains(subjectContains))

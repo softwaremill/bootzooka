@@ -51,17 +51,21 @@ object CorrelationId {
   })
 }
 
-trait CorrelationIdSource[F[_]] {
+// covariance improves type inference, see: https://groups.google.com/g/scala-language/c/dQEomVCH3CI
+trait CorrelationIdSource[+F[_]] {
   def get: F[Option[String]]
+  def map[T](f: Option[String] => T): F[T]
 }
 
 object CorrelationIdSource {
   implicit val forIO: CorrelationIdSource[IO] = new CorrelationIdSource[IO] {
     override def get: IO[Option[String]] = CorrelationId.get
+    override def map[T](f: Option[String] => T): IO[T] = get.map(f)
   }
 
   implicit val forConnectionIO: CorrelationIdSource[ConnectionIO] = new CorrelationIdSource[ConnectionIO] {
     override def get: ConnectionIO[Option[String]] = CorrelationId.getConnectionIO
+    override def map[T](f: Option[String] => T): ConnectionIO[T] = get.map(f)
   }
 }
 

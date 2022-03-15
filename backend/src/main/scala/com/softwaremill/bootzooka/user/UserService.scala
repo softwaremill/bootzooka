@@ -4,7 +4,6 @@ import cats.MonadError
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
-import com.softwaremill.bootzooka.infrastructure.CorrelationId
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.logging.FLogging
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
@@ -49,7 +48,7 @@ class UserService(
       now <- clock.now[ConnectionIO]()
       user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
       confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
-      _ <- logger[ConnectionIO].debug(s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
+      _ <- logger.debug[ConnectionIO](s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
       _ <- userModel.insert(user)
       _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
       apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
@@ -86,7 +85,7 @@ class UserService(
         case _ =>
           for {
             _ <- validateLogin()
-            _ <- logger[ConnectionIO].debug(s"Changing login for user: $userId, to: $newLoginClean")
+            _ <- logger.debug[ConnectionIO](s"Changing login for user: $userId, to: $newLoginClean")
             _ <- userModel.updateLogin(userId, newLoginClean, newLoginLowerCased)
           } yield true
       }
@@ -102,7 +101,7 @@ class UserService(
         case _ =>
           for {
             _ <- validateEmail()
-            _ <- logger[ConnectionIO].debug(s"Changing email for user: $userId, to: $newEmailClean")
+            _ <- logger.debug[ConnectionIO](s"Changing email for user: $userId, to: $newEmailClean")
             _ <- userModel.updateEmail(userId, newEmailLowerCased)
           } yield true
       }
@@ -140,7 +139,7 @@ class UserService(
       user <- userOrNotFound(userModel.findById(userId))
       _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
       _ <- validateNewPassword()
-      _ <- logger[ConnectionIO].debug(s"Changing password for user: $userId")
+      _ <- logger.debug[ConnectionIO](s"Changing password for user: $userId")
       _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
       confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
       _ <- emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))

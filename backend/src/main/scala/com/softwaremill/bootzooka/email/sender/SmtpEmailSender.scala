@@ -24,7 +24,7 @@ class SmtpEmailSender(config: SmtpConfig) extends EmailSender with FLogging {
       config.encoding,
       emailToSend
     )
-  } >> logger[IO].debug(s"Email: ${email.subject}, to: ${email.recipient}, sent")
+  } >> logger.debug(s"Email: ${email.subject}, to: ${email.recipient}, sent")
 }
 
 /** Copied from softwaremill-common:
