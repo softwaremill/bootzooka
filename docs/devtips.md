@@ -80,3 +80,11 @@ class UserApi(http: Http) {
 
 This will bring into scope tapir builder methods and custom schemas for documentation.
 Note that if you are using JSON in your endpoint descriptions, you'll need the JSON imports as well.
+
+### Logging
+
+Logging is performed using [scala logging](https://github.com/lightbend/scala-logging). Extend `StrictLogging` to bring into scope a `logger` value.
+
+Bootzooka also supports correlation ids. The id is read from the `X-Correlation-ID` header of incoming requests (see `CorrelationIdInterceptor`), or a new one is generated. The correlation ids are included in all outgoing http requests (see `SetCorrelationIdBackend`). Correlation ids are included in log messages, if the logging is done using a logger obtained via `FLogging`, which wraps the default slf4j logger, adding correlation id handling.
+
+The result of `FLogging.logger` methods are effects (`IO` and `ConnectionIO` are supported), which - in order to be evaluated - need to be combined with other effects that are returned by the method in which the logging is done. When programming using the tagless final style, a `CorrelationIdSource` typeclass is available.

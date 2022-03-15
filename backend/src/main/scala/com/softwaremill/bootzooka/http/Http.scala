@@ -4,9 +4,9 @@ import cats.effect.IO
 import cats.implicits._
 import com.softwaremill.bootzooka._
 import com.softwaremill.bootzooka.infrastructure.Json._
+import com.softwaremill.bootzooka.logging.FLogging
 import com.softwaremill.bootzooka.util.Id
 import com.softwaremill.tagging._
-import com.typesafe.scalalogging.StrictLogging
 import io.circe.Printer
 import sttp.model.StatusCode
 import sttp.tapir.Codec.PlainCodec
@@ -16,7 +16,7 @@ import sttp.tapir.{Codec, Endpoint, EndpointOutput, Schema, SchemaType, Tapir}
 import tsec.common.SecureRandomId
 
 /** Helper class for defining HTTP endpoints. Import the members of this class when defining an HTTP API using tapir. */
-class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogging {
+class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
 
   val jsonErrorOutOutput: EndpointOutput[Error_OUT] = jsonBody[Error_OUT]
 
@@ -47,19 +47,6 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
     case _                        => InternalServerError
   }
 
-  private def exceptionToErrorOut(e: Exception): (StatusCode, Error_OUT) = {
-    val (statusCode, message) = e match {
-      case f: Fail => failToResponseData(f)
-      case _ =>
-        logger.error("Exception when processing request", e)
-        InternalServerError
-    }
-
-    logger.warn(s"Request fail: $message")
-    val errorOut = Error_OUT(message)
-    (statusCode, errorOut)
-  }
-
   //
 
   implicit class IOOut[T](f: IO[T]) {
@@ -68,8 +55,9 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with StrictLogg
       * [[Error_OUT]] instance, or returns the successful value unchanged.
       */
     def toOut: IO[Either[(StatusCode, Error_OUT), T]] = {
-      f.map(t => t.asRight[(StatusCode, Error_OUT)]).recover { case e: Exception =>
-        exceptionToErrorOut(e).asLeft[T]
+      f.map(t => t.asRight[(StatusCode, Error_OUT)]).recoverWith { case f: Fail =>
+        val (statusCode, message) = failToResponseData(f)
+        logger.warn[IO](s"Request fail: $message").map(_ => (statusCode, Error_OUT(message)).asLeft[T])
       }
     }
   }

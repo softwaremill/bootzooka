@@ -30,7 +30,7 @@ Cats Effect is a toolkit for working with side-effects in pure and type-safe way
 
 ### Why http4s + tapir?
 
-http4s is a popular ligthweight, functional library for exposing HTTP servers. tapir on the other hand, defines a programmer-friendly API for describing HTTP endpoints which can be interpreted as a server (using http4s as the backing implementation), or as Swagger/OpenAPI documentation.
+http4s is a popular lightweight, functional library for exposing HTTP servers. tapir on the other hand, defines a programmer-friendly API for describing HTTP endpoints which can be interpreted as a server (using http4s as the backing implementation), or as Swagger/OpenAPI documentation.
 
 ### Why SBT and Webpack?
 

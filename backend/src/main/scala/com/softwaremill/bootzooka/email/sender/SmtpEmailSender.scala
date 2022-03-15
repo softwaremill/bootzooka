@@ -4,14 +4,13 @@ import cats.effect.IO
 
 import java.util.{Date, Properties}
 import com.softwaremill.bootzooka.email.{EmailData, SmtpConfig}
-import com.typesafe.scalalogging.StrictLogging
+import com.softwaremill.bootzooka.logging.FLogging
 
 import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail.{Address, Message, Session, Transport}
 
-/** Sends emails synchronously using SMTP.
-  */
-class SmtpEmailSender(config: SmtpConfig) extends EmailSender with StrictLogging {
+/** Sends emails synchronously using SMTP. */
+class SmtpEmailSender(config: SmtpConfig) extends EmailSender with FLogging {
   def apply(email: EmailData): IO[Unit] = IO {
     val emailToSend = new SmtpEmailSender.EmailDescription(List(email.recipient), email.content, email.subject)
     SmtpEmailSender.send(
@@ -25,15 +24,13 @@ class SmtpEmailSender(config: SmtpConfig) extends EmailSender with StrictLogging
       config.encoding,
       emailToSend
     )
-
-    logger.debug(s"Email to: ${email.recipient} sent")
-  }
+  } >> logger.debug(s"Email: ${email.subject}, to: ${email.recipient}, sent")
 }
 
 /** Copied from softwaremill-common:
   * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
   */
-object SmtpEmailSender extends StrictLogging {
+object SmtpEmailSender {
 
   def send(
       smtpHost: String,
@@ -71,7 +68,7 @@ object SmtpEmailSender extends StrictLogging {
     val transport = createSmtpTransportFrom(session, sslConnection)
     try {
       connectToSmtpServer(transport, smtpUsername, smtpPassword)
-      sendEmail(transport, m, emailDescription, to)
+      sendEmail(transport, m)
     } finally {
       transport.close()
     }
@@ -103,9 +100,8 @@ object SmtpEmailSender extends StrictLogging {
   private def createSmtpTransportFrom(session: Session, sslConnection: Boolean): Transport =
     if (sslConnection) session.getTransport("smtps") else session.getTransport("smtp")
 
-  private def sendEmail(transport: Transport, m: MimeMessage, emailDescription: EmailDescription, to: Array[Address]): Unit = {
+  private def sendEmail(transport: Transport, m: MimeMessage): Unit = {
     transport.sendMessage(m, m.getAllRecipients)
-    logger.debug("Mail '" + emailDescription.subject + "' sent to: " + to.mkString(","))
   }
 
   private def connectToSmtpServer(transport: Transport, smtpUsername: String, smtpPassword: String): Unit = {

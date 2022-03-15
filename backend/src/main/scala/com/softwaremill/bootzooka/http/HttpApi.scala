@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.http
 
-import cats.data.{Kleisli, NonEmptyList, OptionT}
+import cats.data.NonEmptyList
 import cats.effect.{IO, Resource}
 import cats.implicits._
 import com.softwaremill.bootzooka.util.ServerEndpoints
@@ -8,12 +8,12 @@ import com.typesafe.scalalogging.StrictLogging
 import io.prometheus.client.CollectorRegistry
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.metrics.prometheus.Prometheus
-import org.http4s.server.{Router, Server}
 import org.http4s.server.middleware.{CORS, Metrics}
-import org.http4s.{HttpApp, HttpRoutes, Request, Response}
-import sttp.tapir.{emptyInput, resourcesGetServerEndpoint}
+import org.http4s.server.{Router, Server}
+import org.http4s.{HttpApp, HttpRoutes}
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.static.ResourcesOptions
+import sttp.tapir.{emptyInput, resourcesGetServerEndpoint}
 
 /** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs support.
   *
