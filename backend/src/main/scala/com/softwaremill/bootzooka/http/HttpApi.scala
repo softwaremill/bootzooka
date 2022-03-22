@@ -5,7 +5,6 @@ import com.softwaremill.bootzooka.infrastructure.CorrelationIdInterceptor
 import com.softwaremill.bootzooka.logging.FLogger
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import com.typesafe.scalalogging.StrictLogging
-import io.prometheus.client.CollectorRegistry
 import org.http4s.HttpRoutes
 import org.http4s.blaze.server.BlazeServerBuilder
 import sttp.tapir.server.http4s.{Http4sServerInterpreter, Http4sServerOptions}
@@ -29,7 +28,7 @@ class HttpApi(
     http: Http,
     mainEndpoints: ServerEndpoints,
     adminEndpoints: ServerEndpoints,
-    collectorRegistry: CollectorRegistry,
+    prometheusMetrics: PrometheusMetrics[IO],
     config: HttpConfig
 ) extends StrictLogging {
   private val apiContextPath = List("api", "v1")
@@ -49,7 +48,7 @@ class HttpApi(
         .doLogWhenReceived(msg => flogger.debug[IO](msg))
     }
     .corsInterceptor(CORSInterceptor.default[IO])
-    .metricsInterceptor(PrometheusMetrics.default[IO](registry = collectorRegistry).metricsInterceptor())
+    .metricsInterceptor(prometheusMetrics.metricsInterceptor())
     .options
     .prependInterceptor(CorrelationIdInterceptor) // TODO move to custom interceptors
 
