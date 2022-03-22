@@ -12,7 +12,7 @@ import sttp.model.StatusCode
 import sttp.tapir.Codec.PlainCodec
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe.TapirJsonCirce
-import sttp.tapir.{Codec, Endpoint, EndpointOutput, Schema, SchemaType, Tapir}
+import sttp.tapir.{Codec, Endpoint, EndpointOutput, PublicEndpoint, Schema, SchemaType, Tapir}
 import tsec.common.SecureRandomId
 
 /** Helper class for defining HTTP endpoints. Import the members of this class when defining an HTTP API using tapir. */
@@ -26,7 +26,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
   /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class.
     */
-  val baseEndpoint: Endpoint[Unit, Unit, (StatusCode, Error_OUT), Unit, Any] =
+  val baseEndpoint: PublicEndpoint[Unit, (StatusCode, Error_OUT), Unit, Any] =
     endpoint.errorOut(failOutput)
 
   /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
