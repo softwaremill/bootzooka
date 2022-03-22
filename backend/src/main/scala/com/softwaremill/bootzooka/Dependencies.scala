@@ -33,7 +33,7 @@ object Dependencies {
         versionApi: VersionApi,
         cfg: HttpConfig
     ) = {
-      val prometheusMetrics = PrometheusMetrics.default[IO](registry = CollectorRegistry.defaultRegistry)
+      val prometheusMetrics = PrometheusMetrics.default[IO](registry = new CollectorRegistry())
       new HttpApi(
         http,
         userApi.endpoints concatNel passwordResetApi.endpoints,

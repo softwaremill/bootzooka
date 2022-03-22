@@ -14,12 +14,16 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres { sel
     dependencies = {
       import cats.effect.unsafe.implicits.global
 
-      Dependencies.wire(
-        config = TestConfig,
-        sttpBackend = Resource.pure(AsyncHttpClientFs2Backend.stub[IO]),
-        xa = Resource.pure(currentDb.xa),
-        clock = testClock
-      ).allocated.unsafeRunSync()._1
+      Dependencies
+        .wire(
+          config = TestConfig,
+          sttpBackend = Resource.pure(AsyncHttpClientFs2Backend.stub[IO]),
+          xa = Resource.pure(currentDb.xa),
+          clock = testClock
+        )
+        .allocated
+        .unsafeRunSync()
+        ._1
     }
   }
 }
