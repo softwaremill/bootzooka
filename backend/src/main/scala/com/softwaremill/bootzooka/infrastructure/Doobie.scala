@@ -8,7 +8,6 @@ import tsec.passwordhashers.PasswordHash
 import tsec.passwordhashers.jca.SCrypt
 
 import scala.concurrent.duration._
-import scala.reflect.runtime.universe.TypeTag
 
 /** Import the members of this object when defining SQL queries using doobie.
   */
@@ -27,9 +26,9 @@ object Doobie
 
   // there's no TypeTag for Id +
   // can't define a generic encoder because of https://stackoverflow.com/questions/48174799/decoding-case-class-w-tagged-type
-  implicit def taggedIdMeta[U: TypeTag]: Meta[Id @@ U] = implicitly[Meta[String]].asInstanceOf[Meta[Id @@ U]]
+  implicit def taggedIdMeta[U]: Meta[Id @@ U] = implicitly[Meta[String]].asInstanceOf[Meta[Id @@ U]]
 
-  implicit def taggedStringMeta[U: TypeTag]: Meta[String @@ U] =
+  implicit def taggedStringMeta[U]: Meta[String @@ U] =
     implicitly[Meta[String]].asInstanceOf[Meta[String @@ U]]
 
   implicit val passwordHashMeta: Meta[PasswordHash[SCrypt]] =

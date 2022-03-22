@@ -6,7 +6,7 @@ import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.EmailService
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.http.{Http, HttpApi, HttpConfig}
-import com.softwaremill.bootzooka.metrics.{MetricsApi, VersionApi}
+import com.softwaremill.bootzooka.metrics.VersionApi
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken}
 import com.softwaremill.bootzooka.security.ApiKeyAuthToken
 import com.softwaremill.bootzooka.user.UserApi
@@ -15,6 +15,7 @@ import com.softwaremill.macwire.autocats.autowire
 import doobie.util.transactor.Transactor
 import io.prometheus.client.CollectorRegistry
 import sttp.client3.SttpBackend
+import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
 
 case class Dependencies(api: HttpApi, emailService: EmailService)
 
@@ -29,18 +30,18 @@ object Dependencies {
         http: Http,
         userApi: UserApi,
         passwordResetApi: PasswordResetApi,
-        metricsApi: MetricsApi,
         versionApi: VersionApi,
-        collectorRegistry: CollectorRegistry,
         cfg: HttpConfig
-    ) =
+    ) = {
+      val prometheusMetrics = PrometheusMetrics.default[IO](registry = new CollectorRegistry())
       new HttpApi(
         http,
         userApi.endpoints concatNel passwordResetApi.endpoints,
-        NonEmptyList.of(metricsApi.metricsEndpoint, versionApi.versionEndpoint),
-        collectorRegistry,
+        NonEmptyList.of(versionApi.versionEndpoint),
+        prometheusMetrics,
         cfg
       )
+    }
 
     autowire[Dependencies](
       config.api,
@@ -49,7 +50,6 @@ object Dependencies {
       config.email,
       DefaultIdGenerator,
       clock,
-      CollectorRegistry.defaultRegistry,
       sttpBackend,
       xa,
       buildHttpApi _,

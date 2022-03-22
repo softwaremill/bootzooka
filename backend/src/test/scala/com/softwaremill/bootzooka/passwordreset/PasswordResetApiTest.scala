@@ -3,7 +3,12 @@ package com.softwaremill.bootzooka.passwordreset
 import cats.effect.IO
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_IN, ForgotPassword_OUT, PasswordReset_IN, PasswordReset_OUT}
+import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{
+  ForgotPassword_IN,
+  ForgotPassword_OUT,
+  PasswordReset_IN,
+  PasswordReset_OUT
+}
 import com.softwaremill.bootzooka.test.{TestDependencies, BaseTest, Requests}
 import org.http4s._
 import org.http4s.syntax.all._
@@ -89,17 +94,17 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
   }
 
   def forgotPassword(loginOrEmail: String): Response[IO] = {
-    val request = Request[IO](method = POST, uri = uri"/passwordreset/forgot")
+    val request = Request[IO](method = POST, uri = uri"/api/v1/passwordreset/forgot")
       .withEntity(ForgotPassword_IN(loginOrEmail))
 
-    dependencies.api.mainRoutes(request).unwrap
+    dependencies.api.routes(request).unwrap
   }
 
   def resetPassword(code: String, password: String): Response[IO] = {
-    val request = Request[IO](method = POST, uri = uri"/passwordreset/reset")
+    val request = Request[IO](method = POST, uri = uri"/api/v1/passwordreset/reset")
       .withEntity(PasswordReset_IN(code, password))
 
-    dependencies.api.mainRoutes(request).unwrap
+    dependencies.api.routes(request).unwrap
   }
 
   def codeSentToEmail(email: String): String = {

@@ -1,19 +1,20 @@
 package com.softwaremill.bootzooka.http
 
-import cats.data.NonEmptyList
 import cats.effect.{IO, Resource}
-import cats.implicits._
+import com.softwaremill.bootzooka.infrastructure.CorrelationIdInterceptor
+import com.softwaremill.bootzooka.logging.FLogger
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import com.typesafe.scalalogging.StrictLogging
-import io.prometheus.client.CollectorRegistry
+import org.http4s.HttpRoutes
 import org.http4s.blaze.server.BlazeServerBuilder
-import org.http4s.metrics.prometheus.Prometheus
-import org.http4s.server.middleware.{CORS, Metrics}
-import org.http4s.server.{Router, Server}
-import org.http4s.{HttpApp, HttpRoutes}
-import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.server.http4s.{Http4sServerInterpreter, Http4sServerOptions}
+import sttp.tapir.server.interceptor.cors.CORSInterceptor
+import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
+import sttp.tapir.server.model.ValuedEndpointOutput
 import sttp.tapir.static.ResourcesOptions
-import sttp.tapir.{emptyInput, resourcesGetServerEndpoint}
+import sttp.tapir.swagger.SwaggerUIOptions
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
+import sttp.tapir._
 
 /** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs support.
   *
@@ -25,53 +26,61 @@ import sttp.tapir.{emptyInput, resourcesGetServerEndpoint}
   */
 class HttpApi(
     http: Http,
-    endpoints: ServerEndpoints,
+    mainEndpoints: ServerEndpoints,
     adminEndpoints: ServerEndpoints,
-    collectorRegistry: CollectorRegistry,
+    prometheusMetrics: PrometheusMetrics[IO],
     config: HttpConfig
 ) extends StrictLogging {
   private val apiContextPath = List("api", "v1")
-  private val endpointsToRoutes = new EndpointsToRoutes(http, apiContextPath)
 
-  lazy val mainRoutes: HttpRoutes[IO] = endpointsToRoutes(endpoints)
-  private lazy val adminRoutes: HttpRoutes[IO] = endpointsToRoutes(adminEndpoints)
-  private lazy val docsRoutes: HttpRoutes[IO] = endpointsToRoutes.toDocsRoutes(endpoints)
+  val serverOptions: Http4sServerOptions[IO, IO] = Http4sServerOptions
+    .customInterceptors[IO, IO]
+    // all errors are formatted as json
+    .errorOutput(msg => ValuedEndpointOutput(http.jsonErrorOutOutput, Error_OUT(msg)))
+    .serverLog {
+      // using a context-aware logger for http logging
+      val flogger = new FLogger(logger)
+      Http4sServerOptions
+        .defaultServerLog[IO]
+        .doLogWhenHandled((msg, e) => e.fold(flogger.debug[IO](msg))(flogger.debug(msg, _)))
+        .doLogAllDecodeFailures((msg, e) => e.fold(flogger.debug[IO](msg))(flogger.debug(msg, _)))
+        .doLogExceptions((msg, e) => flogger.error[IO](msg, e))
+        .doLogWhenReceived(msg => flogger.debug[IO](msg))
+    }
+    .corsInterceptor(CORSInterceptor.default[IO])
+    .metricsInterceptor(prometheusMetrics.metricsInterceptor())
+    .options
+    .prependInterceptor(CorrelationIdInterceptor) // TODO move to custom interceptors
+
+  lazy val routes: HttpRoutes[IO] = {
+    // creating the documentation using `mainEndpoints` without the /api/v1 context path; instead, a server will be added
+    // with the appropriate suffix
+    val docsEndpoints = SwaggerInterpreter(swaggerUIOptions = SwaggerUIOptions.default.copy(contextPath = apiContextPath))
+      .fromServerEndpoints(mainEndpoints.toList, "Bootzooka", "1.0")
+
+    // for /api/v1 requests, first trying the API; then the docs
+    val apiEndpoints = (mainEndpoints ++ docsEndpoints).map(se => se.prependSecurityIn(apiContextPath.foldLeft(emptyInput)(_ / _)))
+
+    val allAdminEndpoints = (adminEndpoints ++ List(prometheusMetrics.metricsEndpoint)).map(_.prependSecurityIn("admin"))
+
+    // for all other requests, first trying getting existing webapp resource (html, js, css files), from the /webapp
+    // directory on the classpath; otherwise, returning index.html; this is needed to support paths in the frontend
+    // apps (e.g. /login) the frontend app will handle displaying appropriate error messages
+    val webappEndpoints = List(
+      resourcesGetServerEndpoint[IO](emptyInput)(
+        classOf[HttpApi].getClassLoader,
+        "webapp",
+        ResourcesOptions.default.defaultResource(List("index.html"))
+      )
+    )
+
+    val allEndpoints = apiEndpoints.toList ++ allAdminEndpoints.toList ++ webappEndpoints
+    Http4sServerInterpreter(serverOptions).toRoutes(allEndpoints)
+  }
 
   /** The resource describing the HTTP server; binds when the resource is allocated. */
-  lazy val resource: Resource[IO, org.http4s.server.Server] = {
-    val monitoredRoutes =
-      Prometheus.metricsOps[IO](collectorRegistry).map(m => Metrics[IO](m)(mainRoutes))
-
-    def buildApp(monitoredRoutes: HttpRoutes[IO]): HttpApp[IO] = Router(
-      // for /api/v1 requests, first trying the API; then the docs; then, returning 404
-      s"/${apiContextPath.mkString("/")}" -> {
-        CORS.policy.withAllowOriginAll
-          .withAllowCredentials(false)
-          .apply(monitoredRoutes <+> docsRoutes)
-      },
-      "/admin" -> adminRoutes,
-      // for all other requests, first trying getting existing webapp resource;
-      // otherwise, returning index.html; this is needed to support paths in the frontend apps (e.g. /login)
-      // the frontend app will handle displaying appropriate error messages
-      "" -> webappRoutes
-    ).orNotFound
-
-    def buildServer(app: HttpApp[IO]): Resource[IO, Server] = BlazeServerBuilder[IO]
-      .bindHttp(config.port, config.host)
-      .withHttpApp(app)
-      .resource
-
-    monitoredRoutes.flatMap(routes => buildServer(buildApp(routes)))
-  }
-
-  /** Serves the webapp resources (html, js, css files), from the /webapp directory on the classpath. */
-  private lazy val webappRoutes: HttpRoutes[IO] = {
-    val loader = classOf[HttpApi].getClassLoader
-    val indexEndpoint: ServerEndpoint[Any, IO] = resourcesGetServerEndpoint(emptyInput)(
-      loader,
-      "webapp",
-      ResourcesOptions.default.defaultResource(List("index.html"))
-    )
-    endpointsToRoutes(NonEmptyList.one(indexEndpoint))
-  }
+  lazy val resource: Resource[IO, org.http4s.server.Server] = BlazeServerBuilder[IO]
+    .bindHttp(config.port, config.host)
+    .withHttpApp(routes.orNotFound)
+    .resource
 }
