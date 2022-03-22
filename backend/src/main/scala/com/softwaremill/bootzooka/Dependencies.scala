@@ -37,7 +37,7 @@ object Dependencies {
       new HttpApi(
         http,
         userApi.endpoints concatNel passwordResetApi.endpoints,
-        NonEmptyList.of(prometheusMetrics.metricsEndpoint, versionApi.versionEndpoint),
+        NonEmptyList.of(versionApi.versionEndpoint),
         prometheusMetrics,
         cfg
       )

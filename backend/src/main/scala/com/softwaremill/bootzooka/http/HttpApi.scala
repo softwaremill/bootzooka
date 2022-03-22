@@ -61,20 +61,21 @@ class HttpApi(
     // for /api/v1 requests, first trying the API; then the docs
     val apiEndpoints = (mainEndpoints ++ docsEndpoints).map(se => se.prependSecurityIn(apiContextPath.foldLeft(emptyInput)(_ / _)))
 
-    val allEndpoints = apiEndpoints ++
-      adminEndpoints.map(_.prependSecurityIn("admin")).toList ++
-      // for all other requests, first trying getting existing webapp resource (html, js, css files), from the /webapp
-      // directory on the classpath; otherwise, returning index.html; this is needed to support paths in the frontend
-      // apps (e.g. /login) the frontend app will handle displaying appropriate error messages
-      List(
-        resourcesGetServerEndpoint[IO](emptyInput)(
-          classOf[HttpApi].getClassLoader,
-          "webapp",
-          ResourcesOptions.default.defaultResource(List("index.html"))
-        )
-      )
+    val allAdminEndpoints = (adminEndpoints ++ List(prometheusMetrics.metricsEndpoint)).map(_.prependSecurityIn("admin"))
 
-    Http4sServerInterpreter(serverOptions).toRoutes(allEndpoints.toList)
+    // for all other requests, first trying getting existing webapp resource (html, js, css files), from the /webapp
+    // directory on the classpath; otherwise, returning index.html; this is needed to support paths in the frontend
+    // apps (e.g. /login) the frontend app will handle displaying appropriate error messages
+    val webappEndpoints = List(
+      resourcesGetServerEndpoint[IO](emptyInput)(
+        classOf[HttpApi].getClassLoader,
+        "webapp",
+        ResourcesOptions.default.defaultResource(List("index.html"))
+      )
+    )
+
+    val allEndpoints = apiEndpoints.toList ++ allAdminEndpoints.toList ++ webappEndpoints
+    Http4sServerInterpreter(serverOptions).toRoutes(allEndpoints)
   }
 
   /** The resource describing the HTTP server; binds when the resource is allocated. */
