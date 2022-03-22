@@ -16,7 +16,7 @@ val circeVersion = "0.14.1"
 val tsecVersion = "0.4.0"
 val sttpVersion = "3.5.1"
 val prometheusVersion = "0.15.0"
-val tapirVersion = "1.0.0-M2"
+val tapirVersion = "1.0.0-M3"
 val macwireVersion = "2.5.6"
 
 val dbDependencies = Seq(
@@ -31,7 +31,6 @@ val httpDependencies = Seq(
   "org.http4s" %% "http4s-blaze-server" % http4sVersion,
   "org.http4s" %% "http4s-blaze-client" % http4sVersion,
   "org.http4s" %% "http4s-circe" % http4sVersion,
-  "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
   "com.softwaremill.sttp.client3" %% "async-http-client-backend-fs2" % sttpVersion,
   "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion
@@ -40,7 +39,8 @@ val httpDependencies = Seq(
 val monitoringDependencies = Seq(
   "io.prometheus" % "simpleclient" % prometheusVersion,
   "io.prometheus" % "simpleclient_hotspot" % prometheusVersion,
-  "com.softwaremill.sttp.client3" %% "prometheus-backend" % sttpVersion
+  "com.softwaremill.sttp.client3" %% "prometheus-backend" % sttpVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-prometheus-metrics" % tapirVersion
 )
 
 val jsonDependencies = Seq(
