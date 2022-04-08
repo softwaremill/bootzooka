@@ -89,12 +89,12 @@ class SetCorrelationIdBackend[P](delegate: SttpBackend[IO, P]) extends SttpBacke
 object CorrelationIdInterceptor extends RequestInterceptor[IO] {
   val HeaderName: String = "X-Correlation-ID"
 
-  override def apply[B](
+  override def apply[R, B](
       responder: Responder[IO, B],
-      requestHandler: EndpointInterceptor[IO] => RequestHandler[IO, B]
-  ): RequestHandler[IO, B] =
-    RequestHandler.from { case (request, monad) =>
+      requestHandler: EndpointInterceptor[IO] => RequestHandler[IO, R, B]
+  ): RequestHandler[IO, R, B] =
+    RequestHandler.from { case (request, endpoints, monad) =>
       val set = CorrelationId.setOrNew(request.header(HeaderName))
-      set >> requestHandler(EndpointInterceptor.noop)(request)(monad)
+      set >> requestHandler(EndpointInterceptor.noop)(request, endpoints)(monad)
     }
 }

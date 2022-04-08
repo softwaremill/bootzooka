@@ -35,8 +35,9 @@ class HttpApi(
 
   val serverOptions: Http4sServerOptions[IO, IO] = Http4sServerOptions
     .customInterceptors[IO, IO]
-    // all errors are formatted as json
-    .errorOutput(msg => ValuedEndpointOutput(http.jsonErrorOutOutput, Error_OUT(msg)))
+    .prependInterceptor(CorrelationIdInterceptor)
+    // all errors are formatted as json, and there are no other additional http4s routes
+    .defaultHandlers(msg => ValuedEndpointOutput(http.jsonErrorOutOutput, Error_OUT(msg)), notFoundWhenRejected = true)
     .serverLog {
       // using a context-aware logger for http logging
       val flogger = new FLogger(logger)
@@ -50,7 +51,6 @@ class HttpApi(
     .corsInterceptor(CORSInterceptor.default[IO])
     .metricsInterceptor(prometheusMetrics.metricsInterceptor())
     .options
-    .prependInterceptor(CorrelationIdInterceptor) // TODO move to custom interceptors
 
   lazy val routes: HttpRoutes[IO] = {
     // creating the documentation using `mainEndpoints` without the /api/v1 context path; instead, a server will be added
@@ -59,7 +59,8 @@ class HttpApi(
       .fromServerEndpoints(mainEndpoints.toList, "Bootzooka", "1.0")
 
     // for /api/v1 requests, first trying the API; then the docs
-    val apiEndpoints = (mainEndpoints ++ docsEndpoints).map(se => se.prependSecurityIn(apiContextPath.foldLeft(emptyInput)(_ / _)))
+    val apiEndpoints =
+      (mainEndpoints ++ docsEndpoints).map(se => se.prependSecurityIn(apiContextPath.foldLeft(emptyInput: EndpointInput[Unit])(_ / _)))
 
     val allAdminEndpoints = (adminEndpoints ++ List(prometheusMetrics.metricsEndpoint)).map(_.prependSecurityIn("admin"))
 
@@ -67,7 +68,7 @@ class HttpApi(
     // directory on the classpath; otherwise, returning index.html; this is needed to support paths in the frontend
     // apps (e.g. /login) the frontend app will handle displaying appropriate error messages
     val webappEndpoints = List(
-      resourcesGetServerEndpoint[IO](emptyInput)(
+      resourcesGetServerEndpoint[IO](emptyInput: EndpointInput[Unit])(
         classOf[HttpApi].getClassLoader,
         "webapp",
         ResourcesOptions.default.defaultResource(List("index.html"))
