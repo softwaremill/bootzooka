@@ -20,10 +20,12 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
 
   private val UserPath = "user"
 
-  private val registerUserEndpoint = baseEndpoint.post
+  val registerUserServer = baseEndpoint.post
     .in(UserPath / "register")
     .in(jsonBody[Register_IN])
     .out(jsonBody[Register_OUT])
+
+  private val registerUserServerEndpoint = registerUserServer
     .serverLogic { data =>
       (for {
         apiKey <- userService.registerNewUser(data.login, data.email, data.password).transact(xa)
@@ -31,10 +33,12 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
       } yield Register_OUT(apiKey.id)).toOut
     }
 
-  private val loginEndpoint = baseEndpoint.post
+  val loginEndpoint = baseEndpoint.post
     .in(UserPath / "login")
     .in(jsonBody[Login_IN])
     .out(jsonBody[Login_OUT])
+
+  private val loginServerEndpoint = loginEndpoint
     .serverLogic { data =>
       (for {
         apiKey <- userService
@@ -45,10 +49,12 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
 
   private val authedEndpoint = secureEndpoint.serverSecurityLogic(authData => auth(authData).toOut)
 
-  private val changePasswordEndpoint = authedEndpoint.post
+  val changePasswordEndpoint = authedEndpoint.post
     .in(UserPath / "changepassword")
     .in(jsonBody[ChangePassword_IN])
     .out(jsonBody[ChangePassword_OUT])
+
+  private val changePasswordServerEndpoint = changePasswordEndpoint
     .serverLogic(id =>
       data =>
         (for {
@@ -56,9 +62,11 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
         } yield ChangePassword_OUT()).toOut
     )
 
-  private val getUserEndpoint = authedEndpoint.get
+  val getUserEndpoint = authedEndpoint.get
     .in(UserPath)
     .out(jsonBody[GetUser_OUT])
+
+  private val getUserServerEndpoint = getUserEndpoint
     .serverLogic(id =>
       (_: Unit) =>
         (for {
@@ -66,10 +74,12 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
         } yield GetUser_OUT(user.login, user.emailLowerCased, user.createdOn)).toOut
     )
 
-  private val updateUserEndpoint = authedEndpoint.post
+  val updateUserEndpoint = authedEndpoint.post
     .in(UserPath)
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
+
+  private val updateUserServerEndpoint = updateUserEndpoint
     .serverLogic(id =>
       data =>
         (for {
@@ -80,26 +90,30 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
   val endpoints: ServerEndpoints =
     NonEmptyList
       .of(
-        registerUserEndpoint,
-        loginEndpoint,
-        changePasswordEndpoint,
-        getUserEndpoint,
-        updateUserEndpoint
+        registerUserServerEndpoint,
+        loginServerEndpoint,
+        changePasswordServerEndpoint,
+        getUserServerEndpoint,
+        updateUserServerEndpoint
       )
       .map(_.tag("user"))
 }
 
 object UserApi {
   case class Register_IN(login: String, email: String, password: String)
+
   case class Register_OUT(apiKey: String)
 
   case class ChangePassword_IN(currentPassword: String, newPassword: String)
+
   case class ChangePassword_OUT()
 
   case class Login_IN(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int])
+
   case class Login_OUT(apiKey: String)
 
   case class UpdateUser_IN(login: String, email: String)
+
   case class UpdateUser_OUT()
 
   case class GetUser_OUT(login: String, email: String, createdOn: Instant)

@@ -1,12 +1,14 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import cats.data.NonEmptyList
-import com.softwaremill.bootzooka.http.Http
+import com.softwaremill.bootzooka.http.{Error_OUT, Http}
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import doobie.util.transactor.Transactor
 import cats.effect.IO
+import sttp.model.StatusCode
+import sttp.tapir.Endpoint
 import sttp.tapir.generic.auto._
 
 class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, xa: Transactor[IO]) {
@@ -15,20 +17,24 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, x
 
   private val PasswordResetPath = "passwordreset"
 
-  private val passwordResetEndpoint = baseEndpoint.post
+  val passwordResetEndpoint = baseEndpoint.post
     .in(PasswordResetPath / "reset")
     .in(jsonBody[PasswordReset_IN])
     .out(jsonBody[PasswordReset_OUT])
+
+  private val passwordResetServerEndpoint = passwordResetEndpoint
     .serverLogic { data =>
       (for {
         _ <- passwordResetService.resetPassword(data.code, data.password)
       } yield PasswordReset_OUT()).toOut
     }
 
-  private val forgotPasswordEndpoint = baseEndpoint.post
+  val forgotPasswordEndpoint = baseEndpoint.post
     .in(PasswordResetPath / "forgot")
     .in(jsonBody[ForgotPassword_IN])
     .out(jsonBody[ForgotPassword_OUT])
+
+  private val forgotPasswordServerEndpoint = forgotPasswordEndpoint
     .serverLogic { data =>
       (for {
         _ <- passwordResetService.forgotPassword(data.loginOrEmail).transact(xa)
@@ -38,8 +44,8 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, x
   val endpoints: ServerEndpoints =
     NonEmptyList
       .of(
-        passwordResetEndpoint,
-        forgotPasswordEndpoint
+        passwordResetServerEndpoint,
+        forgotPasswordServerEndpoint
       )
       .map(_.tag("passwordreset"))
 }
