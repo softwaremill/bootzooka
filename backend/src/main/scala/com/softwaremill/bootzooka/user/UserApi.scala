@@ -66,7 +66,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .in(UserPath)
     .out(jsonBody[GetUser_OUT])
 
-  private val getUserServerEndpoint = getUserEndpoint
+  val getUserServerEndpoint = getUserEndpoint
     .serverLogic(id =>
       (_: Unit) =>
         (for {
@@ -101,19 +101,15 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
 
 object UserApi {
   case class Register_IN(login: String, email: String, password: String)
-
   case class Register_OUT(apiKey: String)
 
   case class ChangePassword_IN(currentPassword: String, newPassword: String)
-
   case class ChangePassword_OUT()
 
   case class Login_IN(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int])
-
   case class Login_OUT(apiKey: String)
 
   case class UpdateUser_IN(login: String, email: String)
-
   case class UpdateUser_OUT()
 
   case class GetUser_OUT(login: String, email: String, createdOn: Instant)

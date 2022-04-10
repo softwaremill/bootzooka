@@ -3,9 +3,12 @@ package com.softwaremill.bootzooka.test
 import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.Dependencies
 import org.scalatest.{BeforeAndAfterAll, Suite}
+import sttp.client3.SttpBackend
 import sttp.client3.asynchttpclient.fs2.AsyncHttpClientFs2Backend
+import sttp.tapir.server.stub.TapirStubInterpreter
 
-trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres { self: Suite with BaseTest =>
+trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres {
+  self: Suite with BaseTest =>
   var dependencies: Dependencies = _
 
   override protected def beforeAll(): Unit = {
@@ -26,4 +29,9 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres { sel
         ._1
     }
   }
+
+  lazy val backendStub: SttpBackend[IO, Any] =
+    TapirStubInterpreter[IO, Any](AsyncHttpClientFs2Backend.stub[IO])
+      .whenServerEndpointsRunLogic(dependencies.api.allEndpoints)
+      .backend()
 }

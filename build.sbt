@@ -33,7 +33,8 @@ val httpDependencies = Seq(
   "org.http4s" %% "http4s-circe" % http4sVersion,
   "com.softwaremill.sttp.client3" %% "async-http-client-backend-fs2" % sttpVersion,
   "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion
 )
 
 val monitoringDependencies = Seq(
@@ -78,7 +79,7 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
+  "com.sun.mail" % "javax.mail" % "1.6.2" exclude("javax.activation", "activation")
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.11" % Test

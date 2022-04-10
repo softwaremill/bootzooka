@@ -1,16 +1,22 @@
 package com.softwaremill.bootzooka.user
 
+import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.test.{BaseTest, TestDependencies, Requests}
+import com.softwaremill.bootzooka.test.{BaseTest, Requests, TapirTestSupport, TestDependencies}
 import com.softwaremill.bootzooka.user.UserApi._
 import org.http4s.Status
 import org.scalatest.concurrent.Eventually
+import sttp.client3
+import sttp.client3.{UriContext, basicRequest}
+import sttp.model.StatusCode
 
 import scala.concurrent.duration._
 
-class UserApiTest extends BaseTest with Eventually with TestDependencies {
+class UserApiTest extends BaseTest with Eventually with TestDependencies with TapirTestSupport {
   lazy val requests = new Requests(dependencies.api)
+
   import requests._
 
   "/user/register" should "register" in {
@@ -28,7 +34,10 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
     val response4 = getUser(apiKey)
 
     // then
-    response4.shouldDeserializeTo[GetUser_OUT].email shouldBe email
+    response4
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
+      .map(_.email shouldBe email)
+      .unsafeRunSync()
   }
 
   "/user/register" should "register and ignore leading and trailing spaces" in {
@@ -46,7 +55,10 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
     val response4 = getUser(apiKey)
 
     // then
-    response4.shouldDeserializeTo[GetUser_OUT].email shouldBe email
+    response4
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
+      .map(_.email shouldBe email)
+      .unsafeRunSync()
   }
 
   "/user/register" should "not register if data is invalid" in {
@@ -135,13 +147,22 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
     val apiKey = loginUser(login, password, Some(3)).shouldDeserializeTo[Login_OUT].apiKey
 
     // then
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT]
+    getUser(apiKey)
+      .map(r => {
+        println(r.code)
+        r.body.shouldDeserializeTo[GetUser_OUT]
+      })
+      .unsafeRunSync()
 
     testClock.forward(2.hours)
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT]
+    getUser(apiKey)
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
+      .unsafeRunSync()
 
     testClock.forward(2.hours)
-    getUser(apiKey).status shouldBe Status.Unauthorized
+    getUser(apiKey)
+      .map(r => r.code shouldBe StatusCode.Unauthorized)
+      .unsafeRunSync()
   }
 
   "/user/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if user was not found" in {
@@ -165,7 +186,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
   }
 
   "/user/info" should "respond with 403 if the token is invalid" in {
-    getUser("invalid").status shouldBe Status.Unauthorized
+    getUser("invalid").map(r => r.code shouldBe Status.Unauthorized)
   }
 
   "/user/changepassword" should "change the password" in {
@@ -224,8 +245,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
 
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe newLogin
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe email
+    getUser(apiKey)
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
+      .map(r => {
+        r.login shouldBe newLogin
+        r.email shouldBe email
+      })
+      .unsafeRunSync()
   }
 
   "/user" should "update the login if the new login is invalid" in {
@@ -240,8 +266,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
     response1.status shouldBe Status.BadRequest
     response1.shouldDeserializeToError shouldBe "Login is too short!"
 
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe login
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe email
+    getUser(apiKey)
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
+      .map(r => {
+        r.login shouldBe login
+        r.email shouldBe email
+      })
+      .unsafeRunSync()
   }
 
   "/user" should "update the email" in {
@@ -254,8 +285,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
 
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe login
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe newEmail
+    getUser(apiKey)
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
+      .map(r => {
+        r.login shouldBe login
+        r.email shouldBe newEmail
+      })
+      .unsafeRunSync()
   }
 
   "/user" should "not update the email if the new email is invalid" in {
@@ -270,8 +306,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
     response1.status shouldBe Status.BadRequest
     response1.shouldDeserializeToError shouldBe "Invalid e-mail format!"
 
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe login
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe email
+    getUser(apiKey)
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
+      .map(r => {
+        r.login shouldBe login
+        r.email shouldBe email
+      })
+      .unsafeRunSync()
   }
 
   "/user" should "update the login and email with leading or trailing spaces" in {
@@ -285,7 +326,19 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies {
 
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].login shouldBe newLogin
-    getUser(apiKey).shouldDeserializeTo[GetUser_OUT].email shouldBe newEmail
+    getUser(apiKey)
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
+      .map(r => {
+        r.login shouldBe newLogin
+        r.email shouldBe newEmail
+      })
+      .unsafeRunSync()
+  }
+
+  def getUser(apiKey: String): IO[client3.Response[Either[String, String]]] = {
+    basicRequest
+      .get(uri"http://localhost:8080/api/v1/user")
+      .header("Authorization", s"Bearer $apiKey")
+      .send(backendStub)
   }
 }
