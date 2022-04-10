@@ -17,7 +17,7 @@ val tsecVersion = "0.4.0"
 val sttpVersion = "3.5.1"
 val prometheusVersion = "0.15.0"
 val tapirVersion = "1.0.0-M6"
-val macwireVersion = "2.5.6"
+val macwireVersion = "2.5.7"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
