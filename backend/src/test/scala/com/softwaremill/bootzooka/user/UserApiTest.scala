@@ -1,7 +1,5 @@
 package com.softwaremill.bootzooka.user
 
-import cats.effect.IO
-import cats.effect.unsafe.implicits.global
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.test.{BaseTest, Requests, TapirTestSupport, TestDependencies}
@@ -34,10 +32,8 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
     val response4 = getUser(apiKey)
 
     // then
-    response4
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .map(_.email shouldBe email)
-      .unsafeRunSync()
+    val body = response4.body.shouldDeserializeTo[GetUser_OUT]
+    body.email shouldBe email
   }
 
   "/user/register" should "register and ignore leading and trailing spaces" in {
@@ -55,10 +51,8 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
     val response4 = getUser(apiKey)
 
     // then
-    response4
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .map(_.email shouldBe email)
-      .unsafeRunSync()
+    val body = response4.body.shouldDeserializeTo[GetUser_OUT]
+    body.email shouldBe email
   }
 
   "/user/register" should "not register if data is invalid" in {
@@ -147,19 +141,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
     val apiKey = loginUser(login, password, Some(3)).shouldDeserializeTo[Login_OUT].apiKey
 
     // then
-    getUser(apiKey)
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .unsafeRunSync()
+    getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
 
     testClock.forward(2.hours)
-    getUser(apiKey)
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .unsafeRunSync()
+    getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
 
     testClock.forward(2.hours)
-    getUser(apiKey)
-      .map(_.code shouldBe StatusCode.Unauthorized)
-      .unsafeRunSync()
+    getUser(apiKey).code shouldBe StatusCode.Unauthorized
   }
 
   "/user/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if user was not found" in {
@@ -183,9 +171,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
   }
 
   "/user/info" should "respond with 403 if the token is invalid" in {
-    getUser("invalid")
-      .map(_.code shouldBe StatusCode.Unauthorized)
-      .unsafeRunSync()
+    getUser("invalid").code shouldBe StatusCode.Unauthorized
   }
 
   "/user/changepassword" should "change the password" in {
@@ -244,13 +230,9 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
 
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]
-    getUser(apiKey)
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .map(r => {
-        r.login shouldBe newLogin
-        r.email shouldBe email
-      })
-      .unsafeRunSync()
+    val body = getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
+    body.login shouldBe newLogin
+    body.email shouldBe email
   }
 
   "/user" should "update the login if the new login is invalid" in {
@@ -265,13 +247,9 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
     response1.status shouldBe Status.BadRequest
     response1.shouldDeserializeToError shouldBe "Login is too short!"
 
-    getUser(apiKey)
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .map(r => {
-        r.login shouldBe login
-        r.email shouldBe email
-      })
-      .unsafeRunSync()
+    val body = getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
+    body.login shouldBe login
+    body.email shouldBe email
   }
 
   "/user" should "update the email" in {
@@ -284,13 +262,9 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
 
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]
-    getUser(apiKey)
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .map(r => {
-        r.login shouldBe login
-        r.email shouldBe newEmail
-      })
-      .unsafeRunSync()
+    val body = getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
+    body.login shouldBe login
+    body.email shouldBe newEmail
   }
 
   "/user" should "not update the email if the new email is invalid" in {
@@ -305,13 +279,9 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
     response1.status shouldBe Status.BadRequest
     response1.shouldDeserializeToError shouldBe "Invalid e-mail format!"
 
-    getUser(apiKey)
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .map(r => {
-        r.login shouldBe login
-        r.email shouldBe email
-      })
-      .unsafeRunSync()
+    val body = getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
+    body.login shouldBe login
+    body.email shouldBe email
   }
 
   "/user" should "update the login and email with leading or trailing spaces" in {
@@ -325,19 +295,17 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
 
     // then
     response1.shouldDeserializeTo[UpdateUser_OUT]
-    getUser(apiKey)
-      .map(_.body.shouldDeserializeTo[GetUser_OUT])
-      .map(r => {
-        r.login shouldBe newLogin
-        r.email shouldBe newEmail
-      })
-      .unsafeRunSync()
+    val body = getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
+    body.login shouldBe newLogin
+    body.email shouldBe newEmail
+
   }
 
-  def getUser(apiKey: String): IO[client3.Response[Either[String, String]]] = {
+  def getUser(apiKey: String): client3.Response[Either[String, String]] = {
     basicRequest
       .get(uri"http://localhost:8080/api/v1/user")
       .header("Authorization", s"Bearer $apiKey")
       .send(backendStub)
+      .unwrap
   }
 }
