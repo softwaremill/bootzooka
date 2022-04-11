@@ -148,10 +148,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
 
     // then
     getUser(apiKey)
-      .map(r => {
-        println(r.code)
-        r.body.shouldDeserializeTo[GetUser_OUT]
-      })
+      .map(_.body.shouldDeserializeTo[GetUser_OUT])
       .unsafeRunSync()
 
     testClock.forward(2.hours)
@@ -161,7 +158,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
 
     testClock.forward(2.hours)
     getUser(apiKey)
-      .map(r => r.code shouldBe StatusCode.Unauthorized)
+      .map(_.code shouldBe StatusCode.Unauthorized)
       .unsafeRunSync()
   }
 
@@ -186,7 +183,9 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ta
   }
 
   "/user/info" should "respond with 403 if the token is invalid" in {
-    getUser("invalid").map(r => r.code shouldBe Status.Unauthorized)
+    getUser("invalid")
+      .map(_.code shouldBe StatusCode.Unauthorized)
+      .unsafeRunSync()
   }
 
   "/user/changepassword" should "change the password" in {
