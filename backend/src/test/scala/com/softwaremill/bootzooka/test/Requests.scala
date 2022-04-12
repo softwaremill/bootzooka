@@ -10,8 +10,7 @@ import sttp.client3.{Response, SttpBackend, UriContext, basicRequest}
 
 import scala.util.Random
 
-class TestClient(backend: SttpBackend[IO, Any]) extends TestSupport {
-  case class RegisteredUser(login: String, email: String, password: String, apiKey: String)
+class Requests(backend: SttpBackend[IO, Any]) extends TestSupport {
 
   private val random = new Random()
 
