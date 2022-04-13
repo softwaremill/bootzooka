@@ -1,59 +1,85 @@
 package com.softwaremill.bootzooka.test
 
 import cats.effect.IO
-import com.softwaremill.bootzooka.http.HttpApi
-import com.softwaremill.bootzooka.infrastructure.Json._
+import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_IN, PasswordReset_IN}
 import com.softwaremill.bootzooka.user.UserApi._
-import org.http4s._
-import org.http4s.syntax.all._
+import io.circe.generic.auto._
+import io.circe.syntax.EncoderOps
+import sttp.client3
+import sttp.client3.{Response, SttpBackend, UriContext, basicRequest}
 
 import scala.util.Random
 
-class Requests(httpApi: => HttpApi) extends HttpTestSupport {
-  case class RegisteredUser(login: String, email: String, password: String, apiKey: String)
+class Requests(backend: SttpBackend[IO, Any]) extends TestSupport {
 
   private val random = new Random()
 
   def randomLoginEmailPassword(): (String, String, String) =
     (random.nextString(12), s"user${random.nextInt(9000)}@bootzooka.com", random.nextString(12))
 
-  def registerUser(login: String, email: String, password: String): Response[IO] = {
-    val request = Request[IO](method = POST, uri = uri"/api/v1/user/register")
-      .withEntity(Register_IN(login, email, password))
+  private val basePath = "http://localhost:8080/api/v1"
 
-    httpApi.routes(request).unwrap
+  def registerUser(login: String, email: String, password: String): Response[Either[String, String]] = {
+    basicRequest
+      .post(uri"$basePath/user/register")
+      .body(Register_IN(login, email, password).asJson.noSpaces)
+      .send(backend)
+      .unwrap
   }
 
   def newRegisteredUsed(): RegisteredUser = {
     val (login, email, password) = randomLoginEmailPassword()
-    val apiKey = registerUser(login, email, password).shouldDeserializeTo[Register_OUT].apiKey
+    val apiKey = registerUser(login, email, password).body.shouldDeserializeTo[Register_OUT].apiKey
     RegisteredUser(login, email, password, apiKey)
   }
 
-  def loginUser(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int] = None): Response[IO] = {
-    val request = Request[IO](method = POST, uri = uri"/api/v1/user/login")
-      .withEntity(Login_IN(loginOrEmail, password, apiKeyValidHours))
-
-    httpApi.routes(request).unwrap
+  def loginUser(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int] = None): Response[Either[String, String]] = {
+    basicRequest
+      .post(uri"$basePath/user/login")
+      .body(Login_IN(loginOrEmail, password, apiKeyValidHours).asJson.noSpaces)
+      .send(backend)
+      .unwrap
   }
 
-  def getUser(apiKey: String): Response[IO] = {
-    val request = Request[IO](method = GET, uri = uri"/api/v1/user")
-    httpApi.routes(authorizedRequest(apiKey, request)).unwrap
+  def getUser(apiKey: String): client3.Response[Either[String, String]] = {
+    basicRequest
+      .get(uri"$basePath/user")
+      .header("Authorization", s"Bearer $apiKey")
+      .send(backend)
+      .unwrap
   }
 
-  def changePassword(apiKey: String, password: String, newPassword: String): Response[IO] = {
-    val request = Request[IO](method = POST, uri = uri"/api/v1/user/changepassword")
-      .withEntity(ChangePassword_IN(password, newPassword))
-
-    httpApi.routes(authorizedRequest(apiKey, request)).unwrap
+  def changePassword(apiKey: String, password: String, newPassword: String): Response[Either[String, String]] = {
+    basicRequest
+      .post(uri"$basePath/user/changepassword")
+      .body(ChangePassword_IN(password, newPassword).asJson.noSpaces)
+      .header("Authorization", s"Bearer $apiKey")
+      .send(backend)
+      .unwrap
   }
 
-  def updateUser(apiKey: String, login: String, email: String): Response[IO] = {
-    val request = Request[IO](method = POST, uri = uri"/api/v1/user")
-      .withEntity(UpdateUser_IN(login, email))
-
-    httpApi.routes(authorizedRequest(apiKey, request)).unwrap
+  def updateUser(apiKey: String, login: String, email: String): Response[Either[String, String]] = {
+    basicRequest
+      .post(uri"$basePath/user")
+      .body(UpdateUser_IN(login, email).asJson.noSpaces)
+      .header("Authorization", s"Bearer $apiKey")
+      .send(backend)
+      .unwrap
   }
 
+  def forgotPassword(loginOrEmail: String): Response[Either[String, String]] = {
+    basicRequest
+      .post(uri"$basePath/passwordreset/forgot")
+      .body(ForgotPassword_IN(loginOrEmail).asJson.noSpaces)
+      .send(backend)
+      .unwrap
+  }
+
+  def resetPassword(code: String, password: String): Response[Either[String, String]] = {
+    basicRequest
+      .post(uri"$basePath/passwordreset/reset")
+      .body(PasswordReset_IN(code, password).asJson.noSpaces)
+      .send(backend)
+      .unwrap
+  }
 }

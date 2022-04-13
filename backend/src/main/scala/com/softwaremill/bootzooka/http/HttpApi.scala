@@ -7,6 +7,8 @@ import com.softwaremill.bootzooka.util.ServerEndpoints
 import com.typesafe.scalalogging.StrictLogging
 import org.http4s.HttpRoutes
 import org.http4s.blaze.server.BlazeServerBuilder
+import sttp.tapir._
+import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.http4s.{Http4sServerInterpreter, Http4sServerOptions}
 import sttp.tapir.server.interceptor.cors.CORSInterceptor
 import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
@@ -14,7 +16,6 @@ import sttp.tapir.server.model.ValuedEndpointOutput
 import sttp.tapir.static.ResourcesOptions
 import sttp.tapir.swagger.SwaggerUIOptions
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
-import sttp.tapir._
 
 /** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs support.
   *
@@ -52,7 +53,9 @@ class HttpApi(
     .metricsInterceptor(prometheusMetrics.metricsInterceptor())
     .options
 
-  lazy val routes: HttpRoutes[IO] = {
+  lazy val routes: HttpRoutes[IO] = Http4sServerInterpreter(serverOptions).toRoutes(allEndpoints)
+
+  lazy val allEndpoints: List[ServerEndpoint[Any, IO]] = {
     // creating the documentation using `mainEndpoints` without the /api/v1 context path; instead, a server will be added
     // with the appropriate suffix
     val docsEndpoints = SwaggerInterpreter(swaggerUIOptions = SwaggerUIOptions.default.copy(contextPath = apiContextPath))
@@ -74,9 +77,7 @@ class HttpApi(
         ResourcesOptions.default.defaultResource(List("index.html"))
       )
     )
-
-    val allEndpoints = apiEndpoints.toList ++ allAdminEndpoints.toList ++ webappEndpoints
-    Http4sServerInterpreter(serverOptions).toRoutes(allEndpoints)
+    apiEndpoints.toList ++ allAdminEndpoints.toList ++ webappEndpoints
   }
 
   /** The resource describing the HTTP server; binds when the resource is allocated. */

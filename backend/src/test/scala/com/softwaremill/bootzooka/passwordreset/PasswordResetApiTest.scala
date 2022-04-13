@@ -1,31 +1,22 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import cats.effect.IO
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
 import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{
-  ForgotPassword_IN,
-  ForgotPassword_OUT,
-  PasswordReset_IN,
-  PasswordReset_OUT
-}
-import com.softwaremill.bootzooka.test.{TestDependencies, BaseTest, Requests}
-import org.http4s._
-import org.http4s.syntax.all._
+import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_OUT, PasswordReset_OUT}
+import com.softwaremill.bootzooka.test._
 import org.scalatest.concurrent.Eventually
+import sttp.model.StatusCode
 
-class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies {
-  lazy val requests = new Requests(dependencies.api)
-  import requests._
+class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies with TestSupport {
 
   "/passwordreset" should "reset the password" in {
     // given
-    val RegisteredUser(login, email, password, _) = newRegisteredUsed()
+    val RegisteredUser(login, email, password, _) = requests.newRegisteredUsed()
     val newPassword = password + password
 
     // when
-    val response1 = forgotPassword(login)
-    response1.shouldDeserializeTo[ForgotPassword_OUT]
+    val response1 = requests.forgotPassword(login)
+    response1.body.shouldDeserializeTo[ForgotPassword_OUT]
 
     // then
     val code = eventually {
@@ -33,23 +24,23 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
     }
 
     // when
-    val response2 = resetPassword(code, newPassword)
-    response2.shouldDeserializeTo[PasswordReset_OUT]
+    val response2 = requests.resetPassword(code, newPassword)
+    response2.body.shouldDeserializeTo[PasswordReset_OUT]
 
     // then
-    loginUser(login, password, None).status shouldBe Status.Unauthorized
-    loginUser(login, newPassword, None).status shouldBe Status.Ok
+    requests.loginUser(login, password, None).code shouldBe StatusCode.Unauthorized
+    requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Ok
   }
 
   "/passwordreset" should "reset the password once using the given code" in {
     // given
-    val RegisteredUser(login, email, password, _) = newRegisteredUsed()
+    val RegisteredUser(login, email, password, _) = requests.newRegisteredUsed()
     val newPassword = password + password
     val newerPassword = newPassword + newPassword
 
     // when
-    val response1 = forgotPassword(login)
-    response1.shouldDeserializeTo[ForgotPassword_OUT]
+    val response1 = requests.forgotPassword(login)
+    response1.body.shouldDeserializeTo[ForgotPassword_OUT]
 
     // then
     val code = eventually {
@@ -57,23 +48,23 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
     }
 
     // when
-    resetPassword(code, newPassword).shouldDeserializeTo[PasswordReset_OUT]
-    resetPassword(code, newPassword).shouldDeserializeToError
+    requests.resetPassword(code, newPassword).body.shouldDeserializeTo[PasswordReset_OUT]
+    requests.resetPassword(code, newPassword).body.shouldDeserializeToError
 
     // then
-    loginUser(login, newPassword, None).status shouldBe Status.Ok
-    loginUser(login, newerPassword, None).status shouldBe Status.Unauthorized
+    requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Ok
+    requests.loginUser(login, newerPassword, None).code shouldBe StatusCode.Unauthorized
   }
 
   "/passwordreset/forgot" should "end up with Ok HTTP status code and do not send and email if user was not found" in {
     // given
-    val RegisteredUser(_, email, _, _) = newRegisteredUsed()
+    val RegisteredUser(_, email, _, _) = requests.newRegisteredUsed()
 
     // when
-    val response1 = forgotPassword("wrongUser")
+    val response1 = requests.forgotPassword("wrongUser")
 
     // then
-    response1.status shouldBe Status.Ok
+    response1.code shouldBe StatusCode.Ok
     eventually {
       codeWasNotSentToEmail(email)
     }
@@ -81,30 +72,16 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
   "/passwordreset" should "not reset the password given an invalid code" in {
     // given
-    val RegisteredUser(login, _, password, _) = newRegisteredUsed()
+    val RegisteredUser(login, _, password, _) = requests.newRegisteredUsed()
     val newPassword = password + password
 
     // when
-    val response2 = resetPassword("invalid", newPassword)
-    response2.shouldDeserializeToError
+    val response2 = requests.resetPassword("invalid", newPassword)
+    response2.body.shouldDeserializeToError
 
     // then
-    loginUser(login, password, None).status shouldBe Status.Ok
-    loginUser(login, newPassword, None).status shouldBe Status.Unauthorized
-  }
-
-  def forgotPassword(loginOrEmail: String): Response[IO] = {
-    val request = Request[IO](method = POST, uri = uri"/api/v1/passwordreset/forgot")
-      .withEntity(ForgotPassword_IN(loginOrEmail))
-
-    dependencies.api.routes(request).unwrap
-  }
-
-  def resetPassword(code: String, password: String): Response[IO] = {
-    val request = Request[IO](method = POST, uri = uri"/api/v1/passwordreset/reset")
-      .withEntity(PasswordReset_IN(code, password))
-
-    dependencies.api.routes(request).unwrap
+    requests.loginUser(login, password, None).code shouldBe StatusCode.Ok
+    requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Unauthorized
   }
 
   def codeSentToEmail(email: String): String = {
