@@ -23,7 +23,7 @@ val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "8.5.7"
+  "org.flywaydb" % "flyway-core" % "8.5.8"
 )
 
 val httpDependencies = Seq(
@@ -79,7 +79,7 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2" exclude("javax.activation", "activation")
+  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.11" % Test
