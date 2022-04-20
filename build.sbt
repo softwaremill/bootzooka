@@ -89,7 +89,7 @@ val macwireDependencies = Seq(
 
 val unitTestingStack = Seq(scalatest)
 
-val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.0" % Test
+val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.1" % Test
 val dbTestingStack = Seq(embeddedPostgres)
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
