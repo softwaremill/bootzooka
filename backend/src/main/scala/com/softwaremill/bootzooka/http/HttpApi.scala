@@ -34,8 +34,8 @@ class HttpApi(
 ) extends StrictLogging {
   private val apiContextPath = List("api", "v1")
 
-  val serverOptions: Http4sServerOptions[IO, IO] = Http4sServerOptions
-    .customInterceptors[IO, IO]
+  val serverOptions: Http4sServerOptions[IO] = Http4sServerOptions
+    .customiseInterceptors[IO]
     .prependInterceptor(CorrelationIdInterceptor)
     // all errors are formatted as json, and there are no other additional http4s routes
     .defaultHandlers(msg => ValuedEndpointOutput(http.jsonErrorOutOutput, Error_OUT(msg)), notFoundWhenRejected = true)
