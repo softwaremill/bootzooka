@@ -78,7 +78,7 @@ class UserApi(http: Http) {
 }
 ```
 
-This will bring into scope tapir builder methods and custom schemas for documentation.
+This will bring into scope tapir builder methods and schemas for documentation.
 Note that if you are using JSON in your endpoint descriptions, you'll need the JSON imports as well.
 
 ### Logging

@@ -10,7 +10,7 @@ import com.softwaremill.tagging._
 import io.circe.Printer
 import sttp.model.StatusCode
 import sttp.tapir.Codec.PlainCodec
-import sttp.tapir.generic.auto._
+import sttp.tapir.generic.auto.SchemaDerivation
 import sttp.tapir.json.circe.TapirJsonCirce
 import sttp.tapir.{Codec, Endpoint, EndpointOutput, PublicEndpoint, Schema, SchemaType, Tapir}
 import tsec.common.SecureRandomId
@@ -65,8 +65,10 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
   override def jsonPrinter: Printer = noNullsPrinter
 }
 
-/** Schemas for custom types used in endpoint descriptions (as parts of query parameters, JSON bodies, etc.) */
-trait TapirSchemas {
+/** Schemas for types used in endpoint descriptions (as parts of query parameters, JSON bodies, etc.). Includes explicitly defined schemas
+  * for custom types, and auto-derivation for ADTs & value classes.
+  */
+trait TapirSchemas extends SchemaDerivation {
   implicit val idPlainCodec: PlainCodec[SecureRandomId] =
     Codec.string.map(_.asInstanceOf[SecureRandomId])(identity)
   implicit def taggedPlainCodec[U, T](implicit uc: PlainCodec[U]): PlainCodec[U @@ T] =

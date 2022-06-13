@@ -4,7 +4,6 @@ import cats.effect.IO
 import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.version.BuildInfo
-import sttp.tapir.generic.auto._
 import sttp.tapir.server.ServerEndpoint
 
 /** Defines an endpoint which exposes the current application version information.

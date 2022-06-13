@@ -9,7 +9,6 @@ import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import doobie.util.transactor.Transactor
-import sttp.tapir.generic.auto._
 
 import java.time.Instant
 import scala.concurrent.duration._
