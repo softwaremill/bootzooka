@@ -4,7 +4,6 @@ import cats.effect.unsafe.implicits.global
 import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.infrastructure.{CorrelationId, DB, SetCorrelationIdBackend}
-import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.DefaultClock
 import com.typesafe.scalalogging.StrictLogging
 import sttp.capabilities.WebSockets
@@ -16,7 +15,6 @@ import sttp.client3.prometheus.PrometheusBackend
 
 object Main extends StrictLogging {
   def main(args: Array[String]): Unit = {
-    Metrics.init()
     Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 
     val config = Config.read
