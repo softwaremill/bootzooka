@@ -13,24 +13,24 @@ import sttp.client3.logging.slf4j.Slf4jLoggingBackend
 import sttp.client3.prometheus.PrometheusBackend
 
 object Main extends ResourceApp.Forever with StrictLogging {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
+  
+  Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 
-    val config = Config.read
-    Config.log(config)
+  lazy val sttpBackend: Resource[IO, SttpBackend[IO, Fs2Streams[IO] with WebSockets]] =
+    AsyncHttpClientFs2Backend
+      .resource[IO]()
+      .map(baseSttpBackend => Slf4jLoggingBackend(PrometheusBackend(new SetCorrelationIdBackend(baseSttpBackend)), includeTiming = true))
+  Config.log(config)
 
-    lazy val sttpBackend: Resource[IO, SttpBackend[IO, Fs2Streams[IO] with WebSockets]] =
-      AsyncHttpClientFs2Backend
-        .resource[IO]()
-        .map(baseSttpBackend => Slf4jLoggingBackend(PrometheusBackend(new SetCorrelationIdBackend(baseSttpBackend)), includeTiming = true))
+  val config = Config.read
+  val xa = new DB(config.db).transactorResource.map(CorrelationId.correlationIdTransactor)
 
-    val xa = new DB(config.db).transactorResource.map(CorrelationId.correlationIdTransactor)
-
-    /*
+  /*
     Sequencing two tasks:
       - the first starts the background processes (such as an email sender)
       - the second allocates the http api resource, and never releases it (so that the http server is available
         as long as our application runs)
-    */
+   */
   override def run(list: List[String]): Resource[IO, Unit] = for {
     deps <- Dependencies.wire(config, sttpBackend, xa, DefaultClock)
     _ <- deps.emailService.startProcesses().background
