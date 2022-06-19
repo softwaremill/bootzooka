@@ -1,7 +1,6 @@
 package com.softwaremill.bootzooka
 
-import cats.effect.unsafe.implicits.global
-import cats.effect.{IO, Resource}
+import cats.effect.{IO, Resource, ResourceApp}
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.infrastructure.{CorrelationId, DB, SetCorrelationIdBackend}
 import com.softwaremill.bootzooka.util.DefaultClock
@@ -13,8 +12,7 @@ import sttp.client3.asynchttpclient.fs2.AsyncHttpClientFs2Backend
 import sttp.client3.logging.slf4j.Slf4jLoggingBackend
 import sttp.client3.prometheus.PrometheusBackend
 
-object Main extends StrictLogging {
-  def main(args: Array[String]): Unit = {
+object Main extends ResourceApp.Forever with StrictLogging {
     Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 
     val config = Config.read
@@ -27,17 +25,15 @@ object Main extends StrictLogging {
 
     val xa = new DB(config.db).transactorResource.map(CorrelationId.correlationIdTransactor)
 
-    Dependencies
-      .wire(config, sttpBackend, xa, DefaultClock)
-      .use { case Dependencies(httpApi, emailService) =>
-        /*
-        Sequencing two tasks using the >> operator:
-        - the first starts the background processes (such as an email sender)
-        - the second allocates the http api resource, and never releases it (so that the http server is available
-          as long as our application runs)
-         */
-        emailService.startProcesses().void >> httpApi.resource.use(_ => IO.never)
-      }
-      .unsafeRunSync()
-  }
+    /*
+    Sequencing two tasks:
+      - the first starts the background processes (such as an email sender)
+      - the second allocates the http api resource, and never releases it (so that the http server is available
+        as long as our application runs)
+    */
+  override def run(list: List[String]): Resource[IO, Unit] = for {
+    deps <- Dependencies.wire(config, sttpBackend, xa, DefaultClock)
+    _ <- deps.emailService.startProcesses().background
+    _ <- deps.httpApi.resource
+  } yield ()
 }
