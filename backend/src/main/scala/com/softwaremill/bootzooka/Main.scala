@@ -26,12 +26,15 @@ object Main extends ResourceApp.Forever with StrictLogging {
 
   val xa: Resource[IO, Doobie.Transactor[IO]] = new DB(config.db).transactorResource.map(CorrelationId.correlationIdTransactor)
 
-  /*
-    Sequencing two tasks:
-      - the first starts the background processes (such as an email sender)
-      - the second allocates the http api resource, and never releases it (so that the http server is available
-        as long as our application runs)
-   */
+  /** Creating a resource which combines three resources in sequence:
+    *
+    *   - the first creates the object graph and allocates the dependencies
+    *   - the second starts the background processes (here, an email sender)
+    *   - the third allocates the http api resource
+    *
+    * Thanks to ResourceApp.Forever the result of the allocation is used by a non-terminating process (so that the http server is available
+    * as long as our application runs).
+    */
   override def run(list: List[String]): Resource[IO, Unit] = for {
     deps <- Dependencies.wire(config, sttpBackend, xa, DefaultClock)
     _ <- deps.emailService.startProcesses().background
