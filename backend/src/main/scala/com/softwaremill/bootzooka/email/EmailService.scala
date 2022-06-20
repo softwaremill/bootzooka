@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.email
 
 import cats.Parallel
-import cats.effect.{Fiber, IO}
+import cats.effect.IO
 import cats.syntax.all._
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.infrastructure.Doobie._
@@ -33,8 +33,8 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
   /** Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates a metric which holds
     * the size of the email queue.
     */
-  def startProcesses(): IO[(Fiber[IO, Throwable, Nothing], Fiber[IO, Throwable, Nothing])] = {
-    val sendProcess: IO[Fiber[IO, Throwable, Nothing]] = runForeverPeriodically("Exception when sending emails") {
+  def startProcesses(): IO[(Nothing, Nothing)] = {
+    val sendProcess = runForeverPeriodically("Exception when sending emails") {
       sendBatch()
     }
 
@@ -45,11 +45,10 @@ class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender
     Parallel.parProduct(sendProcess, monitoringProcess)
   }
 
-  private def runForeverPeriodically[T](errorMsg: String)(t: IO[T]): IO[Fiber[IO, Throwable, Nothing]] = {
+  private def runForeverPeriodically[T](errorMsg: String)(t: IO[T]): IO[Nothing] = {
     (t >> IO.sleep(config.emailSendInterval))
       .onError(e => logger.error(errorMsg, e))
       .foreverM
-      .start
   }
 }
 

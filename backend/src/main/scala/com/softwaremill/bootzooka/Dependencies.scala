@@ -18,7 +18,7 @@ import io.prometheus.client.hotspot.DefaultExports
 import sttp.client3.SttpBackend
 import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
 
-case class Dependencies(api: HttpApi, emailService: EmailService)
+case class Dependencies(httpApi: HttpApi, emailService: EmailService)
 
 object Dependencies {
   def wire(

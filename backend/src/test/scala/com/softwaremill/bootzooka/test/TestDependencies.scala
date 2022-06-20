@@ -36,7 +36,7 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres {
 
   private lazy val serverStub: SttpBackend[IO, Any] =
     TapirStubInterpreter[IO, Any](stub)
-      .whenServerEndpointsRunLogic(dependencies.api.allEndpoints)
+      .whenServerEndpointsRunLogic(dependencies.httpApi.allEndpoints)
       .backend()
 
   lazy val requests = new Requests(serverStub)
