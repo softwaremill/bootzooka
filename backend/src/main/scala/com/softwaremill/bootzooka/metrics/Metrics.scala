@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.metrics
 
-import io.prometheus.client.{Counter, Gauge}
+import io.prometheus.client.{Counter, Gauge, hotspot}
 
 object Metrics {
   lazy val registeredUsersCounter: Counter =
@@ -16,4 +16,8 @@ object Metrics {
       .name(s"bootzooka_email_queue_gauge")
       .help(s"How many emails are waiting to be sent")
       .register()
+
+  def init(): Unit = {
+    hotspot.DefaultExports.initialize()
+  }
 }

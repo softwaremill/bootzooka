@@ -14,7 +14,6 @@ import com.softwaremill.bootzooka.util.{Clock, DefaultIdGenerator}
 import com.softwaremill.macwire.autocats.autowire
 import doobie.util.transactor.Transactor
 import io.prometheus.client.CollectorRegistry
-import io.prometheus.client.hotspot.DefaultExports
 import sttp.client3.SttpBackend
 import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
 
@@ -25,7 +24,8 @@ object Dependencies {
       config: Config,
       sttpBackend: Resource[IO, SttpBackend[IO, Any]],
       xa: Resource[IO, Transactor[IO]],
-      clock: Clock
+      clock: Clock,
+      collectorRegistry: CollectorRegistry
   ): Resource[IO, Dependencies] = {
     def buildHttpApi(
         http: Http,
@@ -34,9 +34,7 @@ object Dependencies {
         versionApi: VersionApi,
         cfg: HttpConfig
     ) = {
-      val registry = new CollectorRegistry()
-      DefaultExports.register(registry)
-      val prometheusMetrics = PrometheusMetrics.default[IO](registry = registry)
+      val prometheusMetrics = PrometheusMetrics.default[IO](registry = collectorRegistry)
       new HttpApi(
         http,
         userApi.endpoints concatNel passwordResetApi.endpoints,
