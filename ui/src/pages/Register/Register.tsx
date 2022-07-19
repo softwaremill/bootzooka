@@ -1,5 +1,5 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import userService from "../../services/UserService/UserService";
@@ -13,14 +13,7 @@ import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
 
-interface RegisterParams {
-  login: string;
-  email: string;
-  password: string;
-  repeatedPassword: string;
-}
-
-const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.object({
+const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
   email: Yup.string().email("Correct email address required").required("Required"),
   password: Yup.string().min(5, "At least 5 characters required").required("Required"),
@@ -29,17 +22,23 @@ const validationSchema: Yup.ObjectSchema<RegisterParams | undefined> = Yup.objec
     .required("Required"),
 });
 
+type RegisterParams = Yup.InferType<typeof validationSchema>;
+
 const Register: React.FC = () => {
   const {
     dispatch,
     state: { loggedIn },
-  } = React.useContext(UserContext);
+  } = useContext(UserContext);
+
+  const navigate = useNavigate();
 
   const [result, send, clear] = usePromise(({ login, email, password }: RegisterParams) =>
     userService.registerUser({ login, email, password }).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
   );
 
-  if (loggedIn) return <Redirect to="/main" />;
+  useEffect(() => {
+    if (loggedIn) navigate("/main");
+  }, [loggedIn]);
 
   return (
     <Container className="py-5">

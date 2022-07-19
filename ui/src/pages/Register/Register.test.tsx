@@ -1,9 +1,8 @@
-import React from "react";
 import { render, fireEvent } from "@testing-library/react";
+import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
+import { createMemoryHistory } from "history";
 import Register from "./Register";
 import { UserContext, initialUserState } from "../../contexts/UserContext/UserContext";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
 import userService from "../../services/UserService/UserService";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
@@ -17,11 +16,11 @@ beforeEach(() => {
 
 test("renders header", () => {
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("Please sign up")).toBeInTheDocument();
@@ -29,11 +28,11 @@ test("renders header", () => {
 
 test("redirects when registered", () => {
   render(
-    <Router history={history}>
+    <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Register />
       </UserContext.Provider>
-    </Router>
+    </HistoryRouter>
   );
 
   expect(history.location.pathname).toEqual("/main");
@@ -45,11 +44,11 @@ test("handles register success", async () => {
   });
 
   const { getByLabelText, getByText, findByRole } = render(
-    <Router history={history}>
+    <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
       </UserContext.Provider>
-    </Router>
+    </HistoryRouter>
   );
 
   fireEvent.blur(getByLabelText("Login"));
@@ -80,11 +79,11 @@ test("handles register error", async () => {
   (userService.registerUser as jest.Mock).mockRejectedValueOnce(testError);
 
   const { getByLabelText, getByText, findByRole } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   fireEvent.blur(getByLabelText("Login"));

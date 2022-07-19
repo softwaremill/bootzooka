@@ -1,6 +1,5 @@
 import React from "react";
 import immer from "immer";
-import noop from "noop-ts";
 
 export interface UserDetails {
   createdOn: string;
@@ -56,7 +55,7 @@ export const UserContext = React.createContext<{
   dispatch: React.Dispatch<UserAction>;
 }>({
   state: initialUserState,
-  dispatch: noop,
+  dispatch: () => {},
 });
 
 export const UserContextProvider: React.FC = ({ children }) => {

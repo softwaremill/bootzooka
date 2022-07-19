@@ -11,13 +11,11 @@ import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
 
-interface RecoverLostPasswordParams {
-  loginOrEmail: string;
-}
-
-const validationSchema: Yup.ObjectSchema<RecoverLostPasswordParams | undefined> = Yup.object({
+const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),
 });
+
+type RecoverLostPasswordParams = Yup.InferType<typeof validationSchema>;
 
 const RecoverLostPassword: React.FC = () => {
   const [result, send, clear] = usePromise((values: RecoverLostPasswordParams) =>

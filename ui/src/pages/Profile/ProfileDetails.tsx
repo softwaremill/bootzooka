@@ -12,15 +12,12 @@ import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
 
-interface ProfileDetailsParams {
-  login: string;
-  email: string;
-}
-
-const validationSchema: Yup.ObjectSchema<ProfileDetailsParams | undefined> = Yup.object({
+const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
   email: Yup.string().email("Correct email address required").required("Required"),
 });
+
+type ProfileDetailsParams = Yup.InferType<typeof validationSchema>;
 
 const ProfileDetails: React.FC = () => {
   const {
