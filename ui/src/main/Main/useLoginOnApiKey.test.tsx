@@ -2,11 +2,8 @@ import React from "react";
 import { render, fireEvent, act } from "@testing-library/react";
 import useLoginOnApiKey from "./useLoginOnApiKey";
 import { UserContextProvider, UserContext, UserAction } from "../../contexts/UserContext/UserContext";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { MemoryRouter } from "react-router-dom";
 import userService from "../../services/UserService/UserService";
-
-const history = createMemoryHistory({ initialEntries: [""] });
 
 jest.mock("../../services/UserService/UserService");
 
@@ -35,11 +32,11 @@ test("default state", () => {
   localStorage.removeItem("apiKey");
 
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent />
       </UserContextProvider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("loggedIn:null")).toBeInTheDocument();
@@ -54,11 +51,11 @@ test("handles set correct api key", async () => {
   });
 
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent actions={[{ type: "SET_API_KEY", apiKey: "test-api-key" }]} label="set api key" />
       </UserContextProvider>
-    </Router>
+    </MemoryRouter>
   );
 
   await act(async () => {
@@ -74,11 +71,11 @@ test("handles set wrong api key", async () => {
   (userService.getCurrentUser as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent actions={[{ type: "SET_API_KEY", apiKey: "test-api-key" }]} label="set api key" />
       </UserContextProvider>
-    </Router>
+    </MemoryRouter>
   );
 
   await act(async () => {

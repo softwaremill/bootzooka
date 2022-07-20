@@ -11,17 +11,14 @@ import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
 
-interface PasswordResetParams {
-  password: string;
-  repeatedPassword: string;
-}
-
-const validationSchema: Yup.ObjectSchema<PasswordResetParams | undefined> = Yup.object({
+const validationSchema = Yup.object({
   password: Yup.string().min(3, "At least 3 characters required").required("Required"),
   repeatedPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
     .required("Required"),
 });
+
+type PasswordResetParams = Yup.InferType<typeof validationSchema>;
 
 const ProfileDetails: React.FC = () => {
   const code = new URLSearchParams(window.location.search).get("code") || "";

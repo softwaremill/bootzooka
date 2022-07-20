@@ -1,5 +1,4 @@
-import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import PasswordDetails from "./PasswordDetails";
 import { UserContext, UserState } from "../../contexts/UserContext/UserContext";
 import userService from "../../services/UserService/UserService";
@@ -47,12 +46,14 @@ test("handles change password success", async () => {
 
   await findByRole("loader");
 
-  expect(userService.changePassword).toBeCalledWith("test-api-key", {
-    currentPassword: "test-password",
-    newPassword: "test-new-password",
+  await waitFor(() => {
+    expect(userService.changePassword).toBeCalledWith("test-api-key", {
+      currentPassword: "test-password",
+      newPassword: "test-new-password",
+    });
+    expect(getByRole("success")).toBeInTheDocument();
+    expect(getByText("Password changed")).toBeInTheDocument();
   });
-  expect(getByRole("success")).toBeInTheDocument();
-  expect(getByText("Password changed")).toBeInTheDocument();
 });
 
 test("handles change password error", async () => {
@@ -76,16 +77,20 @@ test("handles change password error", async () => {
 
   await findByRole("loader");
 
-  expect(userService.changePassword).toBeCalledWith("test-api-key", {
-    currentPassword: "test-password",
-    newPassword: "test-new-password",
+  await waitFor(() => {
+    expect(userService.changePassword).toBeCalledWith("test-api-key", {
+      currentPassword: "test-password",
+      newPassword: "test-new-password",
+    });
+    expect(getByRole("error")).toBeInTheDocument();
+    expect(getByText("Test Error")).toBeInTheDocument();
   });
-  expect(getByRole("error")).toBeInTheDocument();
-  expect(getByText("Test Error")).toBeInTheDocument();
 
   fireEvent.change(getByLabelText("Repeat new password"), { target: { value: "test-newer-password" } });
   fireEvent.blur(getByLabelText("Repeat new password"));
 
-  expect(queryByRole("error")).not.toBeInTheDocument();
-  expect(queryByText("Test Error")).not.toBeInTheDocument();
+  await waitFor(() => {
+    expect(queryByRole("error")).not.toBeInTheDocument();
+    expect(queryByText("Test Error")).not.toBeInTheDocument();
+  });
 });

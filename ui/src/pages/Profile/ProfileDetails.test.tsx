@@ -1,5 +1,4 @@
-import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import ProfileDetails from "./ProfileDetails";
 import { UserContext, UserState } from "../../contexts/UserContext/UserContext";
 import userService from "../../services/UserService/UserService";
@@ -92,16 +91,20 @@ test("handles change details error", async () => {
 
   await findByRole("loader");
 
-  expect(userService.changeProfileDetails).toBeCalledWith("test-api-key", {
-    email: "test@email.address",
-    login: "test-login",
+  await waitFor(() => {
+    expect(userService.changeProfileDetails).toBeCalledWith("test-api-key", {
+      email: "test@email.address",
+      login: "test-login",
+    });
+    expect(dispatch).not.toBeCalled();
+    expect(getByText("Test Error")).toBeInTheDocument();
   });
-  expect(dispatch).not.toBeCalled();
-  expect(getByText("Test Error")).toBeInTheDocument();
 
   fireEvent.change(getByLabelText("Email address"), { target: { value: "otherTest@email.address" } });
   fireEvent.blur(getByLabelText("Email address"));
 
-  expect(queryByRole("error")).not.toBeInTheDocument();
-  expect(queryByText("Test Error")).not.toBeInTheDocument();
+  await waitFor(() => {
+    expect(queryByRole("error")).not.toBeInTheDocument();
+    expect(queryByText("Test Error")).not.toBeInTheDocument();
+  });
 });

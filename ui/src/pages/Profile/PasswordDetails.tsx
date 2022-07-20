@@ -12,19 +12,15 @@ import { usePromise } from "react-use-promise-matcher";
 import FormikInput from "../../parts/FormikInput/FormikInput";
 import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
 
-interface PasswordDetailsParams {
-  currentPassword: string;
-  newPassword: string;
-  repeatedPassword: string;
-}
-
-const validationSchema: Yup.ObjectSchema<PasswordDetailsParams | undefined> = Yup.object({
+const validationSchema = Yup.object({
   currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
   newPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
   repeatedPassword: Yup.string()
     .oneOf([Yup.ref("newPassword")], "Passwords must match")
     .required("Required"),
 });
+
+type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 
 const ProfileDetails: React.FC = () => {
   const {

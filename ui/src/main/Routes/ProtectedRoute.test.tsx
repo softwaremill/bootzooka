@@ -1,14 +1,9 @@
-import React from "react";
 import { render } from "@testing-library/react";
+import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
+import Login from "../../pages/Login/Login";
 import { UserContext, UserState, initialUserState } from "../../contexts/UserContext/UserContext";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
-
-const loggedUserState: UserState = {
-  ...initialUserState,
-  loggedIn: true,
-};
+import { MemoryRouter } from "react-router-dom";
 
 const dispatch = jest.fn();
 
@@ -17,32 +12,39 @@ beforeEach(() => {
 });
 
 test("renders protected route for unlogged user", () => {
-  const history = createMemoryHistory({ initialEntries: ["/test-route"] });
-
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
-        <ProtectedRoute path="/test-route">
-          <>Protected Text</>
-        </ProtectedRoute>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route element={<ProtectedRoute />}>
+            <Route index element={<>Protected Text</>} />
+          </Route>
+        </Routes>
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("Please sign in")).toBeInTheDocument();
 });
 
 test("renders protected route for logged user", () => {
-  const history = createMemoryHistory({ initialEntries: ["/test-route"] });
+  const loggedUserState: UserState = {
+    ...initialUserState,
+    loggedIn: true,
+  };
 
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-        <ProtectedRoute path="/test-route">
-          <>Protected Text</>
-        </ProtectedRoute>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route element={<ProtectedRoute />}>
+            <Route index element={<>Protected Text</>} />
+          </Route>
+        </Routes>
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("Protected Text")).toBeInTheDocument();

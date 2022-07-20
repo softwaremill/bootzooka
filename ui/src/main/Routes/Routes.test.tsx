@@ -1,9 +1,7 @@
-import React from "react";
 import { render } from "@testing-library/react";
 import Routes from "./Routes";
 import { UserContext, UserState, initialUserState } from "../../contexts/UserContext/UserContext";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { MemoryRouter } from "react-router-dom";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",
@@ -18,56 +16,48 @@ beforeEach(() => {
 });
 
 test("renders main route", () => {
-  const history = createMemoryHistory({ initialEntries: [""] });
-
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();
 });
 
 test("renders protected route for unlogged user", () => {
-  const history = createMemoryHistory({ initialEntries: ["/main"] });
-
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("Please sign in")).toBeInTheDocument();
 });
 
 test("renders protected route for logged user", () => {
-  const history = createMemoryHistory({ initialEntries: ["/main"] });
-
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("Shhhh, this is a secret place.")).toBeInTheDocument();
 });
 
 test("renders not found page", () => {
-  const history = createMemoryHistory({ initialEntries: ["/not-specified-route"] });
-
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={["/not-specified-route"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("You shouldn't be here for sure :)")).toBeInTheDocument();

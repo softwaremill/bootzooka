@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Routes as RouterRoutes, Route } from "react-router-dom";
 import Welcome from "../../pages/Welcome/Welcome";
 import Login from "../../pages/Login/Login";
 import Register from "../../pages/Register/Register";
@@ -11,34 +11,24 @@ import NotFound from "../../pages/NotFound/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
 
 const Routes: React.FC = () => (
-  <Switch>
-    <Route exact path="/">
-      <Welcome />
-    </Route>
-    <Route path="/login">
-      <Login />
-    </Route>
-    <Route path="/register">
-      <Register />
-    </Route>
-    <Route path="/recover-lost-password">
-      <RecoverLostPassword />
-    </Route>
-    <Route path="/password-reset">
-      <PasswordReset />
+  <RouterRoutes>
+    <Route path="/" element={<Welcome />} />
+
+    <Route path="/login" element={<Login />} />
+
+    <Route path="/register" element={<Register />} />
+
+    <Route path="/recover-lost-password" element={<RecoverLostPassword />} />
+
+    <Route path="/password-reset" element={<PasswordReset />} />
+
+    <Route element={<ProtectedRoute />}>
+      <Route path="/main" element={<SecretMain />} />
+      <Route path="/profile" element={<Profile />} />
     </Route>
 
-    <ProtectedRoute path="/main">
-      <SecretMain />
-    </ProtectedRoute>
-    <ProtectedRoute path="/profile">
-      <Profile />
-    </ProtectedRoute>
-
-    <Route>
-      <NotFound />
-    </Route>
-  </Switch>
+    <Route path="*" element={<NotFound />} />
+  </RouterRoutes>
 );
 
 export default Routes;

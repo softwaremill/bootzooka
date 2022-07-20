@@ -1,11 +1,7 @@
-import React from "react";
 import { render } from "@testing-library/react";
 import Main from "./Main";
 import { UserContext, initialUserState } from "../../contexts/UserContext/UserContext";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
-
-const history = createMemoryHistory({ initialEntries: [""] });
+import { MemoryRouter } from "react-router-dom";
 
 const dispatch = jest.fn();
 
@@ -15,11 +11,11 @@ beforeEach(() => {
 
 test("shows loader on unspecified logged in status", () => {
   const { getByRole } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByRole("loader")).toBeInTheDocument();
@@ -27,11 +23,11 @@ test("shows loader on unspecified logged in status", () => {
 
 test("shows app on logged in status", () => {
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();
@@ -39,11 +35,11 @@ test("shows app on logged in status", () => {
 
 test("shows app on logged out status", () => {
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();

@@ -2,10 +2,7 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
 import { UserContextProvider, UserContext, UserAction } from "../../contexts/UserContext/UserContext";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
-
-const history = createMemoryHistory({ initialEntries: [""] });
+import { MemoryRouter } from "react-router-dom";
 
 const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ actions, label }) => {
   const { state, dispatch } = React.useContext(UserContext);
@@ -32,11 +29,11 @@ test("handles not stored api key", () => {
   localStorage.removeItem("apiKey");
 
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent />
       </UserContextProvider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("loggedIn:false")).toBeInTheDocument();
@@ -47,11 +44,11 @@ test("handles stored api key", () => {
   localStorage.setItem("apiKey", "test-api-key");
 
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent />
       </UserContextProvider>
-    </Router>
+    </MemoryRouter>
   );
 
   expect(getByText("loggedIn:null")).toBeInTheDocument();
@@ -62,7 +59,7 @@ test("handles user logging in", () => {
   localStorage.removeItem("apiKey");
 
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent
           actions={[
@@ -75,7 +72,7 @@ test("handles user logging in", () => {
           label="log in"
         />
       </UserContextProvider>
-    </Router>
+    </MemoryRouter>
   );
 
   fireEvent.click(getByText("log in"));
@@ -89,7 +86,7 @@ test("handles user logging out", () => {
   localStorage.setItem("apiKey", "test-api-key");
 
   const { getByText } = render(
-    <Router history={history}>
+    <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent
           actions={[
@@ -104,7 +101,7 @@ test("handles user logging out", () => {
           label="log in and out"
         />
       </UserContextProvider>
-    </Router>
+    </MemoryRouter>
   );
 
   fireEvent.click(getByText("log in and out"));
