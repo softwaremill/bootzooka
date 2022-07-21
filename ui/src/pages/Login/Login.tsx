@@ -30,7 +30,7 @@ export const Login: React.FC = () => {
 
   useEffect(() => {
     if (loggedIn) navigate("/main");
-  }, [loggedIn]);
+  }, [loggedIn, navigate]);
 
   return (
     <TwoColumnHero>

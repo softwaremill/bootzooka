@@ -34,7 +34,7 @@ export const Register: React.FC = () => {
 
   React.useEffect(() => {
     if (loggedIn) navigate("/main");
-  }, [loggedIn]);
+  }, [loggedIn, navigate]);
 
   return (
     <TwoColumnHero>
