@@ -5,8 +5,8 @@ import Form from "react-bootstrap/Form";
 import { IconType } from "react-icons";
 import { BsExclamationCircle, BsCheck } from "react-icons/bs";
 import { PromiseResultShape } from "react-use-promise-matcher";
-import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import useFormikValuesChanged from "./useFormikValuesChanged";
+import { ErrorMessage } from "../";
 
 interface FeedbackButtonProps extends ButtonProps {
   label: string;
@@ -16,7 +16,7 @@ interface FeedbackButtonProps extends ButtonProps {
   successLabel?: string;
 }
 
-const FeedbackButton: React.FC<FeedbackButtonProps> = ({
+export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
   result,
   clear,
   label,
@@ -42,7 +42,7 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({
       </Button>
     ),
     Rejected: (error) => (
-      <>
+      <div>
         <Button {...buttonProps} variant="danger">
           <BsExclamationCircle role="error" />
           &nbsp;{label}
@@ -50,18 +50,16 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({
         <Form.Text className="d-inline-block mx-3">
           <ErrorMessage error={error} />
         </Form.Text>
-      </>
+      </div>
     ),
     Resolved: () => (
-      <>
+      <div>
         <Button {...buttonProps} variant="success">
           <BsCheck role="success" />
           &nbsp;{label}
         </Button>
         <Form.Text className="text-success d-inline-block mx-3">{successLabel}</Form.Text>
-      </>
+      </div>
     ),
   });
 };
-
-export default FeedbackButton;

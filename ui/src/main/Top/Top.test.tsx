@@ -1,7 +1,7 @@
 import { render, fireEvent } from "@testing-library/react";
-import Top from "./Top";
-import { UserContext, UserState, initialUserState } from "../../contexts/UserContext/UserContext";
 import { MemoryRouter } from "react-router-dom";
+import { UserContext, UserState, initialUserState } from "contexts";
+import { Top } from "./Top";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",

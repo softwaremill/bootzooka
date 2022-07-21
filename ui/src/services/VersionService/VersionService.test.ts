@@ -1,5 +1,5 @@
 import axios from "axios";
-import versionService from "./VersionService";
+import { versionService } from "./VersionService";
 
 jest.mock("axios");
 

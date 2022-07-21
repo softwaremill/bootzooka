@@ -1,14 +1,12 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import Main from "./main/Main/Main";
-import { UserContextProvider } from "./contexts/UserContext/UserContext";
+import { Main } from "main";
+import { UserContextProvider } from "contexts";
 
-const App: React.FC = () => (
+export const App: React.FC = () => (
   <BrowserRouter>
     <UserContextProvider>
       <Main />
     </UserContextProvider>
   </BrowserRouter>
 );
-
-export default App;

@@ -1,10 +1,10 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import ProfileDetails from "./ProfileDetails";
-import PasswordDetails from "./PasswordDetails";
+import { ProfileDetails } from "./components/ProfileDetails";
+import { PasswordDetails } from "./components/PasswordDetails";
 
-const Profile: React.FC = () => (
+export const Profile: React.FC = () => (
   <Container>
     <Row>
       <ProfileDetails />
@@ -12,5 +12,3 @@ const Profile: React.FC = () => (
     </Row>
   </Container>
 );
-
-export default Profile;

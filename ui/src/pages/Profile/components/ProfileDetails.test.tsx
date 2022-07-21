@@ -1,16 +1,16 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
-import ProfileDetails from "./ProfileDetails";
-import { UserContext, UserState } from "../../contexts/UserContext/UserContext";
-import userService from "../../services/UserService/UserService";
+import { UserContext, UserState } from "contexts";
+import { userService } from "services";
+import { ProfileDetails } from "./ProfileDetails";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",
   user: { login: "user-login", email: "email@address.pl", createdOn: "2020-10-09T09:57:17.995288Z" },
   loggedIn: true,
 };
-
-jest.mock("../../services/UserService/UserService");
 const dispatch = jest.fn();
+
+jest.mock("services");
 
 beforeEach(() => {
   jest.clearAllMocks();

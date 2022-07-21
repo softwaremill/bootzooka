@@ -1,7 +1,6 @@
-import React from "react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import NotFound from "./NotFound";
+import { NotFound } from "./NotFound";
 
 test("renders text content", () => {
   const { getByText } = render(<NotFound />, { wrapper: MemoryRouter });

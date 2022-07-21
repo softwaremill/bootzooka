@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
-import Welcome from "./Welcome";
 import { MemoryRouter } from "react-router-dom";
+import { Welcome } from "./Welcome";
 
 test("renders text content", () => {
   const { getByText } = render(

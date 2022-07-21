@@ -1,5 +1,5 @@
 import React from "react";
-import { UserContext } from "../../contexts/UserContext/UserContext";
+import { UserContext } from "contexts";
 
 const useLocalStoragedApiKey = () => {
   const {

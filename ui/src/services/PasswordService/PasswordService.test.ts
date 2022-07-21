@@ -1,5 +1,5 @@
 import axios from "axios";
-import passwordService from "./PasswordService";
+import { passwordService } from "./PasswordService";
 
 jest.mock("axios");
 

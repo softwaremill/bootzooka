@@ -1,17 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
-import userService from "../../services/UserService/UserService";
 import Form from "react-bootstrap/Form";
-import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import { UserContext } from "../../contexts/UserContext/UserContext";
 import { BiLogInCircle } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
-import FormikInput from "../../parts/FormikInput/FormikInput";
-import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
+import { Formik, Form as FormikForm } from "formik";
+import * as Yup from "yup";
+import { userService } from "services";
+import { UserContext } from "contexts";
+import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
 
 const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),
@@ -20,7 +16,7 @@ const validationSchema = Yup.object({
 
 type LoginParams = Yup.InferType<typeof validationSchema>;
 
-const Login: React.FC = () => {
+export const Login: React.FC = () => {
   const {
     dispatch,
     state: { loggedIn },
@@ -37,31 +33,35 @@ const Login: React.FC = () => {
   }, [loggedIn]);
 
   return (
-    <Container className="py-5">
-      <Row>
-        <Col md={9} lg={7} xl={6} className="mx-auto">
-          <h3>Please sign in</h3>
-          <Formik<LoginParams>
-            initialValues={{
-              loginOrEmail: "",
-              password: "",
-            }}
-            onSubmit={send}
-            validationSchema={validationSchema}
-          >
-            <Form as={FormikForm}>
-              <FormikInput name="loginOrEmail" label="Login or email" />
-              <FormikInput name="password" type="password" label="Password" />
-              <Link className="float-right" to="/recover-lost-password">
-                Forgot password?
-              </Link>
-              <FeedbackButton type="submit" label="Sign In" Icon={BiLogInCircle} result={result} clear={clear} />{" "}
-            </Form>
-          </Formik>
-        </Col>
-      </Row>
-    </Container>
+    <TwoColumnHero>
+      <h3 className="mb-4">Please sign in</h3>
+      <Formik<LoginParams>
+        initialValues={{
+          loginOrEmail: "",
+          password: "",
+        }}
+        onSubmit={send}
+        validationSchema={validationSchema}
+      >
+        <Form className="w-75" as={FormikForm}>
+          <FormikInput name="loginOrEmail" label="Login or email" />
+          <FormikInput name="password" type="password" label="Password" />
+          <div className="d-flex justify-content-between align-items-center">
+            <Link className="text-muted" to="/recover-lost-password">
+              Forgot password?
+            </Link>
+            <FeedbackButton
+              className="float-end"
+              type="submit"
+              label="Sign In"
+              variant="dark"
+              Icon={BiLogInCircle}
+              result={result}
+              clear={clear}
+            />
+          </div>
+        </Form>
+      </Formik>
+    </TwoColumnHero>
   );
 };
-
-export default Login;
