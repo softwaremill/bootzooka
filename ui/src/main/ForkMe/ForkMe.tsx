@@ -2,17 +2,20 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
-import forkMeOrange from "./forkme_orange.png";
+import forkMeOrange from "assets/forkme_orange.png";
 
-const ForkMe: React.FC = ({ children }) => (
-  <Container fluid>
-    <Row className="position-relative">
+export const ForkMe: React.FC = ({ children }) => (
+  <Container className="bg-light" style={{ height: "calc(100% - 56px)" }} fluid>
+    <Row className="position-relative h-100">
       {children}
-      <a href="https://github.com/softwaremill/bootzooka" target="_blank" rel="noopener noreferrer">
-        <Image style={{ position: "absolute", top: 0, right: 0 }} src={forkMeOrange} alt="fork me on github" />
+      <a
+        style={{ position: "absolute", top: 0, right: 0, width: "unset", padding: 0 }}
+        href="https://github.com/softwaremill/bootzooka"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Image src={forkMeOrange} alt="fork me on github" />
       </a>
     </Row>
   </Container>
 );
-
-export default ForkMe;

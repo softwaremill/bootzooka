@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
-import Routes from "./Routes";
-import { UserContext, UserState, initialUserState } from "../../contexts/UserContext/UserContext";
 import { MemoryRouter } from "react-router-dom";
+import { UserContext, UserState, initialUserState } from "contexts";
+import { Routes } from "./Routes";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",

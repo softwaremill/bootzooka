@@ -1,16 +1,9 @@
 import React from "react";
 import { Routes as RouterRoutes, Route } from "react-router-dom";
-import Welcome from "../../pages/Welcome/Welcome";
-import Login from "../../pages/Login/Login";
-import Register from "../../pages/Register/Register";
-import SecretMain from "../../pages/SecretMain/SecretMain";
-import Profile from "../../pages/Profile/Profile";
-import RecoverLostPassword from "../../pages/RecoverLostPassword/RecoverLostPassword";
-import PasswordReset from "../../pages/PasswordReset/PasswordReset";
-import NotFound from "../../pages/NotFound/NotFound";
-import ProtectedRoute from "./ProtectedRoute";
+import { Welcome, Login, Register, RecoverLostPassword, PasswordReset, SecretMain, Profile, NotFound } from "pages";
+import { ProtectedRoute } from "./ProtectedRoute";
 
-const Routes: React.FC = () => (
+export const Routes: React.FC = () => (
   <RouterRoutes>
     <Route path="/" element={<Welcome />} />
 
@@ -20,6 +13,7 @@ const Routes: React.FC = () => (
 
     <Route path="/recover-lost-password" element={<RecoverLostPassword />} />
 
+    {/* NOTE: below path is not used anywhere, explore if we can safely remove it */}
     <Route path="/password-reset" element={<PasswordReset />} />
 
     <Route element={<ProtectedRoute />}>
@@ -30,5 +24,3 @@ const Routes: React.FC = () => (
     <Route path="*" element={<NotFound />} />
   </RouterRoutes>
 );
-
-export default Routes;

@@ -1,16 +1,15 @@
 import React from "react";
-import { Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
-import userService from "../../services/UserService/UserService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { UserContext } from "../../contexts/UserContext/UserContext";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
-import FormikInput from "../../parts/FormikInput/FormikInput";
-import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
+import { Formik, Form as FormikForm } from "formik";
+import * as Yup from "yup";
+import { UserContext } from "contexts";
+import { userService } from "services";
+import { FormikInput, FeedbackButton } from "components";
 
 const validationSchema = Yup.object({
   currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -22,7 +21,7 @@ const validationSchema = Yup.object({
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 
-const ProfileDetails: React.FC = () => {
+export const PasswordDetails: React.FC = () => {
   const {
     state: { apiKey },
   } = React.useContext(UserContext);
@@ -35,7 +34,7 @@ const ProfileDetails: React.FC = () => {
     <Container className="py-5">
       <Row>
         <Col md={9} lg={7} xl={6} className="mx-auto">
-          <h3>Password details</h3>
+          <h3 className="mb-4">Password details</h3>
           <Formik<PasswordDetailsParams>
             initialValues={{
               currentPassword: "",
@@ -51,8 +50,10 @@ const ProfileDetails: React.FC = () => {
               <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
 
               <FeedbackButton
+                className="float-end"
                 type="submit"
                 label="Update password"
+                variant="dark"
                 Icon={BiArrowFromBottom}
                 result={result}
                 clear={clear}
@@ -65,5 +66,3 @@ const ProfileDetails: React.FC = () => {
     </Container>
   );
 };
-
-export default ProfileDetails;

@@ -10,10 +10,10 @@ interface FormikInputProps {
   label: string;
 }
 
-const FormikInput: React.FC<FormikInputProps> = ({ type = "text", name, label }) => (
+export const FormikInput: React.FC<FormikInputProps> = ({ type = "text", name, label }) => (
   <Field name={name}>
     {({ field, meta }: FieldProps<string>) => (
-      <Form.Group as={Row}>
+      <Form.Group className="mb-4" as={Row}>
         <Form.Label column sm={3} htmlFor={name}>
           {label}
         </Form.Label>
@@ -25,7 +25,7 @@ const FormikInput: React.FC<FormikInputProps> = ({ type = "text", name, label })
             isInvalid={!!meta.error && meta.touched}
             {...field}
           />
-          <Form.Control.Feedback type="invalid" className="text-right">
+          <Form.Control.Feedback type="invalid" className="text-end">
             {meta.error}
           </Form.Control.Feedback>
         </Col>
@@ -33,5 +33,3 @@ const FormikInput: React.FC<FormikInputProps> = ({ type = "text", name, label })
     )}
   </Field>
 );
-
-export default FormikInput;

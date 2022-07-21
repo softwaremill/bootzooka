@@ -1,8 +1,8 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
-import { UserContextProvider, UserContext, UserAction } from "../../contexts/UserContext/UserContext";
 import { MemoryRouter } from "react-router-dom";
+import { render, fireEvent } from "@testing-library/react";
+import { UserContextProvider, UserContext, UserAction } from "contexts";
+import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
 
 const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ actions, label }) => {
   const { state, dispatch } = React.useContext(UserContext);

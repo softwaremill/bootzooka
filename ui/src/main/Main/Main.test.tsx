@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
-import Main from "./Main";
-import { UserContext, initialUserState } from "../../contexts/UserContext/UserContext";
 import { MemoryRouter } from "react-router-dom";
+import { UserContext, initialUserState } from "contexts";
+import { Main } from "./Main";
 
 const dispatch = jest.fn();
 

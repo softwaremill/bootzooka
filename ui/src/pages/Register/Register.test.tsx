@@ -1,14 +1,14 @@
 import { render, fireEvent } from "@testing-library/react";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "history";
-import Register from "./Register";
-import { UserContext, initialUserState } from "../../contexts/UserContext/UserContext";
-import userService from "../../services/UserService/UserService";
+import { UserContext, initialUserState } from "contexts";
+import { userService } from "services";
+import { Register } from "./Register";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
-
-jest.mock("../../services/UserService/UserService");
 const dispatch = jest.fn();
+
+jest.mock("services");
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -60,7 +60,7 @@ test("handles register success", async () => {
   fireEvent.blur(getByLabelText("Password"));
   fireEvent.change(getByLabelText("Repeat password"), { target: { value: "test-password" } });
   fireEvent.blur(getByLabelText("Repeat password"));
-  fireEvent.click(getByText("Register"));
+  fireEvent.click(getByText("Create new account"));
 
   await findByRole("loader");
 
@@ -95,7 +95,7 @@ test("handles register error", async () => {
   fireEvent.blur(getByLabelText("Password"));
   fireEvent.change(getByLabelText("Repeat password"), { target: { value: "test-password" } });
   fireEvent.blur(getByLabelText("Repeat password"));
-  fireEvent.click(getByText("Register"));
+  fireEvent.click(getByText("Create new account"));
 
   await findByRole("loader");
 

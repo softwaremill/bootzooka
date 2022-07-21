@@ -25,28 +25,34 @@ export type UserAction =
   | { type: "LOG_IN"; user: UserDetails }
   | { type: "LOG_OUT" };
 
-const UserReducer = (state: UserState, action: UserAction): UserState => {
+const userReducer = (state: UserState, action: UserAction): UserState => {
   switch (action.type) {
     case "SET_API_KEY":
       return immer(state, (draftState) => {
         draftState.apiKey = action.apiKey;
       });
+
     case "UPDATE_USER_DATA":
       return immer(state, (draftState) => {
         if (!draftState.user) return;
         draftState.user = { ...draftState.user, ...action.user };
       });
+
     case "LOG_IN":
       return immer(state, (draftState) => {
         draftState.user = action.user;
         draftState.loggedIn = true;
       });
+
     case "LOG_OUT":
       return immer(state, (draftState) => {
         draftState.apiKey = null;
         draftState.user = null;
         draftState.loggedIn = false;
       });
+
+    default:
+      return state;
   }
 };
 
@@ -59,7 +65,9 @@ export const UserContext = React.createContext<{
 });
 
 export const UserContextProvider: React.FC = ({ children }) => {
-  const [state, dispatch] = React.useReducer(UserReducer, initialUserState);
+  const [state, dispatch] = React.useReducer(userReducer, initialUserState);
 
   return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;
 };
+
+export const useUserContext = () => React.useContext(UserContext);

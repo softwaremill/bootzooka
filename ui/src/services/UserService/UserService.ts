@@ -49,7 +49,7 @@ const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
     ...config,
   });
 
-export default {
+export const userService = {
   registerUser,
   login,
   getCurrentUser,

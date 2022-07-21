@@ -1,11 +1,11 @@
 import React from "react";
-import { render, fireEvent, act } from "@testing-library/react";
-import useLoginOnApiKey from "./useLoginOnApiKey";
-import { UserContextProvider, UserContext, UserAction } from "../../contexts/UserContext/UserContext";
 import { MemoryRouter } from "react-router-dom";
-import userService from "../../services/UserService/UserService";
+import { render, fireEvent, act } from "@testing-library/react";
+import { UserContextProvider, UserContext, UserAction } from "contexts";
+import { userService } from "services";
+import useLoginOnApiKey from "./useLoginOnApiKey";
 
-jest.mock("../../services/UserService/UserService");
+jest.mock("services");
 
 const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ actions, label }) => {
   const { state, dispatch } = React.useContext(UserContext);

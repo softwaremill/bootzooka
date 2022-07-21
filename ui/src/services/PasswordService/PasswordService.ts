@@ -11,4 +11,7 @@ const claimPasswordReset = (params: { loginOrEmail: string }) =>
 const resetPassword = (params: { code: string; password: string }) =>
   axios.post(`${context}/reset`, params).then(({ data }) => emptySchema.validate(data));
 
-export default { claimPasswordReset, resetPassword };
+export const passwordService = {
+  claimPasswordReset,
+  resetPassword,
+};

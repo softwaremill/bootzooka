@@ -1,8 +1,6 @@
-import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-import Profile from "./Profile";
-import { UserContext, UserState } from "../../contexts/UserContext/UserContext";
-import userService from "../../services/UserService/UserService";
+import { render } from "@testing-library/react";
+import { UserContext, UserState } from "contexts";
+import { Profile } from "./Profile";
 
 const mockState: UserState = {
   apiKey: "test-api-key",

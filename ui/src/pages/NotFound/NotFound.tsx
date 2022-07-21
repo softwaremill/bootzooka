@@ -2,12 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 
-const NotFound: React.FC = () => (
-  <Container className="py-5">
+export const NotFound: React.FC = () => (
+  <Container className="py-5 text-center">
     <h1>Ooops!</h1>
     <h3>You shouldn't be here for sure :)</h3>
     <div>Please choose one of the locations below:</div>
-    <ul>
+    <ul className="list-group">
       <li>
         <Link to="/">Home page</Link>
       </li>
@@ -20,5 +20,3 @@ const NotFound: React.FC = () => (
     </ul>
   </Container>
 );
-
-export default NotFound;

@@ -1,6 +1,5 @@
-import React from "react";
 import { render } from "@testing-library/react";
-import ForkMe from "./ForkMe";
+import { ForkMe } from "./ForkMe";
 
 test("renders image", () => {
   const { getByAltText } = render(<ForkMe />);

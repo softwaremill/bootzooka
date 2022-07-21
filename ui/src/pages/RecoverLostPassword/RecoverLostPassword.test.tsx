@@ -1,9 +1,8 @@
-import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import RecoverLostPassword from "./RecoverLostPassword";
-import passwordService from "../../services/PasswordService/PasswordService";
+import { passwordService } from "services";
+import { RecoverLostPassword } from "./RecoverLostPassword";
 
-jest.mock("../../services/PasswordService/PasswordService");
+jest.mock("services");
 
 beforeEach(() => {
   jest.clearAllMocks();

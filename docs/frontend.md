@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  "Frontend application"
+title: 'Frontend application'
 ---
 
 Bootzooka's frontend is a true Single Page Application built with React. It can be treated as a completely separate application or as a client for Bootzooka server.
@@ -11,7 +11,7 @@ Please note, that the UI is based on [fantastic tool called Create React App](ht
 
 ## Installing Node.js & Yarn
 
-To work with the `ui` module you need to have `node.js` installed in version 12.0 or newer. Make sure you have `node` command available on `PATH`.
+To work with the `ui` module you need to have `node.js` installed in version 16.0 or newer. Make sure you have `node` command available on `PATH`.
 
 As a package manager, Bootzooka's UI uses [Yarn](https://yarnpkg.com). Make sure to have it installed before the first run.
 
@@ -19,7 +19,7 @@ As a package manager, Bootzooka's UI uses [Yarn](https://yarnpkg.com). Make sure
 
 If this is your first attempt to run `ui`, please go to `ui` project and run
 
-	yarn install
+    yarn install
 
 This will install all required dependencies for this project. If all is well you can start your development version of frontend by issuing `yarn start` from command line (or running the provided `frontend-start` script in the main directory). It should start your browser and point you to [Bootzooka home page](http://0.0.0.0:3000/#/).
 
@@ -29,10 +29,10 @@ Build system exposes several tasks that can be run, you can find them in `packag
 
 The most important tasks exposed are:
 
-* `yarn start`
-* `yarn build`
-* `yarn test`
-* `yarn test:ci`
+- `yarn start`
+- `yarn build`
+- `yarn test`
+- `yarn test:ci`
 
 ## `yarn start` task
 

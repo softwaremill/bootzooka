@@ -2,11 +2,11 @@ import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
-import { Link } from "react-router-dom";
-import { UserContext } from "../../contexts/UserContext/UserContext";
+import { LinkContainer } from "react-router-bootstrap";
 import { BiPowerOff, BiHappy } from "react-icons/bi";
+import { UserContext } from "contexts";
 
-const Top: React.FC = () => {
+export const Top: React.FC = () => {
   const {
     state: { user, loggedIn },
     dispatch,
@@ -17,44 +17,40 @@ const Top: React.FC = () => {
   return (
     <Navbar variant="dark" bg="dark" sticky="top" collapseOnSelect expand="lg">
       <Container>
-        <Link to="/">
+        <LinkContainer to="/">
           <Navbar.Brand>Bootzooka</Navbar.Brand>
-        </Link>
+        </LinkContainer>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="d-flex flex-grow-1 justify-content-between">
-            <Link to="/">
-              <Nav.Link as="span">Welcome</Nav.Link>
-            </Link>
-            <Link to="/main">
-              <Nav.Link as="span">Home</Nav.Link>
-            </Link>
+            <LinkContainer to="/">
+              <Nav.Link>Welcome</Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/main">
+              <Nav.Link>Home</Nav.Link>
+            </LinkContainer>
             <div className="flex-grow-1" />
             {loggedIn ? (
               <>
-                <Link to="/profile">
-                  <Nav.Link className="text-right" as="span">
+                <LinkContainer to="/profile">
+                  <Nav.Link className="text-lg-end">
                     <BiHappy />
                     &nbsp;{user?.login}
                   </Nav.Link>
-                </Link>{" "}
-                <Nav.Link className="text-right" as="span" onClick={handleLogOut}>
+                </LinkContainer>{" "}
+                <Nav.Link className="text-lg-end" onClick={handleLogOut}>
                   <BiPowerOff />
                   &nbsp;Logout
                 </Nav.Link>
               </>
             ) : (
               <>
-                <Link to="/register">
-                  <Nav.Link className="text-right" as="span">
-                    Register
-                  </Nav.Link>
-                </Link>
-                <Link to="/login">
-                  <Nav.Link className="text-right" as="span">
-                    Login
-                  </Nav.Link>
-                </Link>
+                <LinkContainer to="/register">
+                  <Nav.Link className="text-lg-end">Register</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/login">
+                  <Nav.Link className="text-lg-end">Login</Nav.Link>
+                </LinkContainer>
               </>
             )}
           </Nav>
@@ -63,5 +59,3 @@ const Top: React.FC = () => {
     </Navbar>
   );
 };
-
-export default Top;

@@ -1,15 +1,14 @@
 import React from "react";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import passwordService from "../../services/PasswordService/PasswordService";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { usePromise } from "react-use-promise-matcher";
-import FormikInput from "../../parts/FormikInput/FormikInput";
-import FeedbackButton from "../../parts/FeedbackButton/FeedbackButton";
+import { passwordService } from "services";
+import { FormikInput, FeedbackButton } from "components";
 
 const validationSchema = Yup.object({
   password: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -20,7 +19,7 @@ const validationSchema = Yup.object({
 
 type PasswordResetParams = Yup.InferType<typeof validationSchema>;
 
-const ProfileDetails: React.FC = () => {
+export const PasswordReset: React.FC = () => {
   const code = new URLSearchParams(window.location.search).get("code") || "";
 
   const [result, send, clear] = usePromise(({ password }: PasswordResetParams) =>
@@ -59,5 +58,3 @@ const ProfileDetails: React.FC = () => {
     </Container>
   );
 };
-
-export default ProfileDetails;

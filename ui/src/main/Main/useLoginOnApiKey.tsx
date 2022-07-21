@@ -1,6 +1,6 @@
 import React from "react";
-import { UserContext } from "../../contexts/UserContext/UserContext";
-import userService from "../../services/UserService/UserService";
+import { UserContext } from "contexts";
+import { userService } from "services";
 
 const useLoginOnApiKey = () => {
   const {

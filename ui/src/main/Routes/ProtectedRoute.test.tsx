@@ -1,9 +1,8 @@
 import { render } from "@testing-library/react";
-import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoute";
-import Login from "../../pages/Login/Login";
-import { UserContext, UserState, initialUserState } from "../../contexts/UserContext/UserContext";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { UserContext, UserState, initialUserState } from "contexts";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { Login } from "pages";
 
 const dispatch = jest.fn();
 

@@ -1,14 +1,14 @@
 import { render, fireEvent } from "@testing-library/react";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "history";
-import Login from "./Login";
-import { UserContext, initialUserState } from "../../contexts/UserContext/UserContext";
-import userService from "../../services/UserService/UserService";
+import { Login } from "./Login";
+import { UserContext, initialUserState } from "contexts";
+import { userService } from "services";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
-
-jest.mock("../../services/UserService/UserService");
 const dispatch = jest.fn();
+
+jest.mock("services");
 
 beforeEach(() => {
   jest.clearAllMocks();
