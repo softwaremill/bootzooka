@@ -16,11 +16,11 @@ export const Welcome: React.FC = () => (
             <h1>Welcome to Bootzooka!</h1>
             <p className="mt-3 px-4">
               In this template application you can{" "}
-              <Link to="/register" className="btn btn-outline-dark">
+              <Link to="/register" className="link-dark">
                 Register
               </Link>{" "}
               as a new user,{" "}
-              <Link to="/login" className="btn btn-outline-dark">
+              <Link to="/login" className="link-dark">
                 Login
               </Link>{" "}
               and later manage your user details.
@@ -47,7 +47,7 @@ export const Welcome: React.FC = () => (
               or{" "}
               <a href="https://github.com/softwaremill/bootzooka" target="blank">
                 Source code
-              </a>{" "}
+              </a>
               .
             </p>
           </Container>
