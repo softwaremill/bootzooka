@@ -19,11 +19,11 @@ maintainers:
  - name: ideas-into-software
    url: https://github.com/ideas-into-software
 icon: https://raw.githubusercontent.com/softwaremill/bootzooka/master/banner.png
-dependencies:
- - name: postgresql
-   version: ^9
-   repository: https://charts.bitnami.com/bitnami
-   condition: postgresql.enabled
+#dependencies:
+# - name: postgresql
+#   version: ^9
+#   repository: https://charts.bitnami.com/bitnami
+#   condition: postgresql.enabled
 annotations:
  artifacthub.io/links: |
   - name: Docs
