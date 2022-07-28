@@ -33,10 +33,12 @@ spec:
               containerPort: 8080
               protocol: TCP
           livenessProbe:
+            initialDelaySeconds: {{ .Values.bootzooka.livenessDelay }}
             httpGet:
               path: /
               port: http
           readinessProbe:
+            initialDelaySeconds: {{ .Values.bootzooka.readinessDelay }}
             httpGet:
               path: /
               port: http

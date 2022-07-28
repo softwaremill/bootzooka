@@ -17,6 +17,10 @@ postgresql:
 
 bootzooka:
   replicaCount: 1
+  # livenessProbe, initialDelaySeconds
+  livenessDelay: 15
+  # readinessProbe, initialDelaySeconds
+  readinessDelay: 10
   reset_password_url: "https://bootzooka.example.com/password-reset?code=%s"
   sql:
     # -- Value will be taken from 'postgresql.fullnameOverride' setting
