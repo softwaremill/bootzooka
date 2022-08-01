@@ -11,7 +11,8 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "1.0.0-RC2"
-val http4sVersion = "0.23.12"
+val http4sVersion = "0.23.14"
+val http4sBlazeVersion = "0.23.12"
 val circeVersion = "0.14.2"
 val tsecVersion = "0.4.0"
 val sttpVersion = "3.7.2"
@@ -28,8 +29,8 @@ val dbDependencies = Seq(
 
 val httpDependencies = Seq(
   "org.http4s" %% "http4s-dsl" % http4sVersion,
-  "org.http4s" %% "http4s-blaze-server" % http4sVersion,
-  "org.http4s" %% "http4s-blaze-client" % http4sVersion,
+  "org.http4s" %% "http4s-blaze-server" % http4sBlazeVersion,
+  "org.http4s" %% "http4s-blaze-client" % http4sBlazeVersion,
   "org.http4s" %% "http4s-circe" % http4sVersion,
   "com.softwaremill.sttp.client3" %% "async-http-client-backend-fs2" % sttpVersion,
   "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpVersion,
