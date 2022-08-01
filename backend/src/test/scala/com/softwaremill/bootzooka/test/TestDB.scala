@@ -47,6 +47,7 @@ class TestDB(config: DBConfig) extends StrictLogging {
     Flyway
       .configure()
       .dataSource(config.url, config.username, config.password.value)
+      .cleanDisabled(false)
       .load()
   }
 
