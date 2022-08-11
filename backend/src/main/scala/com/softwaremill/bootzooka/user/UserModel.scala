@@ -1,11 +1,11 @@
 package com.softwaremill.bootzooka.user
 
 import java.time.Instant
-
 import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.util.{Id, LowerCased}
+import com.softwaremill.bootzooka.util.{HashedPassword, Id, LowerCased, PasswordVerificationStatus, RichString, VerificationFailed, Verified}
 import com.softwaremill.tagging.@@
+import com.password4j.Password
 import tsec.common.VerificationStatus
 import tsec.passwordhashers.PasswordHash
 import tsec.passwordhashers.jca.SCrypt
@@ -39,7 +39,7 @@ class UserModel {
       .option
   }
 
-  def updatePassword(userId: Id @@ User, newPassword: PasswordHash[SCrypt]): ConnectionIO[Unit] =
+  def updatePassword(userId: Id @@ User, newPassword: String @@ HashedPassword): ConnectionIO[Unit] = //<<
     sql"""UPDATE users SET password = $newPassword WHERE id = $userId""".stripMargin.update.run.void
 
   def updateLogin(userId: Id @@ User, newLogin: String, newLoginLowerCase: String @@ LowerCased): ConnectionIO[Unit] =
@@ -54,13 +54,14 @@ case class User(
     login: String,
     loginLowerCased: String @@ LowerCased,
     emailLowerCased: String @@ LowerCased,
-    passwordHash: PasswordHash[SCrypt],
+    passwordHash: String @@ HashedPassword,
     createdOn: Instant
 ) {
 
-  def verifyPassword(password: String): VerificationStatus = SCrypt.checkpw[cats.Id](password, passwordHash)
+  def verifyPassword(password: String): PasswordVerificationStatus =
+    if (Password.check(password, passwordHash).withArgon2) Verified else VerificationFailed
 }
 
 object User {
-  def hashPassword(password: String): PasswordHash[SCrypt] = SCrypt.hashpw[cats.Id](password)
+  def hashPassword(password: String): String @@ HashedPassword = Password.hash(password).withArgon2.getResult.hashedPassword
 }
