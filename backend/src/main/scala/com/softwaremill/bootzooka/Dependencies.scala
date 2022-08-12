@@ -34,7 +34,7 @@ object Dependencies {
         versionApi: VersionApi,
         cfg: HttpConfig
     ) = {
-      val prometheusMetrics = PrometheusMetrics.default[IO](registry = collectorRegistry)
+      val prometheusMetrics = PrometheusMetrics.default[IO](namespace = "bootzooka", registry = collectorRegistry)
       new HttpApi(
         http,
         userApi.endpoints concatNel passwordResetApi.endpoints,
