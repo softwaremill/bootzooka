@@ -16,7 +16,7 @@ val http4sBlazeVersion = "0.23.12"
 val circeVersion = "0.14.2"
 val password4jVersion = "1.6.0"
 val commonsCodecVersion = "1.15"
-val sttpVersion = "3.7.2"
+val sttpVersion = "3.7.4"
 val prometheusVersion = "0.16.0"
 val tapirVersion = "1.0.4"
 val macwireVersion = "2.5.7"
@@ -25,7 +25,7 @@ val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "9.1.2"
+  "org.flywaydb" % "flyway-core" % "9.1.3"
 )
 
 val httpDependencies = Seq(
