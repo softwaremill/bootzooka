@@ -36,7 +36,7 @@ class UserModel {
       .option
   }
 
-  def updatePassword(userId: Id @@ User, newPassword: String @@ HashedPassword): ConnectionIO[Unit] = //<<
+  def updatePassword(userId: Id @@ User, newPassword: String @@ HashedPassword): ConnectionIO[Unit] =
     sql"""UPDATE users SET password = $newPassword WHERE id = $userId""".stripMargin.update.run.void
 
   def updateLogin(userId: Id @@ User, newLogin: String, newLoginLowerCase: String @@ LowerCased): ConnectionIO[Unit] =
