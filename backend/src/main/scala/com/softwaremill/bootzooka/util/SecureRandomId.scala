@@ -4,8 +4,15 @@ import cats.effect.Sync
 import java.security.SecureRandom
 import org.apache.commons.codec.binary.Hex
 
+/** copy-pasted from TSec https://github.com/jmcardon/tsec */
+
+/** A trait that manages a secureRandom instance.
+  */
 trait ManagedRandom {
 
+  /** Cache our random, and seed it properly as per
+    * [[https://tersesystems.com/2015/12/17/the-right-way-to-use-securerandom/]]
+    */
   private val cachedRand: SecureRandom = {
     val r =
       SecureRandom.getInstance(if (scala.util.Properties.isWin) ManagedRandom.WinRandom else ManagedRandom.UnixURandom)
