@@ -1,11 +1,9 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import com.softwaremill.bootzooka.util.Id
+import com.softwaremill.bootzooka.util.{HashedPassword, Id}
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import doobie.util.log.{ExecFailure, ProcessingFailure, Success}
-import tsec.passwordhashers.PasswordHash
-import tsec.passwordhashers.jca.SCrypt
 
 import scala.concurrent.duration._
 
@@ -31,8 +29,8 @@ object Doobie
   implicit def taggedStringMeta[U]: Meta[String @@ U] =
     implicitly[Meta[String]].asInstanceOf[Meta[String @@ U]]
 
-  implicit val passwordHashMeta: Meta[PasswordHash[SCrypt]] =
-    implicitly[Meta[String]].asInstanceOf[Meta[PasswordHash[SCrypt]]]
+  implicit val passwordHashMeta: Meta[String @@ HashedPassword] =
+    implicitly[Meta[String]].asInstanceOf[Meta[String @@ HashedPassword]]
 
   private val SlowThreshold = 200.millis
 

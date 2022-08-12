@@ -6,9 +6,6 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.util.{HashedPassword, Id, LowerCased, PasswordVerificationStatus, RichString, VerificationFailed, Verified}
 import com.softwaremill.tagging.@@
 import com.password4j.Password
-import tsec.common.VerificationStatus
-import tsec.passwordhashers.PasswordHash
-import tsec.passwordhashers.jca.SCrypt
 
 class UserModel {
 

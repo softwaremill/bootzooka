@@ -9,7 +9,6 @@ import com.softwaremill.bootzooka.logging.FLogging
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging.@@
-import tsec.common.Verified
 
 import scala.concurrent.duration.Duration
 

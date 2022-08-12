@@ -5,9 +5,9 @@ import cats.data.NonEmptyList
 import cats.effect.IO
 import com.softwaremill.tagging._
 import sttp.tapir.server.ServerEndpoint
-import tsec.common.SecureRandomId
 
 package object util {
+  type SecureRandomId <: String
   type Id = SecureRandomId
 
   implicit class RichString(val s: String) extends AnyVal {
