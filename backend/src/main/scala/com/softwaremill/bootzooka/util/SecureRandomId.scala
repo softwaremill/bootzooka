@@ -34,7 +34,6 @@ object SecureRandomId {
   lazy val Interactive: SecureRandomIdGenerator = SecureRandomIdGenerator(16)
 
   def apply(s: String): SecureRandomId  = s.asInstanceOf[SecureRandomId]
-  def coerce(s: String): SecureRandomId = s.asInstanceOf[SecureRandomId]
 }
 
 case class SecureRandomIdGenerator(sizeInBytes: Int = 32) extends ManagedRandom {
