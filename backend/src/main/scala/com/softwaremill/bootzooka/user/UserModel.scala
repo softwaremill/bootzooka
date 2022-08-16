@@ -3,7 +3,7 @@ package com.softwaremill.bootzooka.user
 import java.time.Instant
 import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.util.{HashedPassword, Id, LowerCased, PasswordVerificationStatus, RichString, VerificationFailed, Verified}
+import com.softwaremill.bootzooka.util.{Hashed, Id, LowerCased, PasswordVerificationStatus, RichString, VerificationFailed, Verified}
 import com.softwaremill.tagging.@@
 import com.password4j.Password
 
@@ -36,7 +36,7 @@ class UserModel {
       .option
   }
 
-  def updatePassword(userId: Id @@ User, newPassword: String @@ HashedPassword): ConnectionIO[Unit] =
+  def updatePassword(userId: Id @@ User, newPassword: String @@ Hashed): ConnectionIO[Unit] =
     sql"""UPDATE users SET password = $newPassword WHERE id = $userId""".stripMargin.update.run.void
 
   def updateLogin(userId: Id @@ User, newLogin: String, newLoginLowerCase: String @@ LowerCased): ConnectionIO[Unit] =
@@ -47,12 +47,12 @@ class UserModel {
 }
 
 case class User(
-    id: Id @@ User,
-    login: String,
-    loginLowerCased: String @@ LowerCased,
-    emailLowerCased: String @@ LowerCased,
-    passwordHash: String @@ HashedPassword,
-    createdOn: Instant
+                 id: Id @@ User,
+                 login: String,
+                 loginLowerCased: String @@ LowerCased,
+                 emailLowerCased: String @@ LowerCased,
+                 passwordHash: String @@ Hashed,
+                 createdOn: Instant
 ) {
 
   def verifyPassword(password: String): PasswordVerificationStatus =
@@ -60,5 +60,5 @@ case class User(
 }
 
 object User {
-  def hashPassword(password: String): String @@ HashedPassword = Password.hash(password).withArgon2.getResult.hashedPassword
+  def hashPassword(password: String): String @@ Hashed = Password.hash(password).withArgon2.getResult.hashedPassword
 }
