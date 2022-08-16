@@ -14,7 +14,7 @@ val doobieVersion = "1.0.0-RC2"
 val http4sVersion = "0.23.14"
 val http4sBlazeVersion = "0.23.12"
 val circeVersion = "0.14.2"
-val tsecVersion = "0.4.0"
+val password4jVersion = "1.6.0"
 val sttpVersion = "3.7.4"
 val prometheusVersion = "0.16.0"
 val tapirVersion = "1.0.4"
@@ -75,8 +75,7 @@ val apiDocsDependencies = Seq(
 )
 
 val securityDependencies = Seq(
-  "io.github.jmcardon" %% "tsec-password" % tsecVersion,
-  "io.github.jmcardon" %% "tsec-cipher-jca" % tsecVersion
+  "com.password4j" % "password4j" % password4jVersion,
 )
 
 val emailDependencies = Seq(

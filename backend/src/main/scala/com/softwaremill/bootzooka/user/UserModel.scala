@@ -1,14 +1,13 @@
 package com.softwaremill.bootzooka.user
 
 import java.time.Instant
-
 import cats.implicits._
 import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.util.{Id, LowerCased}
+import com.softwaremill.bootzooka.util.{Id, LowerCased, PasswordHash, PasswordVerificationStatus, RichString, VerificationFailed, Verified}
 import com.softwaremill.tagging.@@
-import tsec.common.VerificationStatus
-import tsec.passwordhashers.PasswordHash
-import tsec.passwordhashers.jca.SCrypt
+import com.password4j.{Argon2Function, Password}
+import com.softwaremill.bootzooka.user.User.PasswordHashing
+import com.softwaremill.bootzooka.user.User.PasswordHashing.Argon2Config._
 
 class UserModel {
 
@@ -39,7 +38,7 @@ class UserModel {
       .option
   }
 
-  def updatePassword(userId: Id @@ User, newPassword: PasswordHash[SCrypt]): ConnectionIO[Unit] =
+  def updatePassword(userId: Id @@ User, newPassword: String @@ PasswordHash): ConnectionIO[Unit] =
     sql"""UPDATE users SET password = $newPassword WHERE id = $userId""".stripMargin.update.run.void
 
   def updateLogin(userId: Id @@ User, newLogin: String, newLoginLowerCase: String @@ LowerCased): ConnectionIO[Unit] =
@@ -50,17 +49,33 @@ class UserModel {
 }
 
 case class User(
-    id: Id @@ User,
-    login: String,
-    loginLowerCased: String @@ LowerCased,
-    emailLowerCased: String @@ LowerCased,
-    passwordHash: PasswordHash[SCrypt],
-    createdOn: Instant
+                 id: Id @@ User,
+                 login: String,
+                 loginLowerCased: String @@ LowerCased,
+                 emailLowerCased: String @@ LowerCased,
+                 passwordHash: String @@ PasswordHash,
+                 createdOn: Instant
 ) {
 
-  def verifyPassword(password: String): VerificationStatus = SCrypt.checkpw[cats.Id](password, passwordHash)
+  def verifyPassword(password: String): PasswordVerificationStatus =
+    if (Password.check(password, passwordHash) `with` PasswordHashing.Argon2) Verified else VerificationFailed
 }
 
 object User {
-  def hashPassword(password: String): PasswordHash[SCrypt] = SCrypt.hashpw[cats.Id](password)
+  object PasswordHashing {
+
+    val Argon2: Argon2Function = Argon2Function.getInstance(
+      MemoryInKib, NumberOfIterations, LevelOfParallelism, LengthOfTheFinalHash, Type, Version)
+
+    object Argon2Config {
+      val MemoryInKib = 12
+      val NumberOfIterations = 20
+      val LevelOfParallelism = 2
+      val LengthOfTheFinalHash = 32
+      val Type = com.password4j.types.Argon2.ID
+      val Version = 19
+    }
+  }
+
+  def hashPassword(password: String): String @@ PasswordHash = Password.hash(password).`with`(PasswordHashing.Argon2).getResult.hashedPassword
 }
