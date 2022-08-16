@@ -1,5 +1,5 @@
 package com.softwaremill.bootzooka.util
 
-trait PasswordVerificationStatus
+sealed trait PasswordVerificationStatus
 case object Verified           extends PasswordVerificationStatus
 case object VerificationFailed extends PasswordVerificationStatus
