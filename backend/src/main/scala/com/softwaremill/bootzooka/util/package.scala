@@ -13,7 +13,7 @@ package object util {
   implicit class RichString(val s: String) extends AnyVal {
     def asId[T]: Id @@ T = s.asInstanceOf[Id @@ T]
     def lowerCased: String @@ LowerCased = s.toLowerCase(Locale.ENGLISH).taggedWith[LowerCased]
-    def hashedPassword: String @@ Hashed = s.taggedWith[Hashed]
+    def hashedPassword: String @@ PasswordHash = s.taggedWith[PasswordHash]
   }
 
   type ServerEndpoints = NonEmptyList[ServerEndpoint[Any, IO]]

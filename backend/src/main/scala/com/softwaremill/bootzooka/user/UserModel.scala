@@ -2,12 +2,11 @@ package com.softwaremill.bootzooka.user
 
 import java.time.Instant
 import cats.implicits._
-import com.password4j.types.Argon2
 import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.util.{Hashed, Id, LowerCased, PasswordVerificationStatus, RichString, VerificationFailed, Verified}
+import com.softwaremill.bootzooka.util.{Id, LowerCased, PasswordHash, PasswordVerificationStatus, RichString, VerificationFailed, Verified}
 import com.softwaremill.tagging.@@
 import com.password4j.{Argon2Function, Password}
-import com.softwaremill.bootzooka.user.User.PasswordHashing.ARGON_2
+import com.softwaremill.bootzooka.user.User.PasswordHashing
 import com.softwaremill.bootzooka.user.User.PasswordHashing.Argon2Config._
 
 class UserModel {
@@ -39,7 +38,7 @@ class UserModel {
       .option
   }
 
-  def updatePassword(userId: Id @@ User, newPassword: String @@ Hashed): ConnectionIO[Unit] =
+  def updatePassword(userId: Id @@ User, newPassword: String @@ PasswordHash): ConnectionIO[Unit] =
     sql"""UPDATE users SET password = $newPassword WHERE id = $userId""".stripMargin.update.run.void
 
   def updateLogin(userId: Id @@ User, newLogin: String, newLoginLowerCase: String @@ LowerCased): ConnectionIO[Unit] =
@@ -54,29 +53,29 @@ case class User(
                  login: String,
                  loginLowerCased: String @@ LowerCased,
                  emailLowerCased: String @@ LowerCased,
-                 passwordHash: String @@ Hashed,
+                 passwordHash: String @@ PasswordHash,
                  createdOn: Instant
 ) {
 
   def verifyPassword(password: String): PasswordVerificationStatus =
-    if (Password.check(password, passwordHash) `with` ARGON_2) Verified else VerificationFailed
+    if (Password.check(password, passwordHash) `with` PasswordHashing.Argon2) Verified else VerificationFailed
 }
 
 object User {
   object PasswordHashing {
 
-    val ARGON_2: Argon2Function = Argon2Function.getInstance(
-      MEMORY_IN_KiB, NUMBER_OF_ITERATIONS, LEVEL_OF_PARALLELISM, LENGTH_OF_THE_FINAL_HASH, TYPE, VERSION)
+    val Argon2: Argon2Function = Argon2Function.getInstance(
+      MemoryInKib, NumberOfIterations, LevelOfParallelism, LengthOfTheFinalHash, Type, Version)
 
     object Argon2Config {
-      val MEMORY_IN_KiB = 12
-      val NUMBER_OF_ITERATIONS = 20
-      val LEVEL_OF_PARALLELISM = 2
-      val LENGTH_OF_THE_FINAL_HASH = 32
-      val TYPE = Argon2.ID
-      val VERSION = 19
+      val MemoryInKib = 12
+      val NumberOfIterations = 20
+      val LevelOfParallelism = 2
+      val LengthOfTheFinalHash = 32
+      val Type = com.password4j.types.Argon2.ID
+      val Version = 19
     }
   }
 
-  def hashPassword(password: String): String @@ Hashed = Password.hash(password).`with`(ARGON_2).getResult.hashedPassword
+  def hashPassword(password: String): String @@ PasswordHash = Password.hash(password).`with`(PasswordHashing.Argon2).getResult.hashedPassword
 }
