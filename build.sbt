@@ -15,7 +15,6 @@ val http4sVersion = "0.23.14"
 val http4sBlazeVersion = "0.23.12"
 val circeVersion = "0.14.2"
 val password4jVersion = "1.6.0"
-val commonsCodecVersion = "1.15"
 val sttpVersion = "3.7.4"
 val prometheusVersion = "0.16.0"
 val tapirVersion = "1.0.4"
@@ -77,7 +76,6 @@ val apiDocsDependencies = Seq(
 
 val securityDependencies = Seq(
   "com.password4j" % "password4j" % password4jVersion,
-  "commons-codec" % "commons-codec" % commonsCodecVersion
 )
 
 val emailDependencies = Seq(

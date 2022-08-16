@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka.util
 
 import cats.effect.Sync
 import java.security.SecureRandom
-import org.apache.commons.codec.binary.Hex
 
 /** copy-pasted from TSec https://github.com/jmcardon/tsec */
 
@@ -40,8 +39,10 @@ case class SecureRandomIdGenerator(sizeInBytes: Int = 32) extends ManagedRandom 
   def generate: SecureRandomId = {
     val byteArray = new Array[Byte](sizeInBytes)
     nextBytes(byteArray)
-    new String(Hex.encodeHex(byteArray)).asInstanceOf[SecureRandomId]
+    toHexString(byteArray).asInstanceOf[SecureRandomId]
   }
+
+  private def toHexString(byteArray: Array[Byte]) = byteArray.map(b => String.format("%02x", b)).mkString
 
   def generateF[F[_]](implicit F: Sync[F]): F[SecureRandomId] = F.delay(generate)
 }
