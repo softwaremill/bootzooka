@@ -24,7 +24,7 @@ val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "9.1.4"
+  "org.flywaydb" % "flyway-core" % "9.1.5"
 )
 
 val httpDependencies = Seq(
@@ -75,7 +75,7 @@ val apiDocsDependencies = Seq(
 )
 
 val securityDependencies = Seq(
-  "com.password4j" % "password4j" % password4jVersion,
+  "com.password4j" % "password4j" % password4jVersion
 )
 
 val emailDependencies = Seq(
