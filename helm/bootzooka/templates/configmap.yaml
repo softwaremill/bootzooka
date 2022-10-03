@@ -15,3 +15,4 @@ data:
   SQL_DBNAME: "{{ tpl .Values.bootzooka.sql.name . }}"
   SQL_HOST: "{{ tpl .Values.bootzooka.sql.host . }}"
   SQL_PORT: "{{ tpl .Values.bootzooka.sql.port . }}"
+  LOGBACK_JSON_ENCODE: "true"
