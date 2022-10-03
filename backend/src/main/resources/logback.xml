@@ -1,39 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<configuration scan="true">
-  <jmxConfigurator/>
-  <if condition='isDefined("LOG_HOST")'>
-    <then>
-      <appender name="GELF" class="de.siegmar.logbackgelf.GelfUdpAppender">
-        <graylogHost>${LOG_HOST}</graylogHost>
-        <graylogPort>${LOG_PORT}</graylogPort>
-        <maxChunkSize>508</maxChunkSize>
-        <encoder class="de.siegmar.logbackgelf.GelfEncoder">
-          <includeRawMessage>true</includeRawMessage>
-          <includeMarker>true</includeMarker>
-          <includeMdcData>true</includeMdcData>
-          <includeCallerData>true</includeCallerData>
-          <includeRootCauseData>true</includeRootCauseData>
-          <includeLevelName>true</includeLevelName>
-          <shortPatternLayout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%m%nopex</pattern>
-          </shortPatternLayout>
-          <fullPatternLayout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%m</pattern>
-          </fullPatternLayout>
-          <staticField>appName:${APP_NAME}</staticField>
-        </encoder>
-      </appender>
-      <root level="debug">
-        <appender-ref ref="GELF"/>
-      </root>
-    </then>
-  </if>
+<?xml version="1.0" encoding="UTF-8"?>
 
+<configuration scan="true">
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>%d{HH:mm:ss.SSS}%boldYellow(%replace( [%X{cid}] ){' \[\] ', ' '})[%thread] %-5level %logger{5} - %msg%n%rEx</pattern>
-    </encoder>
+    <if condition='p("LOGBACK_JSON_ENCODE").equals("true")'>
+      <then>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+      </then>
+      <else>
+        <encoder>
+          <pattern>%d{HH:mm:ss.SSS}%boldYellow(%replace( [%X{cid}] ){' \[\] ', ' '})[%thread] %-5level %logger{5} - %msg%n%rEx</pattern>
+        </encoder>
+      </else>
+    </if>
   </appender>
 
   <logger name="com.softwaremill.bootzooka" level="${LOG_LEVEL:-DEBUG}" additivity="false">
