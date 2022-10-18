@@ -49,12 +49,12 @@ class UserModel {
 }
 
 case class User(
-                 id: Id @@ User,
-                 login: String,
-                 loginLowerCased: String @@ LowerCased,
-                 emailLowerCased: String @@ LowerCased,
-                 passwordHash: String @@ PasswordHash,
-                 createdOn: Instant
+    id: Id @@ User,
+    login: String,
+    loginLowerCased: String @@ LowerCased,
+    emailLowerCased: String @@ LowerCased,
+    passwordHash: String @@ PasswordHash,
+    createdOn: Instant
 ) {
 
   def verifyPassword(password: String): PasswordVerificationStatus =
@@ -64,8 +64,8 @@ case class User(
 object User {
   object PasswordHashing {
 
-    val Argon2: Argon2Function = Argon2Function.getInstance(
-      MemoryInKib, NumberOfIterations, LevelOfParallelism, LengthOfTheFinalHash, Type, Version)
+    val Argon2: Argon2Function =
+      Argon2Function.getInstance(MemoryInKib, NumberOfIterations, LevelOfParallelism, LengthOfTheFinalHash, Type, Version)
 
     object Argon2Config {
       val MemoryInKib = 12
@@ -77,5 +77,6 @@ object User {
     }
   }
 
-  def hashPassword(password: String): String @@ PasswordHash = Password.hash(password).`with`(PasswordHashing.Argon2).getResult.hashedPassword
+  def hashPassword(password: String): String @@ PasswordHash =
+    Password.hash(password).`with`(PasswordHashing.Argon2).getResult.hashedPassword
 }
