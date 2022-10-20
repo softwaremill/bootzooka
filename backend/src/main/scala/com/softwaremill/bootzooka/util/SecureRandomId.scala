@@ -9,13 +9,12 @@ import java.security.SecureRandom
   */
 trait ManagedRandom {
 
-  /** Cache our random, and seed it properly as per
-    * [[https://tersesystems.com/2015/12/17/the-right-way-to-use-securerandom/]]
+  /** Cache our random, and seed it properly as per [[https://tersesystems.com/2015/12/17/the-right-way-to-use-securerandom/]]
     */
   private val cachedRand: SecureRandom = {
     val r =
       SecureRandom.getInstance(if (scala.util.Properties.isWin) ManagedRandom.WinRandom else ManagedRandom.UnixURandom)
-    r.nextBytes(new Array[Byte](20)) //Force reseed
+    r.nextBytes(new Array[Byte](20)) // Force reseed
     r
   }
 
@@ -24,15 +23,15 @@ trait ManagedRandom {
 }
 
 object ManagedRandom {
-  private[ManagedRandom] val WinRandom   = "Windows-PRNG"
+  private[ManagedRandom] val WinRandom = "Windows-PRNG"
   private[ManagedRandom] val UnixURandom = "NativePRNGNonBlocking"
 }
 
 object SecureRandomId {
-  lazy val Strong: SecureRandomIdGenerator      = SecureRandomIdGenerator(32)
+  lazy val Strong: SecureRandomIdGenerator = SecureRandomIdGenerator(32)
   lazy val Interactive: SecureRandomIdGenerator = SecureRandomIdGenerator(16)
 
-  def apply(s: String): SecureRandomId  = s.asInstanceOf[SecureRandomId]
+  def apply(s: String): SecureRandomId = s.asInstanceOf[SecureRandomId]
 }
 
 case class SecureRandomIdGenerator(sizeInBytes: Int = 32) extends ManagedRandom {
