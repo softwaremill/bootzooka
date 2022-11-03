@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?xml version="1.0" encoding="UTF-8"?>
-
 <configuration scan="true">
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <if condition='p("LOGBACK_JSON_ENCODE").equals("true")'>
