@@ -46,7 +46,7 @@ class DB[F[_]: Async](_config: DBConfig) extends StrictLogging {
       ec
     )
 
-    doobie.util.ExecutionContexts
+    ExecutionContexts
       .fixedThreadPool[F](config.connectThreadPoolSize)
       .flatMap(buildTransactor)
       .evalTap(connectAndMigrate)
