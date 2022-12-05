@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: "1.0"
 description: "A Helm chart for Bootzooka"
 name: bootzooka
-version: 0.2.1
+version: 0.2.2
 type: application
 keywords:
  - scala
