@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the chart and the defau
 | bootzooka.ingress.tls[0].hosts[0] | string | `"bootzooka.example.com"` |  |
 | bootzooka.ingress.tls[0].secretName | string | `"bootzooka-tls"` |  |
 | bootzooka.ingress.tls_enabled | bool | `false` |  |
+| bootzooka.javaOpts | string | `"-XX:MaxRAMPercentage=60"` |  |
 | bootzooka.nameOverride | string | `""` |  |
 | bootzooka.nodeSelector | object | `{}` |  |
 | bootzooka.replicaCount | int | `1` |  |
@@ -70,7 +71,6 @@ The following table lists the configurable parameters of the chart and the defau
 | bootzooka.sql.port | string | `"{{ .Values.postgresql.service.port }}"` | Value will be taken from 'postgresql.service.port' setting |
 | bootzooka.sql.username | string | `"{{ .Values.postgresql.postgresqlUsername }}"` | Value will be taken from 'postgresql.postgresqlUsername' setting |
 | bootzooka.tolerations | list | `[]` |  |
-| bootzooka.javaOpts | string | `"-XX:MaxRAMPercentage=60"` |  |
 | postgresql.connectionTest.image.pullPolicy | string | `"IfNotPresent"` |  |
 | postgresql.connectionTest.image.repository | string | `"bitnami/postgresql"` |  |
 | postgresql.connectionTest.image.tag | int | `11` |  |
