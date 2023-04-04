@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "bootzooka.fullname" . }}-config
 data:
+  JAVA_OPTS: "{{ .Values.bootzooka.javaOpts }}"
   SMTP_ENABLED: "{{ .Values.bootzooka.smtp.enabled }}"
   SMTP_HOST: "{{ .Values.bootzooka.smtp.host }}"
   SMTP_PORT: "{{ .Values.bootzooka.smtp.port }}"

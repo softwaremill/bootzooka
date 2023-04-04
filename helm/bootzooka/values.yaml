@@ -42,6 +42,7 @@ bootzooka:
     username: "server.example.com"
     from: "hello@bootzooka.example.com"
     password: "bootzooka"
+  javaOpts: "-XX:MaxRAMPercentage=60"
 
   image:
     repository: softwaremill/bootzooka
