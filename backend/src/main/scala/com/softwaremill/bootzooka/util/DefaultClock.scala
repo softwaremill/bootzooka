@@ -9,7 +9,7 @@ object DefaultClock extends Clock {
 
   override def now[F[_]: Sync](): F[Instant] = {
     for {
-      now <- CatsClock[F].realTime.map(_.length)
+      now <- CatsClock[F].realTime.map(_.toMillis)
       instant = Instant.ofEpochMilli(now)
     } yield instant
   }
