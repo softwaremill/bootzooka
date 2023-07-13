@@ -12,19 +12,19 @@ import complete.DefaultParsers._
 
 val doobieVersion = "1.0.0-RC2"
 val http4sVersion = "0.23.18"
-val http4sBlazeVersion = "0.23.14"
+val http4sBlazeVersion = "0.23.15"
 val circeVersion = "0.14.5"
-val password4jVersion = "1.7.0"
+val password4jVersion = "1.7.1"
 val sttpVersion = "3.8.14"
 val prometheusVersion = "0.16.0"
-val tapirVersion = "1.2.11"
+val tapirVersion = "1.2.13"
 val macwireVersion = "2.5.8"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "9.15.1"
+  "org.flywaydb" % "flyway-core" % "9.15.2"
 )
 
 val httpDependencies = Seq(
@@ -55,19 +55,19 @@ val jsonDependencies = Seq(
 
 val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
-  "ch.qos.logback" % "logback-classic" % "1.4.6",
+  "ch.qos.logback" % "logback-classic" % "1.4.8",
   "org.codehaus.janino" % "janino" % "3.1.9" % Runtime,
-  "net.logstash.logback" % "logstash-logback-encoder" % "7.3" % Runtime
+  "net.logstash.logback" % "logstash-logback-encoder" % "7.4" % Runtime
 )
 
 val configDependencies = Seq(
-  "com.github.pureconfig" %% "pureconfig" % "0.17.2"
+  "com.github.pureconfig" %% "pureconfig" % "0.17.4"
 )
 
 val baseDependencies = Seq(
-  "org.typelevel" %% "cats-effect" % "3.4.8",
+  "org.typelevel" %% "cats-effect" % "3.4.11",
   "com.softwaremill.common" %% "tagging" % "2.3.4",
-  "com.softwaremill.quicklens" %% "quicklens" % "1.9.0"
+  "com.softwaremill.quicklens" %% "quicklens" % "1.9.4"
 )
 
 val apiDocsDependencies = Seq(
@@ -82,7 +82,7 @@ val emailDependencies = Seq(
   "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
 )
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.15" % Test
+val scalatest = "org.scalatest" %% "scalatest" % "3.2.16" % Test
 val macwireDependencies = Seq(
   "com.softwaremill.macwire" %% "macrosautocats" % macwireVersion
 ).map(_ % Provided)
@@ -102,7 +102,7 @@ lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "2.13.10",
+  scalaVersion := "2.13.11",
   libraryDependencies ++= commonDependencies,
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
