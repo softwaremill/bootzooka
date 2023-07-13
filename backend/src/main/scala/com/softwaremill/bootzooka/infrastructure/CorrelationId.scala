@@ -42,7 +42,7 @@ object CorrelationId {
 
   /** A transactor wrapper, which properly interprets an instruction to get the current correlation id, created with [[getConnectionIO]]. */
   def correlationIdTransactor(delegate: Transactor[IO]): Transactor[IO] = delegate.copy(interpret0 = {
-    new KleisliInterpreter[IO] {
+    new KleisliInterpreter[IO](Doobie.doobieLogHandler) {
       override implicit val asyncM: WeakAsync[IO] = WeakAsync.doobieWeakAsyncForAsync(IO.asyncForIO)
 
       override def raw[J, A](f: J => A): Kleisli[IO, J, A] =
