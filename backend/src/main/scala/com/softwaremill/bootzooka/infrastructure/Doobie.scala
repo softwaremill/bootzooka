@@ -1,9 +1,10 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import com.softwaremill.bootzooka.util.{PasswordHash, Id}
+import cats.effect.kernel.Sync
+import com.softwaremill.bootzooka.util.{Id, PasswordHash}
 import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
-import doobie.util.log.{ExecFailure, ProcessingFailure, Success}
+import doobie.util.log.{ExecFailure, LogEvent, ProcessingFailure, Success}
 
 import scala.concurrent.duration._
 
@@ -36,14 +37,20 @@ object Doobie
 
   /** Logs the SQL queries which are slow or end up in an exception.
     */
-  implicit val doobieLogHandler: LogHandler = LogHandler {
-    case Success(sql, _, exec, processing) =>
-      if (exec > SlowThreshold || processing > SlowThreshold) {
-        logger.warn(s"Slow query (execution: $exec, processing: $processing): $sql")
+  implicit def doobieLogHandler[M[_]: Sync]: LogHandler[M] = new LogHandler[M] {
+    override def run(logEvent: LogEvent): M[Unit] = Sync[M].delay(
+      logEvent match {
+        case Success(sql, _, _, exec, processing) =>
+          if (exec > SlowThreshold || processing > SlowThreshold) {
+            logger.warn(s"Slow query (execution: $exec, processing: $processing): $sql")
+          }
+
+        case ProcessingFailure(sql, args, _, exec, processing, failure) =>
+          logger.error(s"Processing failure (execution: $exec, processing: $processing): $sql | args: $args", failure)
+
+        case ExecFailure(sql, args, _, exec, failure) =>
+          logger.error(s"Execution failure (execution: $exec): $sql | args: $args", failure)
       }
-    case ProcessingFailure(sql, args, exec, processing, failure) =>
-      logger.error(s"Processing failure (execution: $exec, processing: $processing): $sql | args: $args", failure)
-    case ExecFailure(sql, args, exec, failure) =>
-      logger.error(s"Execution failure (execution: $exec): $sql | args: $args", failure)
+    )
   }
 }
