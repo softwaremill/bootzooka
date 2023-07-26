@@ -17,7 +17,7 @@ val circeVersion = "0.14.5"
 val password4jVersion = "1.7.1"
 val sttpVersion = "3.8.16"
 val prometheusVersion = "0.16.0"
-val tapirVersion = "1.6.2"
+val tapirVersion = "1.6.3"
 val macwireVersion = "2.5.8"
 
 val dbDependencies = Seq(
