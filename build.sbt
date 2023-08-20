@@ -18,7 +18,7 @@ val password4jVersion = "1.7.1"
 val sttpVersion = "3.9.0"
 val prometheusVersion = "0.16.0"
 val tapirVersion = "1.7.1"
-val macwireVersion = "2.5.8"
+val macwireVersion = "2.5.9"
 
 val dbDependencies = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
