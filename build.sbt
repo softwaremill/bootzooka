@@ -10,7 +10,7 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val doobieVersion = "1.0.0-RC4"
+val doobieVersion = "1.0.0-RC5"
 val http4sVersion = "0.23.24"
 val http4sBlazeVersion = "0.23.15"
 val circeVersion = "0.14.6"
