@@ -1,8 +1,9 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { UserContextProvider, UserContext, UserAction } from "contexts";
 import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
+import { userEvent } from "@testing-library/user-event";
 
 const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ actions, label }) => {
   const { state, dispatch } = React.useContext(UserContext);
@@ -33,7 +34,7 @@ test("handles not stored api key", () => {
       <UserContextProvider>
         <TestComponent />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("loggedIn:false")).toBeInTheDocument();
@@ -48,14 +49,14 @@ test("handles stored api key", () => {
       <UserContextProvider>
         <TestComponent />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("loggedIn:null")).toBeInTheDocument();
   expect(getByText('apiKey:"test-api-key"')).toBeInTheDocument();
 });
 
-test("handles user logging in", () => {
+test("handles user logging in", async () => {
   localStorage.removeItem("apiKey");
 
   const { getByText } = render(
@@ -72,17 +73,17 @@ test("handles user logging in", () => {
           label="log in"
         />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  fireEvent.click(getByText("log in"));
+  await userEvent.click(getByText("log in"));
 
   expect(localStorage.getItem("apiKey")).toEqual("test-api-key");
   expect(getByText("loggedIn:true")).toBeInTheDocument();
   expect(getByText('apiKey:"test-api-key"')).toBeInTheDocument();
 });
 
-test("handles user logging out", () => {
+test("handles user logging out", async () => {
   localStorage.setItem("apiKey", "test-api-key");
 
   const { getByText } = render(
@@ -101,10 +102,10 @@ test("handles user logging out", () => {
           label="log in and out"
         />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  fireEvent.click(getByText("log in and out"));
+  await userEvent.click(getByText("log in and out"));
 
   expect(getByText("loggedIn:false")).toBeInTheDocument();
   expect(getByText("apiKey:null")).toBeInTheDocument();

@@ -1,4 +1,5 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { passwordService } from "services";
 import { RecoverLostPassword } from "./RecoverLostPassword";
 
@@ -19,14 +20,12 @@ test("handles password recover success", async () => {
 
   const { getByLabelText, getByText, getByRole, findByRole } = render(<RecoverLostPassword />);
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.click(getByText("Reset password"));
+  await userEvent.type(getByLabelText("Login or email"), "test-login");
+  await userEvent.click(getByText("Reset password"));
 
-  await findByRole("loader");
+  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
 
-  expect(passwordService.claimPasswordReset).toBeCalledWith({ loginOrEmail: "test-login" });
+  expect(passwordService.claimPasswordReset).toHaveBeenCalledWith({ loginOrEmail: "test-login" });
   expect(getByRole("success")).toBeInTheDocument();
   expect(getByText("Password reset claim success")).toBeInTheDocument();
 });
@@ -37,13 +36,11 @@ test("handles password recover error", async () => {
 
   const { getByLabelText, getByText, findByRole } = render(<RecoverLostPassword />);
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.click(getByText("Reset password"));
+  await userEvent.type(getByLabelText("Login or email"), "test-login");
+  await userEvent.click(getByText("Reset password"));
 
-  await findByRole("loader");
+  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
 
-  expect(passwordService.claimPasswordReset).toBeCalledWith({ loginOrEmail: "test-login" });
+  expect(passwordService.claimPasswordReset).toHaveBeenCalledWith({ loginOrEmail: "test-login" });
   expect(getByText("Test Error")).toBeInTheDocument();
 });

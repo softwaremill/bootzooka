@@ -4,7 +4,11 @@ import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
 import forkMeOrange from "assets/forkme_orange.png";
 
-export const ForkMe: React.FC = ({ children }) => (
+interface ForkMeProps {
+  children?: React.ReactNode;
+}
+
+export const ForkMe: React.FC<ForkMeProps> = ({ children }) => (
   <Container className="bg-light" style={{ height: "calc(100% - 56px)" }} fluid>
     <Row className="position-relative h-100">
       {children}

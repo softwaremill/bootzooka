@@ -1,4 +1,5 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { PasswordDetails } from "./PasswordDetails";
@@ -35,25 +36,19 @@ test("handles change password success", async () => {
     </UserContext.Provider>
   );
 
-  fireEvent.blur(getByLabelText("Current password"));
-  fireEvent.change(getByLabelText("Current password"), { target: { value: "test-password" } });
-  fireEvent.blur(getByLabelText("Current password"));
-  fireEvent.change(getByLabelText("New password"), { target: { value: "test-new-password" } });
-  fireEvent.blur(getByLabelText("New password"));
-  fireEvent.change(getByLabelText("Repeat new password"), { target: { value: "test-new-password" } });
-  fireEvent.blur(getByLabelText("Repeat new password"));
-  fireEvent.click(getByText("Update password"));
+  await userEvent.type(getByLabelText("Current password"), "test-password");
+  await userEvent.type(getByLabelText("New password"), "test-new-password");
+  await userEvent.type(getByLabelText("Repeat new password"), "test-new-password");
+  await userEvent.click(getByText("Update password"));
 
-  await findByRole("loader");
+  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
 
-  await waitFor(() => {
-    expect(userService.changePassword).toBeCalledWith("test-api-key", {
-      currentPassword: "test-password",
-      newPassword: "test-new-password",
-    });
-    expect(getByRole("success")).toBeInTheDocument();
-    expect(getByText("Password changed")).toBeInTheDocument();
+  expect(userService.changePassword).toHaveBeenCalledWith("test-api-key", {
+    currentPassword: "test-password",
+    newPassword: "test-new-password",
   });
+  expect(getByRole("success")).toBeInTheDocument();
+  expect(getByText("Password changed")).toBeInTheDocument();
 });
 
 test("handles change password error", async () => {
@@ -66,31 +61,22 @@ test("handles change password error", async () => {
     </UserContext.Provider>
   );
 
-  fireEvent.blur(getByLabelText("Current password"));
-  fireEvent.change(getByLabelText("Current password"), { target: { value: "test-password" } });
-  fireEvent.blur(getByLabelText("Current password"));
-  fireEvent.change(getByLabelText("New password"), { target: { value: "test-new-password" } });
-  fireEvent.blur(getByLabelText("New password"));
-  fireEvent.change(getByLabelText("Repeat new password"), { target: { value: "test-new-password" } });
-  fireEvent.blur(getByLabelText("Repeat new password"));
-  fireEvent.click(getByText("Update password"));
+  await userEvent.type(getByLabelText("Current password"), "test-password");
+  await userEvent.type(getByLabelText("New password"), "test-new-password");
+  await userEvent.type(getByLabelText("Repeat new password"), "test-new-password");
+  await userEvent.click(getByText("Update password"));
 
-  await findByRole("loader");
+  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
 
-  await waitFor(() => {
-    expect(userService.changePassword).toBeCalledWith("test-api-key", {
-      currentPassword: "test-password",
-      newPassword: "test-new-password",
-    });
-    expect(getByRole("error")).toBeInTheDocument();
-    expect(getByText("Test Error")).toBeInTheDocument();
+  expect(userService.changePassword).toHaveBeenCalledWith("test-api-key", {
+    currentPassword: "test-password",
+    newPassword: "test-new-password",
   });
+  expect(getByRole("error")).toBeInTheDocument();
+  expect(getByText("Test Error")).toBeInTheDocument();
 
-  fireEvent.change(getByLabelText("Repeat new password"), { target: { value: "test-newer-password" } });
-  fireEvent.blur(getByLabelText("Repeat new password"));
+  await userEvent.type(getByLabelText("Repeat new password"), "test-newer-password");
 
-  await waitFor(() => {
-    expect(queryByRole("error")).not.toBeInTheDocument();
-    expect(queryByText("Test Error")).not.toBeInTheDocument();
-  });
+  expect(queryByRole("error")).not.toBeInTheDocument();
+  expect(queryByText("Test Error")).not.toBeInTheDocument();
 });

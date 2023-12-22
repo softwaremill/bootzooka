@@ -19,7 +19,7 @@ test("renders version data", async () => {
 
   const buildSha = await findByText(/testSha/i);
 
-  expect(versionService.getVersion).toBeCalledWith();
+  expect(versionService.getVersion).toHaveBeenCalledWith();
   expect(info).toBeInTheDocument();
   expect(buildSha).toBeInTheDocument();
 });

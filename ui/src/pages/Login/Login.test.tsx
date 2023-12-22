@@ -1,6 +1,7 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { createMemoryHistory } from "@remix-run/router";
 import { Login } from "./Login";
 import { UserContext, initialUserState } from "contexts";
 import { userService } from "services";
@@ -51,18 +52,15 @@ test("handles login success", async () => {
     </HistoryRouter>
   );
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Password"), { target: { value: "test-password" } });
-  fireEvent.blur(getByLabelText("Password"));
-  fireEvent.click(getByText("Sign In"));
+  await userEvent.type(getByLabelText("Login or email"), "test-login");
+  await userEvent.type(getByLabelText("Password"), "test-password");
+  await userEvent.click(getByText("Sign In"));
 
-  await findByRole("loader");
+  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
 
-  expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  expect(dispatch).toBeCalledTimes(1);
-  expect(dispatch).toBeCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
+  expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(dispatch).toHaveBeenCalledTimes(1);
+  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
   expect(history.location.pathname).toEqual("/main");
 });
 
@@ -78,16 +76,13 @@ test("handles login error", async () => {
     </MemoryRouter>
   );
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Password"), { target: { value: "test-password" } });
-  fireEvent.blur(getByLabelText("Password"));
-  fireEvent.click(getByText("Sign In"));
+  await userEvent.type(getByLabelText("Login or email"), "test-login");
+  await userEvent.type(getByLabelText("Password"), "test-password");
+  await userEvent.click(getByText("Sign In"));
 
-  await findByRole("loader");
+  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
 
-  expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  expect(dispatch).not.toBeCalled();
+  expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(dispatch).not.toHaveBeenCalled();
   expect(getByText("Test Error")).toBeInTheDocument();
 });

@@ -1,4 +1,5 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { ProfileDetails } from "./ProfileDetails";
@@ -47,21 +48,20 @@ test("handles change details success", async () => {
     </UserContext.Provider>
   );
 
-  fireEvent.blur(getByLabelText("Login"));
-  fireEvent.change(getByLabelText("Login"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login"));
-  fireEvent.change(getByLabelText("Email address"), { target: { value: "test@email.address" } });
-  fireEvent.blur(getByLabelText("Email address"));
-  fireEvent.click(getByText("Update profile data"));
+  await userEvent.clear(getByLabelText("Login"));
+  await userEvent.type(getByLabelText("Login"), "test-login");
+  await userEvent.clear(getByLabelText("Email address"));
+  await userEvent.type(getByLabelText("Email address"), "test@email.address");
+  await userEvent.click(getByText("Update profile data"));
 
-  await findByRole("loader");
+  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
 
-  expect(userService.changeProfileDetails).toBeCalledWith("test-api-key", {
+  expect(userService.changeProfileDetails).toHaveBeenCalledWith("test-api-key", {
     email: "test@email.address",
     login: "test-login",
   });
-  expect(dispatch).toBeCalledTimes(1);
-  expect(dispatch).toBeCalledWith({
+  expect(dispatch).toHaveBeenCalledTimes(1);
+  expect(dispatch).toHaveBeenCalledWith({
     type: "UPDATE_USER_DATA",
     user: {
       email: "test@email.address",
@@ -82,29 +82,23 @@ test("handles change details error", async () => {
     </UserContext.Provider>
   );
 
-  fireEvent.blur(getByLabelText("Login"));
-  fireEvent.change(getByLabelText("Login"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login"));
-  fireEvent.change(getByLabelText("Email address"), { target: { value: "test@email.address" } });
-  fireEvent.blur(getByLabelText("Email address"));
-  fireEvent.click(getByText("Update profile data"));
+  await userEvent.clear(getByLabelText("Login"));
+  await userEvent.type(getByLabelText("Login"), "test-login");
+  await userEvent.clear(getByLabelText("Email address"));
+  await userEvent.type(getByLabelText("Email address"), "test@email.address");
+  await userEvent.click(getByText("Update profile data"));
 
-  await findByRole("loader");
+  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
 
-  await waitFor(() => {
-    expect(userService.changeProfileDetails).toBeCalledWith("test-api-key", {
-      email: "test@email.address",
-      login: "test-login",
-    });
-    expect(dispatch).not.toBeCalled();
-    expect(getByText("Test Error")).toBeInTheDocument();
+  expect(userService.changeProfileDetails).toHaveBeenCalledWith("test-api-key", {
+    email: "test@email.address",
+    login: "test-login",
   });
+  expect(dispatch).not.toHaveBeenCalled();
+  expect(getByText("Test Error")).toBeInTheDocument();
 
-  fireEvent.change(getByLabelText("Email address"), { target: { value: "otherTest@email.address" } });
-  fireEvent.blur(getByLabelText("Email address"));
+  await userEvent.type(getByLabelText("Email address"), "otherTest@email.address");
 
-  await waitFor(() => {
-    expect(queryByRole("error")).not.toBeInTheDocument();
-    expect(queryByText("Test Error")).not.toBeInTheDocument();
-  });
+  expect(queryByRole("error")).not.toBeInTheDocument();
+  expect(queryByText("Test Error")).not.toBeInTheDocument();
 });

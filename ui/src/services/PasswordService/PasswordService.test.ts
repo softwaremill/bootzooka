@@ -14,7 +14,7 @@ test("claims reset password", async () => {
   (axios.post as jest.Mock).mockResolvedValueOnce({ data });
 
   await expect(passwordService.claimPasswordReset(params)).resolves.toEqual(data);
-  expect(axios.post).toBeCalledWith("api/v1/passwordreset/forgot", params);
+  expect(axios.post).toHaveBeenCalledWith("api/v1/passwordreset/forgot", params);
 });
 
 test("resets password", async () => {
@@ -24,5 +24,5 @@ test("resets password", async () => {
   (axios.post as jest.Mock).mockResolvedValueOnce({ data });
 
   await expect(passwordService.resetPassword(params)).resolves.toEqual(data);
-  expect(axios.post).toBeCalledWith("api/v1/passwordreset/reset", params);
+  expect(axios.post).toHaveBeenCalledWith("api/v1/passwordreset/reset", params);
 });

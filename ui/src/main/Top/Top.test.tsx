@@ -1,4 +1,5 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { UserContext, UserState, initialUserState } from "contexts";
 import { Top } from "./Top";
@@ -21,7 +22,7 @@ test("renders brand name", () => {
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Top />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Bootzooka")).toBeInTheDocument();
@@ -33,7 +34,7 @@ test("renders nav bar unlogged user", () => {
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Top />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Welcome")).toBeInTheDocument();
@@ -48,7 +49,7 @@ test("renders nav bar for logged user", () => {
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Top />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Welcome")).toBeInTheDocument();
@@ -57,16 +58,16 @@ test("renders nav bar for logged user", () => {
   expect(getByText("Logout")).toBeInTheDocument();
 });
 
-test("handles logout logged user", () => {
+test("handles logout logged user", async () => {
   const { getByText } = render(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Top />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  fireEvent.click(getByText("Logout"));
+  await userEvent.click(getByText("Logout"));
 
-  expect(dispatch).toBeCalledWith({ type: "LOG_OUT" });
+  expect(dispatch).toHaveBeenCalledWith({ type: "LOG_OUT" });
 });

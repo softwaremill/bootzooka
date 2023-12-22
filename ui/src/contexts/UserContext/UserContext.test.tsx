@@ -1,6 +1,7 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { UserContextProvider, UserContext, UserAction } from "./UserContext";
+import { userEvent } from "@testing-library/user-event";
 
 const TestComponent: React.FC<{ action?: UserAction; label?: string }> = ({ action, label }) => {
   const { state, dispatch } = React.useContext(UserContext);
@@ -12,21 +13,21 @@ const TestComponent: React.FC<{ action?: UserAction; label?: string }> = ({ acti
   );
 };
 
-test("handles set api key action", () => {
+test("handles set api key action", async () => {
   const { getByText } = render(
     <UserContextProvider>
       <TestComponent action={{ type: "SET_API_KEY", apiKey: "test-api-key" }} label="set api key" />
-    </UserContextProvider>
+    </UserContextProvider>,
   );
 
   expect(getByText('{"apiKey":null,"user":null,"loggedIn":null}')).toBeInTheDocument();
 
-  fireEvent.click(getByText("set api key"));
+  await userEvent.click(getByText("set api key"));
 
   expect(getByText('{"apiKey":"test-api-key","user":null,"loggedIn":null}')).toBeInTheDocument();
 });
 
-test("handles login action", () => {
+test("handles login action", async () => {
   const { getByText } = render(
     <UserContextProvider>
       <TestComponent
@@ -36,21 +37,21 @@ test("handles login action", () => {
         }}
         label="log in"
       />
-    </UserContextProvider>
+    </UserContextProvider>,
   );
 
   expect(getByText('{"apiKey":null,"user":null,"loggedIn":null}')).toBeInTheDocument();
 
-  fireEvent.click(getByText("log in"));
+  await userEvent.click(getByText("log in"));
 
   expect(
     getByText(
-      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}'
-    )
+      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}',
+    ),
   ).toBeInTheDocument();
 });
 
-test("handles log in and update details action", () => {
+test("handles log in and update details action", async () => {
   const { getAllByText, getByText } = render(
     <UserContextProvider>
       <TestComponent
@@ -67,33 +68,33 @@ test("handles log in and update details action", () => {
         }}
         label="update user data"
       />
-    </UserContextProvider>
+    </UserContextProvider>,
   );
 
   expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
 
-  fireEvent.click(getByText("update user data"));
+  await userEvent.click(getByText("update user data"));
 
   expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
 
-  fireEvent.click(getByText("log in"));
+  await userEvent.click(getByText("log in"));
 
   expect(
     getAllByText(
-      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}'
-    )[0]
+      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}',
+    )[0],
   ).toBeInTheDocument();
 
-  fireEvent.click(getByText("update user data"));
+  await userEvent.click(getByText("update user data"));
 
   expect(
     getAllByText(
-      '{"apiKey":null,"user":{"login":"updated-user-login","email":"updatedEmail@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}'
-    )[0]
+      '{"apiKey":null,"user":{"login":"updated-user-login","email":"updatedEmail@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}',
+    )[0],
   ).toBeInTheDocument();
 });
 
-test("handles log in and log out action", () => {
+test("handles log in and log out action", async () => {
   const { getAllByText, getByText } = render(
     <UserContextProvider>
       <TestComponent
@@ -109,24 +110,24 @@ test("handles log in and log out action", () => {
         }}
         label="log out"
       />
-    </UserContextProvider>
+    </UserContextProvider>,
   );
 
   expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
 
-  fireEvent.click(getByText("log out"));
+  await userEvent.click(getByText("log out"));
 
   expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":false}')[0]).toBeInTheDocument();
 
-  fireEvent.click(getByText("log in"));
+  await userEvent.click(getByText("log in"));
 
   expect(
     getAllByText(
-      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}'
-    )[0]
+      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}',
+    )[0],
   ).toBeInTheDocument();
 
-  fireEvent.click(getByText("log out"));
+  await userEvent.click(getByText("log out"));
 
   expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":false}')[0]).toBeInTheDocument();
 });

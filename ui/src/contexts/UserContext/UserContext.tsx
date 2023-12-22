@@ -1,5 +1,5 @@
-import React from "react";
-import immer from "immer";
+import React, { ReactNode } from "react";
+import { produce } from "immer";
 
 export interface UserDetails {
   createdOn: string;
@@ -28,24 +28,24 @@ export type UserAction =
 const userReducer = (state: UserState, action: UserAction): UserState => {
   switch (action.type) {
     case "SET_API_KEY":
-      return immer(state, (draftState) => {
+      return produce(state, (draftState) => {
         draftState.apiKey = action.apiKey;
       });
 
     case "UPDATE_USER_DATA":
-      return immer(state, (draftState) => {
+      return produce(state, (draftState) => {
         if (!draftState.user) return;
         draftState.user = { ...draftState.user, ...action.user };
       });
 
     case "LOG_IN":
-      return immer(state, (draftState) => {
+      return produce(state, (draftState) => {
         draftState.user = action.user;
         draftState.loggedIn = true;
       });
 
     case "LOG_OUT":
-      return immer(state, (draftState) => {
+      return produce(state, (draftState) => {
         draftState.apiKey = null;
         draftState.user = null;
         draftState.loggedIn = false;
@@ -64,7 +64,11 @@ export const UserContext = React.createContext<{
   dispatch: () => {},
 });
 
-export const UserContextProvider: React.FC = ({ children }) => {
+interface UserContextProviderProps {
+  children: ReactNode;
+}
+
+export const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
   const [state, dispatch] = React.useReducer(userReducer, initialUserState);
 
   return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;

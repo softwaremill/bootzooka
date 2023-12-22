@@ -1,6 +1,7 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { render, fireEvent, act } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { UserContextProvider, UserContext, UserAction } from "contexts";
 import { userService } from "services";
 import useLoginOnApiKey from "./useLoginOnApiKey";
@@ -36,7 +37,7 @@ test("default state", () => {
       <UserContextProvider>
         <TestComponent />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("loggedIn:null")).toBeInTheDocument();
@@ -55,14 +56,12 @@ test("handles set correct api key", async () => {
       <UserContextProvider>
         <TestComponent actions={[{ type: "SET_API_KEY", apiKey: "test-api-key" }]} label="set api key" />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  await act(async () => {
-    fireEvent.click(getByText("set api key"));
-  });
+  await userEvent.click(getByText("set api key"));
 
-  expect(userService.getCurrentUser).toBeCalledWith("test-api-key");
+  expect(userService.getCurrentUser).toHaveBeenCalledWith("test-api-key");
   expect(getByText("loggedIn:true")).toBeInTheDocument();
   expect(getByText('apiKey:"test-api-key"')).toBeInTheDocument();
 });
@@ -75,14 +74,12 @@ test("handles set wrong api key", async () => {
       <UserContextProvider>
         <TestComponent actions={[{ type: "SET_API_KEY", apiKey: "test-api-key" }]} label="set api key" />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  await act(async () => {
-    fireEvent.click(getByText("set api key"));
-  });
+  await userEvent.click(getByText("set api key"));
 
-  expect(userService.getCurrentUser).toBeCalledWith("test-api-key");
+  expect(userService.getCurrentUser).toHaveBeenCalledWith("test-api-key");
   expect(getByText("loggedIn:false")).toBeInTheDocument();
   expect(getByText("apiKey:null")).toBeInTheDocument();
 });
