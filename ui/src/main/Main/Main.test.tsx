@@ -15,7 +15,7 @@ test("shows loader on unspecified logged in status", () => {
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByRole("loader")).toBeInTheDocument();
@@ -27,7 +27,7 @@ test("shows app on logged in status", () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();
@@ -39,7 +39,7 @@ test("shows app on logged out status", () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();

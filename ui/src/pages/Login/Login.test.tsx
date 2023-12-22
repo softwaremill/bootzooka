@@ -21,7 +21,7 @@ test("renders header", () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Please sign in")).toBeInTheDocument();
@@ -33,7 +33,7 @@ test("redirects when logged in", () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Login />
       </UserContext.Provider>
-    </HistoryRouter>
+    </HistoryRouter>,
   );
 
   expect(history.location.pathname).toEqual("/main");
@@ -49,7 +49,7 @@ test("handles login success", async () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
       </UserContext.Provider>
-    </HistoryRouter>
+    </HistoryRouter>,
   );
 
   await userEvent.type(getByLabelText("Login or email"), "test-login");
@@ -73,7 +73,7 @@ test("handles login error", async () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   await userEvent.type(getByLabelText("Login or email"), "test-login");

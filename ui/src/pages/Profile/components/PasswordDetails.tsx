@@ -27,7 +27,7 @@ export const PasswordDetails: React.FC = () => {
   } = React.useContext(UserContext);
 
   const [result, send, clear] = usePromise(({ currentPassword, newPassword }: PasswordDetailsParams) =>
-    userService.changePassword(apiKey, { currentPassword, newPassword })
+    userService.changePassword(apiKey, { currentPassword, newPassword }),
   );
 
   return (

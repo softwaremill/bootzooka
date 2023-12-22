@@ -21,7 +21,7 @@ test("renders protected route for unlogged user", () => {
           </Route>
         </Routes>
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Please sign in")).toBeInTheDocument();
@@ -43,7 +43,7 @@ test("renders protected route for logged user", () => {
           </Route>
         </Routes>
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Protected Text")).toBeInTheDocument();

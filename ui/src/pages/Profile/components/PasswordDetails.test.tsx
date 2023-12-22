@@ -21,7 +21,7 @@ test("renders header", () => {
   const { getByText } = render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
   expect(getByText("Password details")).toBeInTheDocument();
@@ -33,7 +33,7 @@ test("handles change password success", async () => {
   const { getByLabelText, getByText, getByRole, findByRole } = render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
   await userEvent.type(getByLabelText("Current password"), "test-password");
@@ -58,7 +58,7 @@ test("handles change password error", async () => {
   const { getByLabelText, getByText, findByRole, getByRole, queryByRole, queryByText } = render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
   await userEvent.type(getByLabelText("Current password"), "test-password");

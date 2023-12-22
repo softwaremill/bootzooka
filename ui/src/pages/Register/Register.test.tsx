@@ -21,7 +21,7 @@ test("renders header", () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Please sign up")).toBeInTheDocument();
@@ -33,7 +33,7 @@ test("redirects when registered", () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Register />
       </UserContext.Provider>
-    </HistoryRouter>
+    </HistoryRouter>,
   );
 
   expect(history.location.pathname).toEqual("/main");
@@ -49,7 +49,7 @@ test("handles register success", async () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
       </UserContext.Provider>
-    </HistoryRouter>
+    </HistoryRouter>,
   );
 
   await userEvent.type(getByLabelText("Login"), "test-login");
@@ -79,7 +79,7 @@ test("handles register error", async () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   await userEvent.type(getByLabelText("Login"), "test-login");

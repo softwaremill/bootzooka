@@ -21,7 +21,7 @@ test("renders current user data", () => {
   const { getByLabelText } = render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
   expect((getByLabelText("Login") as HTMLInputElement).value).toEqual("user-login");
@@ -32,7 +32,7 @@ test("renders lack of current user data", () => {
   const { getByLabelText } = render(
     <UserContext.Provider value={{ state: { ...loggedUserState, user: null }, dispatch }}>
       <ProfileDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
   expect((getByLabelText("Login") as HTMLInputElement).value).toEqual("");
@@ -45,7 +45,7 @@ test("handles change details success", async () => {
   const { getByLabelText, getByText, getByRole, findByRole } = render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
   await userEvent.clear(getByLabelText("Login"));
@@ -79,7 +79,7 @@ test("handles change details error", async () => {
   const { getByLabelText, getByText, findByRole, queryByRole, queryByText } = render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
   await userEvent.clear(getByLabelText("Login"));

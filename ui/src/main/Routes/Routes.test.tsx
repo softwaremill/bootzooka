@@ -21,7 +21,7 @@ test("renders main route", () => {
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();
@@ -33,7 +33,7 @@ test("renders protected route for unlogged user", () => {
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Please sign in")).toBeInTheDocument();
@@ -45,7 +45,7 @@ test("renders protected route for logged user", () => {
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("Shhhh, this is a secret place.")).toBeInTheDocument();
@@ -57,7 +57,7 @@ test("renders not found page", () => {
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
   expect(getByText("You shouldn't be here for sure :)")).toBeInTheDocument();

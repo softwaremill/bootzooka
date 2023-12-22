@@ -25,7 +25,7 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const [result, send, clear] = usePromise((values: LoginParams) =>
-    userService.login(values).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
+    userService.login(values).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey })),
   );
 
   useEffect(() => {

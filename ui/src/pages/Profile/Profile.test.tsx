@@ -18,7 +18,7 @@ test("renders headers", () => {
   const { getByText } = render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <Profile />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
   expect(getByText("Profile details")).toBeInTheDocument();

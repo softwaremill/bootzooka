@@ -6,7 +6,7 @@ test("renders text content", () => {
   const { getByText } = render(
     <MemoryRouter initialEntries={["/login"]}>
       <Welcome />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
   const header = getByText("Welcome to Bootzooka!");
   expect(header).toBeInTheDocument();
