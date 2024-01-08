@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { PasswordReset } from "./PasswordReset";
 import { passwordService } from "services";
+import { mockAndDelayRejectedValueOnce, mockAndDelayResolvedValueOnce } from "../../setupTests";
 
 jest.mock("services");
 
@@ -18,7 +19,7 @@ test("renders header", () => {
 test("handles password reset success", async () => {
   delete (window as any).location;
   (window as any).location = new URL("https://www.example.com/password-reset?code=test-code");
-  (passwordService.resetPassword as jest.Mock).mockResolvedValueOnce({});
+  mockAndDelayResolvedValueOnce(passwordService.resetPassword as jest.Mock, {});
 
   render(<PasswordReset />);
 
@@ -27,15 +28,16 @@ test("handles password reset success", async () => {
   await userEvent.click(screen.getByText("Update password"));
 
   await screen.findByRole("loader");
+  await screen.findByRole("success");
+  await screen.findByText("Password changed");
 
   expect(passwordService.resetPassword).toHaveBeenCalledWith({ code: "test-code", password: "test-new-password" });
-  expect(screen.getByRole("success")).toBeInTheDocument();
-  expect(screen.getByText("Password changed")).toBeInTheDocument();
 });
 
 test("handles lack of url code", async () => {
   delete (window as any).location;
   (window as any).location = new URL("https://www.example.com/password-reset");
+  mockAndDelayResolvedValueOnce(passwordService.resetPassword as jest.Mock, {});
 
   render(<PasswordReset />);
 
@@ -51,8 +53,7 @@ test("handles lack of url code", async () => {
 test("handles password reset error", async () => {
   delete (window as any).location;
   (window as any).location = new URL("https://www.example.com/password-reset?code=test-code");
-  const testError = new Error("Test Error");
-  (passwordService.resetPassword as jest.Mock).mockRejectedValueOnce(testError);
+  mockAndDelayRejectedValueOnce(passwordService.resetPassword as jest.Mock, new Error("Test Error"));
 
   render(<PasswordReset />);
 
@@ -61,7 +62,7 @@ test("handles password reset error", async () => {
   await userEvent.click(screen.getByText("Update password"));
 
   await screen.findByRole("loader");
+  await screen.findByText("Test Error");
 
   expect(passwordService.resetPassword).toHaveBeenCalledWith({ code: "test-code", password: "test-new-password" });
-  expect(screen.getByText("Test Error")).toBeInTheDocument();
 });

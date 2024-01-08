@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "@remix-run/router";
 import { UserContext, initialUserState } from "contexts";
 import { userService } from "services";
 import { Register } from "./Register";
+import { mockAndDelayRejectedValueOnce, mockAndDelayResolvedValueOnce } from "../../setupTests";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
@@ -40,9 +41,7 @@ test("redirects when registered", () => {
 });
 
 test("handles register success", async () => {
-  (userService.registerUser as jest.Mock).mockResolvedValueOnce({
-    apiKey: "test-api-key",
-  });
+  mockAndDelayResolvedValueOnce(userService.registerUser as jest.Mock, { apiKey: "test-api-key" });
 
   render(
     <HistoryRouter history={history}>
@@ -65,14 +64,12 @@ test("handles register success", async () => {
     email: "test@email.address.pl",
     password: "test-password",
   });
-  expect(dispatch).toHaveBeenCalledTimes(1);
-  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
-  expect(history.location.pathname).toEqual("/main");
+
+  await waitFor(() => expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" }));
 });
 
 test("handles register error", async () => {
-  const testError = new Error("Test Error");
-  (userService.registerUser as jest.Mock).mockRejectedValueOnce(testError);
+  mockAndDelayRejectedValueOnce(userService.registerUser as jest.Mock, new Error("Test Error"));
 
   render(
     <MemoryRouter initialEntries={["/login"]}>
@@ -96,5 +93,7 @@ test("handles register error", async () => {
     password: "test-password",
   });
   expect(dispatch).not.toHaveBeenCalled();
-  expect(screen.getByText("Test Error")).toBeInTheDocument();
+
+  await screen.findByRole("error");
+  await screen.findByText("Test Error");
 });

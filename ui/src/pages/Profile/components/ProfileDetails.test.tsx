@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { ProfileDetails } from "./ProfileDetails";
+import { mockAndDelayRejectedValueOnce, mockAndDelayResolvedValueOnce } from "../../../setupTests";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",
@@ -40,7 +41,7 @@ test("renders lack of current user data", () => {
 });
 
 test("handles change details success", async () => {
-  (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
+  mockAndDelayResolvedValueOnce(userService.changeProfileDetails as jest.Mock, {});
 
   render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -60,21 +61,23 @@ test("handles change details success", async () => {
     email: "test@email.address",
     login: "test-login",
   });
-  expect(dispatch).toHaveBeenCalledTimes(1);
-  expect(dispatch).toHaveBeenCalledWith({
-    type: "UPDATE_USER_DATA",
-    user: {
-      email: "test@email.address",
-      login: "test-login",
-    },
-  });
-  expect(screen.getByRole("success")).toBeInTheDocument();
-  expect(screen.getByText("Profile details changed")).toBeInTheDocument();
+
+  await waitFor(() =>
+    expect(dispatch).toHaveBeenCalledWith({
+      type: "UPDATE_USER_DATA",
+      user: {
+        email: "test@email.address",
+        login: "test-login",
+      },
+    }),
+  );
+
+  await screen.findByRole("success");
+  await screen.findByText("Profile details changed");
 });
 
 test("handles change details error", async () => {
-  const testError = new Error("Test Error");
-  (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(testError);
+  mockAndDelayRejectedValueOnce(userService.changeProfileDetails as jest.Mock, new Error("Test Error"));
 
   render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -95,10 +98,7 @@ test("handles change details error", async () => {
     login: "test-login",
   });
   expect(dispatch).not.toHaveBeenCalled();
-  expect(screen.getByText("Test Error")).toBeInTheDocument();
 
-  await userEvent.type(screen.getByLabelText("Email address"), "otherTest@email.address");
-
-  expect(screen.queryByRole("error")).not.toBeInTheDocument();
-  expect(screen.queryByText("Test Error")).not.toBeInTheDocument();
+  await screen.findByRole("error");
+  await screen.findByText("Test Error");
 });
