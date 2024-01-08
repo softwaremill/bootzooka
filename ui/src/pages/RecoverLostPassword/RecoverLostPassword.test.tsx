@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { passwordService } from "services";
 import { RecoverLostPassword } from "./RecoverLostPassword";
@@ -10,37 +10,37 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  const { getByText } = render(<RecoverLostPassword />);
+  render(<RecoverLostPassword />);
 
-  expect(getByText("Recover lost password")).toBeInTheDocument();
+  expect(screen.getByText("Recover lost password")).toBeInTheDocument();
 });
 
 test("handles password recover success", async () => {
   (passwordService.claimPasswordReset as jest.Mock).mockResolvedValueOnce({});
 
-  const { getByLabelText, getByText, getByRole, findByRole } = render(<RecoverLostPassword />);
+  render(<RecoverLostPassword />);
 
-  await userEvent.type(getByLabelText("Login or email"), "test-login");
-  await userEvent.click(getByText("Reset password"));
+  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
+  await userEvent.click(screen.getByText("Reset password"));
 
-  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
+  await screen.findByRole("loader");
 
   expect(passwordService.claimPasswordReset).toHaveBeenCalledWith({ loginOrEmail: "test-login" });
-  expect(getByRole("success")).toBeInTheDocument();
-  expect(getByText("Password reset claim success")).toBeInTheDocument();
+  expect(screen.getByRole("success")).toBeInTheDocument();
+  expect(screen.getByText("Password reset claim success")).toBeInTheDocument();
 });
 
 test("handles password recover error", async () => {
   const testError = new Error("Test Error");
   (passwordService.claimPasswordReset as jest.Mock).mockRejectedValueOnce(testError);
 
-  const { getByLabelText, getByText, findByRole } = render(<RecoverLostPassword />);
+  render(<RecoverLostPassword />);
 
-  await userEvent.type(getByLabelText("Login or email"), "test-login");
-  await userEvent.click(getByText("Reset password"));
+  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
+  await userEvent.click(screen.getByText("Reset password"));
 
-  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
+  await screen.findByRole("loader");
 
   expect(passwordService.claimPasswordReset).toHaveBeenCalledWith({ loginOrEmail: "test-login" });
-  expect(getByText("Test Error")).toBeInTheDocument();
+  expect(screen.getByText("Test Error")).toBeInTheDocument();
 });

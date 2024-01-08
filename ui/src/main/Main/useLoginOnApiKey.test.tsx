@@ -1,6 +1,6 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { UserContextProvider, UserContext, UserAction } from "contexts";
 import { userService } from "services";
@@ -20,7 +20,7 @@ const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ a
           </span>
         ))}
       </div>
-      {actions && <a onClick={() => actions.forEach(dispatch)}>{label}</a>}
+      {actions && <button onClick={() => actions.forEach(dispatch)}>{label}</button>}
     </>
   );
 };
@@ -32,7 +32,7 @@ beforeEach(() => {
 test("default state", () => {
   localStorage.removeItem("apiKey");
 
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent />
@@ -40,8 +40,8 @@ test("default state", () => {
     </MemoryRouter>,
   );
 
-  expect(getByText("loggedIn:null")).toBeInTheDocument();
-  expect(getByText("apiKey:null")).toBeInTheDocument();
+  expect(screen.getByText("loggedIn:null")).toBeInTheDocument();
+  expect(screen.getByText("apiKey:null")).toBeInTheDocument();
 });
 
 test("handles set correct api key", async () => {
@@ -51,7 +51,7 @@ test("handles set correct api key", async () => {
     createdOn: "2020-10-09T09:57:17.995288Z",
   });
 
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent actions={[{ type: "SET_API_KEY", apiKey: "test-api-key" }]} label="set api key" />
@@ -59,17 +59,17 @@ test("handles set correct api key", async () => {
     </MemoryRouter>,
   );
 
-  await userEvent.click(getByText("set api key"));
+  await userEvent.click(screen.getByText("set api key"));
 
   expect(userService.getCurrentUser).toHaveBeenCalledWith("test-api-key");
-  expect(getByText("loggedIn:true")).toBeInTheDocument();
-  expect(getByText('apiKey:"test-api-key"')).toBeInTheDocument();
+  expect(screen.getByText("loggedIn:true")).toBeInTheDocument();
+  expect(screen.getByText('apiKey:"test-api-key"')).toBeInTheDocument();
 });
 
 test("handles set wrong api key", async () => {
   (userService.getCurrentUser as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent actions={[{ type: "SET_API_KEY", apiKey: "test-api-key" }]} label="set api key" />
@@ -77,9 +77,9 @@ test("handles set wrong api key", async () => {
     </MemoryRouter>,
   );
 
-  await userEvent.click(getByText("set api key"));
+  await userEvent.click(screen.getByText("set api key"));
 
   expect(userService.getCurrentUser).toHaveBeenCalledWith("test-api-key");
-  expect(getByText("loggedIn:false")).toBeInTheDocument();
-  expect(getByText("apiKey:null")).toBeInTheDocument();
+  expect(screen.getByText("loggedIn:false")).toBeInTheDocument();
+  expect(screen.getByText("apiKey:null")).toBeInTheDocument();
 });

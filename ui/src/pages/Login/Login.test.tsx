@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "@remix-run/router";
@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
@@ -24,7 +24,7 @@ test("renders header", () => {
     </MemoryRouter>,
   );
 
-  expect(getByText("Please sign in")).toBeInTheDocument();
+  expect(screen.getByText("Please sign in")).toBeInTheDocument();
 });
 
 test("redirects when logged in", () => {
@@ -44,7 +44,7 @@ test("handles login success", async () => {
     apiKey: "test-api-key",
   });
 
-  const { getByLabelText, getByText, findByRole } = render(
+  render(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
@@ -52,11 +52,11 @@ test("handles login success", async () => {
     </HistoryRouter>,
   );
 
-  await userEvent.type(getByLabelText("Login or email"), "test-login");
-  await userEvent.type(getByLabelText("Password"), "test-password");
-  await userEvent.click(getByText("Sign In"));
+  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
+  await userEvent.type(screen.getByLabelText("Password"), "test-password");
+  await userEvent.click(screen.getByText("Sign In"));
 
-  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
+  await screen.findByRole("loader");
 
   expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
   expect(dispatch).toHaveBeenCalledTimes(1);
@@ -68,7 +68,7 @@ test("handles login error", async () => {
   const testError = new Error("Test Error");
   (userService.login as jest.Mock).mockRejectedValueOnce(testError);
 
-  const { getByLabelText, getByText, findByRole } = render(
+  render(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
@@ -76,13 +76,13 @@ test("handles login error", async () => {
     </MemoryRouter>,
   );
 
-  await userEvent.type(getByLabelText("Login or email"), "test-login");
-  await userEvent.type(getByLabelText("Password"), "test-password");
-  await userEvent.click(getByText("Sign In"));
+  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
+  await userEvent.type(screen.getByLabelText("Password"), "test-password");
+  await userEvent.click(screen.getByText("Sign In"));
 
-  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
+  await screen.findByRole("loader");
 
   expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
   expect(dispatch).not.toHaveBeenCalled();
-  expect(getByText("Test Error")).toBeInTheDocument();
+  expect(screen.getByText("Test Error")).toBeInTheDocument();
 });

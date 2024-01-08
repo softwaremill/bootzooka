@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { UserContext, UserState, initialUserState } from "contexts";
 import { Routes } from "./Routes";
@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 test("renders main route", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes />
@@ -24,11 +24,11 @@ test("renders main route", () => {
     </MemoryRouter>,
   );
 
-  expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();
+  expect(screen.getByText("Welcome to Bootzooka!")).toBeInTheDocument();
 });
 
 test("renders protected route for unlogged user", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes />
@@ -36,11 +36,11 @@ test("renders protected route for unlogged user", () => {
     </MemoryRouter>,
   );
 
-  expect(getByText("Please sign in")).toBeInTheDocument();
+  expect(screen.getByText("Please sign in")).toBeInTheDocument();
 });
 
 test("renders protected route for logged user", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes />
@@ -48,11 +48,11 @@ test("renders protected route for logged user", () => {
     </MemoryRouter>,
   );
 
-  expect(getByText("Shhhh, this is a secret place.")).toBeInTheDocument();
+  expect(screen.getByText("Shhhh, this is a secret place.")).toBeInTheDocument();
 });
 
 test("renders not found page", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={["/not-specified-route"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes />
@@ -60,5 +60,5 @@ test("renders not found page", () => {
     </MemoryRouter>,
   );
 
-  expect(getByText("You shouldn't be here for sure :)")).toBeInTheDocument();
+  expect(screen.getByText("You shouldn't be here for sure :)")).toBeInTheDocument();
 });

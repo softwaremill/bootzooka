@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "@remix-run/router";
@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
@@ -24,7 +24,7 @@ test("renders header", () => {
     </MemoryRouter>,
   );
 
-  expect(getByText("Please sign up")).toBeInTheDocument();
+  expect(screen.getByText("Please sign up")).toBeInTheDocument();
 });
 
 test("redirects when registered", () => {
@@ -44,7 +44,7 @@ test("handles register success", async () => {
     apiKey: "test-api-key",
   });
 
-  const { getByLabelText, getByText, findByRole } = render(
+  render(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
@@ -52,13 +52,13 @@ test("handles register success", async () => {
     </HistoryRouter>,
   );
 
-  await userEvent.type(getByLabelText("Login"), "test-login");
-  await userEvent.type(getByLabelText("Email address"), "test@email.address.pl");
-  await userEvent.type(getByLabelText("Password"), "test-password");
-  await userEvent.type(getByLabelText("Repeat password"), "test-password");
-  await userEvent.click(getByText("Create new account"));
+  await userEvent.type(screen.getByLabelText("Login"), "test-login");
+  await userEvent.type(screen.getByLabelText("Email address"), "test@email.address.pl");
+  await userEvent.type(screen.getByLabelText("Password"), "test-password");
+  await userEvent.type(screen.getByLabelText("Repeat password"), "test-password");
+  await userEvent.click(screen.getByText("Create new account"));
 
-  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
+  await screen.findByRole("loader");
 
   expect(userService.registerUser).toHaveBeenCalledWith({
     login: "test-login",
@@ -74,7 +74,7 @@ test("handles register error", async () => {
   const testError = new Error("Test Error");
   (userService.registerUser as jest.Mock).mockRejectedValueOnce(testError);
 
-  const { getByLabelText, getByText, findByRole } = render(
+  render(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
@@ -82,13 +82,13 @@ test("handles register error", async () => {
     </MemoryRouter>,
   );
 
-  await userEvent.type(getByLabelText("Login"), "test-login");
-  await userEvent.type(getByLabelText("Email address"), "test@email.address.pl");
-  await userEvent.type(getByLabelText("Password"), "test-password");
-  await userEvent.type(getByLabelText("Repeat password"), "test-password");
-  await userEvent.click(getByText("Create new account"));
+  await userEvent.type(screen.getByLabelText("Login"), "test-login");
+  await userEvent.type(screen.getByLabelText("Email address"), "test@email.address.pl");
+  await userEvent.type(screen.getByLabelText("Password"), "test-password");
+  await userEvent.type(screen.getByLabelText("Repeat password"), "test-password");
+  await userEvent.click(screen.getByText("Create new account"));
 
-  await waitFor(() => expect(findByRole("loader")).toBeTruthy());
+  await screen.findByRole("loader");
 
   expect(userService.registerUser).toHaveBeenCalledWith({
     login: "test-login",
@@ -96,5 +96,5 @@ test("handles register error", async () => {
     password: "test-password",
   });
   expect(dispatch).not.toHaveBeenCalled();
-  expect(getByText("Test Error")).toBeInTheDocument();
+  expect(screen.getByText("Test Error")).toBeInTheDocument();
 });
