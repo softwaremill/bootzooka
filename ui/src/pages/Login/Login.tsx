@@ -2,12 +2,12 @@ import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { BiLogInCircle } from "react-icons/bi";
-import { usePromise } from "react-use-promise-matcher";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { userService } from "services";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
+import { useMutation } from "react-query";
 
 const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),
@@ -24,9 +24,9 @@ export const Login: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const [result, send, clear] = usePromise((values: LoginParams) =>
-    userService.login(values).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey })),
-  );
+  const mutation = useMutation(userService.login, {
+    onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
+  });
 
   useEffect(() => {
     if (loggedIn) navigate("/main");
@@ -40,7 +40,7 @@ export const Login: React.FC = () => {
           loginOrEmail: "",
           password: "",
         }}
-        onSubmit={send}
+        onSubmit={(values) => mutation.mutate(values)}
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>
@@ -56,8 +56,7 @@ export const Login: React.FC = () => {
               label="Sign In"
               variant="dark"
               Icon={BiLogInCircle}
-              result={result}
-              clear={clear}
+              mutation={mutation}
             />
           </div>
         </Form>

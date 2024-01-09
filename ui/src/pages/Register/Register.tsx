@@ -2,12 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { BiUserPlus } from "react-icons/bi";
-import { usePromise } from "react-use-promise-matcher";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { userService } from "services";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
+import { useMutation } from "react-query";
 
 const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -28,10 +28,11 @@ export const Register: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const [result, send, clear] = usePromise(({ login, email, password }: RegisterParams) =>
-    userService
-      .registerUser({ login, email, password })
-      .then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey })),
+  const mutation = useMutation(
+    ({ login, email, password }: RegisterParams) => userService.registerUser({ login, email, password }),
+    {
+      onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
+    },
   );
 
   React.useEffect(() => {
@@ -48,7 +49,7 @@ export const Register: React.FC = () => {
           password: "",
           repeatedPassword: "",
         }}
-        onSubmit={send}
+        onSubmit={(values) => mutation.mutate(values)}
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>
@@ -63,8 +64,7 @@ export const Register: React.FC = () => {
             label="Create new account"
             variant="dark"
             Icon={BiUserPlus}
-            result={result}
-            clear={clear}
+            mutation={mutation}
           />
         </Form>
       </Formik>

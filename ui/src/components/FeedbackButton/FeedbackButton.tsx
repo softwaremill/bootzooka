@@ -4,55 +4,53 @@ import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import { IconType } from "react-icons";
 import { BsExclamationCircle, BsCheck } from "react-icons/bs";
-import { PromiseResultShape } from "react-use-promise-matcher";
 import useFormikValuesChanged from "./useFormikValuesChanged";
 import { ErrorMessage } from "../";
+import { UseMutationResult } from "react-query";
 
 interface FeedbackButtonProps extends ButtonProps {
   label: string;
   Icon: IconType;
-  result: PromiseResultShape<any, any>;
-  clear: () => void;
+  mutation: UseMutationResult<any, any, any, any>;
   successLabel?: string;
 }
 
 export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
-  result,
-  clear,
+  mutation,
   label,
   Icon,
   successLabel = "Success",
   ...buttonProps
 }) => {
   useFormikValuesChanged(() => {
-    !result.isIdle && clear();
+    !mutation.isIdle && mutation.reset();
   });
 
-  return result.match({
-    Idle: () => (
-      <Button {...buttonProps}>
-        <Icon />
-        &nbsp;{label}
-      </Button>
-    ),
-    Loading: () => (
+  if (mutation.isLoading) {
+    return (
       <Button {...buttonProps} disabled>
         <Spinner as="span" animation="border" size="sm" role="loader" />
         &nbsp;{label}
       </Button>
-    ),
-    Rejected: (error) => (
+    );
+  }
+
+  if (mutation.isError) {
+    return (
       <div>
         <Button {...buttonProps} variant="danger">
           <BsExclamationCircle role="error" />
           &nbsp;{label}
         </Button>
         <Form.Text className="d-inline-block mx-3">
-          <ErrorMessage error={error} />
+          <ErrorMessage error={mutation.error} />
         </Form.Text>
       </div>
-    ),
-    Resolved: () => (
+    );
+  }
+
+  if (mutation.isSuccess) {
+    return (
       <div>
         <Button {...buttonProps} variant="success">
           <BsCheck role="success" />
@@ -60,6 +58,13 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
         </Button>
         <Form.Text className="text-success d-inline-block mx-3">{successLabel}</Form.Text>
       </div>
-    ),
-  });
+    );
+  }
+
+  return (
+    <Button {...buttonProps}>
+      <Icon />
+      &nbsp;{label}
+    </Button>
+  );
 };
