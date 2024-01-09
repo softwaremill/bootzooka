@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { UserContext, UserState, initialUserState } from "contexts";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -11,7 +11,7 @@ beforeEach(() => {
 });
 
 test("renders protected route for unlogged user", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes>
@@ -21,10 +21,10 @@ test("renders protected route for unlogged user", () => {
           </Route>
         </Routes>
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("Please sign in")).toBeInTheDocument();
+  expect(screen.getByText("Please sign in")).toBeInTheDocument();
 });
 
 test("renders protected route for logged user", () => {
@@ -33,7 +33,7 @@ test("renders protected route for logged user", () => {
     loggedIn: true,
   };
 
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes>
@@ -43,8 +43,8 @@ test("renders protected route for logged user", () => {
           </Route>
         </Routes>
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("Protected Text")).toBeInTheDocument();
+  expect(screen.getByText("Protected Text")).toBeInTheDocument();
 });

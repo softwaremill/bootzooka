@@ -1,33 +1,34 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { UserContextProvider, UserContext, UserAction } from "./UserContext";
+import { userEvent } from "@testing-library/user-event";
 
 const TestComponent: React.FC<{ action?: UserAction; label?: string }> = ({ action, label }) => {
   const { state, dispatch } = React.useContext(UserContext);
   return (
     <>
       <div>{JSON.stringify(state)}</div>
-      {action && <a onClick={() => dispatch(action)}>{label}</a>}
+      {action && <button onClick={() => dispatch(action)}>{label}</button>}
     </>
   );
 };
 
-test("handles set api key action", () => {
-  const { getByText } = render(
+test("handles set api key action", async () => {
+  render(
     <UserContextProvider>
       <TestComponent action={{ type: "SET_API_KEY", apiKey: "test-api-key" }} label="set api key" />
-    </UserContextProvider>
+    </UserContextProvider>,
   );
 
-  expect(getByText('{"apiKey":null,"user":null,"loggedIn":null}')).toBeInTheDocument();
+  expect(screen.getByText('{"apiKey":null,"user":null,"loggedIn":null}')).toBeInTheDocument();
 
-  fireEvent.click(getByText("set api key"));
+  await userEvent.click(screen.getByText("set api key"));
 
-  expect(getByText('{"apiKey":"test-api-key","user":null,"loggedIn":null}')).toBeInTheDocument();
+  expect(screen.getByText('{"apiKey":"test-api-key","user":null,"loggedIn":null}')).toBeInTheDocument();
 });
 
-test("handles login action", () => {
-  const { getByText } = render(
+test("handles login action", async () => {
+  render(
     <UserContextProvider>
       <TestComponent
         action={{
@@ -36,22 +37,22 @@ test("handles login action", () => {
         }}
         label="log in"
       />
-    </UserContextProvider>
+    </UserContextProvider>,
   );
 
-  expect(getByText('{"apiKey":null,"user":null,"loggedIn":null}')).toBeInTheDocument();
+  expect(screen.getByText('{"apiKey":null,"user":null,"loggedIn":null}')).toBeInTheDocument();
 
-  fireEvent.click(getByText("log in"));
+  await userEvent.click(screen.getByText("log in"));
 
   expect(
-    getByText(
-      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}'
-    )
+    screen.getByText(
+      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}',
+    ),
   ).toBeInTheDocument();
 });
 
-test("handles log in and update details action", () => {
-  const { getAllByText, getByText } = render(
+test("handles log in and update details action", async () => {
+  render(
     <UserContextProvider>
       <TestComponent
         action={{
@@ -67,34 +68,34 @@ test("handles log in and update details action", () => {
         }}
         label="update user data"
       />
-    </UserContextProvider>
+    </UserContextProvider>,
   );
 
-  expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
+  expect(screen.getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
 
-  fireEvent.click(getByText("update user data"));
+  await userEvent.click(screen.getByText("update user data"));
 
-  expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
+  expect(screen.getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
 
-  fireEvent.click(getByText("log in"));
+  await userEvent.click(screen.getByText("log in"));
 
   expect(
-    getAllByText(
-      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}'
-    )[0]
+    screen.getAllByText(
+      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}',
+    )[0],
   ).toBeInTheDocument();
 
-  fireEvent.click(getByText("update user data"));
+  await userEvent.click(screen.getByText("update user data"));
 
   expect(
-    getAllByText(
-      '{"apiKey":null,"user":{"login":"updated-user-login","email":"updatedEmail@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}'
-    )[0]
+    screen.getAllByText(
+      '{"apiKey":null,"user":{"login":"updated-user-login","email":"updatedEmail@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}',
+    )[0],
   ).toBeInTheDocument();
 });
 
-test("handles log in and log out action", () => {
-  const { getAllByText, getByText } = render(
+test("handles log in and log out action", async () => {
+  render(
     <UserContextProvider>
       <TestComponent
         action={{
@@ -109,24 +110,24 @@ test("handles log in and log out action", () => {
         }}
         label="log out"
       />
-    </UserContextProvider>
+    </UserContextProvider>,
   );
 
-  expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
+  expect(screen.getAllByText('{"apiKey":null,"user":null,"loggedIn":null}')[0]).toBeInTheDocument();
 
-  fireEvent.click(getByText("log out"));
+  await userEvent.click(screen.getByText("log out"));
 
-  expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":false}')[0]).toBeInTheDocument();
+  expect(screen.getAllByText('{"apiKey":null,"user":null,"loggedIn":false}')[0]).toBeInTheDocument();
 
-  fireEvent.click(getByText("log in"));
+  await userEvent.click(screen.getByText("log in"));
 
   expect(
-    getAllByText(
-      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}'
-    )[0]
+    screen.getAllByText(
+      '{"apiKey":null,"user":{"login":"user-login","email":"email@address.pl","createdOn":"2020-10-09T09:57:17.995288Z"},"loggedIn":true}',
+    )[0],
   ).toBeInTheDocument();
 
-  fireEvent.click(getByText("log out"));
+  await userEvent.click(screen.getByText("log out"));
 
-  expect(getAllByText('{"apiKey":null,"user":null,"loggedIn":false}')[0]).toBeInTheDocument();
+  expect(screen.getAllByText('{"apiKey":null,"user":null,"loggedIn":false}')[0]).toBeInTheDocument();
 });

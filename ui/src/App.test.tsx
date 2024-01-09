@@ -1,8 +1,8 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { App } from "./App";
 
 test("should render", () => {
-  const { getByText } = render(<App />);
-  const header = getByText("Welcome to Bootzooka!");
+  render(<App />);
+  const header = screen.getByText("Welcome to Bootzooka!");
   expect(header).toBeInTheDocument();
 });

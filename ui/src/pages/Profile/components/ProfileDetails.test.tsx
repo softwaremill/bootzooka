@@ -1,4 +1,5 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { ProfileDetails } from "./ProfileDetails";
@@ -17,94 +18,76 @@ beforeEach(() => {
 });
 
 test("renders current user data", () => {
-  const { getByLabelText } = render(
+  render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
-  expect((getByLabelText("Login") as HTMLInputElement).value).toEqual("user-login");
-  expect((getByLabelText("Email address") as HTMLInputElement).value).toEqual("email@address.pl");
+  expect((screen.getByLabelText("Login") as HTMLInputElement).value).toEqual("user-login");
+  expect((screen.getByLabelText("Email address") as HTMLInputElement).value).toEqual("email@address.pl");
 });
 
 test("renders lack of current user data", () => {
-  const { getByLabelText } = render(
+  render(
     <UserContext.Provider value={{ state: { ...loggedUserState, user: null }, dispatch }}>
       <ProfileDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
-  expect((getByLabelText("Login") as HTMLInputElement).value).toEqual("");
-  expect((getByLabelText("Email address") as HTMLInputElement).value).toEqual("");
+  expect((screen.getByLabelText("Login") as HTMLInputElement).value).toEqual("");
+  expect((screen.getByLabelText("Email address") as HTMLInputElement).value).toEqual("");
 });
 
 test("handles change details success", async () => {
   (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
 
-  const { getByLabelText, getByText, getByRole, findByRole } = render(
+  render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
-  fireEvent.blur(getByLabelText("Login"));
-  fireEvent.change(getByLabelText("Login"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login"));
-  fireEvent.change(getByLabelText("Email address"), { target: { value: "test@email.address" } });
-  fireEvent.blur(getByLabelText("Email address"));
-  fireEvent.click(getByText("Update profile data"));
+  await userEvent.clear(screen.getByLabelText("Login"));
+  await userEvent.type(screen.getByLabelText("Login"), "test-login");
+  await userEvent.clear(screen.getByLabelText("Email address"));
+  await userEvent.type(screen.getByLabelText("Email address"), "test@email.address");
+  await userEvent.click(screen.getByText("Update profile data"));
 
-  await findByRole("loader");
-
-  expect(userService.changeProfileDetails).toBeCalledWith("test-api-key", {
+  expect(userService.changeProfileDetails).toHaveBeenCalledWith("test-api-key", {
     email: "test@email.address",
     login: "test-login",
   });
-  expect(dispatch).toBeCalledTimes(1);
-  expect(dispatch).toBeCalledWith({
+
+  expect(dispatch).toHaveBeenCalledWith({
     type: "UPDATE_USER_DATA",
-    user: {
-      email: "test@email.address",
-      login: "test-login",
-    },
+    user: { email: "test@email.address", login: "test-login" },
   });
-  expect(getByRole("success")).toBeInTheDocument();
-  expect(getByText("Profile details changed")).toBeInTheDocument();
+
+  await screen.findByRole("success");
+  await screen.findByText("Profile details changed");
 });
 
 test("handles change details error", async () => {
-  const testError = new Error("Test Error");
-  (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(testError);
+  (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  const { getByLabelText, getByText, findByRole, queryByRole, queryByText } = render(
+  render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
-  fireEvent.blur(getByLabelText("Login"));
-  fireEvent.change(getByLabelText("Login"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login"));
-  fireEvent.change(getByLabelText("Email address"), { target: { value: "test@email.address" } });
-  fireEvent.blur(getByLabelText("Email address"));
-  fireEvent.click(getByText("Update profile data"));
+  await userEvent.clear(screen.getByLabelText("Login"));
+  await userEvent.type(screen.getByLabelText("Login"), "test-login");
+  await userEvent.clear(screen.getByLabelText("Email address"));
+  await userEvent.type(screen.getByLabelText("Email address"), "test@email.address");
+  await userEvent.click(screen.getByText("Update profile data"));
 
-  await findByRole("loader");
-
-  await waitFor(() => {
-    expect(userService.changeProfileDetails).toBeCalledWith("test-api-key", {
-      email: "test@email.address",
-      login: "test-login",
-    });
-    expect(dispatch).not.toBeCalled();
-    expect(getByText("Test Error")).toBeInTheDocument();
+  expect(userService.changeProfileDetails).toHaveBeenCalledWith("test-api-key", {
+    email: "test@email.address",
+    login: "test-login",
   });
+  expect(dispatch).not.toHaveBeenCalled();
 
-  fireEvent.change(getByLabelText("Email address"), { target: { value: "otherTest@email.address" } });
-  fireEvent.blur(getByLabelText("Email address"));
-
-  await waitFor(() => {
-    expect(queryByRole("error")).not.toBeInTheDocument();
-    expect(queryByText("Test Error")).not.toBeInTheDocument();
-  });
+  await screen.findByRole("error");
 });

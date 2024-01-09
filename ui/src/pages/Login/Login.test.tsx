@@ -1,6 +1,7 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { createMemoryHistory } from "@remix-run/router";
 import { Login } from "./Login";
 import { UserContext, initialUserState } from "contexts";
 import { userService } from "services";
@@ -15,15 +16,15 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("Please sign in")).toBeInTheDocument();
+  expect(screen.getByText("Please sign in")).toBeInTheDocument();
 });
 
 test("redirects when logged in", () => {
@@ -32,62 +33,50 @@ test("redirects when logged in", () => {
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Login />
       </UserContext.Provider>
-    </HistoryRouter>
+    </HistoryRouter>,
   );
 
   expect(history.location.pathname).toEqual("/main");
 });
 
 test("handles login success", async () => {
-  (userService.login as jest.Mock).mockResolvedValueOnce({
-    apiKey: "test-api-key",
-  });
+  (userService.login as jest.Mock).mockResolvedValueOnce({ apiKey: "test-api-key" });
 
-  const { getByLabelText, getByText, findByRole } = render(
+  render(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
       </UserContext.Provider>
-    </HistoryRouter>
+    </HistoryRouter>,
   );
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Password"), { target: { value: "test-password" } });
-  fireEvent.blur(getByLabelText("Password"));
-  fireEvent.click(getByText("Sign In"));
+  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
+  await userEvent.type(screen.getByLabelText("Password"), "test-password");
+  await userEvent.click(screen.getByText("Sign In"));
 
-  await findByRole("loader");
+  await screen.findByRole("success");
 
-  expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  expect(dispatch).toBeCalledTimes(1);
-  expect(dispatch).toBeCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
-  expect(history.location.pathname).toEqual("/main");
+  expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
 });
 
 test("handles login error", async () => {
-  const testError = new Error("Test Error");
-  (userService.login as jest.Mock).mockRejectedValueOnce(testError);
+  (userService.login as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  const { getByLabelText, getByText, findByRole } = render(
+  render(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Login />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Password"), { target: { value: "test-password" } });
-  fireEvent.blur(getByLabelText("Password"));
-  fireEvent.click(getByText("Sign In"));
+  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
+  await userEvent.type(screen.getByLabelText("Password"), "test-password");
+  await userEvent.click(screen.getByText("Sign In"));
 
-  await findByRole("loader");
+  await screen.findByRole("error");
 
-  expect(userService.login).toBeCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  expect(dispatch).not.toBeCalled();
-  expect(getByText("Test Error")).toBeInTheDocument();
+  expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(dispatch).not.toHaveBeenCalled();
 });

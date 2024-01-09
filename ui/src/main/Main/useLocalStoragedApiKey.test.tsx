@@ -1,8 +1,9 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { UserContextProvider, UserContext, UserAction } from "contexts";
 import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
+import { userEvent } from "@testing-library/user-event";
 
 const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ actions, label }) => {
   const { state, dispatch } = React.useContext(UserContext);
@@ -16,7 +17,7 @@ const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ a
           </span>
         ))}
       </div>
-      {actions && <a onClick={() => actions.forEach(dispatch)}>{label}</a>}
+      {actions && <button onClick={() => actions.forEach(dispatch)}>{label}</button>}
     </>
   );
 };
@@ -28,37 +29,37 @@ beforeEach(() => {
 test("handles not stored api key", () => {
   localStorage.removeItem("apiKey");
 
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("loggedIn:false")).toBeInTheDocument();
-  expect(getByText("apiKey:null")).toBeInTheDocument();
+  expect(screen.getByText("loggedIn:false")).toBeInTheDocument();
+  expect(screen.getByText("apiKey:null")).toBeInTheDocument();
 });
 
 test("handles stored api key", () => {
   localStorage.setItem("apiKey", "test-api-key");
 
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("loggedIn:null")).toBeInTheDocument();
-  expect(getByText('apiKey:"test-api-key"')).toBeInTheDocument();
+  expect(screen.getByText("loggedIn:null")).toBeInTheDocument();
+  expect(screen.getByText('apiKey:"test-api-key"')).toBeInTheDocument();
 });
 
-test("handles user logging in", () => {
+test("handles user logging in", async () => {
   localStorage.removeItem("apiKey");
 
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent
@@ -72,20 +73,20 @@ test("handles user logging in", () => {
           label="log in"
         />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  fireEvent.click(getByText("log in"));
+  await userEvent.click(screen.getByText("log in"));
 
   expect(localStorage.getItem("apiKey")).toEqual("test-api-key");
-  expect(getByText("loggedIn:true")).toBeInTheDocument();
-  expect(getByText('apiKey:"test-api-key"')).toBeInTheDocument();
+  expect(screen.getByText("loggedIn:true")).toBeInTheDocument();
+  expect(screen.getByText('apiKey:"test-api-key"')).toBeInTheDocument();
 });
 
-test("handles user logging out", () => {
+test("handles user logging out", async () => {
   localStorage.setItem("apiKey", "test-api-key");
 
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContextProvider>
         <TestComponent
@@ -101,12 +102,12 @@ test("handles user logging out", () => {
           label="log in and out"
         />
       </UserContextProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  fireEvent.click(getByText("log in and out"));
+  await userEvent.click(screen.getByText("log in and out"));
 
-  expect(getByText("loggedIn:false")).toBeInTheDocument();
-  expect(getByText("apiKey:null")).toBeInTheDocument();
+  expect(screen.getByText("loggedIn:false")).toBeInTheDocument();
+  expect(screen.getByText("apiKey:null")).toBeInTheDocument();
   expect(localStorage.getItem("apiKey")).toBeNull();
 });

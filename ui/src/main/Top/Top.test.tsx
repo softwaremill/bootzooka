@@ -1,4 +1,5 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { UserContext, UserState, initialUserState } from "contexts";
 import { Top } from "./Top";
@@ -16,57 +17,57 @@ beforeEach(() => {
 });
 
 test("renders brand name", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Top />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("Bootzooka")).toBeInTheDocument();
+  expect(screen.getByText("Bootzooka")).toBeInTheDocument();
 });
 
 test("renders nav bar unlogged user", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Top />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("Welcome")).toBeInTheDocument();
-  expect(getByText("Home")).toBeInTheDocument();
-  expect(getByText("Login")).toBeInTheDocument();
-  expect(getByText("Register")).toBeInTheDocument();
+  expect(screen.getByText("Welcome")).toBeInTheDocument();
+  expect(screen.getByText("Home")).toBeInTheDocument();
+  expect(screen.getByText("Login")).toBeInTheDocument();
+  expect(screen.getByText("Register")).toBeInTheDocument();
 });
 
 test("renders nav bar for logged user", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Top />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("Welcome")).toBeInTheDocument();
-  expect(getByText("Home")).toBeInTheDocument();
-  expect(getByText("user-login")).toBeInTheDocument();
-  expect(getByText("Logout")).toBeInTheDocument();
+  expect(screen.getByText("Welcome")).toBeInTheDocument();
+  expect(screen.getByText("Home")).toBeInTheDocument();
+  expect(screen.getByText("user-login")).toBeInTheDocument();
+  expect(screen.getByText("Logout")).toBeInTheDocument();
 });
 
-test("handles logout logged user", () => {
-  const { getByText } = render(
+test("handles logout logged user", async () => {
+  render(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Top />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  fireEvent.click(getByText("Logout"));
+  await userEvent.click(screen.getByText("Logout"));
 
-  expect(dispatch).toBeCalledWith({ type: "LOG_OUT" });
+  expect(dispatch).toHaveBeenCalledWith({ type: "LOG_OUT" });
 });

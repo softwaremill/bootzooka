@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { UserContext, UserState } from "contexts";
 import { Profile } from "./Profile";
 
@@ -15,12 +15,12 @@ beforeEach(() => {
 });
 
 test("renders headers", () => {
-  const { getByText } = render(
+  render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <Profile />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
-  expect(getByText("Profile details")).toBeInTheDocument();
-  expect(getByText("Password details")).toBeInTheDocument();
+  expect(screen.getByText("Profile details")).toBeInTheDocument();
+  expect(screen.getByText("Password details")).toBeInTheDocument();
 });

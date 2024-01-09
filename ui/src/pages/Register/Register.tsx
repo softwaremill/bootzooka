@@ -29,7 +29,9 @@ export const Register: React.FC = () => {
   const navigate = useNavigate();
 
   const [result, send, clear] = usePromise(({ login, email, password }: RegisterParams) =>
-    userService.registerUser({ login, email, password }).then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }))
+    userService
+      .registerUser({ login, email, password })
+      .then(({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey })),
   );
 
   React.useEffect(() => {

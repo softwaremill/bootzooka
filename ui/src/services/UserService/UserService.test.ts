@@ -14,7 +14,7 @@ test("registers user", async () => {
   (axios.post as jest.Mock).mockResolvedValueOnce({ data });
 
   await expect(userService.registerUser(params)).resolves.toEqual(data);
-  expect(axios.post).toBeCalledWith("api/v1/user/register", params);
+  expect(axios.post).toHaveBeenCalledWith("api/v1/user/register", params);
 });
 
 test("logs in user", async () => {
@@ -24,7 +24,7 @@ test("logs in user", async () => {
   (axios.post as jest.Mock).mockResolvedValueOnce({ data });
 
   await expect(userService.login(params)).resolves.toEqual(data);
-  expect(axios.post).toBeCalledWith("api/v1/user/login", { ...params, apiKeyValidHours: 1 });
+  expect(axios.post).toHaveBeenCalledWith("api/v1/user/login", { ...params, apiKeyValidHours: 1 });
 });
 
 test("gets current user", async () => {
@@ -34,7 +34,7 @@ test("gets current user", async () => {
   (axios.request as jest.Mock).mockResolvedValueOnce({ data });
 
   await expect(userService.getCurrentUser(testApiKey)).resolves.toEqual(data);
-  expect(axios.request).toBeCalledWith({
+  expect(axios.request).toHaveBeenCalledWith({
     headers: { Authorization: `Bearer ${testApiKey}` },
     method: "GET",
     url: "api/v1/user",
@@ -49,7 +49,7 @@ test("changes profile details", async () => {
   (axios.request as jest.Mock).mockResolvedValueOnce({ data });
 
   await expect(userService.changeProfileDetails(testApiKey, params)).resolves.toEqual(data);
-  expect(axios.request).toBeCalledWith({
+  expect(axios.request).toHaveBeenCalledWith({
     headers: { Authorization: `Bearer ${testApiKey}` },
     method: "POST",
     url: "api/v1/user",
@@ -65,7 +65,7 @@ test("changes password", async () => {
   (axios.request as jest.Mock).mockResolvedValueOnce({ data });
 
   await expect(userService.changePassword(testApiKey, params)).resolves.toEqual(data);
-  expect(axios.request).toBeCalledWith({
+  expect(axios.request).toHaveBeenCalledWith({
     headers: { Authorization: `Bearer ${testApiKey}` },
     method: "POST",
     url: "api/v1/user/changepassword",

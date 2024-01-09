@@ -1,4 +1,5 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { PasswordDetails } from "./PasswordDetails";
@@ -17,80 +18,61 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  const { getByText } = render(
+  render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
-  expect(getByText("Password details")).toBeInTheDocument();
+  expect(screen.getByText("Password details")).toBeInTheDocument();
 });
 
 test("handles change password success", async () => {
   (userService.changePassword as jest.Mock).mockResolvedValueOnce({});
 
-  const { getByLabelText, getByText, getByRole, findByRole } = render(
+  render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
-  fireEvent.blur(getByLabelText("Current password"));
-  fireEvent.change(getByLabelText("Current password"), { target: { value: "test-password" } });
-  fireEvent.blur(getByLabelText("Current password"));
-  fireEvent.change(getByLabelText("New password"), { target: { value: "test-new-password" } });
-  fireEvent.blur(getByLabelText("New password"));
-  fireEvent.change(getByLabelText("Repeat new password"), { target: { value: "test-new-password" } });
-  fireEvent.blur(getByLabelText("Repeat new password"));
-  fireEvent.click(getByText("Update password"));
+  await userEvent.type(screen.getByLabelText("Current password"), "test-password");
+  await userEvent.type(screen.getByLabelText("New password"), "test-new-password");
+  await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
+  await userEvent.click(screen.getByText("Update password"));
 
-  await findByRole("loader");
+  await screen.findByRole("success");
+  await screen.findByText("Password changed");
 
-  await waitFor(() => {
-    expect(userService.changePassword).toBeCalledWith("test-api-key", {
-      currentPassword: "test-password",
-      newPassword: "test-new-password",
-    });
-    expect(getByRole("success")).toBeInTheDocument();
-    expect(getByText("Password changed")).toBeInTheDocument();
+  expect(userService.changePassword).toHaveBeenCalledWith("test-api-key", {
+    currentPassword: "test-password",
+    newPassword: "test-new-password",
   });
 });
 
 test("handles change password error", async () => {
-  const testError = new Error("Test Error");
-  (userService.changePassword as jest.Mock).mockRejectedValueOnce(testError);
+  (userService.changePassword as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  const { getByLabelText, getByText, findByRole, getByRole, queryByRole, queryByText } = render(
+  render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
-    </UserContext.Provider>
+    </UserContext.Provider>,
   );
 
-  fireEvent.blur(getByLabelText("Current password"));
-  fireEvent.change(getByLabelText("Current password"), { target: { value: "test-password" } });
-  fireEvent.blur(getByLabelText("Current password"));
-  fireEvent.change(getByLabelText("New password"), { target: { value: "test-new-password" } });
-  fireEvent.blur(getByLabelText("New password"));
-  fireEvent.change(getByLabelText("Repeat new password"), { target: { value: "test-new-password" } });
-  fireEvent.blur(getByLabelText("Repeat new password"));
-  fireEvent.click(getByText("Update password"));
+  await userEvent.type(screen.getByLabelText("Current password"), "test-password");
+  await userEvent.type(screen.getByLabelText("New password"), "test-new-password");
+  await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
+  await userEvent.click(screen.getByText("Update password"));
 
-  await findByRole("loader");
-
-  await waitFor(() => {
-    expect(userService.changePassword).toBeCalledWith("test-api-key", {
-      currentPassword: "test-password",
-      newPassword: "test-new-password",
-    });
-    expect(getByRole("error")).toBeInTheDocument();
-    expect(getByText("Test Error")).toBeInTheDocument();
+  expect(userService.changePassword).toHaveBeenCalledWith("test-api-key", {
+    currentPassword: "test-password",
+    newPassword: "test-new-password",
   });
 
-  fireEvent.change(getByLabelText("Repeat new password"), { target: { value: "test-newer-password" } });
-  fireEvent.blur(getByLabelText("Repeat new password"));
+  await screen.findByRole("error");
 
-  await waitFor(() => {
-    expect(queryByRole("error")).not.toBeInTheDocument();
-    expect(queryByText("Test Error")).not.toBeInTheDocument();
-  });
+  await userEvent.type(screen.getByLabelText("Repeat new password"), "test-newer-password");
+
+  expect(screen.queryByRole("error")).not.toBeInTheDocument();
+  expect(screen.queryByText("Test Error")).not.toBeInTheDocument();
 });

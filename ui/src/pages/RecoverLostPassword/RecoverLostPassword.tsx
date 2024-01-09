@@ -15,7 +15,7 @@ type RecoverLostPasswordParams = Yup.InferType<typeof validationSchema>;
 
 export const RecoverLostPassword: React.FC = () => {
   const [result, send, clear] = usePromise((values: RecoverLostPasswordParams) =>
-    passwordService.claimPasswordReset(values)
+    passwordService.claimPasswordReset(values),
   );
 
   return (

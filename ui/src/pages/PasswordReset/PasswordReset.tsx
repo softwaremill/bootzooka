@@ -23,7 +23,7 @@ export const PasswordReset: React.FC = () => {
   const code = new URLSearchParams(window.location.search).get("code") || "";
 
   const [result, send, clear] = usePromise(({ password }: PasswordResetParams) =>
-    passwordService.resetPassword({ password, code })
+    passwordService.resetPassword({ password, code }),
   );
 
   return (

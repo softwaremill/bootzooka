@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Footer } from "./Footer";
 import { versionService } from "services";
 
@@ -11,15 +11,15 @@ beforeEach(() => {
 test("renders version data", async () => {
   (versionService.getVersion as jest.Mock).mockResolvedValueOnce({ buildDate: "testDate", buildSha: "testSha" });
 
-  const { getByText, findByText, findAllByRole } = render(<Footer />);
+  render(<Footer />);
 
-  const info = getByText(/Bootzooka - application scaffolding by /);
+  const info = screen.getByText(/Bootzooka - application scaffolding by /);
 
-  await findAllByRole("loader");
+  await screen.findAllByRole("loader");
 
-  const buildSha = await findByText(/testSha/i);
+  const buildSha = await screen.findByText(/testSha/i);
 
-  expect(versionService.getVersion).toBeCalledWith();
+  expect(versionService.getVersion).toHaveBeenCalledWith();
   expect(info).toBeInTheDocument();
   expect(buildSha).toBeInTheDocument();
 });

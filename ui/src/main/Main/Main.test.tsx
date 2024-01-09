@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { UserContext, initialUserState } from "contexts";
 import { Main } from "./Main";
@@ -10,37 +10,37 @@ beforeEach(() => {
 });
 
 test("shows loader on unspecified logged in status", () => {
-  const { getByRole } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByRole("loader")).toBeInTheDocument();
+  expect(screen.getByRole("loader")).toBeInTheDocument();
 });
 
 test("shows app on logged in status", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();
+  expect(screen.getByText("Welcome to Bootzooka!")).toBeInTheDocument();
 });
 
 test("shows app on logged out status", () => {
-  const { getByText } = render(
+  render(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
-  expect(getByText("Welcome to Bootzooka!")).toBeInTheDocument();
+  expect(screen.getByText("Welcome to Bootzooka!")).toBeInTheDocument();
 });

@@ -25,7 +25,7 @@ export const ProfileDetails: React.FC = () => {
   } = React.useContext(UserContext);
 
   const [result, send, clear] = usePromise((values: ProfileDetailsParams) =>
-    userService.changeProfileDetails(apiKey, values).then(() => dispatch({ type: "UPDATE_USER_DATA", user: values }))
+    userService.changeProfileDetails(apiKey, values).then(() => dispatch({ type: "UPDATE_USER_DATA", user: values })),
   );
 
   return (

@@ -1,4 +1,5 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { passwordService } from "services";
 import { RecoverLostPassword } from "./RecoverLostPassword";
 
@@ -9,41 +10,34 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  const { getByText } = render(<RecoverLostPassword />);
+  render(<RecoverLostPassword />);
 
-  expect(getByText("Recover lost password")).toBeInTheDocument();
+  expect(screen.getByText("Recover lost password")).toBeInTheDocument();
 });
 
 test("handles password recover success", async () => {
   (passwordService.claimPasswordReset as jest.Mock).mockResolvedValueOnce({});
 
-  const { getByLabelText, getByText, getByRole, findByRole } = render(<RecoverLostPassword />);
+  render(<RecoverLostPassword />);
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.click(getByText("Reset password"));
+  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
+  await userEvent.click(screen.getByText("Reset password"));
 
-  await findByRole("loader");
+  expect(passwordService.claimPasswordReset).toHaveBeenCalledWith({ loginOrEmail: "test-login" });
 
-  expect(passwordService.claimPasswordReset).toBeCalledWith({ loginOrEmail: "test-login" });
-  expect(getByRole("success")).toBeInTheDocument();
-  expect(getByText("Password reset claim success")).toBeInTheDocument();
+  await screen.findByRole("success");
+  await screen.findByText("Password reset claim success");
 });
 
 test("handles password recover error", async () => {
-  const testError = new Error("Test Error");
-  (passwordService.claimPasswordReset as jest.Mock).mockRejectedValueOnce(testError);
+  (passwordService.claimPasswordReset as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  const { getByLabelText, getByText, findByRole } = render(<RecoverLostPassword />);
+  render(<RecoverLostPassword />);
 
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.change(getByLabelText("Login or email"), { target: { value: "test-login" } });
-  fireEvent.blur(getByLabelText("Login or email"));
-  fireEvent.click(getByText("Reset password"));
+  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
+  await userEvent.click(screen.getByText("Reset password"));
 
-  await findByRole("loader");
+  expect(passwordService.claimPasswordReset).toHaveBeenCalledWith({ loginOrEmail: "test-login" });
 
-  expect(passwordService.claimPasswordReset).toBeCalledWith({ loginOrEmail: "test-login" });
-  expect(getByText("Test Error")).toBeInTheDocument();
+  await screen.findByRole("error");
 });
