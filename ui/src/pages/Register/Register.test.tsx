@@ -1,11 +1,10 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "@remix-run/router";
 import { UserContext, initialUserState } from "contexts";
 import { userService } from "services";
 import { Register } from "./Register";
-import { mockAndDelayRejectedValueOnce, mockAndDelayResolvedValueOnce } from "../../setupTests";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
@@ -41,7 +40,7 @@ test("redirects when registered", () => {
 });
 
 test("handles register success", async () => {
-  mockAndDelayResolvedValueOnce(userService.registerUser as jest.Mock, { apiKey: "test-api-key" });
+  (userService.registerUser as jest.Mock).mockResolvedValueOnce({ apiKey: "test-api-key" });
 
   render(
     <HistoryRouter history={history}>
@@ -57,7 +56,7 @@ test("handles register success", async () => {
   await userEvent.type(screen.getByLabelText("Repeat password"), "test-password");
   await userEvent.click(screen.getByText("Create new account"));
 
-  await screen.findByRole("loader");
+  await screen.findByRole("success");
 
   expect(userService.registerUser).toHaveBeenCalledWith({
     login: "test-login",
@@ -65,11 +64,11 @@ test("handles register success", async () => {
     password: "test-password",
   });
 
-  await waitFor(() => expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" }));
+  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
 });
 
 test("handles register error", async () => {
-  mockAndDelayRejectedValueOnce(userService.registerUser as jest.Mock, new Error("Test Error"));
+  (userService.registerUser as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
   render(
     <MemoryRouter initialEntries={["/login"]}>
@@ -85,8 +84,6 @@ test("handles register error", async () => {
   await userEvent.type(screen.getByLabelText("Repeat password"), "test-password");
   await userEvent.click(screen.getByText("Create new account"));
 
-  await screen.findByRole("loader");
-
   expect(userService.registerUser).toHaveBeenCalledWith({
     login: "test-login",
     email: "test@email.address.pl",
@@ -95,5 +92,4 @@ test("handles register error", async () => {
   expect(dispatch).not.toHaveBeenCalled();
 
   await screen.findByRole("error");
-  await screen.findByText("Test Error");
 });

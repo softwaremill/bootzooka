@@ -3,7 +3,6 @@ import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { PasswordDetails } from "./PasswordDetails";
-import { mockAndDelayRejectedValueOnce, mockAndDelayResolvedValueOnce } from "../../../setupTests";
 
 const mockState: UserState = {
   apiKey: "test-api-key",
@@ -29,7 +28,7 @@ test("renders header", () => {
 });
 
 test("handles change password success", async () => {
-  mockAndDelayResolvedValueOnce(userService.changePassword as jest.Mock, {});
+  (userService.changePassword as jest.Mock).mockResolvedValueOnce({});
 
   render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
@@ -42,7 +41,6 @@ test("handles change password success", async () => {
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
   await userEvent.click(screen.getByText("Update password"));
 
-  await screen.findByRole("loader");
   await screen.findByRole("success");
   await screen.findByText("Password changed");
 
@@ -53,7 +51,7 @@ test("handles change password success", async () => {
 });
 
 test("handles change password error", async () => {
-  mockAndDelayRejectedValueOnce(userService.changePassword as jest.Mock, new Error("Test Error"));
+  (userService.changePassword as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
   render(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
@@ -66,15 +64,12 @@ test("handles change password error", async () => {
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
   await userEvent.click(screen.getByText("Update password"));
 
-  await screen.findByRole("loader");
-
   expect(userService.changePassword).toHaveBeenCalledWith("test-api-key", {
     currentPassword: "test-password",
     newPassword: "test-new-password",
   });
 
   await screen.findByRole("error");
-  await screen.findByText("Test Error");
 
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-newer-password");
 

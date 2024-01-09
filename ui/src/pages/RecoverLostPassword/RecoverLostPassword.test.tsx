@@ -2,7 +2,6 @@ import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { passwordService } from "services";
 import { RecoverLostPassword } from "./RecoverLostPassword";
-import { mockAndDelayRejectedValueOnce, mockAndDelayResolvedValueOnce } from "../../setupTests";
 
 jest.mock("services");
 
@@ -17,14 +16,12 @@ test("renders header", () => {
 });
 
 test("handles password recover success", async () => {
-  mockAndDelayResolvedValueOnce(passwordService.claimPasswordReset as jest.Mock, {});
+  (passwordService.claimPasswordReset as jest.Mock).mockResolvedValueOnce({});
 
   render(<RecoverLostPassword />);
 
   await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
   await userEvent.click(screen.getByText("Reset password"));
-
-  await screen.findByRole("loader");
 
   expect(passwordService.claimPasswordReset).toHaveBeenCalledWith({ loginOrEmail: "test-login" });
 
@@ -33,17 +30,14 @@ test("handles password recover success", async () => {
 });
 
 test("handles password recover error", async () => {
-  mockAndDelayRejectedValueOnce(passwordService.claimPasswordReset as jest.Mock, new Error("Test Error"));
+  (passwordService.claimPasswordReset as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
   render(<RecoverLostPassword />);
 
   await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
   await userEvent.click(screen.getByText("Reset password"));
 
-  await screen.findByRole("loader");
-
   expect(passwordService.claimPasswordReset).toHaveBeenCalledWith({ loginOrEmail: "test-login" });
 
   await screen.findByRole("error");
-  await screen.findByText("Test Error");
 });

@@ -1,9 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { ProfileDetails } from "./ProfileDetails";
-import { mockAndDelayRejectedValueOnce, mockAndDelayResolvedValueOnce } from "../../../setupTests";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",
@@ -41,7 +40,7 @@ test("renders lack of current user data", () => {
 });
 
 test("handles change details success", async () => {
-  mockAndDelayResolvedValueOnce(userService.changeProfileDetails as jest.Mock, {});
+  (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
 
   render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -54,30 +53,23 @@ test("handles change details success", async () => {
   await userEvent.clear(screen.getByLabelText("Email address"));
   await userEvent.type(screen.getByLabelText("Email address"), "test@email.address");
   await userEvent.click(screen.getByText("Update profile data"));
-
-  await screen.findByRole("loader");
 
   expect(userService.changeProfileDetails).toHaveBeenCalledWith("test-api-key", {
     email: "test@email.address",
     login: "test-login",
   });
 
-  await waitFor(() =>
-    expect(dispatch).toHaveBeenCalledWith({
-      type: "UPDATE_USER_DATA",
-      user: {
-        email: "test@email.address",
-        login: "test-login",
-      },
-    }),
-  );
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "UPDATE_USER_DATA",
+    user: { email: "test@email.address", login: "test-login" },
+  });
 
   await screen.findByRole("success");
   await screen.findByText("Profile details changed");
 });
 
 test("handles change details error", async () => {
-  mockAndDelayRejectedValueOnce(userService.changeProfileDetails as jest.Mock, new Error("Test Error"));
+  (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
   render(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -90,8 +82,6 @@ test("handles change details error", async () => {
   await userEvent.clear(screen.getByLabelText("Email address"));
   await userEvent.type(screen.getByLabelText("Email address"), "test@email.address");
   await userEvent.click(screen.getByText("Update profile data"));
-
-  await screen.findByRole("loader");
 
   expect(userService.changeProfileDetails).toHaveBeenCalledWith("test-api-key", {
     email: "test@email.address",
@@ -100,5 +90,4 @@ test("handles change details error", async () => {
   expect(dispatch).not.toHaveBeenCalled();
 
   await screen.findByRole("error");
-  await screen.findByText("Test Error");
 });

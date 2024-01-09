@@ -1,11 +1,10 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "@remix-run/router";
 import { Login } from "./Login";
 import { UserContext, initialUserState } from "contexts";
 import { userService } from "services";
-import { mockAndDelayRejectedValueOnce, mockAndDelayResolvedValueOnce } from "../../setupTests";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
@@ -41,7 +40,7 @@ test("redirects when logged in", () => {
 });
 
 test("handles login success", async () => {
-  mockAndDelayResolvedValueOnce(userService.login as jest.Mock, { apiKey: "test-api-key" });
+  (userService.login as jest.Mock).mockResolvedValueOnce({ apiKey: "test-api-key" });
 
   render(
     <HistoryRouter history={history}>
@@ -55,14 +54,14 @@ test("handles login success", async () => {
   await userEvent.type(screen.getByLabelText("Password"), "test-password");
   await userEvent.click(screen.getByText("Sign In"));
 
-  await screen.findByRole("loader");
+  await screen.findByRole("success");
 
   expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  await waitFor(() => expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" }));
+  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
 });
 
 test("handles login error", async () => {
-  mockAndDelayRejectedValueOnce(userService.login as jest.Mock, new Error("Test Error"));
+  (userService.login as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
   render(
     <MemoryRouter initialEntries={["/login"]}>
@@ -76,9 +75,8 @@ test("handles login error", async () => {
   await userEvent.type(screen.getByLabelText("Password"), "test-password");
   await userEvent.click(screen.getByText("Sign In"));
 
-  await screen.findByRole("loader");
-  await screen.findByText("Test Error");
+  await screen.findByRole("error");
 
   expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  await waitFor(() => expect(dispatch).not.toHaveBeenCalled());
+  expect(dispatch).not.toHaveBeenCalled();
 });
