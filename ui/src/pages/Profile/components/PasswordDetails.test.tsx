@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { PasswordDetails } from "./PasswordDetails";
+import { renderWithClient } from "tests";
 
 const mockState: UserState = {
   apiKey: "test-api-key",
@@ -18,7 +19,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  render(
+  renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
     </UserContext.Provider>,
@@ -30,7 +31,7 @@ test("renders header", () => {
 test("handles change password success", async () => {
   (userService.changePassword as jest.Mock).mockResolvedValueOnce({});
 
-  render(
+  renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
     </UserContext.Provider>,
@@ -53,7 +54,7 @@ test("handles change password success", async () => {
 test("handles change password error", async () => {
   (userService.changePassword as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  render(
+  renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
     </UserContext.Provider>,

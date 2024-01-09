@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { passwordService } from "services";
 import { RecoverLostPassword } from "./RecoverLostPassword";
+import { renderWithClient } from "tests";
 
 jest.mock("services");
 
@@ -10,7 +11,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  render(<RecoverLostPassword />);
+  renderWithClient(<RecoverLostPassword />);
 
   expect(screen.getByText("Recover lost password")).toBeInTheDocument();
 });
@@ -18,7 +19,7 @@ test("renders header", () => {
 test("handles password recover success", async () => {
   (passwordService.claimPasswordReset as jest.Mock).mockResolvedValueOnce({});
 
-  render(<RecoverLostPassword />);
+  renderWithClient(<RecoverLostPassword />);
 
   await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
   await userEvent.click(screen.getByText("Reset password"));
@@ -32,7 +33,7 @@ test("handles password recover success", async () => {
 test("handles password recover error", async () => {
   (passwordService.claimPasswordReset as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  render(<RecoverLostPassword />);
+  renderWithClient(<RecoverLostPassword />);
 
   await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
   await userEvent.click(screen.getByText("Reset password"));

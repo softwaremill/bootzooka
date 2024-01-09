@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { UserContext, UserState, initialUserState } from "contexts";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { Login } from "pages";
+import { renderWithClient } from "tests";
 
 const dispatch = jest.fn();
 
@@ -11,7 +12,7 @@ beforeEach(() => {
 });
 
 test("renders protected route for unlogged user", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes>
@@ -33,7 +34,7 @@ test("renders protected route for logged user", () => {
     loggedIn: true,
   };
 
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes>

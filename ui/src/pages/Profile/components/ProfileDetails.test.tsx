@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
 import { userService } from "services";
 import { ProfileDetails } from "./ProfileDetails";
+import { renderWithClient } from "tests";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",
@@ -18,7 +19,7 @@ beforeEach(() => {
 });
 
 test("renders current user data", () => {
-  render(
+  renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>,
@@ -29,7 +30,7 @@ test("renders current user data", () => {
 });
 
 test("renders lack of current user data", () => {
-  render(
+  renderWithClient(
     <UserContext.Provider value={{ state: { ...loggedUserState, user: null }, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>,
@@ -42,7 +43,7 @@ test("renders lack of current user data", () => {
 test("handles change details success", async () => {
   (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
 
-  render(
+  renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>,
@@ -71,7 +72,7 @@ test("handles change details success", async () => {
 test("handles change details error", async () => {
   (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  render(
+  renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>,

@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { UserContext, UserState } from "contexts";
 import { Profile } from "./Profile";
+import { renderWithClient } from "tests";
 
 const mockState: UserState = {
   apiKey: "test-api-key",
@@ -15,7 +16,7 @@ beforeEach(() => {
 });
 
 test("renders headers", () => {
-  render(
+  renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <Profile />
     </UserContext.Provider>,
