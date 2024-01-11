@@ -8,20 +8,20 @@ import useFormikValuesChanged from "./useFormikValuesChanged";
 import { ErrorMessage } from "../";
 import { UseMutationResult } from "react-query";
 
-interface FeedbackButtonProps extends ButtonProps {
+interface FeedbackButtonProps<TMutationData> extends ButtonProps {
   label: string;
   Icon: IconType;
-  mutation: UseMutationResult<any, any, any, any>;
+  mutation: UseMutationResult<TMutationData, any, any, any>;
   successLabel?: string;
 }
 
-export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
+export const FeedbackButton = <TMutationData,>({
   mutation,
   label,
   Icon,
   successLabel = "Success",
   ...buttonProps
-}) => {
+}: FeedbackButtonProps<TMutationData>): React.ReactElement => {
   useFormikValuesChanged(() => {
     !mutation.isIdle && mutation.reset();
   });
