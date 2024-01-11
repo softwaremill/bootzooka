@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { PasswordReset } from "./PasswordReset";
 import { passwordService } from "services";
+import { renderWithClient } from "tests";
 
 jest.mock("services");
 
@@ -10,7 +11,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  render(<PasswordReset />);
+  renderWithClient(<PasswordReset />);
 
   expect(screen.getByText("Password details")).toBeInTheDocument();
 });
@@ -20,7 +21,7 @@ test("handles password reset success", async () => {
   (window as any).location = new URL("https://www.example.com/password-reset?code=test-code");
   (passwordService.resetPassword as jest.Mock).mockResolvedValueOnce({});
 
-  render(<PasswordReset />);
+  renderWithClient(<PasswordReset />);
 
   await userEvent.type(screen.getByLabelText("New password"), "test-new-password");
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
@@ -37,7 +38,7 @@ test("handles lack of url code", async () => {
   (window as any).location = new URL("https://www.example.com/password-reset");
   (passwordService.resetPassword as jest.Mock).mockResolvedValueOnce({});
 
-  render(<PasswordReset />);
+  renderWithClient(<PasswordReset />);
 
   await userEvent.type(screen.getByLabelText("New password"), "test-new-password");
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
@@ -51,7 +52,7 @@ test("handles password reset error", async () => {
   (window as any).location = new URL("https://www.example.com/password-reset?code=test-code");
   (passwordService.resetPassword as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  render(<PasswordReset />);
+  renderWithClient(<PasswordReset />);
 
   await userEvent.type(screen.getByLabelText("New password"), "test-new-password");
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");

@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "@remix-run/router";
 import { UserContext, initialUserState } from "contexts";
 import { userService } from "services";
 import { Register } from "./Register";
+import { renderWithClient } from "tests";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
@@ -16,7 +17,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
@@ -28,7 +29,7 @@ test("renders header", () => {
 });
 
 test("redirects when registered", () => {
-  render(
+  renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Register />
@@ -42,7 +43,7 @@ test("redirects when registered", () => {
 test("handles register success", async () => {
   (userService.registerUser as jest.Mock).mockResolvedValueOnce({ apiKey: "test-api-key" });
 
-  render(
+  renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />
@@ -70,7 +71,7 @@ test("handles register success", async () => {
 test("handles register error", async () => {
   (userService.registerUser as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
 
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Register />

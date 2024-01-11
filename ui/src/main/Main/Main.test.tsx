@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { UserContext, initialUserState } from "contexts";
 import { Main } from "./Main";
+import { renderWithClient } from "tests";
 
 const dispatch = jest.fn();
 
@@ -10,7 +11,7 @@ beforeEach(() => {
 });
 
 test("shows loader on unspecified logged in status", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Main />
@@ -22,7 +23,7 @@ test("shows loader on unspecified logged in status", () => {
 });
 
 test("shows app on logged in status", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
         <Main />
@@ -34,7 +35,7 @@ test("shows app on logged in status", () => {
 });
 
 test("shows app on logged out status", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
         <Main />

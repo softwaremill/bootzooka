@@ -6,9 +6,9 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
-import { usePromise } from "react-use-promise-matcher";
 import { passwordService } from "services";
 import { FormikInput, FeedbackButton } from "components";
+import { useMutation } from "react-query";
 
 const validationSchema = Yup.object({
   password: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -21,8 +21,7 @@ type PasswordResetParams = Yup.InferType<typeof validationSchema>;
 
 export const PasswordReset: React.FC = () => {
   const code = new URLSearchParams(window.location.search).get("code") || "";
-
-  const [result, send, clear] = usePromise(({ password }: PasswordResetParams) =>
+  const mutation = useMutation(({ password }: PasswordResetParams) =>
     passwordService.resetPassword({ password, code }),
   );
 
@@ -36,7 +35,7 @@ export const PasswordReset: React.FC = () => {
               password: "",
               repeatedPassword: "",
             }}
-            onSubmit={send}
+            onSubmit={(values) => mutation.mutate(values)}
             validationSchema={validationSchema}
           >
             <Form as={FormikForm}>
@@ -47,8 +46,7 @@ export const PasswordReset: React.FC = () => {
                 type="submit"
                 label="Update password"
                 Icon={BiArrowFromBottom}
-                result={result}
-                clear={clear}
+                mutation={mutation}
                 successLabel="Password changed"
               />
             </Form>

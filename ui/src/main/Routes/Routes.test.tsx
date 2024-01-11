@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { UserContext, UserState, initialUserState } from "contexts";
 import { Routes } from "./Routes";
+import { renderWithClient } from "tests";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",
@@ -16,7 +17,7 @@ beforeEach(() => {
 });
 
 test("renders main route", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes />
@@ -28,7 +29,7 @@ test("renders main route", () => {
 });
 
 test("renders protected route for unlogged user", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes />
@@ -40,7 +41,7 @@ test("renders protected route for unlogged user", () => {
 });
 
 test("renders protected route for logged user", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes />
@@ -52,7 +53,7 @@ test("renders protected route for logged user", () => {
 });
 
 test("renders not found page", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={["/not-specified-route"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes />

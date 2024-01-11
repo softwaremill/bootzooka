@@ -4,12 +4,12 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
-import { usePromise } from "react-use-promise-matcher";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { userService } from "services";
 import { FormikInput, FeedbackButton } from "components";
+import { useMutation } from "react-query";
 
 const validationSchema = Yup.object({
   currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -26,7 +26,7 @@ export const PasswordDetails: React.FC = () => {
     state: { apiKey },
   } = React.useContext(UserContext);
 
-  const [result, send, clear] = usePromise(({ currentPassword, newPassword }: PasswordDetailsParams) =>
+  const mutation = useMutation(({ currentPassword, newPassword }: PasswordDetailsParams) =>
     userService.changePassword(apiKey, { currentPassword, newPassword }),
   );
 
@@ -41,7 +41,7 @@ export const PasswordDetails: React.FC = () => {
               newPassword: "",
               repeatedPassword: "",
             }}
-            onSubmit={send}
+            onSubmit={(values) => mutation.mutate(values)}
             validationSchema={validationSchema}
           >
             <Form as={FormikForm}>
@@ -55,8 +55,7 @@ export const PasswordDetails: React.FC = () => {
                 label="Update password"
                 variant="dark"
                 Icon={BiArrowFromBottom}
-                result={result}
-                clear={clear}
+                mutation={mutation}
                 successLabel="Password changed"
               />
             </Form>

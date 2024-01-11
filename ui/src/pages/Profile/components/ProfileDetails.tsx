@@ -4,12 +4,12 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
-import { usePromise } from "react-use-promise-matcher";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { userService } from "services";
 import { FormikInput, FeedbackButton } from "components";
+import { useMutation } from "react-query";
 
 const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -24,9 +24,11 @@ export const ProfileDetails: React.FC = () => {
     state: { apiKey, user },
   } = React.useContext(UserContext);
 
-  const [result, send, clear] = usePromise((values: ProfileDetailsParams) =>
-    userService.changeProfileDetails(apiKey, values).then(() => dispatch({ type: "UPDATE_USER_DATA", user: values })),
-  );
+  const mutation = useMutation((values: ProfileDetailsParams) => userService.changeProfileDetails(apiKey, values), {
+    onSuccess: (_, values) => {
+      dispatch({ type: "UPDATE_USER_DATA", user: values });
+    },
+  });
 
   return (
     <Container className="py-5">
@@ -38,7 +40,7 @@ export const ProfileDetails: React.FC = () => {
               login: user?.login || "",
               email: user?.email || "",
             }}
-            onSubmit={send}
+            onSubmit={(values) => mutation.mutate(values)}
             validationSchema={validationSchema}
           >
             <Form as={FormikForm}>
@@ -51,8 +53,7 @@ export const ProfileDetails: React.FC = () => {
                 label="Update profile data"
                 variant="dark"
                 Icon={BiArrowFromBottom}
-                result={result}
-                clear={clear}
+                mutation={mutation}
                 successLabel="Profile details changed"
               />
             </Form>
