@@ -1,14 +1,18 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { UserContext, UserState, initialUserState } from "contexts";
 import { Top } from "./Top";
+import { userService } from "../../services";
+import { renderWithClient } from "../../tests";
 
 const loggedUserState: UserState = {
   apiKey: "test-api-key",
   user: { login: "user-login", email: "email@address.pl", createdOn: "2020-10-09T09:57:17.995288Z" },
   loggedIn: true,
 };
+
+jest.mock("services");
 
 const dispatch = jest.fn();
 
@@ -17,7 +21,7 @@ beforeEach(() => {
 });
 
 test("renders brand name", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Top />
@@ -29,7 +33,7 @@ test("renders brand name", () => {
 });
 
 test("renders nav bar unlogged user", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Top />
@@ -44,7 +48,7 @@ test("renders nav bar unlogged user", () => {
 });
 
 test("renders nav bar for logged user", () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Top />
@@ -59,7 +63,9 @@ test("renders nav bar for logged user", () => {
 });
 
 test("handles logout logged user", async () => {
-  render(
+  (userService.logout as jest.Mock).mockResolvedValueOnce({});
+
+  renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Top />

@@ -168,6 +168,23 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     requests.getUser("invalid").code shouldBe StatusCode.Unauthorized
   }
 
+  "/user/logout" should "logout the user" in {
+    // given
+    val RegisteredUser(_, _, _, apiKey) = requests.newRegisteredUsed()
+
+    // when
+    val response = requests.logoutUser(apiKey)
+
+    // then
+    response.code shouldBe StatusCode.Ok
+
+    // when
+    val responseAfterLogout = requests.getUser(apiKey)
+
+    // then
+    responseAfterLogout.code shouldBe StatusCode.Unauthorized
+  }
+
   "/user/changepassword" should "change the password" in {
     // given
     val RegisteredUser(login, _, password, apiKey) = requests.newRegisteredUsed()

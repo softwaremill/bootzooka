@@ -27,6 +27,21 @@ test("logs in user", async () => {
   expect(axios.post).toHaveBeenCalledWith("api/v1/user/login", { ...params, apiKeyValidHours: 1 });
 });
 
+test("logs out user", async () => {
+  const data = {};
+  const testApiKey = "test-api-key";
+
+  (axios.request as jest.Mock).mockResolvedValueOnce({ data });
+
+  await expect(userService.logout(testApiKey)).resolves.toEqual(data);
+  expect(axios.request).toHaveBeenCalledWith({
+    headers: { Authorization: `Bearer ${testApiKey}` },
+    method: "POST",
+    url: "api/v1/user/logout",
+    data: { apiKey: testApiKey },
+  });
+});
+
 test("gets current user", async () => {
   const data = { login: "test-login", email: "test-email", createdOn: "test-date" };
   const testApiKey = "test-api-key";
@@ -58,7 +73,7 @@ test("changes profile details", async () => {
 });
 
 test("changes password", async () => {
-  const data = {};
+  const data = { apiKey: "new-api-key" };
   const testApiKey = "test-api-key";
   const params = { currentPassword: "test-current-password", newPassword: "test-new-password" };
 

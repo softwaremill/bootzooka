@@ -41,6 +41,15 @@ class Requests(backend: SttpBackend[IO, Any]) extends TestSupport {
       .unwrap
   }
 
+  def logoutUser(apiKey: String): Response[Either[String, String]] = {
+    basicRequest
+      .post(uri"$basePath/user/logout")
+      .body(Logout_IN(apiKey).asJson.noSpaces)
+      .header("Authorization", s"Bearer $apiKey")
+      .send(backend)
+      .unwrap
+  }
+
   def getUser(apiKey: String): client3.Response[Either[String, String]] = {
     basicRequest
       .get(uri"$basePath/user")
