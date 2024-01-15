@@ -31,10 +31,7 @@ export const PasswordDetails: React.FC = () => {
     ({ currentPassword, newPassword }: PasswordDetailsParams) =>
       userService.changePassword(apiKey, { currentPassword, newPassword }),
     {
-      onSuccess: (data) => {
-        console.log(data);
-        dispatch({ type: "SET_API_KEY", apiKey: data.apiKey });
-      },
+      onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
     },
   );
 
