@@ -21,6 +21,18 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
       _ <- logger.debug[ConnectionIO](s"Creating a new api key for user $userId, valid until: $validUntil")
       _ <- apiKeyModel.insert(apiKey)
     } yield apiKey
+
+  def invalidate(id: Id @@ ApiKey): ConnectionIO[Unit] =
+    for {
+      _ <- logger.debug[ConnectionIO](s"Invalidating api key $id")
+      _ <- apiKeyModel.delete(id)
+    } yield ()
+
+  def invalidateAll(userId: Id @@ User): ConnectionIO[Unit] =
+    for {
+      _ <- logger.debug[ConnectionIO](s"Invalidating all api keys for user $userId")
+      _ <- apiKeyModel.deleteAll(userId)
+    } yield ()
 }
 
 case class ApiKey(id: Id @@ ApiKey, userId: Id @@ User, createdOn: Instant, validUntil: Instant)

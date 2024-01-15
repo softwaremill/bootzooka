@@ -21,6 +21,13 @@ const registerUser = (params: { login: string; email: string; password: string }
 const login = (params: { loginOrEmail: string; password: string }) =>
   axios.post(`${context}/login`, { ...params, apiKeyValidHours: 1 }).then(({ data }) => apiKeySchema.validate(data));
 
+const logout = (apiKey: string | null) =>
+  _securedRequest(apiKey, {
+    method: "POST",
+    url: `${context}/logout`,
+    data: { apiKey },
+  }).then(({ data }) => emptySchema.validate(data));
+
 const getCurrentUser = (apiKey: string | null) =>
   _securedRequest(apiKey, {
     method: "GET",
@@ -39,7 +46,7 @@ const changePassword = (apiKey: string | null, params: { currentPassword: string
     method: "POST",
     url: `${context}/changepassword`,
     data: params,
-  }).then(({ data }) => emptySchema.validate(data));
+  }).then(({ data }) => apiKeySchema.validate(data));
 
 const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
   axios.request({
@@ -52,6 +59,7 @@ const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
 export const userService = {
   registerUser,
   login,
+  logout,
   getCurrentUser,
   changeProfileDetails,
   changePassword,

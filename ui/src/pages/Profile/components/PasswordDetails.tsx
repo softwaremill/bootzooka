@@ -24,11 +24,23 @@ type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 export const PasswordDetails: React.FC = () => {
   const {
     state: { apiKey },
+    dispatch,
   } = React.useContext(UserContext);
 
-  const mutation = useMutation(({ currentPassword, newPassword }: PasswordDetailsParams) =>
-    userService.changePassword(apiKey, { currentPassword, newPassword }),
+  const mutation = useMutation(
+    ({ currentPassword, newPassword }: PasswordDetailsParams) =>
+      userService.changePassword(apiKey, { currentPassword, newPassword }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        dispatch({ type: "SET_API_KEY", apiKey: data.apiKey });
+      },
+    },
   );
+
+  React.useEffect(() => {
+    localStorage.setItem("apiKey", apiKey || "");
+  }, [apiKey]);
 
   return (
     <Container className="py-5">
