@@ -61,7 +61,7 @@ val loggingDependencies = Seq(
 )
 
 val configDependencies = Seq(
-  "com.github.pureconfig" %% "pureconfig" % "0.17.4"
+  "com.github.pureconfig" %% "pureconfig" % "0.17.5"
 )
 
 val baseDependencies = Seq(
