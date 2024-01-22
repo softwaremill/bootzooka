@@ -28,7 +28,8 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
     */
   val baseEndpoint: PublicEndpoint[Unit, (StatusCode, Error_OUT), Unit, Any] =
     endpoint.errorOut(failOutput)
-      .out(header(XFrameOptions, "SAMEORIGIN"))
+      .out(header("X-Frame-Options", "DENY"))
+      .out(header("Content-Security-Policy", "frame-ancestors 'none'"))
 
   /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
