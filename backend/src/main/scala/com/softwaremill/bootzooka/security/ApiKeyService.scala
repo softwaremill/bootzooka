@@ -28,10 +28,10 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
       _ <- apiKeyModel.delete(id)
     } yield ()
 
-  def invalidateAll(userId: Id @@ User): ConnectionIO[Unit] =
+  def invalidateAllForUser(userId: Id @@ User): ConnectionIO[Unit] =
     for {
       _ <- logger.debug[ConnectionIO](s"Invalidating all api keys for user $userId")
-      _ <- apiKeyModel.deleteAll(userId)
+      _ <- apiKeyModel.deleteAllForUser(userId)
     } yield ()
 }
 

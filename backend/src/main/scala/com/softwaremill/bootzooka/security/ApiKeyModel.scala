@@ -22,7 +22,7 @@ class ApiKeyModel {
       .option
   }
 
-  def deleteAll(id: Id @@ User): ConnectionIO[Unit] = {
+  def deleteAllForUser(id: Id @@ User): ConnectionIO[Unit] = {
     sql"""DELETE FROM api_keys WHERE user_id = $id""".update.run.void
   }
 

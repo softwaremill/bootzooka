@@ -154,7 +154,7 @@ class UserService(
 
     def invalidateKeysAndCreateNew(user: User): ConnectionIO[ApiKey] = {
       for {
-        _ <- apiKeyService.invalidateAll(user.id)
+        _ <- apiKeyService.invalidateAllForUser(user.id)
         apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
       } yield apiKey
     }
