@@ -28,6 +28,7 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
     */
   val baseEndpoint: PublicEndpoint[Unit, (StatusCode, Error_OUT), Unit, Any] =
     endpoint.errorOut(failOutput)
+      // Prevent clickjacking attacks: https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html
       .out(header("X-Frame-Options", "DENY"))
       .out(header("Content-Security-Policy", "frame-ancestors 'none'"))
 
