@@ -49,3 +49,21 @@ CREATE TABLE "scheduled_emails"
 );
 ALTER TABLE "scheduled_emails"
   ADD CONSTRAINT "scheduled_emails_id" PRIMARY KEY ("id");
+
+-- PASSKEYS
+CREATE TABLE "passkeys"
+(
+  "id"                        TEXT NOT NULL,
+  "user_id"                   TEXT NOT NULL,
+  "attestedCredentialData"    BYTEA NOT NULL,
+  "attestationStatement"      BYTEA NOT NULL,
+  "transports"                BYTEA NOT NULL,
+  "counter"                   BIGINT NOT NULL,
+  "authenticatorExtensions"   BYTEA NOT NULL,
+  "clientExtensions"          TEXT NOT NULL
+);
+
+ALTER TABLE "passkeys"
+  ADD CONSTRAINT "passkeys_id" PRIMARY KEY ("id");
+ALTER TABLE "passkeys"
+  ADD CONSTRAINT "passkeys_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE;

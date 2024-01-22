@@ -76,6 +76,20 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
         } yield UpdateUser_OUT()).toOut
     )
 
+  private val registerPasskeyEndpoint = authedEndpoint.post
+    .in(UserPath / "registerpasskey")
+    .in(header[String]("Origin"))
+    .in(jsonBody[RegisterPasskey_IN])
+    .out(jsonBody[RegisterPasskey_OUT])
+    .serverLogic(id => {
+        case (origin, data) =>
+          (for {
+            _ <- userService.registerPasskey(id, origin, data.attestationObject, data.clientDataJSON,
+                                              data.clientExtensionJSON, data.transports).transact(xa)
+          } yield RegisterPasskey_OUT()).toOut
+      }
+    )
+
   val endpoints: ServerEndpoints =
     NonEmptyList
       .of(
@@ -83,7 +97,8 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
         loginEndpoint,
         changePasswordEndpoint,
         getUserEndpoint,
-        updateUserEndpoint
+        updateUserEndpoint,
+        registerPasskeyEndpoint
       )
       .map(_.tag("user"))
 }
@@ -102,4 +117,12 @@ object UserApi {
   case class UpdateUser_OUT()
 
   case class GetUser_OUT(login: String, email: String, createdOn: Instant)
+
+  case class RegisterPasskey_IN(attestationObject: Array[Int], clientDataJSON: Array[Int],
+                                clientExtensionJSON: String, transports: List[String])
+
+  case class RegisterPasskey_OUT()
+
+  case class AuthenticatorSerialization(attestedCredentialData: Array[Byte], attestationStatement: Array[Byte],
+    transports: Array[Byte], counter: Long, authenticatorExtensions: Array[Byte], clientExtensions: String)
 }

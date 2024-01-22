@@ -9,11 +9,34 @@ import com.softwaremill.bootzooka.logging.FLogging
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util._
 import com.softwaremill.tagging.@@
+import com.webauthn4j.WebAuthnManager
 
 import scala.concurrent.duration.Duration
+import com.webauthn4j.data.client.Origin
+import com.webauthn4j.server.ServerProperty
+import com.webauthn4j.data.RegistrationData
+import com.webauthn4j.data.RegistrationParameters
+import com.webauthn4j.data.RegistrationRequest
+import com.webauthn4j.validator.exception.ValidationException
+import com.webauthn4j.converter.exception.DataConversionException
+import com.webauthn4j.authenticator.AuthenticatorImpl
+import com.webauthn4j.authenticator.Authenticator
+import com.webauthn4j.data.client.challenge.Challenge
+import com.webauthn4j.converter.util.ObjectConverter
+import com.webauthn4j.converter.AttestedCredentialDataConverter
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.webauthn4j.data.attestation.statement.AttestationStatement
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.webauthn4j.data.AuthenticatorTransport
+import com.webauthn4j.data.extension.authenticator.AuthenticationExtensionsAuthenticatorOutputs
+import com.webauthn4j.data.extension.authenticator.RegistrationExtensionAuthenticatorOutput
+import com.webauthn4j.data.extension.client.AuthenticationExtensionsClientOutputs
+import com.webauthn4j.data.extension.client.RegistrationExtensionClientOutput
 
 class UserService(
     userModel: UserModel,
+    webAuthnManager: WebAuthnManager,
     emailScheduler: EmailScheduler,
     emailTemplates: EmailTemplates,
     apiKeyService: ApiKeyService,
@@ -21,6 +44,7 @@ class UserService(
     clock: Clock,
     config: UserConfig
 ) extends FLogging {
+
 
   private val LoginAlreadyUsed = "Login already in use!"
   private val EmailAlreadyUsed = "E-mail already in use!"
@@ -159,6 +183,136 @@ class UserService(
       Fail.Unauthorized(validationErrorMsg).raiseError[ConnectionIO, Unit]
     }
   }
+
+  def registerPasskey(id: Id @@ User, origin: String, attestationObject: Array[Int], clientDataJSON: Array[Int],
+                      clientExtensionJSON: String, transports: List[String]): ConnectionIO[Unit]  = {
+    println(s"Got new registerpasskey ${id}; ${attestationObject}; ${clientDataJSON}; ${clientExtensionJSON}; " +
+      s"${transports}")
+
+      for {
+        authenticator <- validateNewPasskey(origin, attestationObject.map(_.toByte), clientDataJSON.map(_.toByte), 
+    clientExtensionJSON, transports)
+        // _ <- authenticator.
+        _ <- logger.info[ConnectionIO](s"Got authenticator: ${authenticator}")
+        _ <- serializeAuthenticator(authenticator)
+
+      } yield()
+  }
+
+  private def validateNewPasskey(originHeader: String, attestationObject: Array[Byte], clientDataJSON: Array[Byte],
+                                clientExtensionJSON: String, transports: List[String]): ConnectionIO[Authenticator] = {
+
+    // Server properties
+    // ogarnąć róne porty
+    // val origin: Origin = Origin.create(originHeader)
+    val origin = Origin.create("https://bootzooka.internal:3000")
+    val rpId: String = "bootzooka.internal" /* set rpId */;
+    val challenge: Challenge = new Challenge() {
+      def getValue(): Array[Byte] = Array(117, 61, 252, 231, 191, 49).map(_.toByte)
+    }
+    val tokenBindingId = null /* set tokenBindingId */;
+    val serverProperty: ServerProperty = new ServerProperty(origin, rpId, challenge, tokenBindingId);
+
+    // expectations
+    val userVerificationRequired = false;
+    val userPresenceRequired = true;
+
+    import scala.jdk.CollectionConverters._
+
+    val registrationRequest = new RegistrationRequest(attestationObject, clientDataJSON, clientExtensionJSON, 
+      transports.toSet.asJava);
+    val registrationParameters = new RegistrationParameters(serverProperty, userVerificationRequired, userPresenceRequired);
+    var registrationData : RegistrationData = null;
+    try {
+        registrationData = webAuthnManager.parse(registrationRequest);
+    } catch{ 
+      case e: DataConversionException => throw e
+    } 
+
+    try {
+        webAuthnManager.validate(registrationData, registrationParameters);
+    } catch {
+      case e: ValidationException =>
+        // If you would like to handle WebAuthn data validation error, please catch ValidationException
+        throw e;
+    }
+
+    // please persist Authenticator object, which will be used in the authentication process.
+    return (new AuthenticatorImpl( // You may create your own Authenticator implementation to save friendly authenticator name
+                    registrationData.getAttestationObject().getAuthenticatorData().getAttestedCredentialData(),
+                    registrationData.getAttestationObject().getAttestationStatement(),
+                    registrationData.getAttestationObject().getAuthenticatorData().getSignCount()
+            ).asInstanceOf[Authenticator]).pure[ConnectionIO];
+  }
+
+  def serializeAuthenticator(authenticator: Authenticator): ConnectionIO[Unit] = {
+    val objectConverter = new ObjectConverter()
+    val attestedCredentialDataConverter = new AttestedCredentialDataConverter(objectConverter);
+
+    // serialize
+    val attestedCredentialDataSerialized = attestedCredentialDataConverter.convert(authenticator.getAttestedCredentialData())
+
+    val envelope = new AttestationStatementEnvelope(authenticator.getAttestationStatement());
+    val serializedAttestationStatement = objectConverter.getCborConverter().writeValueAsBytes(envelope);
+
+    val serializedTransports = objectConverter.getJsonConverter().writeValueAsString(authenticator.getTransports());
+
+    val serializedAuthenticatorExtensions = objectConverter.getCborConverter().writeValueAsBytes(authenticator.getAuthenticatorExtensions());
+
+    val serializedClientExtensions = objectConverter.getJsonConverter().writeValueAsString(authenticator.getClientExtensions());
+    
+    println(s"""
+      attestedCredentialDataSerialized = ${attestedCredentialDataSerialized}
+      serializedAttestationStatement = ${serializedAttestationStatement}
+      serializedTransports = ${serializedTransports}
+      serializedAuthenticatorExtensions = ${serializedAuthenticatorExtensions}
+      serializedClientExtensions = ${serializedClientExtensions}
+    """)
+
+    val deserializedAttestedCredential = attestedCredentialDataConverter.convert(attestedCredentialDataSerialized);
+
+    val deserializedEnvelope = objectConverter.getCborConverter().readValue(
+      serializedAttestationStatement, classOf[AttestationStatementEnvelope]);
+
+    val deserializedAttestationStatement = deserializedEnvelope.getAttestationStatement();
+    val deserializedAuthTransport = objectConverter.getJsonConverter().readValue(serializedTransports, classOf[Set[AuthenticatorTransport]])
+    val deseiralizedAuthExtensions = objectConverter.getCborConverter().readValue(serializedAuthenticatorExtensions, classOf[AuthenticationExtensionsAuthenticatorOutputs[RegistrationExtensionAuthenticatorOutput]])
+
+    val deserializedClientExt = objectConverter.getJsonConverter().readValue(serializedClientExtensions, classOf[AuthenticationExtensionsClientOutputs[RegistrationExtensionClientOutput]])
+
+    println(s"""
+      deserializedAttestedCredential = ${deserializedAttestedCredential}
+      deserializedAttestationStatement = ${deserializedAttestationStatement}
+      deserializedAuthTransport = ${deserializedAuthTransport}
+      deseiralizedAuthExtensions = ${deseiralizedAuthExtensions}
+      deserializedClientExt = ${deserializedClientExt}
+    """)
+    ().pure[ConnectionIO]
+  }
+
+  // def validatePasskey() = {
+  //   webAuthnManager.getAuthenticationDataValidator().
+  // }
+}
+
+@JsonCreator
+class AttestationStatementEnvelope(
+   @JsonProperty("attStmt")
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.NAME,
+            include = JsonTypeInfo.As.EXTERNAL_PROPERTY,
+            property = "fmt"
+    )
+  val attestationStatement: AttestationStatement){
+
+    @JsonProperty("fmt")
+    def getFormat(): String = {
+        return attestationStatement.getFormat();
+    }
+
+    def getAttestationStatement(): AttestationStatement = {
+        return attestationStatement;
+    }
 }
 
 object UserValidator {

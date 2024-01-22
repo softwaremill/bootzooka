@@ -23,7 +23,8 @@ export type UserAction =
   | { type: "SET_API_KEY"; apiKey: string | null }
   | { type: "UPDATE_USER_DATA"; user: Partial<UserDetails> }
   | { type: "LOG_IN"; user: UserDetails }
-  | { type: "LOG_OUT" };
+  | { type: "LOG_OUT" }
+  | { type: "PASSKEY_REGISTERED" };
 
 const userReducer = (state: UserState, action: UserAction): UserState => {
   switch (action.type) {

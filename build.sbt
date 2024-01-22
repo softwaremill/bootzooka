@@ -15,6 +15,7 @@ val http4sVersion = "0.23.23"
 val http4sBlazeVersion = "0.23.15"
 val circeVersion = "0.14.6"
 val password4jVersion = "1.7.3"
+val webauthnVersion = "0.22.0.RELEASE"
 val sttpVersion = "3.9.0"
 val prometheusVersion = "0.16.0"
 val tapirVersion = "1.8.0"
@@ -75,7 +76,8 @@ val apiDocsDependencies = Seq(
 )
 
 val securityDependencies = Seq(
-  "com.password4j" % "password4j" % password4jVersion
+  "com.password4j" % "password4j" % password4jVersion,
+  "com.webauthn4j" % "webauthn4j-core" % webauthnVersion
 )
 
 val emailDependencies = Seq(

@@ -12,6 +12,7 @@ import com.softwaremill.bootzooka.security.ApiKeyAuthToken
 import com.softwaremill.bootzooka.user.UserApi
 import com.softwaremill.bootzooka.util.{Clock, DefaultIdGenerator}
 import com.softwaremill.macwire.autocats.autowire
+import com.webauthn4j.WebAuthnManager
 import doobie.util.transactor.Transactor
 import io.prometheus.client.CollectorRegistry
 import sttp.client3.SttpBackend
@@ -49,6 +50,7 @@ object Dependencies {
       config.user,
       config.passwordReset,
       config.email,
+      WebAuthnManager.createNonStrictWebAuthnManager(),
       DefaultIdGenerator,
       clock,
       sttpBackend,
@@ -57,7 +59,7 @@ object Dependencies {
       new EmailService(_, _, _, _, _),
       EmailSender.create _,
       new ApiKeyAuthToken(_),
-      new PasswordResetAuthToken(_)
+      new PasswordResetAuthToken(_),
     )
   }
 }
