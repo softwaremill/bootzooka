@@ -199,6 +199,24 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Ok
   }
 
+  "/user/changepassword" should "create new session and invalidate all existing user's sessions" in {
+    // given
+    val RegisteredUser(login, _, password, apiKey1) = requests.newRegisteredUsed()
+    val newPassword = password + password
+
+    // login again to create another session
+    val apiKey2 = requests.loginUser(login, password, Some(3)).body.shouldDeserializeTo[Login_OUT].apiKey
+
+    // when
+    val response = requests.changePassword(apiKey1, password, newPassword)
+
+    // then
+    val newApiKey = response.body.shouldDeserializeTo[ChangePassword_OUT].apiKey
+    requests.getUser(newApiKey).code shouldBe StatusCode.Ok
+    requests.getUser(apiKey1).code shouldBe StatusCode.Unauthorized
+    requests.getUser(apiKey2).code shouldBe StatusCode.Unauthorized
+  }
+
   "/user/changepassword" should "not change the password if the current is invalid" in {
     // given
     val RegisteredUser(login, _, password, apiKey) = requests.newRegisteredUsed()
