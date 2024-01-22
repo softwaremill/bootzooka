@@ -5,14 +5,18 @@ import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 import { BiPowerOff, BiHappy } from "react-icons/bi";
 import { UserContext } from "contexts";
+import { useMutation } from "react-query";
+import { userService } from "../../services";
 
 export const Top: React.FC = () => {
   const {
-    state: { user, loggedIn },
+    state: { user, loggedIn, apiKey },
     dispatch,
   } = React.useContext(UserContext);
 
-  const handleLogOut = () => dispatch({ type: "LOG_OUT" });
+  const handleLogOut = useMutation(() => userService.logout(apiKey), {
+    onSuccess: () => dispatch({ type: "LOG_OUT" }),
+  });
 
   return (
     <Navbar variant="dark" bg="dark" sticky="top" collapseOnSelect expand="lg">
@@ -36,7 +40,7 @@ export const Top: React.FC = () => {
                   <BiHappy />
                   &nbsp;{user?.login}
                 </Nav.Link>{" "}
-                <Nav.Link className="text-lg-end" onClick={handleLogOut}>
+                <Nav.Link className="text-lg-end" onClick={() => handleLogOut.mutate()}>
                   <BiPowerOff />
                   &nbsp;Logout
                 </Nav.Link>

@@ -71,6 +71,8 @@ class UserService(
     } yield apiKey
   }
 
+  def logout(id: Id @@ ApiKey): ConnectionIO[Unit] = apiKeyService.invalidate(id)
+
   def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
     val newLoginClean = newLogin.trim()
     val newEmailClean = newEmail.trim()
@@ -130,19 +132,39 @@ class UserService(
     }
   }
 
-  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[Unit] = {
-    def validateNewPassword() =
+  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[ApiKey] = {
+    def validateUserPassword(userId: Id @@ User, currentPassword: String): ConnectionIO[User] = {
+      for {
+        user <- userOrNotFound(userModel.findById(userId))
+        _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
+      } yield user
+    }
+
+    def validateNewPassword(): ConnectionIO[Unit] =
       UserValidator(None, None, Some(newPassword)).as[ConnectionIO]
 
+    def updateUserPassword(user: User, newPassword: String): ConnectionIO[Unit] = {
+      for {
+        _ <- logger.debug[ConnectionIO](s"Changing password for user: ${user.id}")
+        _ <- userModel.updatePassword(user.id, User.hashPassword(newPassword))
+        confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
+        _ <- emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
+      } yield ()
+    }
+
+    def invalidateKeysAndCreateNew(user: User): ConnectionIO[ApiKey] = {
+      for {
+        _ <- apiKeyService.invalidateAllForUser(user.id)
+        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
+      } yield apiKey
+    }
+
     for {
-      user <- userOrNotFound(userModel.findById(userId))
-      _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
+      user <- validateUserPassword(userId, currentPassword)
       _ <- validateNewPassword()
-      _ <- logger.debug[ConnectionIO](s"Changing password for user: $userId")
-      _ <- userModel.updatePassword(userId, User.hashPassword(newPassword))
-      confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
-      _ <- emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
-    } yield ()
+      _ <- updateUserPassword(user, newPassword)
+      apiKey <- invalidateKeysAndCreateNew(user)
+    } yield apiKey
   }
 
   private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {

@@ -29,7 +29,8 @@ test("renders header", () => {
 });
 
 test("handles change password success", async () => {
-  (userService.changePassword as jest.Mock).mockResolvedValueOnce({});
+  const apiKey = "test-api-key";
+  (userService.changePassword as jest.Mock).mockResolvedValueOnce({ apiKey });
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
@@ -49,6 +50,7 @@ test("handles change password success", async () => {
     currentPassword: "test-password",
     newPassword: "test-new-password",
   });
+  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
 });
 
 test("handles change password error", async () => {

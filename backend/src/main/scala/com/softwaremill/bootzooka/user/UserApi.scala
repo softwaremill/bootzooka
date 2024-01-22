@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
-import com.softwaremill.bootzooka.util.ServerEndpoints
+import com.softwaremill.bootzooka.util.{Id, RichString, ServerEndpoints}
 import doobie.util.transactor.Transactor
 
 import java.time.Instant
@@ -44,6 +44,19 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
 
   private val authedEndpoint = secureEndpoint.serverSecurityLogic(authData => auth(authData).toOut)
 
+  private val logoutEndpoint = authedEndpoint.post
+    .in(UserPath / "logout")
+    .in(jsonBody[Logout_IN])
+    .out(jsonBody[Logout_OUT])
+    .serverLogic(_ =>
+      data =>
+        (for {
+          _ <- userService
+            .logout(data.apiKey.asId[ApiKey])
+            .transact(xa)
+        } yield Logout_OUT()).toOut
+    )
+
   private val changePasswordEndpoint = authedEndpoint.post
     .in(UserPath / "changepassword")
     .in(jsonBody[ChangePassword_IN])
@@ -51,8 +64,8 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
     .serverLogic(id =>
       data =>
         (for {
-          _ <- userService.changePassword(id, data.currentPassword, data.newPassword).transact(xa)
-        } yield ChangePassword_OUT()).toOut
+          apiKey <- userService.changePassword(id, data.currentPassword, data.newPassword).transact(xa)
+        } yield ChangePassword_OUT(apiKey.id)).toOut
     )
 
   private val getUserEndpoint = authedEndpoint.get
@@ -81,6 +94,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, xa: Tran
       .of(
         registerUserEndpoint,
         loginEndpoint,
+        logoutEndpoint,
         changePasswordEndpoint,
         getUserEndpoint,
         updateUserEndpoint
@@ -93,10 +107,13 @@ object UserApi {
   case class Register_OUT(apiKey: String)
 
   case class ChangePassword_IN(currentPassword: String, newPassword: String)
-  case class ChangePassword_OUT()
+  case class ChangePassword_OUT(apiKey: String)
 
   case class Login_IN(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int])
   case class Login_OUT(apiKey: String)
+
+  case class Logout_IN(apiKey: String)
+  case class Logout_OUT()
 
   case class UpdateUser_IN(login: String, email: String)
   case class UpdateUser_OUT()
