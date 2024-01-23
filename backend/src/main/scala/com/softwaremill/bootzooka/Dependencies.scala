@@ -17,6 +17,9 @@ import doobie.util.transactor.Transactor
 import io.prometheus.client.CollectorRegistry
 import sttp.client3.SttpBackend
 import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
+import com.softwaremill.bootzooka.passkeys.PasskeysService
+import com.softwaremill.bootzooka.passkeys.PasskeysApi
+import com.webauthn4j.converter.util.ObjectConverter
 
 case class Dependencies(httpApi: HttpApi, emailService: EmailService)
 
@@ -32,13 +35,14 @@ object Dependencies {
         http: Http,
         userApi: UserApi,
         passwordResetApi: PasswordResetApi,
+        passkeysApi: PasskeysApi,
         versionApi: VersionApi,
         cfg: HttpConfig
     ) = {
       val prometheusMetrics = PrometheusMetrics.default[IO](registry = collectorRegistry)
       new HttpApi(
         http,
-        userApi.endpoints concatNel passwordResetApi.endpoints,
+        userApi.endpoints concatNel passwordResetApi.endpoints concatNel passkeysApi.endpoints,
         NonEmptyList.of(versionApi.versionEndpoint),
         prometheusMetrics,
         cfg
@@ -50,7 +54,9 @@ object Dependencies {
       config.user,
       config.passwordReset,
       config.email,
+      config.passkeys,
       WebAuthnManager.createNonStrictWebAuthnManager(),
+      new ObjectConverter(),
       DefaultIdGenerator,
       clock,
       sttpBackend,
@@ -60,6 +66,7 @@ object Dependencies {
       EmailSender.create _,
       new ApiKeyAuthToken(_),
       new PasswordResetAuthToken(_),
+      new PasskeysService(_, _, _, _)
     )
   }
 }

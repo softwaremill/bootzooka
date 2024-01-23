@@ -11,9 +11,10 @@ import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 
 import scala.collection.immutable.TreeMap
+import com.softwaremill.bootzooka.passkeys.PasskeysConfig
 
 /** Maps to the `application.conf` file. Configuration for all modules of the application. */
-case class Config(db: DBConfig, api: HttpConfig, email: EmailConfig, passwordReset: PasswordResetConfig, user: UserConfig)
+case class Config(db: DBConfig, api: HttpConfig, email: EmailConfig, passwordReset: PasswordResetConfig, user: UserConfig, passkeys: PasskeysConfig)
 
 object Config extends StrictLogging {
   def log(config: Config): Unit = {

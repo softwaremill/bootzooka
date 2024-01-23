@@ -3,6 +3,9 @@ import * as Yup from "yup";
 
 const context = "api/v1/user";
 
+//TODO przeniść do osobnego serwisu
+const passkeyContext = "api/v1/passkey"
+
 const apiKeySchema = Yup.object().required().shape({
   apiKey: Yup.string().required(),
 });
@@ -104,7 +107,7 @@ const registerPasskey = (apiKey: string | null, params: {}) =>
 
     _securedRequest(apiKey, {
                                 method: "POST",
-                                url: `${context}/registerpasskey`,
+                                url: `${passkeyContext}/registerpasskey`,
                                 data: JSON.stringify(attestationData),
                              })
   .then(({ data }) => emptySchema.validate(data))});
