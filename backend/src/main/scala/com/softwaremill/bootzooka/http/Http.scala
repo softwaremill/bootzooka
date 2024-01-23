@@ -8,6 +8,7 @@ import com.softwaremill.bootzooka.logging.FLogging
 import com.softwaremill.bootzooka.util.{Id, SecureRandomId}
 import com.softwaremill.tagging._
 import io.circe.Printer
+import sttp.model.HeaderNames.XFrameOptions
 import sttp.model.StatusCode
 import sttp.tapir.Codec.PlainCodec
 import sttp.tapir.generic.auto.SchemaDerivation
@@ -27,6 +28,9 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
     */
   val baseEndpoint: PublicEndpoint[Unit, (StatusCode, Error_OUT), Unit, Any] =
     endpoint.errorOut(failOutput)
+      // Prevent clickjacking attacks: https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html
+      .out(header("X-Frame-Options", "DENY"))
+      .out(header("Content-Security-Policy", "frame-ancestors 'none'"))
 
   /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
