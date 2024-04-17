@@ -13,7 +13,7 @@ import com.softwaremill.bootzooka.user.UserApi
 import com.softwaremill.bootzooka.util.{Clock, DefaultIdGenerator}
 import com.softwaremill.macwire.autocats.autowire
 import doobie.util.transactor.Transactor
-import io.prometheus.client.CollectorRegistry
+import io.prometheus.metrics.model.registry.PrometheusRegistry
 import sttp.client3.SttpBackend
 import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
 
@@ -25,7 +25,7 @@ object Dependencies {
       sttpBackend: Resource[IO, SttpBackend[IO, Any]],
       xa: Resource[IO, Transactor[IO]],
       clock: Clock,
-      collectorRegistry: CollectorRegistry
+      collectorRegistry: PrometheusRegistry
   ): Resource[IO, Dependencies] = {
     def buildHttpApi(
         http: Http,

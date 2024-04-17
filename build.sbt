@@ -14,10 +14,10 @@ val doobieVersion = "1.0.0-RC5"
 val http4sVersion = "0.23.26"
 val http4sBlazeVersion = "0.23.16"
 val circeVersion = "0.14.6"
-val password4jVersion = "1.8.0"
-val sttpVersion = "3.9.3"
+val password4jVersion = "1.8.1"
+val sttpVersion = "3.9.5"
 val prometheusVersion = "0.16.0"
-val tapirVersion = "1.9.11"
+val tapirVersion = "1.10.4"
 val macwireVersion = "2.5.9"
 
 val dbDependencies = Seq(
