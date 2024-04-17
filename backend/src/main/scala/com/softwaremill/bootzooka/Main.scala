@@ -6,7 +6,7 @@ import com.softwaremill.bootzooka.infrastructure.{CorrelationId, DB, Doobie, Set
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.DefaultClock
 import com.typesafe.scalalogging.StrictLogging
-import io.prometheus.client.CollectorRegistry
+import io.prometheus.metrics.model.registry.PrometheusRegistry
 import sttp.capabilities.WebSockets
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.client3.SttpBackend
@@ -38,7 +38,7 @@ object Main extends ResourceApp.Forever with StrictLogging {
     * as long as our application runs).
     */
   override def run(list: List[String]): Resource[IO, Unit] = for {
-    deps <- Dependencies.wire(config, sttpBackend, xa, DefaultClock, CollectorRegistry.defaultRegistry)
+    deps <- Dependencies.wire(config, sttpBackend, xa, DefaultClock, PrometheusRegistry.defaultRegistry)
     _ <- deps.emailService.startProcesses().background
     _ <- deps.httpApi.resource
   } yield ()

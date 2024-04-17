@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.infrastructure.Doobie._
 import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
-import com.softwaremill.bootzooka.util.{Id, RichString, ServerEndpoints}
+import com.softwaremill.bootzooka.util.{RichString, ServerEndpoints}
 import doobie.util.transactor.Transactor
 
 import java.time.Instant

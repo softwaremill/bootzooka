@@ -17,7 +17,7 @@ val circeVersion = "0.14.6"
 val password4jVersion = "1.8.1"
 val sttpVersion = "3.9.5"
 val prometheusVersion = "0.16.0"
-val tapirVersion = "1.9.0"
+val tapirVersion = "1.10.4"
 val macwireVersion = "2.5.9"
 
 val dbDependencies = Seq(
@@ -55,7 +55,7 @@ val jsonDependencies = Seq(
 
 val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
-  "ch.qos.logback" % "logback-classic" % "1.5.3",
+  "ch.qos.logback" % "logback-classic" % "1.5.5",
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "7.4" % Runtime
 )
@@ -89,7 +89,7 @@ val macwireDependencies = Seq(
 
 val unitTestingStack = Seq(scalatest)
 
-val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.2" % Test
+val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.3" % Test
 val dbTestingStack = Seq(embeddedPostgres)
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
