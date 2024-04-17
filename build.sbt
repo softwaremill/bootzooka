@@ -11,11 +11,11 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val doobieVersion = "1.0.0-RC5"
-val http4sVersion = "0.23.25"
+val http4sVersion = "0.23.26"
 val http4sBlazeVersion = "0.23.16"
 val circeVersion = "0.14.6"
-val password4jVersion = "1.7.3"
-val sttpVersion = "3.9.3"
+val password4jVersion = "1.8.1"
+val sttpVersion = "3.9.5"
 val prometheusVersion = "0.16.0"
 val tapirVersion = "1.9.0"
 val macwireVersion = "2.5.9"
@@ -55,7 +55,7 @@ val jsonDependencies = Seq(
 
 val loggingDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
-  "ch.qos.logback" % "logback-classic" % "1.5.0",
+  "ch.qos.logback" % "logback-classic" % "1.5.5",
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "7.4" % Runtime
 )
@@ -65,7 +65,7 @@ val configDependencies = Seq(
 )
 
 val baseDependencies = Seq(
-  "org.typelevel" %% "cats-effect" % "3.5.3",
+  "org.typelevel" %% "cats-effect" % "3.5.4",
   "com.softwaremill.common" %% "tagging" % "2.3.4",
   "com.softwaremill.quicklens" %% "quicklens" % "1.9.7"
 )
@@ -89,7 +89,7 @@ val macwireDependencies = Seq(
 
 val unitTestingStack = Seq(scalatest)
 
-val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.2" % Test
+val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.0.3" % Test
 val dbTestingStack = Seq(embeddedPostgres)
 
 val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
