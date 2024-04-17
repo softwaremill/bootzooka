@@ -23,11 +23,11 @@ jobs:
         id: repo-checkout
         uses: actions/checkout@v2
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         id: jdk-setup
         uses: actions/setup-java@v1
         with:
-          java-version: 21
+          java-version: 17
 
       - name: Cache SBT
         id: cache-sbt
