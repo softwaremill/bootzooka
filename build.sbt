@@ -102,7 +102,7 @@ lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "2.13.12",
+  scalaVersion := "2.13.13",
   libraryDependencies ++= commonDependencies,
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
