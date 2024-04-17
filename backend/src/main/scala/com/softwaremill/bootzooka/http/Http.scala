@@ -8,7 +8,6 @@ import com.softwaremill.bootzooka.logging.FLogging
 import com.softwaremill.bootzooka.util.{Id, SecureRandomId}
 import com.softwaremill.tagging._
 import io.circe.Printer
-import sttp.model.HeaderNames.XFrameOptions
 import sttp.model.StatusCode
 import sttp.tapir.Codec.PlainCodec
 import sttp.tapir.generic.auto.SchemaDerivation
