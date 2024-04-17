@@ -39,6 +39,10 @@ jobs:
             ~/.coursier
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
 
+      - name: Run clean
+        id: run-clean
+        run: sbt clean
+
       - name: Run tests
         id: run-tests
         run: sbt test
