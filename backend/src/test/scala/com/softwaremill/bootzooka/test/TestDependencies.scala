@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.test
 
 import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.Dependencies
-import io.prometheus.client.CollectorRegistry
+import io.prometheus.metrics.model.registry.PrometheusRegistry
 import org.scalatest.{BeforeAndAfterAll, Suite}
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.client3.SttpBackend
@@ -28,7 +28,7 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres {
           sttpBackend = Resource.pure(stub),
           xa = Resource.pure(currentDb.xa),
           clock = testClock,
-          collectorRegistry = new CollectorRegistry()
+          collectorRegistry = new PrometheusRegistry
         )
         .allocated
         .unsafeRunSync()
