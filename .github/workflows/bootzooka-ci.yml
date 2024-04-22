@@ -23,11 +23,11 @@ jobs:
         id: repo-checkout
         uses: actions/checkout@v2
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         id: jdk-setup
         uses: actions/setup-java@v1
         with:
-          java-version: 17
+          java-version: 21
 
       - name: Cache SBT
         id: cache-sbt
@@ -38,10 +38,6 @@ jobs:
             ~/.ivy2/cache
             ~/.coursier
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
-
-      - name: Run clean
-        id: run-clean
-        run: sbt clean
 
       - name: Run tests
         id: run-tests
