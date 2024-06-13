@@ -1,6 +1,6 @@
 # bootzooka
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0](https://img.shields.io/badge/AppVersion-1.0-informational?style=flat-square)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0](https://img.shields.io/badge/AppVersion-1.0-informational?style=flat-square)
 
 A Helm chart for Bootzooka
 
@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the chart and the defau
 | bootzooka.ingress.tls[0].hosts[0] | string | `"bootzooka.example.com"` |  |
 | bootzooka.ingress.tls[0].secretName | string | `"bootzooka-tls"` |  |
 | bootzooka.ingress.tls_enabled | bool | `false` |  |
+| bootzooka.javaOpts | string | `"-XX:MaxRAMPercentage=60"` |  |
 | bootzooka.nameOverride | string | `""` |  |
 | bootzooka.nodeSelector | object | `{}` |  |
 | bootzooka.replicaCount | int | `1` |  |
