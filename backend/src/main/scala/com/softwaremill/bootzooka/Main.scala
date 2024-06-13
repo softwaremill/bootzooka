@@ -26,7 +26,7 @@ object Main extends ResourceApp.Forever with StrictLogging {
   val config: Config = Config.read
   Config.log(config)
 
-  val xa: Resource[IO, Doobie.Transactor[IO]] = new DB(config.db).transactorResource.map(CorrelationId.correlationIdTransactor)
+  val xa: Resource[IO, Doobie.Transactor[IO]] = new DB[IO](config.db).transactorResource.map(CorrelationId.correlationIdTransactor)
 
   /** Creating a resource which combines three resources in sequence:
     *
