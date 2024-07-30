@@ -10,62 +10,50 @@ import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val doobieVersion = "1.0.0-RC5"
-val http4sVersion = "0.23.27"
-val http4sBlazeVersion = "0.23.16"
-val circeVersion = "0.14.9"
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.9.7"
-val prometheusVersion = "0.16.0"
 val tapirVersion = "1.10.15"
 val macwireVersion = "2.5.9"
 
 val dbDependencies = Seq(
-  "org.tpolecat" %% "doobie-core" % doobieVersion,
-  "org.tpolecat" %% "doobie-hikari" % doobieVersion,
-  "org.tpolecat" %% "doobie-postgres" % doobieVersion,
+  "com.augustnagro" %% "magnum" % "1.2.1",
+  "org.postgresql" % "postgresql" % "42.7.3",
+  "com.zaxxer" % "HikariCP" % "5.1.0",
   "org.flywaydb" % "flyway-database-postgresql" % "10.15.0"
 )
 
 val httpDependencies = Seq(
-  "org.http4s" %% "http4s-dsl" % http4sVersion,
-  "org.http4s" %% "http4s-blaze-server" % http4sBlazeVersion,
-  "org.http4s" %% "http4s-blaze-client" % http4sBlazeVersion,
-  "org.http4s" %% "http4s-circe" % http4sVersion,
-  "com.softwaremill.sttp.client3" %% "async-http-client-backend-fs2" % sttpVersion,
+  "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
   "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion
 )
 
 val monitoringDependencies = Seq(
-  "io.prometheus" % "simpleclient" % prometheusVersion,
-  "io.prometheus" % "simpleclient_hotspot" % prometheusVersion,
-  "com.softwaremill.sttp.client3" %% "prometheus-backend" % sttpVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-prometheus-metrics" % tapirVersion
+  "com.softwaremill.sttp.client3" %% "opentelemetry-metrics-backend" % sttpVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
+  "io.opentelemetry" % "opentelemetry-exporter-otlp" % "1.40.0"
 )
 
 val jsonDependencies = Seq(
-  "io.circe" %% "circe-core" % circeVersion,
-  "io.circe" %% "circe-generic" % circeVersion,
-  "io.circe" %% "circe-parser" % circeVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % tapirVersion,
-  "com.softwaremill.sttp.client3" %% "circe" % sttpVersion
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.7",
+  "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
+  "com.softwaremill.sttp.client3" %% "jsoniter" % sttpVersion
 )
 
 val loggingDependencies = Seq(
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
   "ch.qos.logback" % "logback-classic" % "1.5.6",
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "7.4" % Runtime
 )
 
 val configDependencies = Seq(
-  "com.github.pureconfig" %% "pureconfig" % "0.17.7"
+  "com.github.pureconfig" %% "pureconfig-core" % "0.17.7"
 )
 
 val baseDependencies = Seq(
-  "org.typelevel" %% "cats-effect" % "3.5.4",
+  "com.softwaremill.ox" %% "core" % "0.3.2",
   "com.softwaremill.common" %% "tagging" % "2.3.5",
   "com.softwaremill.quicklens" %% "quicklens" % "1.9.7"
 )
@@ -84,7 +72,7 @@ val emailDependencies = Seq(
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.19" % Test
 val macwireDependencies = Seq(
-  "com.softwaremill.macwire" %% "macrosautocats" % macwireVersion
+  "com.softwaremill.macwire" %% "macros" % macwireVersion
 ).map(_ % Provided)
 
 val unitTestingStack = Seq(scalatest)
@@ -102,7 +90,7 @@ lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "2.13.14",
+  scalaVersion := "3.3.3",
   libraryDependencies ++= commonDependencies,
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
@@ -116,7 +104,9 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
     def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
     streams.value.log("Running yarn task: " + taskName)
     haltOnCmdResultError(runYarnTask())
-  }
+  },
+  autoCompilerPlugins := true,
+  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % "0.3.2")
 )
 
 lazy val buildInfoSettings = Seq(
@@ -182,11 +172,7 @@ def now(): String = {
 
 lazy val rootProject = (project in file("."))
   .settings(commonSettings)
-  .settings(
-    name := "bootzooka",
-    Compile / herokuFatJar := Some((backend / assembly / assemblyOutputPath).value),
-    Compile / deployHeroku := ((Compile / deployHeroku) dependsOn (backend / assembly)).value
-  )
+  .settings(name := "bootzooka")
   .aggregate(backend, ui)
 
 lazy val backend: Project = (project in file("backend"))
@@ -199,7 +185,9 @@ lazy val backend: Project = (project in file("backend"))
       streams.value.log.info(s"Copying the webapp resources from $source to $target")
       IO.copyDirectory(source, target)
     },
-    copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value
+    copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value,
+    // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application
+    run / fork := true
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)

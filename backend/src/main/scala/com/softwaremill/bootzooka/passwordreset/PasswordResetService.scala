@@ -1,13 +1,16 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import cats.effect.IO
-import cats.syntax.all._
+import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
-import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.logging.FLogging
+import com.softwaremill.bootzooka.infrastructure.Magnum.*
+import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.{User, UserModel}
-import com.softwaremill.bootzooka.util._
+import com.softwaremill.bootzooka.util.*
+import ox.{IO, either}
+import ox.either.*
+
+import javax.sql.DataSource
 
 class PasswordResetService(
     userModel: UserModel,
@@ -18,47 +21,34 @@ class PasswordResetService(
     idGenerator: IdGenerator,
     config: PasswordResetConfig,
     clock: Clock,
-    xa: Transactor[IO]
-) extends FLogging {
+    ds: DataSource
+)(using IO) extends Logging:
+  def forgotPassword(loginOrEmail: String)(using DbTx): Unit =
+    userModel.findByLoginOrEmail(loginOrEmail.lowerCased) match {
+      case None => logger.debug(s"Could not find user with $loginOrEmail login/email")
+      case Some(user) =>
+        val pcr = createCode(user)
+        sendCode(user, pcr)
+    }
 
-  def forgotPassword(loginOrEmail: String): ConnectionIO[Unit] = {
-    userModel
-      .findByLoginOrEmail(loginOrEmail.lowerCased)
-      .flatMap {
-        case None       => logger.debug(s"Could not find user with $loginOrEmail login/email")
-        case Some(user) => createCode(user).flatMap(pcr => sendCode(user, pcr))
-      }
-  }
+  private def createCode(user: User)(using DbTx): PasswordResetCode =
+    logger.debug(s"Creating password reset code for user: ${user.id}")
+    val id = idGenerator.nextId[PasswordResetCode]()
+    val validUntil = clock.now().plusMillis(config.codeValid.toMillis)
+    val passwordResetCode = PasswordResetCode(id, user.id, validUntil)
+    passwordResetCodeModel.insert(passwordResetCode)
+    passwordResetCode
 
-  private def createCode(user: User): ConnectionIO[PasswordResetCode] = {
-    for {
-      _ <- logger.debug[ConnectionIO](s"Creating password reset code for user: ${user.id}")
-      id <- idGenerator.nextId[ConnectionIO, PasswordResetCode]()
-      validUntil <- clock
-        .now[ConnectionIO]()
-        .map { value =>
-          value.plusMillis(config.codeValid.toMillis)
-        }
-      passwordResetCode = PasswordResetCode(id, user.id, validUntil)
-      _ <- passwordResetCodeModel.insert(passwordResetCode)
-    } yield passwordResetCode
-  }
+  private def sendCode(user: User, code: PasswordResetCode)(using DbTx): Unit =
+    logger.debug(s"Scheduling e-mail with reset code for user: ${user.id}")
+    emailScheduler(EmailData(user.emailLowerCase, prepareResetEmail(user, code)))
 
-  private def sendCode(user: User, code: PasswordResetCode): ConnectionIO[Unit] = {
-    logger.debug[ConnectionIO](s"Scheduling e-mail with reset code for user: ${user.id}") >>
-      emailScheduler(EmailData(user.emailLowerCased, prepareResetEmail(user, code)))
-  }
-
-  private def prepareResetEmail(user: User, code: PasswordResetCode): EmailSubjectContent = {
+  private def prepareResetEmail(user: User, code: PasswordResetCode): EmailSubjectContent =
     val resetLink = String.format(config.resetLinkPattern, code.id)
     emailTemplates.passwordReset(user.login, resetLink)
-  }
 
-  def resetPassword(code: String, newPassword: String): IO[Unit] = {
-    for {
-      userId <- auth(code.asInstanceOf[Id])
-      _ <- logger.debug[IO](s"Resetting password for user: $userId")
-      _ <- userModel.updatePassword(userId, User.hashPassword(newPassword)).transact(xa)
-    } yield ()
+  def resetPassword(code: String, newPassword: String): Either[Fail, Unit] = either {
+    val userId = auth(code.asInstanceOf[Id]).ok()
+    logger.debug(s"Resetting password for user: $userId")
+    transact(ds)(userModel.updatePassword(userId, User.hashPassword(newPassword)))
   }
-}

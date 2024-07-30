@@ -2,17 +2,21 @@ package com.softwaremill.bootzooka.test
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres
 import com.softwaremill.bootzooka.config.Sensitive
-import com.softwaremill.bootzooka.infrastructure.DBConfig
-import com.typesafe.scalalogging.StrictLogging
+import com.softwaremill.bootzooka.infrastructure.{DB, DBConfig}
+import com.softwaremill.bootzooka.logging.Logging
+import org.flywaydb.core.Flyway
 import org.postgresql.jdbc.PgConnection
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
+import ox.IO.globalForTesting.given
+import ox.discard
 
-/** Base trait for tests which use the database. The database is cleaned after each test.
-  */
-trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll with StrictLogging { self: Suite =>
+/** Base trait for tests which use the database. The database is cleaned after each test. */
+trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll with Logging { self: Suite =>
   private var postgres: EmbeddedPostgres = _
   private var currentDbConfig: DBConfig = _
-  var currentDb: TestDB = _
+  var currentDb: DB = _
+
+  //
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
@@ -25,23 +29,29 @@ trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll wit
       url = url,
       migrateOnStart = true
     )
-    currentDb = new TestDB(currentDbConfig)
-    currentDb.testConnection()
+    currentDb = new DB(currentDbConfig)
   }
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
+    currentDb.ds.close()
     postgres.close()
-    currentDb.close()
     super.afterAll()
-  }
 
-  override protected def beforeEach(): Unit = {
+  //
+
+  override protected def beforeEach(): Unit =
     super.beforeEach()
-    currentDb.migrate()
-  }
+    flyway().migrate().discard
 
-  override protected def afterEach(): Unit = {
-    currentDb.clean()
+  override protected def afterEach(): Unit =
+    clean()
     super.afterEach()
-  }
+
+  private def clean(): Unit = flyway().clean().discard
+
+  private def flyway(): Flyway = Flyway
+    .configure()
+    .dataSource(currentDbConfig.url, currentDbConfig.username, currentDbConfig.password.value)
+    .cleanDisabled(false)
+    .load()
 }

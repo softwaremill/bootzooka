@@ -1,47 +1,33 @@
 package com.softwaremill.bootzooka.email
 
-import cats.data.NonEmptyList
-import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.augustnagro.magnum.{PostgresDbType, Repo, Spec, SqlNameMapper, Table}
+import com.softwaremill.bootzooka.infrastructure.Magnum.*
+import com.softwaremill.bootzooka.util.{asId, Id}
 import com.softwaremill.tagging.@@
-import cats.implicits._
-import com.softwaremill.bootzooka.util.Id
+import ox.discard
 
-/** Model for storing and retrieving scheduled emails.
-  */
-class EmailModel {
+/** Model for storing and retrieving scheduled emails. */
+class EmailModel:
+  private val emailRepo = Repo[ScheduledEmails, ScheduledEmails, String]
 
-  def insert(email: Email): ConnectionIO[Unit] = {
-    sql"""INSERT INTO scheduled_emails (id, recipient, subject, content)
-         |VALUES (${email.id}, ${email.data.recipient}, ${email.data.subject}, ${email.data.content})""".stripMargin.update.run.void
-  }
+  def insert(email: Email)(using DbTx): Unit = emailRepo.insert(ScheduledEmails(email))
+  def find(limit: Int)(using DbTx): Vector[Email] = emailRepo.findAll(Spec[ScheduledEmails].limit(limit)).map(_.toEmail)
+  def count()(using DbTx): Long = emailRepo.count
+  def delete(ids: Vector[Id @@ Email])(using DbTx): Unit = emailRepo.deleteAllById(ids).discard
 
-  def find(limit: Int): ConnectionIO[List[Email]] = {
-    sql"SELECT id, recipient, subject, content FROM scheduled_emails LIMIT $limit"
-      .query[Email]
-      .to[List]
-  }
+// TODO: Magnum doesn't support ids for which there are no class tags
+@Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
+private case class ScheduledEmails(id: String, recipient: String, subject: String, content: String):
+  def toEmail: Email = Email(id.asId[Email], EmailData(recipient, EmailSubjectContent(subject, content)))
 
-  def count(): ConnectionIO[Int] = {
-    sql"SELECT COUNT(*) FROM scheduled_emails"
-      .query[Int]
-      .unique
-  }
-
-  def delete(ids: List[Id @@ Email]): ConnectionIO[Unit] = {
-    NonEmptyList.fromList(ids) match {
-      case None    => ().pure[ConnectionIO]
-      case Some(l) => (sql"DELETE FROM scheduled_emails WHERE " ++ Fragments.in(fr"id", l)).update.run.void
-    }
-  }
-}
+private object ScheduledEmails:
+  def apply(email: Email): ScheduledEmails = ScheduledEmails(email.id, email.data.recipient, email.data.subject, email.data.content)
 
 case class Email(id: Id @@ Email, data: EmailData)
 
 case class EmailData(recipient: String, subject: String, content: String)
-object EmailData {
-  def apply(recipient: String, subjectContent: EmailSubjectContent): EmailData = {
+object EmailData:
+  def apply(recipient: String, subjectContent: EmailSubjectContent): EmailData =
     EmailData(recipient, subjectContent.subject, subjectContent.content)
-  }
-}
 
 case class EmailSubjectContent(subject: String, content: String)

@@ -1,45 +1,47 @@
 package com.softwaremill.bootzooka.test
 
-import cats.effect.{IO, Resource}
 import com.softwaremill.bootzooka.Dependencies
-import io.prometheus.metrics.model.registry.PrometheusRegistry
-import org.scalatest.{BeforeAndAfterAll, Suite}
-import sttp.capabilities.fs2.Fs2Streams
-import sttp.client3.SttpBackend
-import sttp.client3.asynchttpclient.fs2.AsyncHttpClientFs2Backend
+import com.softwaremill.bootzooka.config.Config
+import com.softwaremill.bootzooka.util.Clock
+import org.scalatest.{Args, BeforeAndAfterAll, Status, Suite}
+import sttp.client3.{HttpClientSyncBackend, SttpBackend}
 import sttp.client3.testing.SttpBackendStub
+import sttp.shared.Identity
 import sttp.tapir.server.stub.TapirStubInterpreter
+import ox.IO.globalForTesting.given
+import ox.{Ox, supervised}
 
-trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres {
+import java.io.Closeable
+import javax.sql.DataSource
+
+trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres:
   self: Suite with BaseTest =>
   var dependencies: Dependencies = _
 
-  private val stub: SttpBackendStub[IO, Fs2Streams[IO]] = AsyncHttpClientFs2Backend.stub[IO]
+  private val stub: SttpBackendStub[Identity, Any] = HttpClientSyncBackend.stub
+  private var currentOx: Ox = _
+
+  abstract override protected def runTests(testName: Option[String], args: Args): Status =
+    supervised {
+      currentOx = summon[Ox]
+      super.runTests(testName, args)
+    }
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
 
-    dependencies = {
-      import cats.effect.unsafe.implicits.global
-
-      Dependencies
-        .wire(
-          config = TestConfig,
-          sttpBackend = Resource.pure(stub),
-          xa = Resource.pure(currentDb.xa),
-          clock = testClock,
-          collectorRegistry = new PrometheusRegistry
-        )
-        .allocated
-        .unsafeRunSync()
-        ._1
+    given Ox = currentOx
+    dependencies = new Dependencies {
+      override lazy val config: Config = TestConfig
+      override lazy val sttpBackend: SttpBackend[Identity, Any] = stub
+      override lazy val ds: DataSource & Closeable = currentDb.ds
+      override lazy val clock: Clock = testClock
     }
   }
 
-  private lazy val serverStub: SttpBackend[IO, Any] =
-    TapirStubInterpreter[IO, Any](stub)
+  private lazy val serverStub: SttpBackend[Identity, Any] =
+    TapirStubInterpreter[Identity, Any](stub)
       .whenServerEndpointsRunLogic(dependencies.httpApi.allEndpoints)
       .backend()
 
   lazy val requests = new Requests(serverStub)
-}

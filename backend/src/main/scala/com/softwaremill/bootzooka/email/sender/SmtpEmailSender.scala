@@ -1,17 +1,16 @@
 package com.softwaremill.bootzooka.email.sender
 
-import cats.effect.IO
+import com.softwaremill.bootzooka.email.{EmailData, SmtpConfig}
+import com.softwaremill.bootzooka.logging.Logging
+import ox.discard
 
 import java.util.{Date, Properties}
-import com.softwaremill.bootzooka.email.{EmailData, SmtpConfig}
-import com.softwaremill.bootzooka.logging.FLogging
-
 import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail.{Address, Message, Session, Transport}
 
 /** Sends emails synchronously using SMTP. */
-class SmtpEmailSender(config: SmtpConfig) extends EmailSender with FLogging {
-  def apply(email: EmailData): IO[Unit] = IO {
+class SmtpEmailSender(config: SmtpConfig) extends EmailSender with Logging:
+  def apply(email: EmailData): Unit =
     val emailToSend = new SmtpEmailSender.EmailDescription(List(email.recipient), email.content, email.subject)
     SmtpEmailSender.send(
       config.host,
@@ -24,14 +23,12 @@ class SmtpEmailSender(config: SmtpConfig) extends EmailSender with FLogging {
       config.encoding,
       emailToSend
     )
-  } >> logger.debug(s"Email: ${email.subject}, to: ${email.recipient}, sent")
-}
+    logger.debug(s"Email: ${email.subject}, to: ${email.recipient}, sent")
 
 /** Copied from softwaremill-common:
   * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
   */
-object SmtpEmailSender {
-
+object SmtpEmailSender:
   def send(
       smtpHost: String,
       smtpPort: Int,
@@ -42,8 +39,7 @@ object SmtpEmailSender {
       from: String,
       encoding: String,
       emailDescription: EmailDescription
-  ): Unit = {
-
+  ): Unit =
     val props = setupSmtpServerProperties(sslConnection, smtpHost, smtpPort, verifySSLCertificate)
 
     // Get a mail session
@@ -72,45 +68,37 @@ object SmtpEmailSender {
     } finally {
       transport.close()
     }
-  }
+  end send
 
   private def setupSmtpServerProperties(
       sslConnection: Boolean,
       smtpHost: String,
       smtpPort: Int,
       verifySSLCertificate: Boolean
-  ): Properties = {
+  ): Properties =
     // Setup mail server
     val props = new Properties()
-    if (sslConnection) {
+    if sslConnection then
       props.put("mail.smtps.host", smtpHost)
       props.put("mail.smtps.port", smtpPort.toString)
       props.put("mail.smtps.starttls.enable", "true")
       if (!verifySSLCertificate) {
         props.put("mail.smtps.ssl.checkserveridentity", "false")
-        props.put("mail.smtps.ssl.trust", "*")
+        props.put("mail.smtps.ssl.trust", "*").discard
       }
-    } else {
+    else
       props.put("mail.smtp.host", smtpHost)
       props.put("mail.smtp.port", smtpPort.toString)
-    }
     props
-  }
 
   private def createSmtpTransportFrom(session: Session, sslConnection: Boolean): Transport =
     if (sslConnection) session.getTransport("smtps") else session.getTransport("smtp")
 
-  private def sendEmail(transport: Transport, m: MimeMessage): Unit = {
+  private def sendEmail(transport: Transport, m: MimeMessage): Unit =
     transport.sendMessage(m, m.getAllRecipients)
-  }
 
-  private def connectToSmtpServer(transport: Transport, smtpUsername: String, smtpPassword: String): Unit = {
-    if (smtpUsername != null && smtpUsername.nonEmpty) {
-      transport.connect(smtpUsername, smtpPassword)
-    } else {
-      transport.connect()
-    }
-  }
+  private def connectToSmtpServer(transport: Transport, smtpUsername: String, smtpPassword: String): Unit =
+    if smtpUsername != null && smtpUsername.nonEmpty then transport.connect(smtpUsername, smtpPassword) else transport.connect()
 
   private def convertStringEmailsToAddresses(emails: Array[String]): Array[Address] =
     emails.map(new InternetAddress(_))
@@ -122,9 +110,6 @@ object SmtpEmailSender {
       replyToEmails: Array[String],
       ccEmails: Array[String],
       bccEmails: Array[String]
-  ) {
-
-    def this(emails: List[String], message: String, subject: String) =
-      this(emails.toArray, message, subject, Array(), Array(), Array())
-  }
-}
+  ):
+    def this(emails: List[String], message: String, subject: String) = this(emails.toArray, message, subject, Array(), Array(), Array())
+end SmtpEmailSender

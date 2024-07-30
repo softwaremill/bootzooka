@@ -1,24 +1,24 @@
 package com.softwaremill.bootzooka.infrastructure
 
 import java.net.URI
-import cats.effect.{IO, Resource}
-import com.typesafe.scalalogging.StrictLogging
-import doobie.hikari.HikariTransactor
 import org.flywaydb.core.Flyway
 
-import scala.concurrent.duration._
-import Doobie._
+import scala.concurrent.duration.*
+import Magnum.*
+import com.augustnagro.magnum.connect
 import com.softwaremill.bootzooka.config.Sensitive
-import com.softwaremill.macwire.autocats.autowire
+import com.softwaremill.bootzooka.logging.Logging
+import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
+import ox.{IO, discard, sleep}
 
-import scala.concurrent.ExecutionContext
+import java.io.Closeable
+import javax.sql.DataSource
+import scala.annotation.tailrec
 
 /** Configures the database, setting up the connection pool and performing migrations. */
-class DB(_config: DBConfig) extends StrictLogging {
+class DB(_config: DBConfig) extends Logging:
 
   private val config: DBConfig = {
-    // on heroku, the url is passed without the jdbc: prefix, and with a different scheme
-    // see https://devcenter.heroku.com/articles/connecting-to-relational-databases-on-heroku-with-java#using-the-database_url-in-plain-jdbc
     if (_config.url.startsWith("postgres://")) {
       val dbUri = URI.create(_config.url)
       val usernamePassword = dbUri.getUserInfo.split(":")
@@ -30,49 +30,36 @@ class DB(_config: DBConfig) extends StrictLogging {
     } else _config
   }
 
-  val transactorResource: Resource[IO, Transactor[IO]] = {
-    /*
-     * When running DB operations, there are three thread pools at play:
-     * (1) connectEC: this is a thread pool for awaiting connections to the database. There might be an arbitrary
-     * number of clients waiting for a connection, so this should be bounded.
-     *
-     * See also: https://tpolecat.github.io/doobie/docs/14-Managing-Connections.html#about-threading
-     */
-    def buildTransactor(ec: ExecutionContext) = HikariTransactor.newHikariTransactor[IO](
-      config.driver,
-      config.url,
-      config.username,
-      config.password.value,
-      ec
-    )
-    autowire[Transactor[IO]](
-      doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize),
-      buildTransactor _
-    ).evalTap(connectAndMigrate)
-  }
+  private val hikariConfig = new HikariConfig()
+  hikariConfig.setJdbcUrl(_config.url)
+  hikariConfig.setUsername(config.username)
+  hikariConfig.setPassword(config.password.value)
+  hikariConfig.addDataSourceProperty("cachePrepStmts", "true")
+  hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250")
+  hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+  hikariConfig.setThreadFactory(Thread.ofVirtual().factory())
 
-  private def connectAndMigrate(xa: Transactor[IO]): IO[Unit] = {
-    (migrate() >> testConnection(xa) >> IO(logger.info("Database migration & connection test complete"))).onError { e: Throwable =>
-      logger.warn("Database not available, waiting 5 seconds to retry...", e)
-      IO.sleep(5.seconds) >> connectAndMigrate(xa)
-    }
-  }
+  @tailrec
+  private def connectAndMigrate(ds: DataSource)(using IO): Unit =
+    try
+      migrate()
+      testConnection(ds)
+      logger.info("Database migration & connection test complete")
+    catch
+      case e: Exception =>
+        logger.warn("Database not available, waiting 5 seconds to retry...", e)
+        sleep(5.seconds)
+        connectAndMigrate(ds)
 
-  private val flyway = {
-    Flyway
-      .configure()
-      .dataSource(config.url, config.username, config.password.value)
-      .load()
-  }
+  private val flyway = Flyway
+    .configure()
+    .dataSource(config.url, config.username, config.password.value)
+    .load()
 
-  private def migrate(): IO[Unit] = {
-    if (config.migrateOnStart) {
-      IO(flyway.migrate()).void
-    } else IO.unit
-  }
+  private def migrate()(using IO): Unit = if config.migrateOnStart then flyway.migrate().discard
+  private def testConnection(ds: DataSource): Unit = connect(ds)(sql"SELECT 1".query[Int].run()).discard
 
-  private def testConnection(xa: Transactor[IO]): IO[Unit] =
-    IO {
-      sql"select 1".query[Int].unique.transact(xa)
-    }.void
-}
+  val ds: DataSource & Closeable =
+    val temp = new HikariDataSource(hikariConfig)
+    IO.unsafe(connectAndMigrate(temp))
+    temp

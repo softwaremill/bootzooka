@@ -1,13 +1,12 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
-import com.softwaremill.bootzooka.infrastructure.Json._
 import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_OUT, PasswordReset_OUT}
-import com.softwaremill.bootzooka.test._
+import com.softwaremill.bootzooka.test.*
 import org.scalatest.concurrent.Eventually
 import sttp.model.StatusCode
 
-class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies with TestSupport {
+class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies with TestSupport:
 
   "/passwordreset" should "reset the password" in {
     // given
@@ -85,7 +84,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
   }
 
   def codeSentToEmail(email: String): String = {
-    dependencies.emailService.sendBatch().unwrap
+    dependencies.emailService.sendBatch()
 
     val emailData = DummyEmailSender
       .findSentEmail(email, "SoftwareMill Bootzooka password reset")
@@ -95,8 +94,8 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
       .getOrElse(throw new IllegalStateException(s"No code found in: $emailData"))
   }
 
-  def codeWasNotSentToEmail(email: String): Unit = {
-    dependencies.emailService.sendBatch().unwrap
+  def codeWasNotSentToEmail(email: String): Unit =
+    dependencies.emailService.sendBatch()
 
     val maybeEmail = DummyEmailSender.findSentEmail(email, "SoftwareMill Bootzooka password reset")
     maybeEmail match {
@@ -104,10 +103,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
         throw new IllegalStateException(s"There should be no password reset email sent to $email, but instead found $emailData")
       case None => ()
     }
-  }
 
-  def codeFromResetPasswordEmail(email: String): Option[String] = {
+  def codeFromResetPasswordEmail(email: String): Option[String] =
     val regexp = "code=([\\w]*)".r
     regexp.findFirstMatchIn(email).map(_.group(1))
-  }
-}

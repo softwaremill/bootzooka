@@ -1,57 +1,58 @@
 package com.softwaremill.bootzooka.email
 
-import cats.Parallel
-import cats.effect.IO
-import cats.syntax.all._
 import com.softwaremill.bootzooka.email.sender.EmailSender
-import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.logging.FLogging
+import com.softwaremill.bootzooka.infrastructure.Magnum.*
+import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator
+import ox.{Fork, Ox, discard, forever, fork, sleep}
+
+import javax.sql.DataSource
 
 /** Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches. */
-class EmailService(emailModel: EmailModel, idGenerator: IdGenerator, emailSender: EmailSender, config: EmailConfig, xa: Transactor[IO])
-    extends EmailScheduler
-    with FLogging {
+class EmailService(
+    emailModel: EmailModel,
+    idGenerator: IdGenerator,
+    emailSender: EmailSender,
+    config: EmailConfig,
+    ds: DataSource,
+    metrics: Metrics
+) extends EmailScheduler
+    with Logging:
 
-  def apply(data: EmailData): ConnectionIO[Unit] = {
-    logger.debug[ConnectionIO](s"Scheduling email to be sent to: ${data.recipient}") >>
-      idGenerator
-        .nextId[ConnectionIO, Email]()
-        .flatMap(id => emailModel.insert(Email(id, data)))
-  }
+  def apply(data: EmailData)(using DbTx): Unit =
+    logger.debug(s"Scheduling email to be sent to: ${data.recipient}")
+    val id = idGenerator.nextId[Email]()
+    emailModel.insert(Email(id, data))
 
-  def sendBatch(): IO[Unit] = {
-    for {
-      emails <- emailModel.find(config.batchSize).transact(xa)
-      _ <- if (emails.nonEmpty) logger.info[IO](s"Sending ${emails.size} emails") else ().pure[IO]
-      _ <- emails.map(_.data).map(emailSender.apply).sequence
-      _ <- emailModel.delete(emails.map(_.id)).transact(xa)
-    } yield ()
-  }
+  def sendBatch(): Unit =
+    val emails = transact(ds)(emailModel.find(config.batchSize))
+    if emails.nonEmpty then logger.info(s"Sending ${emails.size} emails")
+    emails.map(_.data).foreach(emailSender.apply)
+    transact(ds)(emailModel.delete(emails.map(_.id)))
 
   /** Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates a metric which holds
     * the size of the email queue.
     */
-  def startProcesses(): IO[(Nothing, Nothing)] = {
-    val sendProcess = runForeverPeriodically("Exception when sending emails") {
+  def startProcesses()(using Ox): Unit =
+    foreverPeriodically("Exception when sending emails") {
       sendBatch()
     }
 
-    val monitoringProcess = runForeverPeriodically("Exception when counting emails") {
-      emailModel.count().transact(xa).map(_.toDouble).map(Metrics.emailQueueGauge.set)
+    foreverPeriodically("Exception when counting emails") {
+      val count = transact(ds)(emailModel.count())
+      metrics.emailQueueGauge.set(count.toDouble)
+    }.discard
+
+  private def foreverPeriodically(errorMsg: String)(t: => Unit)(using Ox): Fork[Nothing] =
+    fork {
+      forever {
+        sleep(config.emailSendInterval)
+        try t
+        catch case e: Exception => logger.error(errorMsg, e)
+      }
     }
+end EmailService
 
-    Parallel.parProduct(sendProcess, monitoringProcess)
-  }
-
-  private def runForeverPeriodically[T](errorMsg: String)(t: IO[T]): IO[Nothing] = {
-    (t >> IO.sleep(config.emailSendInterval))
-      .onError(e => logger.error(errorMsg, e))
-      .foreverM
-  }
-}
-
-trait EmailScheduler {
-  def apply(data: EmailData): ConnectionIO[Unit]
-}
+trait EmailScheduler:
+  def apply(data: EmailData)(using DbTx): Unit
