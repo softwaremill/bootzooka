@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import com.augustnagro.magnum.{PostgresDbType, Repo, SqlNameMapper, Table}
+import com.augustnagro.magnum.{PostgresDbType, Repo, SqlName, SqlNameMapper, Table}
 import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
 import com.softwaremill.bootzooka.security.AuthTokenOps
 import com.softwaremill.bootzooka.user.User
@@ -9,19 +9,14 @@ import com.softwaremill.bootzooka.util.Strings.Id
 import java.time.Instant
 
 class PasswordResetCodeModel:
-  private val passwordResetCodeRepo = Repo[PasswordResetCodes, PasswordResetCodes, Id[PasswordResetCode]]
-  def insert(pr: PasswordResetCode)(using DbTx): Unit = passwordResetCodeRepo.insert(PasswordResetCodes(pr))
+  private val passwordResetCodeRepo = Repo[PasswordResetCode, PasswordResetCode, Id[PasswordResetCode]]
+
+  def insert(pr: PasswordResetCode)(using DbTx): Unit = passwordResetCodeRepo.insert(pr)
   def delete(id: Id[PasswordResetCode])(using DbTx): Unit = passwordResetCodeRepo.deleteById(id)
-  def findById(id: Id[PasswordResetCode])(using DbTx): Option[PasswordResetCode] =
-    passwordResetCodeRepo.findById(id).map(_.toPasswordResetCode)
+  def findById(id: Id[PasswordResetCode])(using DbTx): Option[PasswordResetCode] = passwordResetCodeRepo.findById(id)
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
-private case class PasswordResetCodes(id: Id[PasswordResetCode], userId: Id[User], validUntil: Instant):
-  def toPasswordResetCode: PasswordResetCode = PasswordResetCode(id, userId, validUntil)
-
-private object PasswordResetCodes:
-  def apply(pr: PasswordResetCode): PasswordResetCodes = PasswordResetCodes(pr.id, pr.userId, pr.validUntil)
-
+@SqlName("password_reset_codes")
 case class PasswordResetCode(id: Id[PasswordResetCode], userId: Id[User], validUntil: Instant)
 
 class PasswordResetAuthToken(passwordResetCodeModel: PasswordResetCodeModel) extends AuthTokenOps[PasswordResetCode]:

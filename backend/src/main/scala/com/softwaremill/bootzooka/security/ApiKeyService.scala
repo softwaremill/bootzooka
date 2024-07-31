@@ -6,7 +6,6 @@ import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.Strings.Id
 import com.softwaremill.bootzooka.util.{Clock, IdGenerator}
 
-import java.time.Instant
 import java.time.temporal.ChronoUnit
 import scala.concurrent.duration.Duration
 
@@ -28,4 +27,3 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
     logger.debug(s"Invalidating all api keys for user $userId")
     apiKeyModel.deleteAllForUser(userId)
 
-case class ApiKey(id: Id[ApiKey], userId: Id[User], createdOn: Instant, validUntil: Instant)

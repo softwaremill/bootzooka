@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.user
 
-import com.augustnagro.magnum.{Frag, PostgresDbType, Repo, Spec, SqlNameMapper, Table, TableInfo}
+import com.augustnagro.magnum.{Frag, PostgresDbType, Repo, Spec, SqlName, SqlNameMapper, Table, TableInfo}
 import com.password4j.{Argon2Function, Password}
 import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
 import com.softwaremill.bootzooka.user.User.PasswordHashing
@@ -12,25 +12,25 @@ import ox.discard
 import java.time.Instant
 
 class UserModel:
-  private val userRepo = Repo[Users, Users, Id[User]]
-  private val u = TableInfo[Users, Users, Id[User]]
+  private val userRepo = Repo[User, User, Id[User]]
+  private val u = TableInfo[User, User, Id[User]]
 
-  def insert(user: User)(using DbTx): Unit = userRepo.insert(Users(user))
-  def findById(id: Id[User])(using DbTx): Option[User] = userRepo.findById(id).map(_.toUser)
+  def insert(user: User)(using DbTx): Unit = userRepo.insert(user)
+  def findById(id: Id[User])(using DbTx): Option[User] = userRepo.findById(id)
   def findByEmail(email: LowerCased)(using DbTx): Option[User] = findBy(
-    Spec[Users].where(sql"${u.emailLowercase} = $email")
+    Spec[User].where(sql"${u.emailLowerCase} = $email")
   )
   def findByLogin(login: LowerCased)(using DbTx): Option[User] = findBy(
-    Spec[Users].where(sql"${u.loginLowercase} = $login")
+    Spec[User].where(sql"${u.loginLowerCase} = $login")
   )
   def findByLoginOrEmail(loginOrEmail: LowerCased)(using DbTx): Option[User] =
-    findBy(Spec[Users].where(sql"${u.loginLowercase} = ${loginOrEmail: String} OR ${u.emailLowercase} = $loginOrEmail"))
+    findBy(Spec[User].where(sql"${u.loginLowerCase} = ${loginOrEmail: String} OR ${u.emailLowerCase} = $loginOrEmail"))
 
-  private def findBy(by: Spec[Users])(using DbTx): Option[User] =
-    userRepo.findAll(by).headOption.map(_.toUser)
+  private def findBy(by: Spec[User])(using DbTx): Option[User] =
+    userRepo.findAll(by).headOption
 
   def updatePassword(userId: Id[User], newPassword: Hashed)(using DbTx): Unit =
-    sql"""UPDATE $u SET ${u.password} = $newPassword WHERE ${u.id} = $userId""".update.run().discard
+    sql"""UPDATE $u SET ${u.passwordHash} = $newPassword WHERE ${u.id} = $userId""".update.run().discard
 
   def updateLogin(userId: Id[User], newLogin: String, newLoginLowerCase: LowerCased)(using DbTx): Unit =
     sql"""UPDATE $u SET ${u.login} = $newLogin, login_lowercase = ${newLoginLowerCase: String} WHERE ${u.id} = $userId""".update
@@ -38,31 +38,18 @@ class UserModel:
       .discard
 
   def updateEmail(userId: Id[User], newEmail: LowerCased)(using DbTx): Unit =
-    sql"""UPDATE $u SET ${u.emailLowercase} = $newEmail WHERE ${u.id} = $userId""".update.run().discard
+    sql"""UPDATE $u SET ${u.emailLowerCase} = $newEmail WHERE ${u.id} = $userId""".update.run().discard
 
 end UserModel
 
-// TODO: Magnum doesn't support easy customisation of table name
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
-private case class Users(
-    id: Id[User],
-    login: String,
-    loginLowercase: LowerCased,
-    emailLowercase: LowerCased,
-    password: Hashed,
-    createdOn: Instant
-):
-  def toUser: User = User(id, login, loginLowercase, emailLowercase, password, createdOn)
-private object Users:
-  def apply(user: User): Users =
-    Users(user.id, user.login, user.loginLowerCase, user.emailLowerCase, user.passwordHash, user.createdOn)
-
+@SqlName("users")
 case class User(
     id: Id[User],
     login: String,
-    loginLowerCase: LowerCased,
-    emailLowerCase: LowerCased,
-    passwordHash: Hashed,
+    @SqlName("login_lowercase") loginLowerCase: LowerCased,
+    @SqlName("email_lowercase") emailLowerCase: LowerCased,
+    @SqlName("password") passwordHash: Hashed,
     createdOn: Instant
 ):
   def verifyPassword(password: String): PasswordVerificationStatus =
