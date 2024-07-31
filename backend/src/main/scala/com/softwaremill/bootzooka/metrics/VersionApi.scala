@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka.metrics
 
 import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http
-import com.softwaremill.bootzooka.infrastructure.Json.*
 import com.softwaremill.bootzooka.version.BuildInfo
 import sttp.shared.Identity
 import sttp.tapir.Schema

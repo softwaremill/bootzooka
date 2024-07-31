@@ -5,7 +5,7 @@ import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.*
-import com.softwaremill.tagging.*
+import com.softwaremill.bootzooka.util.Strings.Id
 import ox.{IO, either, sleep}
 import ox.either.{fail, ok}
 
@@ -22,8 +22,8 @@ class Auth[T](authTokenOps: AuthTokenOps[T], ds: DataSource, clock: Clock) exten
   /** Authenticates using the given authentication token. If the token is invalid, a failed [[IO]] is returned, with an instance of the
     * [[Fail]] class. Otherwise, the id of the authenticated user is given.
     */
-  def apply(id: Id)(using IO): Either[Fail, Id @@ User] =
-    transact(ds)(authTokenOps.findById(id.asId[T])) match {
+  def apply(id: Id[T])(using IO): Either[Fail, Id[User]] =
+    transact(ds)(authTokenOps.findById(id)) match {
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
@@ -45,8 +45,8 @@ class Auth[T](authTokenOps: AuthTokenOps[T], ds: DataSource, clock: Clock) exten
   */
 trait AuthTokenOps[T]:
   def tokenName: String
-  def findById: DbTx ?=> Id @@ T => Option[T]
+  def findById: DbTx ?=> Id[T] => Option[T]
   def delete: DbTx ?=> T => Unit
-  def userId: T => Id @@ User
+  def userId: T => Id[User]
   def validUntil: T => Instant
   def deleteWhenValid: Boolean

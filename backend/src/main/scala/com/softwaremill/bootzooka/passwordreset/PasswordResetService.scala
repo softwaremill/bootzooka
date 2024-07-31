@@ -7,6 +7,7 @@ import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.{User, UserModel}
 import com.softwaremill.bootzooka.util.*
+import com.softwaremill.bootzooka.util.Strings.{asId, Id, toLowerCased}
 import ox.{IO, either}
 import ox.either.*
 
@@ -22,9 +23,10 @@ class PasswordResetService(
     config: PasswordResetConfig,
     clock: Clock,
     ds: DataSource
-)(using IO) extends Logging:
+)(using IO)
+    extends Logging:
   def forgotPassword(loginOrEmail: String)(using DbTx): Unit =
-    userModel.findByLoginOrEmail(loginOrEmail.lowerCased) match {
+    userModel.findByLoginOrEmail(loginOrEmail.toLowerCased) match {
       case None => logger.debug(s"Could not find user with $loginOrEmail login/email")
       case Some(user) =>
         val pcr = createCode(user)
@@ -48,7 +50,7 @@ class PasswordResetService(
     emailTemplates.passwordReset(user.login, resetLink)
 
   def resetPassword(code: String, newPassword: String): Either[Fail, Unit] = either {
-    val userId = auth(code.asInstanceOf[Id]).ok()
+    val userId = auth(code.asId[PasswordResetCode]).ok()
     logger.debug(s"Resetting password for user: $userId")
     transact(ds)(userModel.updatePassword(userId, User.hashPassword(newPassword)))
   }

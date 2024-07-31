@@ -2,6 +2,7 @@ package com.softwaremill.bootzooka.infrastructure
 
 import com.augustnagro.magnum.{DbCodec, DbCon, DbTx, Frag}
 import com.softwaremill.bootzooka.logging.Logging
+import com.softwaremill.bootzooka.util.Strings.*
 
 import java.time.{Instant, OffsetDateTime, ZoneOffset}
 import javax.sql.DataSource
@@ -12,6 +13,10 @@ import scala.util.NotGiven
 object Magnum extends Logging:
 
   given DbCodec[Instant] = summon[DbCodec[OffsetDateTime]].biMap(_.toInstant, _.atOffset(ZoneOffset.UTC))
+
+  given idCodec[T]: DbCodec[Id[T]] = DbCodec.StringCodec.biMap(_.asId[T], _.toString)
+  given DbCodec[Hashed] = DbCodec.StringCodec.biMap(_.asHashed, _.toString)
+  given DbCodec[LowerCased] = DbCodec.StringCodec.biMap(_.toLowerCased, _.toString)
 
   // TODO use
   // private val SlowThreshold = 200.millis

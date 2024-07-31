@@ -3,15 +3,15 @@ package com.softwaremill.bootzooka.security
 import com.softwaremill.bootzooka.infrastructure.Magnum.DbTx
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
-import com.softwaremill.bootzooka.util.{Clock, Id, IdGenerator}
-import com.softwaremill.tagging.@@
+import com.softwaremill.bootzooka.util.Strings.Id
+import com.softwaremill.bootzooka.util.{Clock, IdGenerator}
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import scala.concurrent.duration.Duration
 
 class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: Clock) extends Logging:
-  def create(userId: Id @@ User, valid: Duration)(using DbTx): ApiKey =
+  def create(userId: Id[User], valid: Duration)(using DbTx): ApiKey =
     val id = idGenerator.nextId[ApiKey]()
     val now = clock.now()
     val validUntil = now.plus(valid.toMillis, ChronoUnit.MILLIS)
@@ -20,12 +20,12 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
     apiKeyModel.insert(apiKey)
     apiKey
 
-  def invalidate(id: Id @@ ApiKey)(using DbTx): Unit =
+  def invalidate(id: Id[ApiKey])(using DbTx): Unit =
     logger.debug(s"Invalidating api key $id")
     apiKeyModel.delete(id)
 
-  def invalidateAllForUser(userId: Id @@ User)(using DbTx): Unit =
+  def invalidateAllForUser(userId: Id[User])(using DbTx): Unit =
     logger.debug(s"Invalidating all api keys for user $userId")
     apiKeyModel.deleteAllForUser(userId)
 
-case class ApiKey(id: Id @@ ApiKey, userId: Id @@ User, createdOn: Instant, validUntil: Instant)
+case class ApiKey(id: Id[ApiKey], userId: Id[User], createdOn: Instant, validUntil: Instant)

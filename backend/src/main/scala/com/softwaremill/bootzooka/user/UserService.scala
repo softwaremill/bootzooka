@@ -6,7 +6,7 @@ import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util.*
-import com.softwaremill.tagging.@@
+import com.softwaremill.bootzooka.util.Strings.{Id, toLowerCased}
 import ox.either
 import ox.either.ok
 
@@ -33,14 +33,14 @@ class UserService(
       if op.isDefined then Left(Fail.IncorrectInput(msg)) else Right(())
 
     def checkUserDoesNotExist(): Either[Fail, Unit] = for {
-      _ <- failIfDefined(userModel.findByLogin(loginClean.lowerCased), LoginAlreadyUsed)
-      _ <- failIfDefined(userModel.findByEmail(emailClean.lowerCased), EmailAlreadyUsed)
+      _ <- failIfDefined(userModel.findByLogin(loginClean.toLowerCased), LoginAlreadyUsed)
+      _ <- failIfDefined(userModel.findByEmail(emailClean.toLowerCased), EmailAlreadyUsed)
     } yield ()
 
     def doRegister(): ApiKey =
       val id = idGenerator.nextId[User]()
       val now = clock.now()
-      val user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
+      val user = User(id, loginClean, loginClean.toLowerCased, emailClean.toLowerCased, User.hashPassword(password), now)
       val confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
       logger.debug(s"Registering new user: ${user.emailLowerCase}, with id: ${user.id}")
       userModel.insert(user)
@@ -54,32 +54,32 @@ class UserService(
     }
   end registerNewUser
 
-  def findById(id: Id @@ User)(using DbTx): Either[Fail, User] = userOrNotFound(userModel.findById(id))
+  def findById(id: Id[User])(using DbTx): Either[Fail, User] = userOrNotFound(userModel.findById(id))
 
   def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration])(using DbTx): Either[Fail, ApiKey] = either {
     val loginOrEmailClean = loginOrEmail.trim()
-    val user = userOrNotFound(userModel.findByLoginOrEmail(loginOrEmailClean.lowerCased)).ok()
+    val user = userOrNotFound(userModel.findByLoginOrEmail(loginOrEmailClean.toLowerCased)).ok()
     verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword).ok()
     apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
   }
 
-  def logout(id: Id @@ ApiKey)(using DbTx): Unit = apiKeyService.invalidate(id)
+  def logout(id: Id[ApiKey])(using DbTx): Unit = apiKeyService.invalidate(id)
 
-  def changeUser(userId: Id @@ User, newLogin: String, newEmail: String)(using DbTx): Either[Fail, Unit] =
+  def changeUser(userId: Id[User], newLogin: String, newEmail: String)(using DbTx): Either[Fail, Unit] =
     val newLoginClean = newLogin.trim()
     val newEmailClean = newEmail.trim()
-    val newEmailLowerCased = newEmailClean.lowerCased
+    val newEmailtoLowerCased = newEmailClean.toLowerCased
 
     def changeLogin(): Either[Fail, Boolean] = {
-      val newLoginLowerCased = newLoginClean.lowerCased
-      userModel.findByLogin(newLoginLowerCased) match {
+      val newLogintoLowerCased = newLoginClean.toLowerCased
+      userModel.findByLogin(newLogintoLowerCased) match {
         case Some(user) if user.id != userId           => Left(Fail.IncorrectInput(LoginAlreadyUsed))
         case Some(user) if user.login == newLoginClean => Right(false)
         case _ =>
           either {
             validateLogin().ok()
             logger.debug(s"Changing login for user: $userId, to: $newLoginClean")
-            userModel.updateLogin(userId, newLoginClean, newLoginLowerCased)
+            userModel.updateLogin(userId, newLoginClean, newLogintoLowerCased)
             true
           }
       }
@@ -88,20 +88,20 @@ class UserService(
     def validateLogin() = UserValidator(Some(newLoginClean), None, None).result
 
     def changeEmail(): Either[Fail, Boolean] = {
-      userModel.findByEmail(newEmailLowerCased) match {
+      userModel.findByEmail(newEmailtoLowerCased) match {
         case Some(user) if user.id != userId                         => Left(Fail.IncorrectInput(EmailAlreadyUsed))
-        case Some(user) if user.emailLowerCase == newEmailLowerCased => Right(false)
+        case Some(user) if user.emailLowerCase == newEmailtoLowerCased => Right(false)
         case _ =>
           either {
             validateEmail().ok()
             logger.debug(s"Changing email for user: $userId, to: $newEmailClean")
-            userModel.updateEmail(userId, newEmailLowerCased)
+            userModel.updateEmail(userId, newEmailtoLowerCased)
             true
           }
       }
     }
 
-    def validateEmail() = UserValidator(None, Some(newEmailLowerCased), None).result
+    def validateEmail() = UserValidator(None, Some(newEmailtoLowerCased), None).result
 
     def sendMail(user: User): Unit =
       val confirmationEmail = emailTemplates.profileDetailsChangeNotification(user.login)
@@ -115,8 +115,8 @@ class UserService(
     }
   end changeUser
 
-  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String)(using DbTx): Either[Fail, ApiKey] =
-    def validateUserPassword(userId: Id @@ User, currentPassword: String): Either[Fail, User] = {
+  def changePassword(userId: Id[User], currentPassword: String, newPassword: String)(using DbTx): Either[Fail, ApiKey] =
+    def validateUserPassword(userId: Id[User], currentPassword: String): Either[Fail, User] = {
       for {
         user <- userOrNotFound(userModel.findById(userId))
         _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")

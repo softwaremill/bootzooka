@@ -5,7 +5,8 @@ import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
-import com.softwaremill.bootzooka.util.{ServerEndpoints, asId}
+import com.softwaremill.bootzooka.util.ServerEndpoints
+import com.softwaremill.bootzooka.util.Strings.asId
 import ox.IO
 import sttp.tapir.Schema
 
@@ -26,7 +27,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .handle { data =>
       val apiKeyResult = transactEither(ds)(userService.registerNewUser(data.login, data.email, data.password))
       metrics.registeredUsersCounter.add(1)
-      apiKeyResult.map(apiKey => Register_OUT(apiKey.id))
+      apiKeyResult.map(apiKey => Register_OUT(apiKey.id.toString))
     }
 
   private val loginEndpoint = baseEndpoint.post
@@ -36,7 +37,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .handle { data =>
       val apiKeyResult =
         transactEither(ds)(userService.login(data.loginOrEmail, data.password, data.apiKeyValidHours.map(h => Duration(h.toLong, HOURS))))
-      apiKeyResult.map(apiKey => Login_OUT(apiKey.id))
+      apiKeyResult.map(apiKey => Login_OUT(apiKey.id.toString))
     }
 
   private val authedEndpoint = secureEndpoint.handleSecurity(authData => auth(authData))
@@ -56,7 +57,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .out(jsonBody[ChangePassword_OUT])
     .handle { id => data =>
       val apiKeyResult = transactEither(ds)(userService.changePassword(id, data.currentPassword, data.newPassword))
-      apiKeyResult.map(apiKey => ChangePassword_OUT(apiKey.id))
+      apiKeyResult.map(apiKey => ChangePassword_OUT(apiKey.id.toString))
     }
 
   private val getUserEndpoint = authedEndpoint.get
