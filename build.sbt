@@ -12,7 +12,7 @@ import complete.DefaultParsers._
 
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.9.7"
-val tapirVersion = "1.10.15"
+val tapirVersion = "1.11.0"
 val macwireVersion = "2.5.9"
 
 val dbDependencies = Seq(
@@ -45,7 +45,7 @@ val jsonDependencies = Seq(
 val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.6",
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
-  "net.logstash.logback" % "logstash-logback-encoder" % "7.4" % Runtime
+  "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
 )
 
 val configDependencies = Seq(
