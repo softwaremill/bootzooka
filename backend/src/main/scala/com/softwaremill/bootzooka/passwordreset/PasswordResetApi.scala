@@ -5,9 +5,10 @@ import com.softwaremill.bootzooka.http.Http
 import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.util.ServerEndpoints
+import ox.IO
 import sttp.tapir.Schema
 
-class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, db: DB):
+class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, db: DB)(using IO):
   import PasswordResetApi._
   import http._
 

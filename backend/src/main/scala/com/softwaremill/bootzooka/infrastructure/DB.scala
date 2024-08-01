@@ -19,7 +19,7 @@ import scala.util.NotGiven
 
 class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
   // TODO: add IO
-  def transactEither[E <: Exception: ClassTag, T](f: DbTx ?=> Either[E, T]): Either[E, T] =
+  def transactEither[E <: Exception: ClassTag, T](f: DbTx ?=> Either[E, T])(using IO): Either[E, T] =
     try
       com.augustnagro.magnum.transact(dataSource) {
         Right(f.fold(throw _, identity))
@@ -27,14 +27,14 @@ class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
     catch case e: E if summon[ClassTag[E]].runtimeClass.isAssignableFrom(e.getClass) => Left(e)
 
   // TODO: test & document
-  def transact[T](f: DbTx ?=> T)(using NotGiven[T <:< Either[_, _]]): T =
+  def transact[T](f: DbTx ?=> T)(using NotGiven[T <:< Either[_, _]], IO): T =
     com.augustnagro.magnum.transact(dataSource)(f)
 
   override def close(): Unit = IO.unsafe(dataSource.close())
 
 object DB extends Logging:
   /** Configures the database, setting up the connection pool and performing migrations. */
-  def createTestMigrate(_config: DBConfig): DB =
+  def createTestMigrate(_config: DBConfig)(using IO): DB =
     val config: DBConfig =
       if (_config.url.startsWith("postgres://")) {
         val dbUri = URI.create(_config.url)
@@ -77,5 +77,5 @@ object DB extends Logging:
           connectAndMigrate(ds)
 
     val ds = new HikariDataSource(hikariConfig)
-    IO.unsafe(connectAndMigrate(ds))
+    connectAndMigrate(ds)
     DB(ds)

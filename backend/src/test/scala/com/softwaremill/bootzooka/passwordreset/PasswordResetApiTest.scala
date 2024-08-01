@@ -5,6 +5,7 @@ import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword
 import com.softwaremill.bootzooka.test.*
 import org.scalatest.concurrent.Eventually
 import sttp.model.StatusCode
+import ox.IO.globalForTesting.given
 
 class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies with TestSupport:
 
