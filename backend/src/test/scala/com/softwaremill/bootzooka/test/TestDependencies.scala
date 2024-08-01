@@ -2,17 +2,15 @@ package com.softwaremill.bootzooka.test
 
 import com.softwaremill.bootzooka.Dependencies
 import com.softwaremill.bootzooka.config.Config
+import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.util.Clock
 import org.scalatest.{Args, BeforeAndAfterAll, Status, Suite}
-import sttp.client3.{HttpClientSyncBackend, SttpBackend}
-import sttp.client3.testing.SttpBackendStub
-import sttp.shared.Identity
-import sttp.tapir.server.stub.TapirStubInterpreter
 import ox.IO.globalForTesting.given
 import ox.{Ox, supervised}
-
-import java.io.Closeable
-import javax.sql.DataSource
+import sttp.client3.testing.SttpBackendStub
+import sttp.client3.{HttpClientSyncBackend, SttpBackend}
+import sttp.shared.Identity
+import sttp.tapir.server.stub.TapirStubInterpreter
 
 trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres:
   self: Suite with BaseTest =>
@@ -34,7 +32,7 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres:
     dependencies = new Dependencies {
       override lazy val config: Config = TestConfig
       override lazy val sttpBackend: SttpBackend[Identity, Any] = stub
-      override lazy val ds: DataSource & Closeable = currentDb.ds
+      override lazy val db: DB = currentDb
       override lazy val clock: Clock = testClock
     }
   }

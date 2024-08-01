@@ -2,13 +2,12 @@ package com.softwaremill.bootzooka.passwordreset
 
 import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http
+import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import sttp.tapir.Schema
 
-import javax.sql.DataSource
-
-class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, ds: DataSource):
+class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, db: DB):
   import PasswordResetApi._
   import http._
 
@@ -27,7 +26,7 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, d
     .in(jsonBody[ForgotPassword_IN])
     .out(jsonBody[ForgotPassword_OUT])
     .handleSuccess { data =>
-      transact(ds)(passwordResetService.forgotPassword(data.loginOrEmail))
+      db.transact(passwordResetService.forgotPassword(data.loginOrEmail))
       ForgotPassword_OUT()
     }
 

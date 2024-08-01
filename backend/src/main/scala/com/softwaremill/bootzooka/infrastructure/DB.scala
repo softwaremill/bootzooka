@@ -14,52 +14,68 @@ import ox.{IO, discard, sleep}
 import java.io.Closeable
 import javax.sql.DataSource
 import scala.annotation.tailrec
+import scala.reflect.ClassTag
+import scala.util.NotGiven
 
-/** Configures the database, setting up the connection pool and performing migrations. */
-class DB(_config: DBConfig) extends Logging:
-
-  private val config: DBConfig = {
-    if (_config.url.startsWith("postgres://")) {
-      val dbUri = URI.create(_config.url)
-      val usernamePassword = dbUri.getUserInfo.split(":")
-      _config.copy(
-        username = usernamePassword(0),
-        password = Sensitive(if (usernamePassword.length > 1) usernamePassword(1) else ""),
-        url = "jdbc:postgresql://" + dbUri.getHost + ':' + dbUri.getPort + dbUri.getPath
-      )
-    } else _config
-  }
-
-  private val hikariConfig = new HikariConfig()
-  hikariConfig.setJdbcUrl(_config.url)
-  hikariConfig.setUsername(config.username)
-  hikariConfig.setPassword(config.password.value)
-  hikariConfig.addDataSourceProperty("cachePrepStmts", "true")
-  hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250")
-  hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
-  hikariConfig.setThreadFactory(Thread.ofVirtual().factory())
-
-  @tailrec
-  private def connectAndMigrate(ds: DataSource)(using IO): Unit =
+class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
+  // TODO: add IO
+  def transactEither[E <: Exception: ClassTag, T](f: DbTx ?=> Either[E, T]): Either[E, T] =
     try
-      migrate()
-      testConnection(ds)
-      logger.info("Database migration & connection test complete")
-    catch
-      case e: Exception =>
-        logger.warn("Database not available, waiting 5 seconds to retry...", e)
-        sleep(5.seconds)
-        connectAndMigrate(ds)
+      com.augustnagro.magnum.transact(dataSource) {
+        Right(f.fold(throw _, identity))
+      }
+    catch case e: E if summon[ClassTag[E]].runtimeClass.isAssignableFrom(e.getClass) => Left(e)
 
-  private val flyway = Flyway
-    .configure()
-    .dataSource(config.url, config.username, config.password.value)
-    .load()
+  // TODO: test & document
+  def transact[T](f: DbTx ?=> T)(using NotGiven[T <:< Either[_, _]]): T =
+    com.augustnagro.magnum.transact(dataSource)(f)
 
-  private def migrate()(using IO): Unit = if config.migrateOnStart then flyway.migrate().discard
-  private def testConnection(ds: DataSource): Unit = connect(ds)(sql"SELECT 1".query[Int].run()).discard
+  override def close(): Unit = IO.unsafe(dataSource.close())
 
-  val ds: DataSource & Closeable =
-    val temp = new HikariDataSource(hikariConfig)
-    IO.unsafe(connectAndMigrate(temp))
-    temp
+object DB extends Logging:
+  /** Configures the database, setting up the connection pool and performing migrations. */
+  def createTestMigrate(_config: DBConfig): DB =
+    val config: DBConfig =
+      if (_config.url.startsWith("postgres://")) {
+        val dbUri = URI.create(_config.url)
+        val usernamePassword = dbUri.getUserInfo.split(":")
+        _config.copy(
+          username = usernamePassword(0),
+          password = Sensitive(if (usernamePassword.length > 1) usernamePassword(1) else ""),
+          url = "jdbc:postgresql://" + dbUri.getHost + ':' + dbUri.getPort + dbUri.getPath
+        )
+      } else _config
+    end config
+
+    val hikariConfig = new HikariConfig()
+    hikariConfig.setJdbcUrl(_config.url)
+    hikariConfig.setUsername(config.username)
+    hikariConfig.setPassword(config.password.value)
+    hikariConfig.addDataSourceProperty("cachePrepStmts", "true")
+    hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250")
+    hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+    hikariConfig.setThreadFactory(Thread.ofVirtual().factory())
+
+    val flyway = Flyway
+      .configure()
+      .dataSource(config.url, config.username, config.password.value)
+      .load()
+
+    def migrate()(using IO): Unit = if config.migrateOnStart then flyway.migrate().discard
+    def testConnection(ds: DataSource): Unit = connect(ds)(sql"SELECT 1".query[Int].run()).discard
+
+    @tailrec
+    def connectAndMigrate(ds: DataSource)(using IO): Unit =
+      try
+        migrate()
+        testConnection(ds)
+        logger.info("Database migration & connection test complete")
+      catch
+        case e: Exception =>
+          logger.warn("Database not available, waiting 5 seconds to retry...", e)
+          sleep(5.seconds)
+          connectAndMigrate(ds)
+
+    val ds = new HikariDataSource(hikariConfig)
+    IO.unsafe(connectAndMigrate(ds))
+    DB(ds)

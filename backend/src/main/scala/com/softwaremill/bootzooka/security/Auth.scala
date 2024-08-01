@@ -1,6 +1,7 @@
 package com.softwaremill.bootzooka.security
 
 import com.softwaremill.bootzooka.*
+import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
@@ -11,10 +12,9 @@ import ox.either.{fail, ok}
 
 import java.security.SecureRandom
 import java.time.Instant
-import javax.sql.DataSource
 import scala.concurrent.duration.*
 
-class Auth[T](authTokenOps: AuthTokenOps[T], ds: DataSource, clock: Clock) extends Logging:
+class Auth[T](authTokenOps: AuthTokenOps[T], db: DB, clock: Clock) extends Logging:
 
   // see https://hackernoon.com/hack-how-to-use-securerandom-with-kubernetes-and-docker-a375945a7b21
   private val random = SecureRandom.getInstance("NativePRNGNonBlocking")
@@ -23,7 +23,7 @@ class Auth[T](authTokenOps: AuthTokenOps[T], ds: DataSource, clock: Clock) exten
     * [[Fail]] class. Otherwise, the id of the authenticated user is given.
     */
   def apply(id: Id[T])(using IO): Either[Fail, Id[User]] =
-    transact(ds)(authTokenOps.findById(id)) match {
+    db.transact(authTokenOps.findById(id)) match {
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
@@ -31,10 +31,10 @@ class Auth[T](authTokenOps: AuthTokenOps[T], ds: DataSource, clock: Clock) exten
         Left(Fail.Unauthorized("Unauthorized"))
       case Some(token) if expired(token) =>
         logger.info(s"${authTokenOps.tokenName} expired: $token")
-        transact(ds)(authTokenOps.delete(token))
+        db.transact(authTokenOps.delete(token))
         Left(Fail.Unauthorized("Unauthorized"))
       case Some(token) =>
-        if (authTokenOps.deleteWhenValid) transact(ds)(authTokenOps.delete(token))
+        if (authTokenOps.deleteWhenValid) db.transact(authTokenOps.delete(token))
         Right(authTokenOps.userId(token))
     }
 

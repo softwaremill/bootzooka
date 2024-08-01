@@ -2,16 +2,15 @@ package com.softwaremill.bootzooka.passwordreset
 
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
+import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.{User, UserModel}
 import com.softwaremill.bootzooka.util.*
-import com.softwaremill.bootzooka.util.Strings.{asId, Id, toLowerCased}
+import com.softwaremill.bootzooka.util.Strings.{Id, asId, toLowerCased}
 import ox.{IO, either}
 import ox.either.*
-
-import javax.sql.DataSource
 
 class PasswordResetService(
     userModel: UserModel,
@@ -22,7 +21,7 @@ class PasswordResetService(
     idGenerator: IdGenerator,
     config: PasswordResetConfig,
     clock: Clock,
-    ds: DataSource
+    db: DB
 )(using IO)
     extends Logging:
   def forgotPassword(loginOrEmail: String)(using DbTx): Unit =
@@ -52,5 +51,5 @@ class PasswordResetService(
   def resetPassword(code: String, newPassword: String): Either[Fail, Unit] = either {
     val userId = auth(code.asId[PasswordResetCode]).ok()
     logger.debug(s"Resetting password for user: $userId")
-    transact(ds)(userModel.updatePassword(userId, User.hashPassword(newPassword)))
+    db.transact(userModel.updatePassword(userId, User.hashPassword(newPassword)))
   }

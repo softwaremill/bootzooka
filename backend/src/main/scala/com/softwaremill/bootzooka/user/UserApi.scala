@@ -2,6 +2,7 @@ package com.softwaremill.bootzooka.user
 
 import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http
+import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
@@ -11,10 +12,9 @@ import ox.IO
 import sttp.tapir.Schema
 
 import java.time.Instant
-import javax.sql.DataSource
 import scala.concurrent.duration.*
 
-class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: DataSource, metrics: Metrics)(using IO):
+class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Metrics)(using IO):
   import UserApi._
   import http._
 
@@ -25,7 +25,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .in(jsonBody[Register_IN])
     .out(jsonBody[Register_OUT])
     .handle { data =>
-      val apiKeyResult = transactEither(ds)(userService.registerNewUser(data.login, data.email, data.password))
+      val apiKeyResult = db.transactEither(userService.registerNewUser(data.login, data.email, data.password))
       metrics.registeredUsersCounter.add(1)
       apiKeyResult.map(apiKey => Register_OUT(apiKey.id.toString))
     }
@@ -36,7 +36,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .out(jsonBody[Login_OUT])
     .handle { data =>
       val apiKeyResult =
-        transactEither(ds)(userService.login(data.loginOrEmail, data.password, data.apiKeyValidHours.map(h => Duration(h.toLong, HOURS))))
+        db.transactEither(userService.login(data.loginOrEmail, data.password, data.apiKeyValidHours.map(h => Duration(h.toLong, HOURS))))
       apiKeyResult.map(apiKey => Login_OUT(apiKey.id.toString))
     }
 
@@ -47,7 +47,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .in(jsonBody[Logout_IN])
     .out(jsonBody[Logout_OUT])
     .handleSuccess { _ => data =>
-      transactEither(ds)(Right(userService.logout(data.apiKey.asId[ApiKey])))
+      db.transactEither(Right(userService.logout(data.apiKey.asId[ApiKey])))
       Logout_OUT()
     }
 
@@ -56,7 +56,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .in(jsonBody[ChangePassword_IN])
     .out(jsonBody[ChangePassword_OUT])
     .handle { id => data =>
-      val apiKeyResult = transactEither(ds)(userService.changePassword(id, data.currentPassword, data.newPassword))
+      val apiKeyResult = db.transactEither(userService.changePassword(id, data.currentPassword, data.newPassword))
       apiKeyResult.map(apiKey => ChangePassword_OUT(apiKey.id.toString))
     }
 
@@ -64,7 +64,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .in(UserPath)
     .out(jsonBody[GetUser_OUT])
     .handle { id => (_: Unit) =>
-      val userResult = transactEither(ds)(userService.findById(id))
+      val userResult = db.transactEither(userService.findById(id))
       userResult.map(user => GetUser_OUT(user.login, user.emailLowerCase, user.createdOn))
     }
 
@@ -73,7 +73,7 @@ class UserApi(http: Http, auth: Auth[ApiKey], userService: UserService, ds: Data
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
     .handle { id => data =>
-      transactEither(ds)(userService.changeUser(id, data.login, data.email)).map(_ => UpdateUser_OUT())
+      db.transactEither(userService.changeUser(id, data.login, data.email)).map(_ => UpdateUser_OUT())
     }
 
   val endpoints: ServerEndpoints = List(

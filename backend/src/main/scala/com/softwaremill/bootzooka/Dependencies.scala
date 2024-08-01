@@ -21,9 +21,6 @@ import sttp.client3.opentelemetry.OpenTelemetryMetricsBackend
 import sttp.client3.{HttpClientSyncBackend, SttpBackend}
 import sttp.shared.Identity
 
-import java.io.Closeable
-import javax.sql.DataSource
-
 trait Dependencies(using Ox, IO):
   // TODO use macwire/autowire once available for Scala3
   lazy val config: Config = Config.read.tap(Config.log)
@@ -33,24 +30,24 @@ trait Dependencies(using Ox, IO):
     useInScope(
       Slf4jLoggingBackend(OpenTelemetryMetricsBackend(new SetCorrelationIdBackend(HttpClientSyncBackend()), otel), includeTiming = true)
     )(_.close())
-  lazy val ds: DataSource & Closeable = useCloseableInScope(new DB(config.db).ds)
+  lazy val db: DB = useCloseableInScope(DB.createTestMigrate(config.db))
   lazy val idGenerator: IdGenerator = DefaultIdGenerator
   lazy val clock: Clock = DefaultClock
   lazy val http = new Http
   lazy val emailTemplates = new EmailTemplates
   lazy val emailModel = new EmailModel
   lazy val emailSender: EmailSender = EmailSender.create(sttpBackend, config.email)
-  lazy val emailService = new EmailService(emailModel, idGenerator, emailSender, config.email, ds, metrics)
+  lazy val emailService = new EmailService(emailModel, idGenerator, emailSender, config.email, db, metrics)
   lazy val apiKeyModel = new ApiKeyModel
   lazy val apiKeyAuthToken = new ApiKeyAuthToken(apiKeyModel)
   lazy val apiKeyService = new ApiKeyService(apiKeyModel, idGenerator, clock)
-  lazy val apiKeyAuth = new Auth(apiKeyAuthToken, ds, clock)
+  lazy val apiKeyAuth = new Auth(apiKeyAuthToken, db, clock)
   lazy val passwordResetCodeModel = new PasswordResetCodeModel
   lazy val passwordResetAuthToken = new PasswordResetAuthToken(passwordResetCodeModel)
-  lazy val passwordResetAuth = new Auth(passwordResetAuthToken, ds, clock)
+  lazy val passwordResetAuth = new Auth(passwordResetAuthToken, db, clock)
   lazy val userModel = new UserModel
   lazy val userService = new UserService(userModel, emailService, emailTemplates, apiKeyService, idGenerator, clock, config.user)
-  lazy val userApi = new UserApi(http, apiKeyAuth, userService, ds, metrics)
+  lazy val userApi = new UserApi(http, apiKeyAuth, userService, db, metrics)
   lazy val passwordResetService = new PasswordResetService(
     userModel,
     passwordResetCodeModel,
@@ -60,9 +57,9 @@ trait Dependencies(using Ox, IO):
     idGenerator,
     config.passwordReset,
     clock,
-    ds
+    db
   )
-  lazy val passwordResetApi = new PasswordResetApi(http, passwordResetService, ds)
+  lazy val passwordResetApi = new PasswordResetApi(http, passwordResetService, db)
   lazy val versionApi = new VersionApi(http)
   lazy val httpApi =
     new HttpApi(http, userApi.endpoints ++ passwordResetApi.endpoints, List(versionApi.versionEndpoint), otel, config.api)

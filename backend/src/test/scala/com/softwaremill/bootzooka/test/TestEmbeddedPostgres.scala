@@ -29,11 +29,11 @@ trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll wit
       url = url,
       migrateOnStart = true
     )
-    currentDb = new DB(currentDbConfig)
+    currentDb = DB.createTestMigrate(currentDbConfig)
   }
 
   override protected def afterAll(): Unit =
-    currentDb.ds.close()
+    currentDb.close()
     postgres.close()
     super.afterAll()
 
