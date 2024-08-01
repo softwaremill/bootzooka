@@ -89,7 +89,7 @@ class UserService(
 
     def changeEmail(): Either[Fail, Boolean] = {
       userModel.findByEmail(newEmailtoLowerCased) match {
-        case Some(user) if user.id != userId                         => Left(Fail.IncorrectInput(EmailAlreadyUsed))
+        case Some(user) if user.id != userId                           => Left(Fail.IncorrectInput(EmailAlreadyUsed))
         case Some(user) if user.emailLowerCase == newEmailtoLowerCased => Right(false)
         case _ =>
           either {

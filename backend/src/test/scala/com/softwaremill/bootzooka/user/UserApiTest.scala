@@ -6,7 +6,7 @@ import com.softwaremill.bootzooka.user.UserApi.*
 import org.scalatest.concurrent.Eventually
 import sttp.model.StatusCode
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 class UserApiTest extends BaseTest with Eventually with TestDependencies with TestSupport:
 

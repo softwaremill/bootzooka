@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.infrastructure
 
+import com.softwaremill.bootzooka.logging.{InheritableMDC, Logging}
 import ox.ForkLocal
 import sttp.client3.*
 import sttp.client3.{Response, SttpBackend}
@@ -18,7 +19,7 @@ object CorrelationId:
     def segment = (1 to 3).map(_ => randomUpperCaseChar()).mkString
     s"$segment-$segment-$segment"
 
-/** An sttp backend wrapper, which sets the current correlation id on all outgoing requests. */
+/** An sttp backend wrapper, which sets the current correlation id (from [[CorrelationId.forkLocal]]) on all outgoing requests. */
 class SetCorrelationIdBackend[P](delegate: SttpBackend[Identity, P]) extends SttpBackend[Identity, P]:
   override def send[T, R >: P with Effect[Identity]](request: Request[T, R]): Response[T] =
     val request2 = CorrelationId.forkLocal.get() match {
@@ -31,9 +32,9 @@ class SetCorrelationIdBackend[P](delegate: SttpBackend[Identity, P]) extends Stt
   override def responseMonad: MonadError[Identity] = delegate.responseMonad
 
 /** A tapir interceptor, which reads the correlation id from the headers, or if it's absent, generates a new one. The correlation id is set
-  * for the duration of processing the request.
+  * in Logback's MDC and in [[CorrelationId.forkLocal]] for the duration of processing the request.
   */
-object CorrelationIdInterceptor extends RequestInterceptor[Identity]:
+object CorrelationIdInterceptor extends RequestInterceptor[Identity] with Logging:
   val HeaderName: String = "X-Correlation-ID"
 
   override def apply[R, B](
@@ -42,7 +43,9 @@ object CorrelationIdInterceptor extends RequestInterceptor[Identity]:
   ): RequestHandler[Identity, R, B] =
     RequestHandler.from { case (request, endpoints, monad) =>
       val cid = request.header(HeaderName).getOrElse(CorrelationId.generate())
-      CorrelationId.forkLocal.supervisedWhere(Some(cid)) {
-        requestHandler(EndpointInterceptor.noop)(request, endpoints)(monad)
+      CorrelationId.forkLocal.unsupervisedWhere(Some(cid)) {
+        InheritableMDC.where("cid", cid) {
+          requestHandler(EndpointInterceptor.noop)(request, endpoints)(monad)
+        }
       }
     }
