@@ -1,78 +1,81 @@
 package com.softwaremill.bootzooka.infrastructure
 
 import java.net.URI
-import cats.effect.{IO, Resource}
-import com.typesafe.scalalogging.StrictLogging
-import doobie.hikari.HikariTransactor
 import org.flywaydb.core.Flyway
 
-import scala.concurrent.duration._
-import Doobie._
+import scala.concurrent.duration.*
+import Magnum.*
+import com.augustnagro.magnum.connect
 import com.softwaremill.bootzooka.config.Sensitive
-import com.softwaremill.macwire.autocats.autowire
+import com.softwaremill.bootzooka.logging.Logging
+import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
+import ox.{IO, discard, sleep}
 
-import scala.concurrent.ExecutionContext
+import java.io.Closeable
+import javax.sql.DataSource
+import scala.annotation.tailrec
+import scala.reflect.ClassTag
+import scala.util.NotGiven
 
-/** Configures the database, setting up the connection pool and performing migrations. */
-class DB(_config: DBConfig) extends StrictLogging {
+class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
+  // TODO: avoid throwing?
+  def transactEither[E <: Exception: ClassTag, T](f: DbTx ?=> Either[E, T])(using IO): Either[E, T] =
+    try
+      com.augustnagro.magnum.transact(dataSource) {
+        Right(f.fold(throw _, identity))
+      }
+    catch case e: E if summon[ClassTag[E]].runtimeClass.isAssignableFrom(e.getClass) => Left(e)
 
-  private val config: DBConfig = {
-    // on heroku, the url is passed without the jdbc: prefix, and with a different scheme
-    // see https://devcenter.heroku.com/articles/connecting-to-relational-databases-on-heroku-with-java#using-the-database_url-in-plain-jdbc
-    if (_config.url.startsWith("postgres://")) {
-      val dbUri = URI.create(_config.url)
-      val usernamePassword = dbUri.getUserInfo.split(":")
-      _config.copy(
-        username = usernamePassword(0),
-        password = Sensitive(if (usernamePassword.length > 1) usernamePassword(1) else ""),
-        url = "jdbc:postgresql://" + dbUri.getHost + ':' + dbUri.getPort + dbUri.getPath
-      )
-    } else _config
-  }
+  // TODO: test & document
+  def transact[T](f: DbTx ?=> T)(using NotGiven[T <:< Either[_, _]], IO): T =
+    com.augustnagro.magnum.transact(dataSource)(f)
 
-  val transactorResource: Resource[IO, Transactor[IO]] = {
-    /*
-     * When running DB operations, there are three thread pools at play:
-     * (1) connectEC: this is a thread pool for awaiting connections to the database. There might be an arbitrary
-     * number of clients waiting for a connection, so this should be bounded.
-     *
-     * See also: https://tpolecat.github.io/doobie/docs/14-Managing-Connections.html#about-threading
-     */
-    def buildTransactor(ec: ExecutionContext) = HikariTransactor.newHikariTransactor[IO](
-      config.driver,
-      config.url,
-      config.username,
-      config.password.value,
-      ec
-    )
-    autowire[Transactor[IO]](
-      doobie.util.ExecutionContexts.fixedThreadPool[IO](config.connectThreadPoolSize),
-      buildTransactor _
-    ).evalTap(connectAndMigrate)
-  }
+  override def close(): Unit = IO.unsafe(dataSource.close())
 
-  private def connectAndMigrate(xa: Transactor[IO]): IO[Unit] = {
-    (migrate() >> testConnection(xa) >> IO(logger.info("Database migration & connection test complete"))).onError { e: Throwable =>
-      logger.warn("Database not available, waiting 5 seconds to retry...", e)
-      IO.sleep(5.seconds) >> connectAndMigrate(xa)
-    }
-  }
+object DB extends Logging:
+  /** Configures the database, setting up the connection pool and performing migrations. */
+  def createTestMigrate(_config: DBConfig)(using IO): DB =
+    val config: DBConfig =
+      if (_config.url.startsWith("postgres://")) {
+        val dbUri = URI.create(_config.url)
+        val usernamePassword = dbUri.getUserInfo.split(":")
+        _config.copy(
+          username = usernamePassword(0),
+          password = Sensitive(if (usernamePassword.length > 1) usernamePassword(1) else ""),
+          url = "jdbc:postgresql://" + dbUri.getHost + ':' + dbUri.getPort + dbUri.getPath
+        )
+      } else _config
+    end config
 
-  private val flyway = {
-    Flyway
+    val hikariConfig = new HikariConfig()
+    hikariConfig.setJdbcUrl(_config.url)
+    hikariConfig.setUsername(config.username)
+    hikariConfig.setPassword(config.password.value)
+    hikariConfig.addDataSourceProperty("cachePrepStmts", "true")
+    hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250")
+    hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+    hikariConfig.setThreadFactory(Thread.ofVirtual().factory())
+
+    val flyway = Flyway
       .configure()
       .dataSource(config.url, config.username, config.password.value)
       .load()
-  }
 
-  private def migrate(): IO[Unit] = {
-    if (config.migrateOnStart) {
-      IO(flyway.migrate()).void
-    } else IO.unit
-  }
+    def migrate()(using IO): Unit = if config.migrateOnStart then flyway.migrate().discard
+    def testConnection(ds: DataSource): Unit = connect(ds)(sql"SELECT 1".query[Int].run()).discard
 
-  private def testConnection(xa: Transactor[IO]): IO[Unit] =
-    IO {
-      sql"select 1".query[Int].unique.transact(xa)
-    }.void
-}
+    @tailrec
+    def connectAndMigrate(ds: DataSource)(using IO): Unit =
+      try
+        migrate()
+        testConnection(ds)
+        logger.info("Database migration & connection test complete")
+      catch
+        case e: Exception =>
+          logger.warn("Database not available, waiting 5 seconds to retry...", e)
+          sleep(5.seconds)
+          connectAndMigrate(ds)
+
+    val ds = new HikariDataSource(hikariConfig)
+    connectAndMigrate(ds)
+    DB(ds)

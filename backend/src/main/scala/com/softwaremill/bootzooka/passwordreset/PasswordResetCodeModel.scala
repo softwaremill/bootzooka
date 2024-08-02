@@ -1,41 +1,29 @@
 package com.softwaremill.bootzooka.passwordreset
 
+import com.augustnagro.magnum.{PostgresDbType, Repo, SqlName, SqlNameMapper, Table}
+import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
+import com.softwaremill.bootzooka.security.AuthTokenOps
+import com.softwaremill.bootzooka.user.User
+import com.softwaremill.bootzooka.util.Strings.Id
+
 import java.time.Instant
 
-import cats.implicits._
+class PasswordResetCodeModel:
+  private val passwordResetCodeRepo = Repo[PasswordResetCode, PasswordResetCode, Id[PasswordResetCode]]
 
-import com.softwaremill.bootzooka.util.Id
-import com.softwaremill.bootzooka.user.User
-import com.softwaremill.tagging.@@
-import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.security.AuthTokenOps
+  def insert(pr: PasswordResetCode)(using DbTx): Unit = passwordResetCodeRepo.insert(pr)
+  def delete(id: Id[PasswordResetCode])(using DbTx): Unit = passwordResetCodeRepo.deleteById(id)
+  def findById(id: Id[PasswordResetCode])(using DbTx): Option[PasswordResetCode] = passwordResetCodeRepo.findById(id)
 
-class PasswordResetCodeModel {
+@Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
+@SqlName("password_reset_codes")
+case class PasswordResetCode(id: Id[PasswordResetCode], userId: Id[User], validUntil: Instant)
 
-  def insert(pr: PasswordResetCode): ConnectionIO[Unit] = {
-    sql"""INSERT INTO password_reset_codes (id, user_id, valid_until)
-         |VALUES (${pr.id}, ${pr.userId}, ${pr.validUntil})""".stripMargin.update.run.void
-  }
-
-  def delete(id: Id @@ PasswordResetCode): ConnectionIO[Unit] = {
-    sql"""DELETE FROM password_reset_codes WHERE id = $id""".stripMargin.update.run.void
-  }
-
-  def findById(id: Id @@ PasswordResetCode): ConnectionIO[Option[PasswordResetCode]] = {
-    sql"SELECT id, user_id, valid_until FROM password_reset_codes WHERE id = $id"
-      .query[PasswordResetCode]
-      .option
-  }
-}
-
-case class PasswordResetCode(id: Id @@ PasswordResetCode, userId: Id @@ User, validUntil: Instant)
-
-class PasswordResetAuthToken(passwordResetCodeModel: PasswordResetCodeModel) extends AuthTokenOps[PasswordResetCode] {
+class PasswordResetAuthToken(passwordResetCodeModel: PasswordResetCodeModel) extends AuthTokenOps[PasswordResetCode]:
   override def tokenName: String = "PasswordResetCode"
-  override def findById: Id @@ PasswordResetCode => ConnectionIO[Option[PasswordResetCode]] = passwordResetCodeModel.findById
-  override def delete: PasswordResetCode => ConnectionIO[Unit] = ak => passwordResetCodeModel.delete(ak.id)
-  override def userId: PasswordResetCode => Id @@ User = _.userId
+  override def findById: DbTx ?=> Id[PasswordResetCode] => Option[PasswordResetCode] = passwordResetCodeModel.findById
+  override def delete: DbTx ?=> PasswordResetCode => Unit = ak => passwordResetCodeModel.delete(ak.id)
+  override def userId: PasswordResetCode => Id[User] = _.userId
   override def validUntil: PasswordResetCode => Instant = _.validUntil
   // password reset code is a one-time token
   override def deleteWhenValid: Boolean = true
-}

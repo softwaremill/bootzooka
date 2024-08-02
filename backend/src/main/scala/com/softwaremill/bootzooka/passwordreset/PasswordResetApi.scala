@@ -1,14 +1,14 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import cats.data.NonEmptyList
+import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http
-import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.softwaremill.bootzooka.infrastructure.DB
+import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.util.ServerEndpoints
-import doobie.util.transactor.Transactor
-import cats.effect.IO
+import ox.IO
+import sttp.tapir.Schema
 
-class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, xa: Transactor[IO]) {
+class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, db: DB)(using IO):
   import PasswordResetApi._
   import http._
 
@@ -18,35 +18,27 @@ class PasswordResetApi(http: Http, passwordResetService: PasswordResetService, x
     .in(PasswordResetPath / "reset")
     .in(jsonBody[PasswordReset_IN])
     .out(jsonBody[PasswordReset_OUT])
-    .serverLogic { data =>
-      (for {
-        _ <- passwordResetService.resetPassword(data.code, data.password)
-      } yield PasswordReset_OUT()).toOut
+    .handle { data =>
+      passwordResetService.resetPassword(data.code, data.password).map(_ => PasswordReset_OUT())
     }
 
   private val forgotPasswordEndpoint = baseEndpoint.post
     .in(PasswordResetPath / "forgot")
     .in(jsonBody[ForgotPassword_IN])
     .out(jsonBody[ForgotPassword_OUT])
-    .serverLogic { data =>
-      (for {
-        _ <- passwordResetService.forgotPassword(data.loginOrEmail).transact(xa)
-      } yield ForgotPassword_OUT()).toOut
+    .handleSuccess { data =>
+      db.transact(passwordResetService.forgotPassword(data.loginOrEmail))
+      ForgotPassword_OUT()
     }
 
-  val endpoints: ServerEndpoints =
-    NonEmptyList
-      .of(
-        passwordResetEndpoint,
-        forgotPasswordEndpoint
-      )
-      .map(_.tag("passwordreset"))
-}
+  val endpoints: ServerEndpoints = List(
+    passwordResetEndpoint,
+    forgotPasswordEndpoint
+  ).map(_.tag("passwordreset"))
 
-object PasswordResetApi {
-  case class PasswordReset_IN(code: String, password: String)
-  case class PasswordReset_OUT()
+object PasswordResetApi:
+  case class PasswordReset_IN(code: String, password: String) derives ConfiguredJsonValueCodec, Schema
+  case class PasswordReset_OUT() derives ConfiguredJsonValueCodec, Schema
 
-  case class ForgotPassword_IN(loginOrEmail: String)
-  case class ForgotPassword_OUT()
-}
+  case class ForgotPassword_IN(loginOrEmail: String) derives ConfiguredJsonValueCodec, Schema
+  case class ForgotPassword_OUT() derives ConfiguredJsonValueCodec, Schema

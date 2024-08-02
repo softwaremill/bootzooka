@@ -1,23 +1,19 @@
 package com.softwaremill.bootzooka.metrics
 
-import io.prometheus.client.{Counter, Gauge, hotspot}
+import io.opentelemetry.api.OpenTelemetry
+import io.opentelemetry.api.metrics.{DoubleGauge, LongCounter}
 
-object Metrics {
-  lazy val registeredUsersCounter: Counter =
-    Counter
+class Metrics(otel: OpenTelemetry):
+  private val meter = otel.meterBuilder("bootzooka").setInstrumentationVersion("1.0").build()
+
+  lazy val registeredUsersCounter: LongCounter =
+    meter
+      .counterBuilder("bootzooka_registered_users_counter")
+      .setDescription("How many users registered on this instance since it was started")
       .build()
-      .name(s"bootzooka_registered_users_counter")
-      .help(s"How many users registered on this instance since it was started")
-      .register()
 
-  lazy val emailQueueGauge: Gauge =
-    Gauge
+  lazy val emailQueueGauge: DoubleGauge =
+    meter
+      .gaugeBuilder("bootzooka_email_queue_gauge")
+      .setDescription("How many emails are waiting to be sent")
       .build()
-      .name(s"bootzooka_email_queue_gauge")
-      .help(s"How many emails are waiting to be sent")
-      .register()
-
-  def init(): Unit = {
-    hotspot.DefaultExports.initialize()
-  }
-}

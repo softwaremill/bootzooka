@@ -1,41 +1,30 @@
 package com.softwaremill.bootzooka.security
 
+import com.augustnagro.magnum.{PostgresDbType, Repo, SqlName, SqlNameMapper, Table, TableInfo}
+import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
+import com.softwaremill.bootzooka.user.User
+import com.softwaremill.bootzooka.util.Strings.Id
+import ox.discard
+
 import java.time.Instant
 
-import cats.implicits._
-import com.softwaremill.bootzooka.infrastructure.Doobie
-import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.user.User
-import com.softwaremill.bootzooka.util.Id
-import com.softwaremill.tagging.@@
+class ApiKeyModel:
+  private val apiKeyRepo = Repo[ApiKey, ApiKey, Id[ApiKey]]
+  private val a = TableInfo[ApiKey, ApiKey, Id[ApiKey]]
 
-class ApiKeyModel {
+  def insert(apiKey: ApiKey)(using DbTx): Unit = apiKeyRepo.insert(apiKey)
+  def findById(id: Id[ApiKey])(using DbTx): Option[ApiKey] = apiKeyRepo.findById(id)
+  def deleteAllForUser(id: Id[User])(using DbTx): Unit = sql"""DELETE FROM $a WHERE ${a.userId} = $id""".update.run().discard
+  def delete(id: Id[ApiKey])(using DbTx): Unit = apiKeyRepo.deleteById(id)
 
-  def insert(apiKey: ApiKey): ConnectionIO[Unit] = {
-    sql"""INSERT INTO api_keys (id, user_id, created_on, valid_until)
-         |VALUES (${apiKey.id}, ${apiKey.userId}, ${apiKey.createdOn}, ${apiKey.validUntil})""".stripMargin.update.run.void
-  }
+@Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
+@SqlName("api_keys")
+case class ApiKey(id: Id[ApiKey], userId: Id[User], createdOn: Instant, validUntil: Instant)
 
-  def findById(id: Id @@ ApiKey): ConnectionIO[Option[ApiKey]] = {
-    sql"""SELECT id, user_id, created_on, valid_until FROM api_keys WHERE id = $id"""
-      .query[ApiKey]
-      .option
-  }
-
-  def deleteAllForUser(id: Id @@ User): ConnectionIO[Unit] = {
-    sql"""DELETE FROM api_keys WHERE user_id = $id""".update.run.void
-  }
-
-  def delete(id: Id @@ ApiKey): ConnectionIO[Unit] = {
-    sql"""DELETE FROM api_keys WHERE id = $id""".update.run.void
-  }
-}
-
-class ApiKeyAuthToken(apiKeyModel: ApiKeyModel) extends AuthTokenOps[ApiKey] {
+class ApiKeyAuthToken(apiKeyModel: ApiKeyModel) extends AuthTokenOps[ApiKey]:
   override def tokenName: String = "ApiKey"
-  override def findById: Id @@ ApiKey => Doobie.ConnectionIO[Option[ApiKey]] = apiKeyModel.findById
-  override def delete: ApiKey => Doobie.ConnectionIO[Unit] = ak => apiKeyModel.delete(ak.id)
-  override def userId: ApiKey => Id @@ User = _.userId
+  override def findById: DbTx ?=> Id[ApiKey] => Option[ApiKey] = apiKeyModel.findById
+  override def delete: DbTx ?=> ApiKey => Unit = ak => apiKeyModel.delete(ak.id)
+  override def userId: ApiKey => Id[User] = _.userId
   override def validUntil: ApiKey => Instant = _.validUntil
   override def deleteWhenValid: Boolean = false
-}

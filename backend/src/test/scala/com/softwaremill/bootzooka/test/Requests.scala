@@ -1,17 +1,14 @@
 package com.softwaremill.bootzooka.test
 
-import cats.effect.IO
+import com.github.plokhotnyuk.jsoniter_scala.core.writeToString
 import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_IN, PasswordReset_IN}
-import com.softwaremill.bootzooka.user.UserApi._
-import io.circe.generic.auto._
-import io.circe.syntax.EncoderOps
-import sttp.client3
+import com.softwaremill.bootzooka.user.UserApi.*
 import sttp.client3.{Response, SttpBackend, UriContext, basicRequest}
+import sttp.shared.Identity
 
 import scala.util.Random
 
-class Requests(backend: SttpBackend[IO, Any]) extends TestSupport {
-
+class Requests(backend: SttpBackend[Identity, Any]) extends TestSupport:
   private val random = new Random()
 
   def randomLoginEmailPassword(): (String, String, String) =
@@ -19,76 +16,58 @@ class Requests(backend: SttpBackend[IO, Any]) extends TestSupport {
 
   private val basePath = "http://localhost:8080/api/v1"
 
-  def registerUser(login: String, email: String, password: String): Response[Either[String, String]] = {
+  def registerUser(login: String, email: String, password: String): Response[Either[String, String]] =
     basicRequest
       .post(uri"$basePath/user/register")
-      .body(Register_IN(login, email, password).asJson.noSpaces)
+      .body(writeToString(Register_IN(login, email, password)))
       .send(backend)
-      .unwrap
-  }
 
-  def newRegisteredUsed(): RegisteredUser = {
+  def newRegisteredUsed(): RegisteredUser =
     val (login, email, password) = randomLoginEmailPassword()
     val apiKey = registerUser(login, email, password).body.shouldDeserializeTo[Register_OUT].apiKey
     RegisteredUser(login, email, password, apiKey)
-  }
 
-  def loginUser(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int] = None): Response[Either[String, String]] = {
+  def loginUser(loginOrEmail: String, password: String, apiKeyValidHours: Option[Int] = None): Response[Either[String, String]] =
     basicRequest
       .post(uri"$basePath/user/login")
-      .body(Login_IN(loginOrEmail, password, apiKeyValidHours).asJson.noSpaces)
+      .body(writeToString(Login_IN(loginOrEmail, password, apiKeyValidHours)))
       .send(backend)
-      .unwrap
-  }
 
-  def logoutUser(apiKey: String): Response[Either[String, String]] = {
+  def logoutUser(apiKey: String): Response[Either[String, String]] =
     basicRequest
       .post(uri"$basePath/user/logout")
-      .body(Logout_IN(apiKey).asJson.noSpaces)
+      .body(writeToString(Logout_IN(apiKey)))
       .header("Authorization", s"Bearer $apiKey")
       .send(backend)
-      .unwrap
-  }
 
-  def getUser(apiKey: String): client3.Response[Either[String, String]] = {
+  def getUser(apiKey: String): Response[Either[String, String]] =
     basicRequest
       .get(uri"$basePath/user")
       .header("Authorization", s"Bearer $apiKey")
       .send(backend)
-      .unwrap
-  }
 
-  def changePassword(apiKey: String, password: String, newPassword: String): Response[Either[String, String]] = {
+  def changePassword(apiKey: String, password: String, newPassword: String): Response[Either[String, String]] =
     basicRequest
       .post(uri"$basePath/user/changepassword")
-      .body(ChangePassword_IN(password, newPassword).asJson.noSpaces)
+      .body(writeToString(ChangePassword_IN(password, newPassword)))
       .header("Authorization", s"Bearer $apiKey")
       .send(backend)
-      .unwrap
-  }
 
-  def updateUser(apiKey: String, login: String, email: String): Response[Either[String, String]] = {
+  def updateUser(apiKey: String, login: String, email: String): Response[Either[String, String]] =
     basicRequest
       .post(uri"$basePath/user")
-      .body(UpdateUser_IN(login, email).asJson.noSpaces)
+      .body(writeToString(UpdateUser_IN(login, email)))
       .header("Authorization", s"Bearer $apiKey")
       .send(backend)
-      .unwrap
-  }
 
-  def forgotPassword(loginOrEmail: String): Response[Either[String, String]] = {
+  def forgotPassword(loginOrEmail: String): Response[Either[String, String]] =
     basicRequest
       .post(uri"$basePath/passwordreset/forgot")
-      .body(ForgotPassword_IN(loginOrEmail).asJson.noSpaces)
+      .body(writeToString(ForgotPassword_IN(loginOrEmail)))
       .send(backend)
-      .unwrap
-  }
 
-  def resetPassword(code: String, password: String): Response[Either[String, String]] = {
+  def resetPassword(code: String, password: String): Response[Either[String, String]] =
     basicRequest
       .post(uri"$basePath/passwordreset/reset")
-      .body(PasswordReset_IN(code, password).asJson.noSpaces)
+      .body(writeToString(PasswordReset_IN(code, password)))
       .send(backend)
-      .unwrap
-  }
-}

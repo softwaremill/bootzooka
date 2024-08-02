@@ -16,10 +16,10 @@ Current (user visible) features:
 
 "Developer" features:
 
-* integrated SBT + Webpack build
+* integrated SBT + Yarn build
 * unit & integration backend tests
 * frontend JS tests
-* fat-jar, Docker or Heroku deployment
+* fat-jar and Docker deployment
 
 This may not sound "cool", but the goal of Bootzooka is to be helpful when bootstrapping a new project. It contains the whole required setup and automation of build processes both for frontend and backend. You get it out of the box which means significantly less time spent on setting up infrastructure and tools and more time spent on actual coding features in project.
 

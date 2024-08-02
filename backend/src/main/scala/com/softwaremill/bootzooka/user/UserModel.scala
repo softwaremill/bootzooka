@@ -1,82 +1,75 @@
 package com.softwaremill.bootzooka.user
 
-import java.time.Instant
-import cats.implicits._
-import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.util.{Id, LowerCased, PasswordHash, PasswordVerificationStatus, RichString, VerificationFailed, Verified}
-import com.softwaremill.tagging.@@
+import com.augustnagro.magnum.{Frag, PostgresDbType, Repo, Spec, SqlName, SqlNameMapper, Table, TableInfo}
 import com.password4j.{Argon2Function, Password}
+import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
 import com.softwaremill.bootzooka.user.User.PasswordHashing
-import com.softwaremill.bootzooka.user.User.PasswordHashing.Argon2Config._
+import com.softwaremill.bootzooka.user.User.PasswordHashing.Argon2Config.*
+import com.softwaremill.bootzooka.util.PasswordVerificationStatus
+import com.softwaremill.bootzooka.util.Strings.{Hashed, Id, LowerCased, asHashed}
+import ox.discard
 
-class UserModel {
+import java.time.Instant
 
-  def insert(user: User): ConnectionIO[Unit] = {
-    sql"""INSERT INTO users (id, login, login_lowercase, email_lowercase, password, created_on)
-         |VALUES (${user.id}, ${user.login}, ${user.loginLowerCased}, ${user.emailLowerCased}, ${user.passwordHash}, ${user.createdOn})""".stripMargin.update.run.void
-  }
+class UserModel:
+  private val userRepo = Repo[User, User, Id[User]]
+  private val u = TableInfo[User, User, Id[User]]
 
-  def findById(id: Id @@ User): ConnectionIO[Option[User]] = {
-    findBy(fr"id = $id")
-  }
+  def insert(user: User)(using DbTx): Unit = userRepo.insert(user)
+  def findById(id: Id[User])(using DbTx): Option[User] = userRepo.findById(id)
+  def findByEmail(email: LowerCased)(using DbTx): Option[User] = findBy(
+    Spec[User].where(sql"${u.emailLowerCase} = $email")
+  )
+  def findByLogin(login: LowerCased)(using DbTx): Option[User] = findBy(
+    Spec[User].where(sql"${u.loginLowerCase} = $login")
+  )
+  def findByLoginOrEmail(loginOrEmail: LowerCased)(using DbTx): Option[User] =
+    findBy(Spec[User].where(sql"${u.loginLowerCase} = ${loginOrEmail: String} OR ${u.emailLowerCase} = $loginOrEmail"))
 
-  def findByEmail(email: String @@ LowerCased): ConnectionIO[Option[User]] = {
-    findBy(fr"email_lowercase = $email")
-  }
+  private def findBy(by: Spec[User])(using DbTx): Option[User] =
+    userRepo.findAll(by).headOption
 
-  def findByLogin(login: String @@ LowerCased): ConnectionIO[Option[User]] = {
-    findBy(fr"login_lowercase = $login")
-  }
+  def updatePassword(userId: Id[User], newPassword: Hashed)(using DbTx): Unit =
+    sql"""UPDATE $u SET ${u.passwordHash} = $newPassword WHERE ${u.id} = $userId""".update.run().discard
 
-  def findByLoginOrEmail(loginOrEmail: String @@ LowerCased): ConnectionIO[Option[User]] = {
-    findBy(fr"login_lowercase = $loginOrEmail OR email_lowercase = $loginOrEmail")
-  }
+  def updateLogin(userId: Id[User], newLogin: String, newLoginLowerCase: LowerCased)(using DbTx): Unit =
+    sql"""UPDATE $u SET ${u.login} = $newLogin, login_lowercase = ${newLoginLowerCase: String} WHERE ${u.id} = $userId""".update
+      .run()
+      .discard
 
-  private def findBy(by: Fragment): ConnectionIO[Option[User]] = {
-    (sql"SELECT id, login, login_lowercase, email_lowercase, password, created_on FROM users WHERE " ++ by)
-      .query[User]
-      .option
-  }
+  def updateEmail(userId: Id[User], newEmail: LowerCased)(using DbTx): Unit =
+    sql"""UPDATE $u SET ${u.emailLowerCase} = $newEmail WHERE ${u.id} = $userId""".update.run().discard
 
-  def updatePassword(userId: Id @@ User, newPassword: String @@ PasswordHash): ConnectionIO[Unit] =
-    sql"""UPDATE users SET password = $newPassword WHERE id = $userId""".stripMargin.update.run.void
+end UserModel
 
-  def updateLogin(userId: Id @@ User, newLogin: String, newLoginLowerCase: String @@ LowerCased): ConnectionIO[Unit] =
-    sql"""UPDATE users SET login = $newLogin, login_lowercase = $newLoginLowerCase WHERE id = $userId""".stripMargin.update.run.void
-
-  def updateEmail(userId: Id @@ User, newEmail: String @@ LowerCased): ConnectionIO[Unit] =
-    sql"""UPDATE users SET email_lowercase = $newEmail WHERE id = $userId""".stripMargin.update.run.void
-}
-
+@Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
+@SqlName("users")
 case class User(
-    id: Id @@ User,
+    id: Id[User],
     login: String,
-    loginLowerCased: String @@ LowerCased,
-    emailLowerCased: String @@ LowerCased,
-    passwordHash: String @@ PasswordHash,
+    @SqlName("login_lowercase") loginLowerCase: LowerCased,
+    @SqlName("email_lowercase") emailLowerCase: LowerCased,
+    @SqlName("password") passwordHash: Hashed,
     createdOn: Instant
-) {
-
+):
   def verifyPassword(password: String): PasswordVerificationStatus =
-    if (Password.check(password, passwordHash) `with` PasswordHashing.Argon2) Verified else VerificationFailed
-}
+    if (Password.check(password, passwordHash) `with` PasswordHashing.Argon2) PasswordVerificationStatus.Verified
+    else PasswordVerificationStatus.VerificationFailed
+end User
 
-object User {
-  object PasswordHashing {
-
+object User:
+  object PasswordHashing:
     val Argon2: Argon2Function =
       Argon2Function.getInstance(MemoryInKib, NumberOfIterations, LevelOfParallelism, LengthOfTheFinalHash, Type, Version)
 
-    object Argon2Config {
+    object Argon2Config:
       val MemoryInKib = 12
       val NumberOfIterations = 20
       val LevelOfParallelism = 2
       val LengthOfTheFinalHash = 32
       val Type = com.password4j.types.Argon2.ID
       val Version = 19
-    }
-  }
+  end PasswordHashing
 
-  def hashPassword(password: String): String @@ PasswordHash =
-    Password.hash(password).`with`(PasswordHashing.Argon2).getResult.hashedPassword
-}
+  def hashPassword(password: String): Hashed = Password.hash(password).`with`(PasswordHashing.Argon2).getResult.asHashed
+end User

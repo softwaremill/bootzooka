@@ -1,14 +1,14 @@
 package com.softwaremill.bootzooka.user
 
-import cats.MonadError
-import cats.implicits._
-import com.softwaremill.bootzooka._
+import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
-import com.softwaremill.bootzooka.infrastructure.Doobie._
-import com.softwaremill.bootzooka.logging.FLogging
+import com.softwaremill.bootzooka.infrastructure.Magnum.*
+import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
-import com.softwaremill.bootzooka.util._
-import com.softwaremill.tagging.@@
+import com.softwaremill.bootzooka.util.*
+import com.softwaremill.bootzooka.util.Strings.{Id, toLowerCased}
+import ox.either
+import ox.either.ok
 
 import scala.concurrent.duration.Duration
 
@@ -20,189 +20,152 @@ class UserService(
     idGenerator: IdGenerator,
     clock: Clock,
     config: UserConfig
-) extends FLogging {
-
+) extends Logging:
   private val LoginAlreadyUsed = "Login already in use!"
   private val EmailAlreadyUsed = "E-mail already in use!"
   private val IncorrectLoginOrPassword = "Incorrect login/email or password"
 
-  def registerNewUser(login: String, email: String, password: String): ConnectionIO[ApiKey] = {
+  def registerNewUser(login: String, email: String, password: String)(using DbTx): Either[Fail, ApiKey] =
     val loginClean = login.trim()
     val emailClean = email.trim()
 
-    def failIfDefined(op: ConnectionIO[Option[User]], msg: String): ConnectionIO[Unit] = {
-      op.flatMap {
-        case None    => ().pure[ConnectionIO]
-        case Some(_) => Fail.IncorrectInput(msg).raiseError[ConnectionIO, Unit]
-      }
+    def failIfDefined(op: Option[User], msg: String): Either[Fail, Unit] =
+      if op.isDefined then Left(Fail.IncorrectInput(msg)) else Right(())
+
+    def checkUserDoesNotExist(): Either[Fail, Unit] = for {
+      _ <- failIfDefined(userModel.findByLogin(loginClean.toLowerCased), LoginAlreadyUsed)
+      _ <- failIfDefined(userModel.findByEmail(emailClean.toLowerCased), EmailAlreadyUsed)
+    } yield ()
+
+    def doRegister(): ApiKey =
+      val id = idGenerator.nextId[User]()
+      val now = clock.now()
+      val user = User(id, loginClean, loginClean.toLowerCased, emailClean.toLowerCased, User.hashPassword(password), now)
+      val confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
+      logger.debug(s"Registering new user: ${user.emailLowerCase}, with id: ${user.id}")
+      userModel.insert(user)
+      emailScheduler(EmailData(emailClean, confirmationEmail))
+      apiKeyService.create(user.id, config.defaultApiKeyValid)
+
+    either {
+      UserValidator(Some(loginClean), Some(emailClean), Some(password)).result.ok()
+      checkUserDoesNotExist().ok()
+      doRegister()
     }
+  end registerNewUser
 
-    def checkUserDoesNotExist(): ConnectionIO[Unit] = {
-      failIfDefined(userModel.findByLogin(loginClean.lowerCased), LoginAlreadyUsed) >>
-        failIfDefined(userModel.findByEmail(emailClean.lowerCased), EmailAlreadyUsed)
-    }
+  def findById(id: Id[User])(using DbTx): Either[Fail, User] = userOrNotFound(userModel.findById(id))
 
-    def doRegister(): ConnectionIO[ApiKey] = for {
-      id <- idGenerator.nextId[ConnectionIO, User]()
-      now <- clock.now[ConnectionIO]()
-      user = User(id, loginClean, loginClean.lowerCased, emailClean.lowerCased, User.hashPassword(password), now)
-      confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
-      _ <- logger.debug[ConnectionIO](s"Registering new user: ${user.emailLowerCased}, with id: ${user.id}")
-      _ <- userModel.insert(user)
-      _ <- emailScheduler(EmailData(emailClean, confirmationEmail))
-      apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
-    } yield apiKey
-
-    for {
-      _ <- UserValidator(Some(loginClean), Some(emailClean), Some(password)).as[ConnectionIO]
-      _ <- checkUserDoesNotExist()
-      apiKey <- doRegister()
-    } yield apiKey
-  }
-
-  def findById(id: Id @@ User): ConnectionIO[User] = userOrNotFound(userModel.findById(id))
-
-  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration]): ConnectionIO[ApiKey] = {
+  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration])(using DbTx): Either[Fail, ApiKey] = either {
     val loginOrEmailClean = loginOrEmail.trim()
-    for {
-      user <- userOrNotFound(userModel.findByLoginOrEmail(loginOrEmailClean.lowerCased))
-      _ <- verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword)
-      apiKey <- apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
-    } yield apiKey
+    val user = userOrNotFound(userModel.findByLoginOrEmail(loginOrEmailClean.toLowerCased)).ok()
+    verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword).ok()
+    apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
   }
 
-  def logout(id: Id @@ ApiKey): ConnectionIO[Unit] = apiKeyService.invalidate(id)
+  def logout(id: Id[ApiKey])(using DbTx): Unit = apiKeyService.invalidate(id)
 
-  def changeUser(userId: Id @@ User, newLogin: String, newEmail: String): ConnectionIO[Unit] = {
+  def changeUser(userId: Id[User], newLogin: String, newEmail: String)(using DbTx): Either[Fail, Unit] =
     val newLoginClean = newLogin.trim()
     val newEmailClean = newEmail.trim()
-    val newEmailLowerCased = newEmailClean.lowerCased
+    val newEmailtoLowerCased = newEmailClean.toLowerCased
 
-    def changeLogin(): ConnectionIO[Boolean] = {
-      val newLoginLowerCased = newLoginClean.lowerCased
-      userModel.findByLogin(newLoginLowerCased).flatMap {
-        case Some(user) if user.id != userId           => Fail.IncorrectInput(LoginAlreadyUsed).raiseError[ConnectionIO, Boolean]
-        case Some(user) if user.login == newLoginClean => false.pure[ConnectionIO]
+    def changeLogin(): Either[Fail, Boolean] = {
+      val newLogintoLowerCased = newLoginClean.toLowerCased
+      userModel.findByLogin(newLogintoLowerCased) match {
+        case Some(user) if user.id != userId           => Left(Fail.IncorrectInput(LoginAlreadyUsed))
+        case Some(user) if user.login == newLoginClean => Right(false)
         case _ =>
-          for {
-            _ <- validateLogin()
-            _ <- logger.debug[ConnectionIO](s"Changing login for user: $userId, to: $newLoginClean")
-            _ <- userModel.updateLogin(userId, newLoginClean, newLoginLowerCased)
-          } yield true
+          either {
+            validateLogin().ok()
+            logger.debug(s"Changing login for user: $userId, to: $newLoginClean")
+            userModel.updateLogin(userId, newLoginClean, newLogintoLowerCased)
+            true
+          }
       }
     }
 
-    def validateLogin() =
-      UserValidator(Some(newLoginClean), None, None).as[ConnectionIO]
+    def validateLogin() = UserValidator(Some(newLoginClean), None, None).result
 
-    def changeEmail(): ConnectionIO[Boolean] = {
-      userModel.findByEmail(newEmailLowerCased).flatMap {
-        case Some(user) if user.id != userId => Fail.IncorrectInput(EmailAlreadyUsed).raiseError[ConnectionIO, Boolean]
-        case Some(user) if user.emailLowerCased == newEmailLowerCased => false.pure[ConnectionIO]
+    def changeEmail(): Either[Fail, Boolean] = {
+      userModel.findByEmail(newEmailtoLowerCased) match {
+        case Some(user) if user.id != userId                           => Left(Fail.IncorrectInput(EmailAlreadyUsed))
+        case Some(user) if user.emailLowerCase == newEmailtoLowerCased => Right(false)
         case _ =>
-          for {
-            _ <- validateEmail()
-            _ <- logger.debug[ConnectionIO](s"Changing email for user: $userId, to: $newEmailClean")
-            _ <- userModel.updateEmail(userId, newEmailLowerCased)
-          } yield true
+          either {
+            validateEmail().ok()
+            logger.debug(s"Changing email for user: $userId, to: $newEmailClean")
+            userModel.updateEmail(userId, newEmailtoLowerCased)
+            true
+          }
       }
     }
 
-    def validateEmail() =
-      UserValidator(None, Some(newEmailLowerCased), None).as[ConnectionIO]
+    def validateEmail() = UserValidator(None, Some(newEmailtoLowerCased), None).result
 
-    def doChange(): ConnectionIO[Boolean] = {
-      for {
-        loginUpdated <- changeLogin()
-        emailUpdated <- changeEmail()
-      } yield loginUpdated || emailUpdated
-    }
-
-    def sendMail(user: User): ConnectionIO[Unit] = {
+    def sendMail(user: User): Unit =
       val confirmationEmail = emailTemplates.profileDetailsChangeNotification(user.login)
-      emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
-    }
+      emailScheduler(EmailData(user.emailLowerCase, confirmationEmail))
 
-    doChange().flatMap { anyUpdate =>
-      if (anyUpdate) {
-        findById(userId).flatMap(user => sendMail(user))
-      } else {
-        ().pure[ConnectionIO]
-      }
+    either {
+      val loginUpdated = changeLogin().ok()
+      val emailUpdated = changeEmail().ok()
+      val anyUpdate = loginUpdated || emailUpdated
+      if anyUpdate then sendMail(findById(userId).ok())
     }
-  }
+  end changeUser
 
-  def changePassword(userId: Id @@ User, currentPassword: String, newPassword: String): ConnectionIO[ApiKey] = {
-    def validateUserPassword(userId: Id @@ User, currentPassword: String): ConnectionIO[User] = {
+  def changePassword(userId: Id[User], currentPassword: String, newPassword: String)(using DbTx): Either[Fail, ApiKey] =
+    def validateUserPassword(userId: Id[User], currentPassword: String): Either[Fail, User] = {
       for {
         user <- userOrNotFound(userModel.findById(userId))
         _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
       } yield user
     }
 
-    def validateNewPassword(): ConnectionIO[Unit] =
-      UserValidator(None, None, Some(newPassword)).as[ConnectionIO]
+    def validateNewPassword(): Either[Fail, Unit] = UserValidator(None, None, Some(newPassword)).result
 
-    def updateUserPassword(user: User, newPassword: String): ConnectionIO[Unit] = {
-      for {
-        _ <- logger.debug[ConnectionIO](s"Changing password for user: ${user.id}")
-        _ <- userModel.updatePassword(user.id, User.hashPassword(newPassword))
-        confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
-        _ <- emailScheduler(EmailData(user.emailLowerCased, confirmationEmail))
-      } yield ()
+    def updateUserPassword(user: User, newPassword: String): Unit =
+      logger.debug(s"Changing password for user: ${user.id}")
+      userModel.updatePassword(user.id, User.hashPassword(newPassword))
+      val confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
+      emailScheduler(EmailData(user.emailLowerCase, confirmationEmail))
+
+    def invalidateKeysAndCreateNew(user: User): ApiKey =
+      apiKeyService.invalidateAllForUser(user.id)
+      apiKeyService.create(user.id, config.defaultApiKeyValid)
+
+    either {
+      val user = validateUserPassword(userId, currentPassword).ok()
+      validateNewPassword().ok()
+      updateUserPassword(user, newPassword)
+      invalidateKeysAndCreateNew(user)
     }
+  end changePassword
 
-    def invalidateKeysAndCreateNew(user: User): ConnectionIO[ApiKey] = {
-      for {
-        _ <- apiKeyService.invalidateAllForUser(user.id)
-        apiKey <- apiKeyService.create(user.id, config.defaultApiKeyValid)
-      } yield apiKey
-    }
-
-    for {
-      user <- validateUserPassword(userId, currentPassword)
-      _ <- validateNewPassword()
-      _ <- updateUserPassword(user, newPassword)
-      apiKey <- invalidateKeysAndCreateNew(user)
-    } yield apiKey
+  private def userOrNotFound(u: Option[User]): Either[Fail, User] = u match {
+    case Some(user) => Right(user)
+    case None       => Left(Fail.Unauthorized(IncorrectLoginOrPassword))
   }
 
-  private def userOrNotFound(op: ConnectionIO[Option[User]]): ConnectionIO[User] = {
-    op.flatMap {
-      case Some(user) => user.pure[ConnectionIO]
-      case None       => Fail.Unauthorized(IncorrectLoginOrPassword).raiseError[ConnectionIO, User]
-    }
-  }
+  private def verifyPassword(user: User, password: String, validationErrorMsg: String): Either[Fail, Unit] =
+    if user.verifyPassword(password) == PasswordVerificationStatus.Verified then Right(()) else Left(Fail.Unauthorized(validationErrorMsg))
+end UserService
 
-  private def verifyPassword(user: User, password: String, validationErrorMsg: String): ConnectionIO[Unit] = {
-    if (user.verifyPassword(password) == Verified) {
-      ().pure[ConnectionIO]
-    } else {
-      Fail.Unauthorized(validationErrorMsg).raiseError[ConnectionIO, Unit]
-    }
-  }
-}
-
-object UserValidator {
+object UserValidator:
   val MinLoginLength = 3
-}
 
-case class UserValidator(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]) {
+case class UserValidator(loginOpt: Option[String], emailOpt: Option[String], passwordOpt: Option[String]):
   private val ValidationOk = Right(())
 
   private val emailRegex =
     """^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
-  val result: Either[String, Unit] = {
-    for {
-      _ <- validateLogin(loginOpt)
-      _ <- validateEmail(emailOpt)
-      _ <- validatePassword(passwordOpt)
-    } yield ()
-  }
-
-  def as[F[_]](implicit me: MonadError[F, Throwable]): F[Unit] =
-    result.fold(msg => Fail.IncorrectInput(msg).raiseError[F, Unit], _ => ().pure[F])
+  val result: Either[Fail, Unit] = (for {
+    _ <- validateLogin(loginOpt)
+    _ <- validateEmail(emailOpt)
+    _ <- validatePassword(passwordOpt)
+  } yield ()).left.map(Fail.IncorrectInput(_))
 
   private def validateLogin(loginOpt: Option[String]): Either[String, Unit] =
     loginOpt.map(_.trim) match {
@@ -224,4 +187,3 @@ case class UserValidator(loginOpt: Option[String], emailOpt: Option[String], pas
         if (password.nonEmpty) ValidationOk else Left("Password cannot be empty!")
       case None => ValidationOk
     }
-}

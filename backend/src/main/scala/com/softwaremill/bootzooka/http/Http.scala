@@ -1,44 +1,15 @@
 package com.softwaremill.bootzooka.http
 
-import cats.effect.IO
-import cats.implicits._
-import com.softwaremill.bootzooka._
-import com.softwaremill.bootzooka.infrastructure.Json._
-import com.softwaremill.bootzooka.logging.FLogging
-import com.softwaremill.bootzooka.util.{Id, SecureRandomId}
-import com.softwaremill.tagging._
-import io.circe.Printer
+import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
+import com.softwaremill.bootzooka.*
+import com.softwaremill.bootzooka.logging.Logging
+import com.softwaremill.bootzooka.util.Strings.{asId, Id}
 import sttp.model.StatusCode
-import sttp.tapir.Codec.PlainCodec
-import sttp.tapir.generic.auto.SchemaDerivation
-import sttp.tapir.json.circe.TapirJsonCirce
+import sttp.tapir.json.jsoniter.TapirJsonJsoniter
 import sttp.tapir.{Codec, Endpoint, EndpointOutput, PublicEndpoint, Schema, SchemaType, Tapir}
 
 /** Helper class for defining HTTP endpoints. Import the members of this class when defining an HTTP API using tapir. */
-class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
-
-  val jsonErrorOutOutput: EndpointOutput[Error_OUT] = jsonBody[Error_OUT]
-
-  /** Description of the output, that is used to represent an error that occurred during endpoint invocation. */
-  val failOutput: EndpointOutput[(StatusCode, Error_OUT)] = statusCode.and(jsonErrorOutOutput)
-
-  /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
-    * [[Error_OUT]] class.
-    */
-  val baseEndpoint: PublicEndpoint[Unit, (StatusCode, Error_OUT), Unit, Any] =
-    endpoint
-      .errorOut(failOutput)
-      // Prevent clickjacking attacks: https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html
-      .out(header("X-Frame-Options", "DENY"))
-      .out(header("Content-Security-Policy", "frame-ancestors 'none'"))
-
-  /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
-    * [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
-    */
-  val secureEndpoint: Endpoint[Id, Unit, (StatusCode, Error_OUT), Unit, Any] =
-    baseEndpoint.securityIn(auth.bearer[String]().map(_.asInstanceOf[Id])(identity))
-
-  //
+class Http extends Tapir with TapirJsonJsoniter with Logging:
 
   private val InternalServerError = (StatusCode.InternalServerError, "Internal server error")
   private val failToResponseData: Fail => (StatusCode, String) = {
@@ -52,33 +23,28 @@ class Http() extends Tapir with TapirJsonCirce with TapirSchemas with FLogging {
 
   //
 
-  implicit class IOOut[T](f: IO[T]) {
+  val jsonErrorOutOutput: EndpointOutput[Error_OUT] = jsonBody[Error_OUT]
 
-    /** An extension method for [[IO]], which converts a possibly failed IO, to one which either returns the error converted to an
-      * [[Error_OUT]] instance, or returns the successful value unchanged.
-      */
-    def toOut: IO[Either[(StatusCode, Error_OUT), T]] = {
-      f.map(t => t.asRight[(StatusCode, Error_OUT)]).recoverWith { case f: Fail =>
-        val (statusCode, message) = failToResponseData(f)
-        logger.warn[IO](s"Request fail: $message").map(_ => (statusCode, Error_OUT(message)).asLeft[T])
-      }
-    }
-  }
+  /** Description of the output, that is used to represent an error that occurred during endpoint invocation. */
+  // TODO
+  val failOutput: EndpointOutput[Fail] =
+    statusCode.and(jsonErrorOutOutput.map(_.error)(Error_OUT.apply)).map((_, _) => ???)(failToResponseData)
 
-  override def jsonPrinter: Printer = noNullsPrinter
-}
+  /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
+    * [[Error_OUT]] class.
+    */
+  val baseEndpoint: PublicEndpoint[Unit, Fail, Unit, Any] =
+    endpoint
+      .errorOut(failOutput)
+      // Prevent clickjacking attacks: https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html
+      .out(header("X-Frame-Options", "DENY"))
+      .out(header("Content-Security-Policy", "frame-ancestors 'none'"))
 
-/** Schemas for types used in endpoint descriptions (as parts of query parameters, JSON bodies, etc.). Includes explicitly defined schemas
-  * for custom types, and auto-derivation for ADTs & value classes.
-  */
-trait TapirSchemas extends SchemaDerivation {
-  implicit val idPlainCodec: PlainCodec[SecureRandomId] =
-    Codec.string.map(_.asInstanceOf[SecureRandomId])(identity)
-  implicit def taggedPlainCodec[U, T](implicit uc: PlainCodec[U]): PlainCodec[U @@ T] =
-    uc.map(_.taggedWith[T])(identity)
+  /** Base endpoint description for secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
+    * [[Error_OUT]] class, and that authentication is read from the `Authorization: Bearer` header.
+    */
+  def secureEndpoint[T]: Endpoint[Id[T], Unit, Fail, Unit, Any] =
+    baseEndpoint.securityIn(auth.bearer[String]().map(_.asId[T])(_.toString))
+end Http
 
-  implicit val schemaForId: Schema[Id] = Schema(SchemaType.SString[Id]())
-  implicit def schemaForTagged[U, T](implicit uc: Schema[U]): Schema[U @@ T] = uc.asInstanceOf[Schema[U @@ T]]
-}
-
-case class Error_OUT(error: String)
+case class Error_OUT(error: String) derives ConfiguredJsonValueCodec, Schema

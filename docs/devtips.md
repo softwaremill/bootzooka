@@ -6,7 +6,7 @@ title:  "Development tips"
 Generally during development you'll need two processes:
 
 * sbt running the backend server
-* grunt server which automatically picks up any changes
+* yarn server which automatically picks up any changes
 
 ## Cloning
 
@@ -27,46 +27,25 @@ With Flyway, all you need to do is to put DDL script within bootzooka-backend/sr
 
 ## Developing frontend without backend
 
-If you'd like to work only on the frontend, without starting the backend, you can proxy requests to a working, remote backend instance. In `ui/Gruntfile.js` you need to edit the proxy settings and change the `proxies` option in `connect` to point to the backend instance, e.g.:
-
-```
-proxies: [ {
-    context: '/rest/',
-    host: 'my-backend.com',
-    port: 80,
-    headers: {
-        'host': 'my-backend.com'
-    }
-} ]
-```
+If you'd like to work only on the frontend, without starting the backend, you can proxy requests to a working, remote backend instance. In `ui/package.json` you need to edit the proxy settings.
 
 ## Imports
 
-There are three imports that are useful when developing a new functionality:
-
-### JSON
-
-If you are doing JSON serialisation or deserialisation, or if you are defining an endpoint which uses JSON bodies, add the following import:
-
-```scala
-import com.softwaremill.bootzooka.infrastructure.Json._
-```
-
-This will bring into scope both custom and built-in [Circe](https://github.com/circe/circe) encoders/decoders.
+There are two imports that are useful when developing a new functionality:
 
 ### Database
 
 If you are defining database queries or running transactions, add the following import:
 
 ```scala
-import com.softwaremill.bootzooka.infrastructure.Doobie._
+import com.softwaremill.bootzooka.infrastructure.Magnum._
 ```
 
-This will bring into scope both custom and built-in [doobie](https://tpolecat.github.io/doobie/) metas.
+This will bring into scope custom [Magnum](https://github.com/AugustNagro/magnum) codecs.
 
 ### HTTP API
 
-Finally, if you are describing new endpoints, import all members of the current `Http` instance:
+If you are describing new endpoints, import all members of the current `Http` instance:
 
 ```scala
 import com.softwaremill.bootzooka.http.Http
@@ -78,13 +57,10 @@ class UserApi(http: Http) {
 }
 ```
 
-This will bring into scope tapir builder methods and schemas for documentation.
-Note that if you are using JSON in your endpoint descriptions, you'll need the JSON imports as well.
+This will bring into scope Tapir builder methods and schemas for documentation.
 
 ### Logging
 
-Logging is performed using [scala logging](https://github.com/lightbend/scala-logging). Extend `StrictLogging` to bring into scope a `logger` value.
+Logging is performed using [scala logging](https://github.com/lightbend/scala-logging). Extend `Logging` to bring into scope a `logger` value.
 
-Bootzooka also supports correlation ids. The id is read from the `X-Correlation-ID` header of incoming requests (see `CorrelationIdInterceptor`), or a new one is generated. The correlation ids are included in all outgoing http requests (see `SetCorrelationIdBackend`). Correlation ids are included in log messages, if the logging is done using a logger obtained via `FLogging`, which wraps the default slf4j logger, adding correlation id handling.
-
-The result of `FLogging.logger` methods are effects (`IO` and `ConnectionIO` are supported), which - in order to be evaluated - need to be combined with other effects that are returned by the method in which the logging is done. When programming using the tagless final style, a `CorrelationIdSource` typeclass is available.
+Bootzooka also supports correlation ids. The id is read from the `X-Correlation-ID` header of incoming requests (see `CorrelationIdInterceptor`), or a new one is generated. The correlation ids are included in all outgoing http requests (see `SetCorrelationIdBackend`).

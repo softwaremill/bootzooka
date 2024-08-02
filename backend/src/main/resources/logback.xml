@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration scan="true">
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <if condition='p("LOGBACK_JSON_ENCODE").equals("true")'>
-      <then>
+  <if condition='p("LOGBACK_JSON_ENCODE").equals("true")'>
+    <then>
+      <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-      </then>
-      <else>
-        <encoder>
-          <pattern>%d{HH:mm:ss.SSS}%boldYellow(%replace( [%X{cid}] ){' \[\] ', ' '})[%thread] %-5level %logger{5} - %msg%n%rEx</pattern>
-        </encoder>
-      </else>
-    </if>
-  </appender>
+      </appender>
+    </then>
+    <else>
+      <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS}%boldYellow(%replace( [%X{cid}] ){' \[\] ', ' '})[%thread] %-5level %logger{5} - %msg%n%rEx</pattern>
+      </encoder>
+    </appender>
+    </else>
+  </if>
 
   <logger name="com.softwaremill.bootzooka" level="${LOG_LEVEL:-DEBUG}" additivity="false">
     <appender-ref ref="STDOUT"/>

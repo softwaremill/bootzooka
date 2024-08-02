@@ -1,26 +1,19 @@
 package com.softwaremill.bootzooka.email.sender
 
-import cats.effect.IO
 import com.softwaremill.bootzooka.email.EmailData
-import com.softwaremill.bootzooka.logging.FLogging
+import com.softwaremill.bootzooka.logging.Logging
 
-import scala.collection.mutable.ListBuffer
+import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
+import scala.jdk.CollectionConverters.*
 
-object DummyEmailSender extends EmailSender with FLogging {
+object DummyEmailSender extends EmailSender with Logging:
+  private val sentEmails: BlockingQueue[EmailData] = new LinkedBlockingQueue[EmailData]()
 
-  private val sentEmails: ListBuffer[EmailData] = ListBuffer()
+  def reset(): Unit = sentEmails.clear()
 
-  def reset(): Unit = this.synchronized {
-    sentEmails.clear()
-  }
+  override def apply(email: EmailData): Unit =
+    sentEmails.put(email)
+    logger.info(s"Would send email, if this wasn't a dummy email service implementation: $email")
 
-  override def apply(email: EmailData): IO[Unit] = IO {
-    this.synchronized {
-      sentEmails += email
-    }
-  } >> logger.info(s"Would send email, if this wasn't a dummy email service implementation: $email")
-
-  def findSentEmail(recipient: String, subjectContains: String): Option[EmailData] = this.synchronized {
-    sentEmails.find(email => email.recipient == recipient && email.subject.contains(subjectContains))
-  }
-}
+  def findSentEmail(recipient: String, subjectContains: String): Option[EmailData] =
+    sentEmails.iterator().asScala.find(email => email.recipient == recipient && email.subject.contains(subjectContains))

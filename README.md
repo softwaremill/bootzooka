@@ -8,7 +8,7 @@
 
 ### Backend: PostgreSQL & API
 
-In order to run Bootzooka, you'll need a running instance of the PostgreSQL with a `bootzooka` database. You can spin
+In order to run Bootzooka, you'll need a running instance of PostgreSQL with a `bootzooka` database. You can spin
 up one easily using docker:
 
 ```sh
@@ -45,4 +45,4 @@ We offer commercial support for Bootzooka and related technologies, as well as d
 
 ## Copyright
 
-Copyright (C) 2013-2022 SoftwareMill [https://softwaremill.com](https://softwaremill.com).
+Copyright (C) 2013-2024 SoftwareMill [https://softwaremill.com](https://softwaremill.com).
