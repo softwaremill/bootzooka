@@ -18,6 +18,7 @@ import scala.reflect.ClassTag
 import scala.util.NotGiven
 
 class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
+  // TODO: avoid throwing?
   def transactEither[E <: Exception: ClassTag, T](f: DbTx ?=> Either[E, T])(using IO): Either[E, T] =
     try
       com.augustnagro.magnum.transact(dataSource) {
