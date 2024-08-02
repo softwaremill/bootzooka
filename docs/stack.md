@@ -13,13 +13,13 @@ Bootzooka's stack consists of the following technologies/tools, on the backend:
 * [Magnum](https://github.com/AugustNagro/magnum) (type-safe database access) + [flyway](https://flywaydb.org) (schema evolution)
 * [Ox](https://github.com/softwaremill/ox) (error handling, concurrency & resource management)
 * [SBT](https://www.scala-sbt.org) (build tool)
-* [Swagger](https://swagger.io) (interactive API docs)
 * [OpenTelemetry](https://opentelemetry.io) (metrics & tracing)
 
 And on the frontend:
 
 * [TypeScript](https://www.typescriptlang.org) (JavaScript superset)
 * [react](https://reactjs.org)
+* [Swagger](https://swagger.io) (interactive API docs)
 * [yarn](https://yarnpkg.com) (build tool)
 
 ### Why Scala?
