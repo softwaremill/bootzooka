@@ -146,7 +146,7 @@ lazy val fatJarSettings = Seq(
 
 lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),
-  dockerBaseImage := "adoptopenjdk:11.0.5_10-jdk-hotspot",
+  dockerBaseImage := "eclipse-temurin:21",
   Docker / packageName := "bootzooka",
   dockerUsername := Some("softwaremill"),
   dockerUpdateLatest := true,
