@@ -130,9 +130,14 @@ lazy val fatJarSettings = Seq(
   assembly / assemblyJarName := "bootzooka.jar",
   assembly := assembly.dependsOn(copyWebapp).value,
   assembly / assemblyMergeStrategy := {
-    case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties"       => MergeStrategy.first
-    case PathList(ps @ _*) if ps.last endsWith "pom.properties"                     => MergeStrategy.first
-    case PathList(ps @ _*) if ps.last endsWith "scala-collection-compat.properties" => MergeStrategy.first
+    // SwaggerUI: https://tapir.softwaremill.com/en/latest/docs/openapi.html#using-swaggerui-with-sbt-assembly
+    case PathList("META-INF", "maven", "org.webjars", "swagger-ui", "pom.properties") => MergeStrategy.singleOrError
+    case PathList("META-INF", "resources", "webjars", "swagger-ui", _*)               => MergeStrategy.singleOrError
+    // other
+    case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
+    case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.discard
+    case PathList(ps @ _*) if ps.last endsWith "module-info.class"            => MergeStrategy.discard
+    case PathList(ps @ _*) if ps.last endsWith "okio.kotlin_module"           => MergeStrategy.discard
     case x =>
       val oldStrategy = (assembly / assemblyMergeStrategy).value
       oldStrategy(x)
