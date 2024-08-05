@@ -16,6 +16,7 @@ import javax.sql.DataSource
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.util.NotGiven
+import scala.util.control.NonFatal
 
 class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
   // TODO: avoid throwing?
@@ -71,7 +72,7 @@ object DB extends Logging:
         testConnection(ds)
         logger.info("Database migration & connection test complete")
       catch
-        case e: Exception =>
+        case NonFatal(e) =>
           logger.warn("Database not available, waiting 5 seconds to retry...", e)
           sleep(5.seconds)
           connectAndMigrate(ds)
