@@ -8,6 +8,8 @@ import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator
 import ox.{Fork, IO, Ox, discard, forever, fork, sleep}
 
+import scala.util.control.NonFatal
+
 /** Schedules emails to be sent asynchronously, in the background, as well as manages sending of emails in batches. */
 class EmailService(
     emailModel: EmailModel,
@@ -48,7 +50,7 @@ class EmailService(
       forever {
         sleep(config.emailSendInterval)
         try t
-        catch case e: Exception => logger.error(errorMsg, e)
+        catch case NonFatal(e) => logger.error(errorMsg, e)
       }
     }
 end EmailService
