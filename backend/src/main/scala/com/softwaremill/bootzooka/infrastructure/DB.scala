@@ -7,6 +7,7 @@ import scala.concurrent.duration.*
 import Magnum.*
 import com.augustnagro.magnum.connect
 import com.softwaremill.bootzooka.config.Sensitive
+import com.softwaremill.bootzooka.infrastructure.DB.LeftException
 import com.softwaremill.bootzooka.logging.Logging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import ox.{IO, discard, sleep}
@@ -14,18 +15,13 @@ import ox.{IO, discard, sleep}
 import java.io.Closeable
 import javax.sql.DataSource
 import scala.annotation.tailrec
-import scala.reflect.ClassTag
 import scala.util.NotGiven
-import scala.util.control.NonFatal
+import scala.util.control.{NoStackTrace, NonFatal}
 
 class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
-  // TODO: avoid throwing?
-  def transactEither[E <: Exception: ClassTag, T](f: DbTx ?=> Either[E, T])(using IO): Either[E, T] =
-    try
-      com.augustnagro.magnum.transact(dataSource) {
-        Right(f.fold(throw _, identity))
-      }
-    catch case e: E if summon[ClassTag[E]].runtimeClass.isAssignableFrom(e.getClass) => Left(e)
+  def transactEither[E, T](f: DbTx ?=> Either[E, T])(using IO): Either[E, T] =
+    try com.augustnagro.magnum.transact(dataSource)(Right(f.fold(e => throw LeftException(e), identity)))
+    catch case e: LeftException[E] => Left(e.left)
 
   // TODO: test & document
   def transact[T](f: DbTx ?=> T)(using NotGiven[T <:< Either[_, _]], IO): T =
@@ -34,6 +30,8 @@ class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
   override def close(): Unit = IO.unsafe(dataSource.close())
 
 object DB extends Logging:
+  private class LeftException[E](val left: E) extends RuntimeException with NoStackTrace
+
   /** Configures the database, setting up the connection pool and performing migrations. */
   def createTestMigrate(_config: DBConfig)(using IO): DB =
     val config: DBConfig =
