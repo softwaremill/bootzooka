@@ -70,9 +70,6 @@ val emailDependencies = Seq(
 )
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.19" % Test
-val macwireDependencies = Seq(
-  "com.softwaremill.macwire" %% "macros" % macwireVersion
-).map(_ % Provided)
 
 val unitTestingStack = Seq(scalatest)
 
@@ -150,7 +147,7 @@ lazy val dockerSettings = Seq(
   Docker / packageName := "bootzooka",
   dockerUsername := Some("softwaremill"),
   dockerUpdateLatest := true,
-  Docker / publishLocal := (Docker / publishLocal).dependsOn(copyWebapp).value,
+  Compile / packageBin := (Compile / packageBin).dependsOn(copyWebapp).value,
   Docker / version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest")),
   git.uncommittedSignifier := Some("dirty"),
   ThisBuild / git.formattedShaVersion := {
@@ -162,10 +159,8 @@ lazy val dockerSettings = Seq(
   }
 )
 
-def haltOnCmdResultError(result: Int) {
-  if (result != 0) {
-    throw new Exception("Build failed.")
-  }
+def haltOnCmdResultError(result: Int): Unit = if (result != 0) {
+  throw new Exception("Build failed.")
 }
 
 def now(): String = {
@@ -181,7 +176,7 @@ lazy val rootProject = (project in file("."))
 
 lazy val backend: Project = (project in file("backend"))
   .settings(
-    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies ++ macwireDependencies,
+    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
     Compile / mainClass := Some("com.softwaremill.bootzooka.Main"),
     copyWebapp := {
       val source = uiDirectory.value / "build"

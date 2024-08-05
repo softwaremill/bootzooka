@@ -38,7 +38,7 @@ There are two imports that are useful when developing a new functionality:
 If you are defining database queries or running transactions, add the following import:
 
 ```scala
-import com.softwaremill.bootzooka.infrastructure.Magnum._
+import com.softwaremill.bootzooka.infrastructure.Magnum.*
 ```
 
 This will bring into scope custom [Magnum](https://github.com/AugustNagro/magnum) codecs.
@@ -50,11 +50,10 @@ If you are describing new endpoints, import all members of the current `Http` in
 ```scala
 import com.softwaremill.bootzooka.http.Http
 
-class UserApi(http: Http) {
-  import http._
+class UserApi(http: Http):
+  import http.*
 
   ...
-}
 ```
 
 This will bring into scope Tapir builder methods and schemas for documentation.
