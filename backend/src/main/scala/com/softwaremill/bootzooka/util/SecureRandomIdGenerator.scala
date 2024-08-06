@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.util
 
 import java.security.SecureRandom
 
-/** copy-pasted from TSec https://github.com/jmcardon/tsec */
+/** based on TSec https://github.com/jmcardon/tsec */
 
 case class SecureRandomIdGenerator(sizeInBytes: Int):
   /** Cache our random, and seed it properly as per [[https://tersesystems.com/2015/12/17/the-right-way-to-use-securerandom/]] */
@@ -14,7 +14,7 @@ case class SecureRandomIdGenerator(sizeInBytes: Int):
   private def nextBytes(bytes: Array[Byte]): Unit = cachedRand.nextBytes(bytes)
 
   private def toHexString(byteArray: Array[Byte]) = byteArray.map(b => String.format("%02x", b)).mkString
-  
+
   def generate: String =
     val byteArray = new Array[Byte](sizeInBytes)
     nextBytes(byteArray)

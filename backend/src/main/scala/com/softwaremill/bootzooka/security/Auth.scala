@@ -19,10 +19,10 @@ class Auth[T](authTokenOps: AuthTokenOps[T], db: DB, clock: Clock) extends Loggi
   // see https://hackernoon.com/hack-how-to-use-securerandom-with-kubernetes-and-docker-a375945a7b21
   private val random = SecureRandom.getInstance("NativePRNGNonBlocking")
 
-  /** Authenticates using the given authentication token. If the token is invalid, a failed [[IO]] is returned, with an instance of the
-    * [[Fail]] class. Otherwise, the id of the authenticated user is given.
+  /** Authenticates using the given authentication token. If the token is invalid, a [[Fail.Unauthorized]] error is returned. Otherwise,
+    * returns the id of the authenticated user  .
     */
-  def apply(id: Id[T])(using IO): Either[Fail, Id[User]] =
+  def apply(id: Id[T])(using IO): Either[Fail.Unauthorized, Id[User]] =
     db.transact(authTokenOps.findById(id)) match {
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
