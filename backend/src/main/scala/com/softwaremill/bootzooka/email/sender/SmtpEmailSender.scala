@@ -100,7 +100,7 @@ object SmtpEmailSender:
   private def connectToSmtpServer(transport: Transport, smtpUsername: String, smtpPassword: String)(using IO): Unit =
     if smtpUsername != null && smtpUsername.nonEmpty then transport.connect(smtpUsername, smtpPassword) else transport.connect()
 
-  private def convertStringEmailsToAddresses(emails: Array[String]): Array[Address] =
+  private def convertStringEmailsToAddresses(emails: Array[String])(using IO): Array[Address] =
     emails.map(new InternetAddress(_))
 
   case class EmailDescription(
