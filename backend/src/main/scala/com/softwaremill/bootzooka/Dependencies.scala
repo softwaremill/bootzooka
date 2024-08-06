@@ -1,11 +1,12 @@
 package com.softwaremill.bootzooka
 
+import com.softwaremill.bootzooka.admin.VersionApi
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.email.{EmailModel, EmailService, EmailTemplates}
-import com.softwaremill.bootzooka.http.{Http, HttpApi}
+import com.softwaremill.bootzooka.http.HttpApi
 import com.softwaremill.bootzooka.infrastructure.{DB, SetCorrelationIdBackend}
-import com.softwaremill.bootzooka.metrics.{Metrics, VersionApi}
+import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken, PasswordResetCodeModel, PasswordResetService}
 import com.softwaremill.bootzooka.security.{ApiKeyAuthToken, ApiKeyModel, ApiKeyService, Auth}
 import com.softwaremill.bootzooka.user.{UserApi, UserModel, UserService}
@@ -33,7 +34,6 @@ trait Dependencies(using Ox, IO):
   lazy val db: DB = useCloseableInScope(DB.createTestMigrate(config.db))
   lazy val idGenerator: IdGenerator = DefaultIdGenerator
   lazy val clock: Clock = DefaultClock
-  lazy val http = new Http
   lazy val emailTemplates = new EmailTemplates
   lazy val emailModel = new EmailModel
   lazy val emailSender: EmailSender = EmailSender.create(sttpBackend, config.email)
@@ -47,7 +47,7 @@ trait Dependencies(using Ox, IO):
   lazy val passwordResetAuth = new Auth(passwordResetAuthToken, db, clock)
   lazy val userModel = new UserModel
   lazy val userService = new UserService(userModel, emailService, emailTemplates, apiKeyService, idGenerator, clock, config.user)
-  lazy val userApi = new UserApi(http, apiKeyAuth, userService, db, metrics)
+  lazy val userApi = new UserApi(apiKeyAuth, userService, db, metrics)
   lazy val passwordResetService = new PasswordResetService(
     userModel,
     passwordResetCodeModel,
@@ -59,10 +59,14 @@ trait Dependencies(using Ox, IO):
     clock,
     db
   )
-  lazy val passwordResetApi = new PasswordResetApi(http, passwordResetService, db)
-  lazy val versionApi = new VersionApi(http)
-  lazy val httpApi =
-    new HttpApi(http, userApi.endpoints ++ passwordResetApi.endpoints, List(versionApi.versionEndpoint), otel, config.api)
+  lazy val passwordResetApi = new PasswordResetApi(passwordResetService, db)
+  lazy val versionApi = new VersionApi
+  lazy val httpApi = new HttpApi(
+    userApi.serverEndpoints ++ passwordResetApi.serverEndpoints ++ versionApi.serverEndpoints,
+    OpenAPIDocs.endpoints,
+    otel,
+    config.api
+  )
 
   private def createOtel(): OpenTelemetry =
     // An exporter that sends metrics to a collector over gRPC
