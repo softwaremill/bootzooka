@@ -2,6 +2,7 @@ package com.softwaremill.bootzooka.email.sender
 
 import com.softwaremill.bootzooka.email.EmailData
 import com.softwaremill.bootzooka.test.BaseTest
+import ox.IO.globalForTesting.given
 
 class DummyEmailSenderTest extends BaseTest:
   it should "send scheduled email" in {
