@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.infrastructure.CorrelationIdInterceptor
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.util.ServerEndpoints
 import io.opentelemetry.api.OpenTelemetry
-import ox.Ox
+import ox.{IO, Ox}
 import sttp.shared.Identity
 import sttp.tapir.*
 import sttp.tapir.files.{FilesOptions, staticResourcesGetServerEndpoint}
@@ -17,7 +17,7 @@ import sttp.tapir.server.netty.sync.{NettySyncServer, NettySyncServerBinding, Ne
 import sttp.tapir.swagger.SwaggerUIOptions
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
-/** Interprets the endpoint descriptions (defined using tapir) as http4s routes, adding CORS, metrics, api docs support.
+/** Exposes the endpoint descriptions (defined using tapir) using a Netty-based server, adding CORS, metrics, api docs support.
   *
   * The following endpoints are exposed:
   *   - `/api/v1` - the main API
@@ -36,26 +36,25 @@ class HttpApi(
 
   private val serverOptions: NettySyncServerOptions = NettySyncServerOptions.customiseInterceptors
     .prependInterceptor(CorrelationIdInterceptor)
-    // all errors are formatted as json, and there are no other additional http4s routes
+    // all errors are formatted as JSON, and there are no other additional routes
     .defaultHandlers(msg => ValuedEndpointOutput(http.jsonErrorOutOutput, Error_OUT(msg)), notFoundWhenRejected = true)
     .corsInterceptor(CORSInterceptor.default[Identity])
     .metricsInterceptor(OpenTelemetryMetrics.default[Identity](otel).metricsInterceptor())
     .options
 
   val allEndpoints: List[ServerEndpoint[Any, Identity]] = {
-    // creating the documentation using `mainEndpoints` without the /api/v1 context path; instead, a server will be added
-    // with the appropriate suffix
+    // Creating the documentation using `mainEndpoints`. The /api/v1 context path is added using Swagger's options, not to the endpoints.
     val docsEndpoints = SwaggerInterpreter(swaggerUIOptions = SwaggerUIOptions.default.copy(contextPath = apiContextPath))
-      .fromServerEndpoints(mainEndpoints.toList, "Bootzooka", "1.0")
+      .fromServerEndpoints(mainEndpoints, "Bootzooka", "1.0")
 
-    // for /api/v1 requests, first trying the API; then the docs
+    // For /api/v1 requests, first trying the API; then the docs. Prepending the context path to each endpoint.
     val apiEndpoints =
       (mainEndpoints ++ docsEndpoints).map(se => se.prependSecurityIn(apiContextPath.foldLeft(emptyInput: EndpointInput[Unit])(_ / _)))
 
     val allAdminEndpoints = adminEndpoints.map(_.prependSecurityIn("admin"))
 
-    // for all other requests, first trying getting existing webapp resource (html, js, css files), from the /webapp
-    // directory on the classpath; otherwise, returning index.html; this is needed to support paths in the frontend
+    // For all other requests, first trying getting existing webapp resource (html, js, css files), from the /webapp
+    // directory on the classpath. Otherwise, returning index.html. This is needed to support paths in the frontend
     // apps (e.g. /login) the frontend app will handle displaying appropriate error messages
     val webappEndpoints = List(
       staticResourcesGetServerEndpoint[Identity](emptyInput: EndpointInput[Unit])(
@@ -67,5 +66,5 @@ class HttpApi(
     apiEndpoints ++ allAdminEndpoints ++ webappEndpoints
   }
 
-  def start()(using Ox): NettySyncServerBinding =
+  def start()(using Ox, IO): NettySyncServerBinding =
     NettySyncServer(serverOptions, NettyConfig.default.host(config.host).port(config.port)).addEndpoints(allEndpoints).start()

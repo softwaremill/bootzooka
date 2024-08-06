@@ -5,7 +5,7 @@ package com.softwaremill.bootzooka
   *
   * The class hierarchy is not sealed and can be extended as required by specific functionalities.
   */
-abstract class Fail extends Exception
+abstract class Fail
 
 object Fail:
   case class NotFound(what: String) extends Fail
