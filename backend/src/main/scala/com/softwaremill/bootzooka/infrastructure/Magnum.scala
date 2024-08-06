@@ -14,16 +14,15 @@ object Magnum extends Logging:
   given DbCodec[Hashed] = DbCodec.StringCodec.biMap(_.asHashed, _.toString)
   given DbCodec[LowerCased] = DbCodec.StringCodec.biMap(_.toLowerCased, _.toString)
 
-  // TODO use
-  // private val SlowThreshold = 200.millis
-
-  // proxies to the magnum functions, so that we can have only one import
+  // proxies to the magnum functions/types, so that we can have only one import
   export com.augustnagro.magnum.sql
   type DbTx = com.augustnagro.magnum.DbTx
   type DbCon = com.augustnagro.magnum.DbCon
   type DbCodec[E] = com.augustnagro.magnum.DbCodec[E]
 
-/** Logs the SQL queries which are slow or end up in an exception. */
+  /** Logs the SQL queries which are slow or end up in an exception. */
+  // TODO: https://github.com/AugustNagro/magnum/issues/32
+// private val SlowThreshold = 200.millis
 //  implicit def doobieLogHandler[M[_]: Sync]: LogHandler[M] = new LogHandler[M] {
 //    override def run(logEvent: LogEvent): M[Unit] = Sync[M].delay(
 //      logEvent match {

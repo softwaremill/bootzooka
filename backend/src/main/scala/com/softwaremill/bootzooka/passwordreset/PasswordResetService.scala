@@ -22,8 +22,7 @@ class PasswordResetService(
     config: PasswordResetConfig,
     clock: Clock,
     db: DB
-)(using IO)
-    extends Logging:
+) extends Logging:
   def forgotPassword(loginOrEmail: String)(using DbTx): Unit =
     userModel.findByLoginOrEmail(loginOrEmail.toLowerCased) match {
       case None => logger.debug(s"Could not find user with $loginOrEmail login/email")
@@ -48,7 +47,7 @@ class PasswordResetService(
     val resetLink = String.format(config.resetLinkPattern, code.id)
     emailTemplates.passwordReset(user.login, resetLink)
 
-  def resetPassword(code: String, newPassword: String): Either[Fail, Unit] = either {
+  def resetPassword(code: String, newPassword: String)(using IO): Either[Fail, Unit] = either {
     val userId = auth(code.asId[PasswordResetCode]).ok()
     logger.debug(s"Resetting password for user: $userId")
     db.transact(userModel.updatePassword(userId, User.hashPassword(newPassword)))

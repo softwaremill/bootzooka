@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.logging
 
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 trait Logging:
-  protected val logger = LoggerFactory.getLogger(getClass.getName)
+  protected val logger: Logger = LoggerFactory.getLogger(getClass.getName)
