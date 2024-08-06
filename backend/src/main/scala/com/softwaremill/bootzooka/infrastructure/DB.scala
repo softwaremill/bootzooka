@@ -19,11 +19,14 @@ import scala.util.NotGiven
 import scala.util.control.{NoStackTrace, NonFatal}
 
 class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
+  /** Runs `f` in a transaction. The transaction is commited if the result is a [[Right]], and rolled back otherwise. */
   def transactEither[E, T](f: DbTx ?=> Either[E, T])(using IO): Either[E, T] =
     try com.augustnagro.magnum.transact(dataSource)(Right(f.fold(e => throw LeftException(e), identity)))
     catch case e: LeftException[E] => Left(e.left)
 
-  // TODO: test & document
+  /** Runs `f` in a transaction. The result cannot be an `Either`, as then [[transactEither]] should be used. The transaction is commited if
+    * no exception is thrown.
+    */
   def transact[T](f: DbTx ?=> T)(using NotGiven[T <:< Either[_, _]], IO): T =
     com.augustnagro.magnum.transact(dataSource)(f)
 
