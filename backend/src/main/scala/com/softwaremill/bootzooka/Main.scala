@@ -1,6 +1,7 @@
 package com.softwaremill.bootzooka
 
-import com.softwaremill.bootzooka.logging.{Logging, InheritableMDC}
+import com.softwaremill.bootzooka.logging.Logging
+import ox.logback.InheritableMDC
 import ox.{IO, Ox, OxApp, never}
 
 object Main extends OxApp.Simple with Logging:

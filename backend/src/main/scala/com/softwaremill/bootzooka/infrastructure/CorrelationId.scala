@@ -1,7 +1,8 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import com.softwaremill.bootzooka.logging.{InheritableMDC, Logging}
+import com.softwaremill.bootzooka.logging.Logging
 import org.slf4j.MDC
+import ox.logback.InheritableMDC
 import sttp.client3.*
 import sttp.client3.{Response, SttpBackend}
 import sttp.capabilities.Effect
@@ -42,7 +43,7 @@ object CorrelationIdInterceptor extends RequestInterceptor[Identity] with Loggin
   ): RequestHandler[Identity, R, B] =
     RequestHandler.from { case (request, endpoints, monad) =>
       val cid = request.header(HeaderName).getOrElse(CorrelationId.generate())
-      InheritableMDC.where(MDCKey, cid) {
+      InheritableMDC.unsupervisedWhere(MDCKey -> cid) {
         requestHandler(EndpointInterceptor.noop)(request, endpoints)(monad)
       }
     }

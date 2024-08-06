@@ -13,7 +13,7 @@ import complete.DefaultParsers._
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.9.7"
 val tapirVersion = "1.11.0"
-val macwireVersion = "2.5.9"
+val oxVersion = "0.3.3"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.2.1",
@@ -44,6 +44,7 @@ val jsonDependencies = Seq(
 
 val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.6",
+  "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
 )
@@ -53,7 +54,7 @@ val configDependencies = Seq(
 )
 
 val baseDependencies = Seq(
-  "com.softwaremill.ox" %% "core" % "0.3.2",
+  "com.softwaremill.ox" %% "core" % oxVersion,
   "com.softwaremill.quicklens" %% "quicklens" % "1.9.7"
 )
 
