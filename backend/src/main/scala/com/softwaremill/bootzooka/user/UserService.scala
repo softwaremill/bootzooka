@@ -44,7 +44,7 @@ class UserService(
       val confirmationEmail = emailTemplates.registrationConfirmation(loginClean)
       logger.debug(s"Registering new user: ${user.emailLowerCase}, with id: ${user.id}")
       userModel.insert(user)
-      emailScheduler(EmailData(emailClean, confirmationEmail))
+      emailScheduler.schedule(EmailData(emailClean, confirmationEmail))
       apiKeyService.create(user.id, config.defaultApiKeyValid)
 
     either {
@@ -105,7 +105,7 @@ class UserService(
 
     def sendMail(user: User): Unit =
       val confirmationEmail = emailTemplates.profileDetailsChangeNotification(user.login)
-      emailScheduler(EmailData(user.emailLowerCase, confirmationEmail))
+      emailScheduler.schedule(EmailData(user.emailLowerCase, confirmationEmail))
 
     either {
       val loginUpdated = changeLogin().ok()
@@ -129,7 +129,7 @@ class UserService(
       logger.debug(s"Changing password for user: ${user.id}")
       userModel.updatePassword(user.id, User.hashPassword(newPassword))
       val confirmationEmail = emailTemplates.passwordChangeNotification(user.login)
-      emailScheduler(EmailData(user.emailLowerCase, confirmationEmail))
+      emailScheduler.schedule(EmailData(user.emailLowerCase, confirmationEmail))
 
     def invalidateKeysAndCreateNew(user: User): ApiKey =
       apiKeyService.invalidateAllForUser(user.id)

@@ -21,7 +21,7 @@ class EmailService(
 ) extends EmailScheduler
     with Logging:
 
-  def apply(data: EmailData)(using DbTx): Unit =
+  def schedule(data: EmailData)(using DbTx): Unit =
     logger.debug(s"Scheduling email to be sent to: ${data.recipient}")
     val id = idGenerator.nextId[Email]()
     emailModel.insert(Email(id, data))
@@ -56,4 +56,4 @@ class EmailService(
 end EmailService
 
 trait EmailScheduler:
-  def apply(data: EmailData)(using DbTx): Unit
+  def schedule(data: EmailData)(using DbTx): Unit

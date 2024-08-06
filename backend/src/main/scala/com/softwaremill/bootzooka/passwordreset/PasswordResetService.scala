@@ -42,7 +42,7 @@ class PasswordResetService(
 
   private def sendCode(user: User, code: PasswordResetCode)(using DbTx): Unit =
     logger.debug(s"Scheduling e-mail with reset code for user: ${user.id}")
-    emailScheduler(EmailData(user.emailLowerCase, prepareResetEmail(user, code)))
+    emailScheduler.schedule(EmailData(user.emailLowerCase, prepareResetEmail(user, code)))
 
   private def prepareResetEmail(user: User, code: PasswordResetCode): EmailSubjectContent =
     val resetLink = String.format(config.resetLinkPattern, code.id)
