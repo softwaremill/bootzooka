@@ -10,7 +10,7 @@ import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken, PasswordResetCodeModel, PasswordResetService}
 import com.softwaremill.bootzooka.security.{ApiKeyAuthToken, ApiKeyModel, ApiKeyService, Auth}
 import com.softwaremill.bootzooka.user.{UserApi, UserModel, UserService}
-import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator, IdGenerator}
+import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator, Endpoints, IdGenerator}
 import io.opentelemetry.api.OpenTelemetry
 import io.opentelemetry.exporter.otlp.metrics.OtlpGrpcMetricExporter
 import io.opentelemetry.sdk.OpenTelemetrySdk
@@ -63,7 +63,7 @@ trait Dependencies(using Ox, IO):
   lazy val versionApi = new VersionApi
   lazy val httpApi = new HttpApi(
     userApi.serverEndpoints ++ passwordResetApi.serverEndpoints ++ versionApi.serverEndpoints,
-    OpenAPIDocs.endpoints,
+    Dependencies.endpoints,
     otel,
     config.api
   )
@@ -77,3 +77,6 @@ trait Dependencies(using Ox, IO):
     val meterProvider: SdkMeterProvider = SdkMeterProvider.builder().registerMetricReader(metricReader).build()
     // An instance of OpenTelemetry using the above meter registry
     OpenTelemetrySdk.builder().setMeterProvider(meterProvider).build()
+
+object Dependencies:
+  val endpoints: Endpoints = UserApi.endpoints ++ PasswordResetApi.endpoints ++ VersionApi.endpoints

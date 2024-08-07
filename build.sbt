@@ -84,6 +84,7 @@ lazy val uiDirectory = settingKey[File]("Path to the ui project directory")
 lazy val updateYarn = taskKey[Unit]("Update yarn")
 lazy val yarnTask = inputKey[Unit]("Run yarn with arguments")
 lazy val copyWebapp = taskKey[Unit]("Copy webapp")
+lazy val generateOpenAPISpec = taskKey[Unit]("Generate the OpenAPI specification for the HTTP API")
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
@@ -149,7 +150,7 @@ lazy val dockerSettings = Seq(
   Docker / packageName := "bootzooka",
   dockerUsername := Some("softwaremill"),
   dockerUpdateLatest := true,
-  Compile / packageBin := (Compile / packageBin).dependsOn(copyWebapp).value,
+  Docker / stage := (Docker / stage).dependsOn(copyWebapp).value,
   Docker / version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest")),
   git.uncommittedSignifier := Some("dirty"),
   ThisBuild / git.formattedShaVersion := {
@@ -187,6 +188,13 @@ lazy val backend: Project = (project in file("backend"))
       IO.copyDirectory(source, target)
     },
     copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value,
+    generateOpenAPISpec := Def.taskDyn {
+      val log = streams.value.log
+      val targetPath = ((Compile / target).value / "openapi.yaml").toString
+      Def.task {
+        (Compile / runMain).toTask(s" com.softwaremill.bootzooka.writeOpenAPISpec $targetPath").value
+      }
+    }.value,
     // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application
     run / fork := true
   )

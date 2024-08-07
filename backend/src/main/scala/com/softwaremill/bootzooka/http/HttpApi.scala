@@ -1,5 +1,6 @@
 package com.softwaremill.bootzooka.http
 
+import com.softwaremill.bootzooka.OpenAPISpec
 import com.softwaremill.bootzooka.infrastructure.CorrelationIdInterceptor
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.util.{Endpoints, ServerEndpoints}
@@ -49,7 +50,7 @@ class HttpApi(
   val allEndpoints: List[ServerEndpoint[Any, Identity]] = {
     // Creating the documentation using `mainEndpoints`. The /api/v1 context path is added using Swagger's options, not to the endpoints.
     val docsEndpoints = SwaggerInterpreter(swaggerUIOptions = SwaggerUIOptions.default.copy(contextPath = apiContextPath))
-      .fromEndpoints[Identity](endpointsForDocs, "Bootzooka", "1.0")
+      .fromEndpoints[Identity](endpointsForDocs, OpenAPISpec.Title, OpenAPISpec.Version)
 
     // For /api/v1 requests, first trying the API; then the docs. Prepending the context path to each endpoint.
     val apiEndpoints =
