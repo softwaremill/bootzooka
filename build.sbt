@@ -103,7 +103,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
     haltOnCmdResultError(runYarnTask())
   },
   autoCompilerPlugins := true,
-  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % "0.3.2"),
+  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % "0.3.3"),
   Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException"
 )
 
