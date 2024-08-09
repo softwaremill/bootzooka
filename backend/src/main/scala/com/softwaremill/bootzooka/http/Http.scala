@@ -3,13 +3,13 @@ package com.softwaremill.bootzooka.http
 import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.logging.Logging
-import com.softwaremill.bootzooka.util.Strings.{asId, Id}
+import com.softwaremill.bootzooka.util.Strings.{Id, asId}
 import sttp.model.StatusCode
 import sttp.tapir.json.jsoniter.TapirJsonJsoniter
 import sttp.tapir.{Codec, Endpoint, EndpointOutput, PublicEndpoint, Schema, SchemaType, Tapir}
 
-/** Helper class for defining HTTP endpoints. Import the members of this class when defining an HTTP API using Tapir. */
-class Http extends Tapir with TapirJsonJsoniter with Logging:
+/** Helper object for defining HTTP endpoints. Import as `Http.*` to gain access to Tapir's API and customizations. */
+object Http extends Tapir with TapirJsonJsoniter with Logging:
   private val internalServerError = (StatusCode.InternalServerError, "Internal server error")
   private val failToResponseData: Fail => (StatusCode, String) = {
     case Fail.NotFound(what)      => (StatusCode.NotFound, what)

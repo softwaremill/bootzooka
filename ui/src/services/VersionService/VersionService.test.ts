@@ -9,5 +9,5 @@ test("fetches version from API", async () => {
   (axios.get as jest.Mock).mockResolvedValueOnce({ data });
 
   await expect(versionService.getVersion()).resolves.toEqual(data);
-  expect(axios.get).toHaveBeenCalledWith("admin/version");
+  expect(axios.get).toHaveBeenCalledWith("api/v1/admin/version");
 });
