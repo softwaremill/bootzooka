@@ -1,10 +1,9 @@
 const OpenAPIClientAxios = require('openapi-client-axios').default;
-const fs = require('fs');
-const path = require('path');
 
 const generateApiClient = async () => {
+
+  console.log('nannaa  btaman')
   const apiSpecPath = 'http://localhost:3000/openapi.yaml';
-  const outputPath = path.resolve(__dirname, './openapi/api.js');
 
 
   const api = new OpenAPIClientAxios({
@@ -19,8 +18,8 @@ const generateApiClient = async () => {
   async function createUser() {
     const client = await api.getClient();
     const data = {
-      "login": "test",
-      "email": "test@test.com",
+      "login": "3test",
+      "email": "3test@test.com",
       "password": "pass"
     }
     const res = await client.postUserRegister(null, data);
