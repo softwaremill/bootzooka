@@ -46,7 +46,7 @@
     "lint": "eslint --ext .ts,.tsx . && prettier --write ./src",
     "eject": "react-scripts eject",
     "generate:api-client": "node generateApiClientScript.ts",
-    "watch:openapi": "watchman-make -p '../backend/target/openapi.yaml' --run 'yarn generate:api-client'",
+    "watch:openapi": "chokidar '../backend/target/openapi.yaml' -c 'yarn generate:api-client'",
     "start:frontend": "yarn start"
   },
   "eslintConfig": {
@@ -79,6 +79,7 @@
     ]
   },
   "devDependencies": {
+    "chokidar-cli": "^3.0.0",
     "concurrently": "^8.2.2"
   }
 }
