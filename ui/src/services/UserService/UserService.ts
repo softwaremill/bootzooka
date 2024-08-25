@@ -16,7 +16,15 @@ const userDetailsSchema = Yup.object().required().shape({
   login: Yup.string().required(),
 });
 
+export type UserDetails = Yup.InferType<typeof userDetailsSchema>;
+
 const emptySchema = Yup.object().required().shape({});
+
+const secureRequest = (apiKey: string): AxiosRequestConfig => ({
+  headers: {
+    Authorization: `Bearer ${apiKey}`,
+  },
+});
 
 export const login = (params: LoginParams) =>
   api
@@ -33,24 +41,14 @@ export const register = (payload: RegisterParamsPayload) =>
 export const logout = (apiKey: string) =>
   api
     .getClient<Client>()
-    .then((client) =>
-      client.postUserLogout(
-        null,
-        { apiKey },
-        {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-        },
-      ),
-    )
+    .then((client) => client.postUserLogout(null, { apiKey }, secureRequest(apiKey)))
     .then(({ data }) => emptySchema.validate(data).then(() => undefined));
 
-const getCurrentUser = (apiKey: string | null) =>
-  _securedRequest(apiKey, {
-    method: "GET",
-    url: context,
-  }).then(({ data }) => userDetailsSchema.validate(data));
+export const getCurrentUser = (apiKey: string) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.getUser(null, null, secureRequest(apiKey)))
+    .then(({ data }) => userDetailsSchema.validate(data));
 
 const changeProfileDetails = (apiKey: string | null, params: { email: string; login: string }) =>
   _securedRequest(apiKey, {
@@ -75,7 +73,6 @@ const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
   });
 
 export const userService = {
-  getCurrentUser,
   changeProfileDetails,
   changePassword,
 };
