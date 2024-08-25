@@ -3,7 +3,7 @@ import * as Yup from "yup";
 
 const context = "api/v1/user";
 
-const apiKeySchema = Yup.object().required().shape({
+export const apiKeySchema = Yup.object().required().shape({
   apiKey: Yup.string().required(),
 });
 

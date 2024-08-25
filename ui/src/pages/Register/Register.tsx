@@ -4,10 +4,12 @@ import Form from "react-bootstrap/Form";
 import { BiUserPlus } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { userService } from "services";
+import { apiKeySchema } from "services";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
 import { useMutation } from "react-query";
+import api from "api-client/apiClient";
+import { Client } from "api-client/openapi.d";
 
 const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -29,7 +31,11 @@ export const Register: React.FC = () => {
   const navigate = useNavigate();
 
   const mutation = useMutation(
-    ({ login, email, password }: RegisterParams) => userService.registerUser({ login, email, password }),
+    ({ login, email, password }: RegisterParams) =>
+      api
+        .getClient<Client>()
+        .then((client) => client.postUserRegister(null, { login, email, password }))
+        .then(({ data }) => apiKeySchema.validate(data)),
     {
       onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
     },
