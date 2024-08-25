@@ -30,12 +30,21 @@ export const register = (payload: RegisterParamsPayload) =>
     .then((client) => client.postUserRegister(null, payload))
     .then(({ data }) => apiKeySchema.validate(data));
 
-const logout = (apiKey: string | null) =>
-  _securedRequest(apiKey, {
-    method: "POST",
-    url: `${context}/logout`,
-    data: { apiKey },
-  }).then(({ data }) => emptySchema.validate(data));
+export const logout = (apiKey: string) =>
+  api
+    .getClient<Client>()
+    .then((client) =>
+      client.postUserLogout(
+        null,
+        { apiKey },
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        },
+      ),
+    )
+    .then(({ data }) => emptySchema.validate(data).then(() => undefined));
 
 const getCurrentUser = (apiKey: string | null) =>
   _securedRequest(apiKey, {
@@ -66,7 +75,6 @@ const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
   });
 
 export const userService = {
-  logout,
   getCurrentUser,
   changeProfileDetails,
   changePassword,

@@ -3,6 +3,7 @@ import useLoginOnApiKey from "./useLoginOnApiKey";
 import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
 import { UserContext } from "contexts";
 import { Top, ForkMe, Routes, Footer, Loader } from "../";
+import { logout } from "services";
 
 export const Main: React.FC = () => {
   const {
@@ -18,7 +19,7 @@ export const Main: React.FC = () => {
 
   return (
     <>
-      <Top />
+      <Top onLogout={logout} />
       <ForkMe>
         <Routes />
       </ForkMe>

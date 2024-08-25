@@ -9,8 +9,6 @@ import { renderWithClient } from "tests";
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
 
-jest.mock("services");
-
 const onRegisterUser = jest.fn();
 
 beforeEach(() => {
