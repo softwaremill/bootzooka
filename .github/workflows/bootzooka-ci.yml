@@ -39,6 +39,10 @@ jobs:
             ~/.coursier
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
 
+      - name: Generate OpenAPI Spec
+        id: generate-openapi-spec
+        run: sbt "backend/generateOpenAPISpec"
+
       - name: Run tests
         id: run-tests
         run: sbt test
