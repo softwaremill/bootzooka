@@ -1,9 +1,12 @@
 import axios, { AxiosRequestConfig } from "axios";
 import * as Yup from "yup";
+import api from "api-client/apiClient";
+import { Client } from "api-client/openapi.d";
+import { LoginParams, RegisterParamsPayload } from "pages";
 
 const context = "api/v1/user";
 
-export const apiKeySchema = Yup.object().required().shape({
+const apiKeySchema = Yup.object().required().shape({
   apiKey: Yup.string().required(),
 });
 
@@ -14,6 +17,18 @@ const userDetailsSchema = Yup.object().required().shape({
 });
 
 const emptySchema = Yup.object().required().shape({});
+
+export const login = (params: LoginParams) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUserLogin(null, { ...params, apiKeyValidHours: 1 }))
+    .then(({ data }) => apiKeySchema.validate(data));
+
+export const register = (payload: RegisterParamsPayload) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUserRegister(null, payload))
+    .then(({ data }) => apiKeySchema.validate(data));
 
 const logout = (apiKey: string | null) =>
   _securedRequest(apiKey, {

@@ -1,41 +1,16 @@
 import React from "react";
 import { Routes as RouterRoutes, Route } from "react-router-dom";
-import {
-  Welcome,
-  Login,
-  Register,
-  RegisterParamsPayload,
-  RecoverLostPassword,
-  PasswordReset,
-  SecretMain,
-  Profile,
-  NotFound,
-  LoginParams,
-} from "pages";
+import { Welcome, Login, Register, RecoverLostPassword, PasswordReset, SecretMain, Profile, NotFound } from "pages";
 import { ProtectedRoute } from "./ProtectedRoute";
-import { apiKeySchema } from "services";
-import api from "api-client/apiClient";
-import { Client } from "api-client/openapi.d";
-
-const onRegisterUser = (payload: RegisterParamsPayload) =>
-  api
-    .getClient<Client>()
-    .then((client) => client.postUserRegister(null, payload))
-    .then(({ data }) => apiKeySchema.validate(data));
-
-const onLogin = (params: LoginParams) =>
-  api
-    .getClient<Client>()
-    .then((client) => client.postUserLogin(null, { ...params, apiKeyValidHours: 1 }))
-    .then(({ data }) => apiKeySchema.validate(data));
+import { login, register } from "services";
 
 export const Routes: React.FC = () => (
   <RouterRoutes>
     <Route path="/" element={<Welcome />} />
 
-    <Route path="/login" element={<Login onLogin={onLogin} />} />
+    <Route path="/login" element={<Login onLogin={login} />} />
 
-    <Route path="/register" element={<Register onRegisterUser={onRegisterUser} />} />
+    <Route path="/register" element={<Register onRegisterUser={register} />} />
 
     <Route path="/recover-lost-password" element={<RecoverLostPassword />} />
 
