@@ -9,6 +9,3 @@ data/
 *.bloop
 *.metals
 .bsp
-
-# dependencies
-/node_modules
