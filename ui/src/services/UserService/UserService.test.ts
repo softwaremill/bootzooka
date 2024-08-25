@@ -7,16 +7,6 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-test("logs in user", async () => {
-  const data = { apiKey: "test-api-key" };
-  const params = { loginOrEmail: "test-login-or-email", password: "test-password" };
-
-  (axios.post as jest.Mock).mockResolvedValueOnce({ data });
-
-  await expect(userService.login(params)).resolves.toEqual(data);
-  expect(axios.post).toHaveBeenCalledWith("api/v1/user/login", { ...params, apiKeyValidHours: 1 });
-});
-
 test("logs out user", async () => {
   const data = {};
   const testApiKey = "test-api-key";

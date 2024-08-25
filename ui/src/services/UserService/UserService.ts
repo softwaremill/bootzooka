@@ -15,9 +15,6 @@ const userDetailsSchema = Yup.object().required().shape({
 
 const emptySchema = Yup.object().required().shape({});
 
-const login = (params: { loginOrEmail: string; password: string }) =>
-  axios.post(`${context}/login`, { ...params, apiKeyValidHours: 1 }).then(({ data }) => apiKeySchema.validate(data));
-
 const logout = (apiKey: string | null) =>
   _securedRequest(apiKey, {
     method: "POST",
@@ -54,7 +51,6 @@ const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
   });
 
 export const userService = {
-  login,
   logout,
   getCurrentUser,
   changeProfileDetails,
