@@ -3,10 +3,9 @@ import { MemoryRouter } from "react-router-dom";
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { UserContextProvider, UserContext, UserAction } from "contexts";
-import { getCurrentUser } from "services";
 import useLoginOnApiKey from "./useLoginOnApiKey";
 
-jest.mock("services");
+const getCurrentUser = jest.fn();
 
 const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ actions, label }) => {
   const { state, dispatch } = React.useContext(UserContext);
@@ -45,7 +44,7 @@ test("default state", () => {
 });
 
 test("handles set correct api key", async () => {
-  (getCurrentUser as jest.Mock).mockResolvedValueOnce({
+  getCurrentUser.mockResolvedValueOnce({
     login: "user-login",
     email: "email@address.pl",
     createdOn: "2020-10-09T09:57:17.995288Z",
@@ -67,7 +66,7 @@ test("handles set correct api key", async () => {
 });
 
 test("handles set wrong api key", async () => {
-  (getCurrentUser as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
+  getCurrentUser.mockRejectedValueOnce(new Error("Test Error"));
 
   render(
     <MemoryRouter initialEntries={[""]}>
