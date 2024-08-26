@@ -23,7 +23,6 @@
     "eslint-config-prettier": "^9.1.0",
     "formik": "^2.4.5",
     "immer": "^10.0.3",
-    "js-yaml": "^4.1.0",
     "openapi-client-axios": "^7.5.5",
     "openapicmd": "^2.4.0",
     "prettier": "^3.1.1",
