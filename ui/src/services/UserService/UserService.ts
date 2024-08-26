@@ -1,11 +1,10 @@
-import axios, { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig } from "axios";
 import * as Yup from "yup";
 import api from "api-client/apiClient";
 import { Client } from "api-client/openapi.d";
 import { LoginParams, RegisterParamsPayload } from "pages";
 import { ProfileDetailsParams } from "pages/Profile/components/ProfileDetails";
-
-const context = "api/v1/user";
+import { ChangePasswordDetailsParams } from "pages/Profile/components/PasswordDetails";
 
 const apiKeySchema = Yup.object().required().shape({
   apiKey: Yup.string().required(),
@@ -57,21 +56,8 @@ export const changeProfileDetails = (apiKey: string, { email, login }: ProfileDe
     .then((client) => client.postUser(null, { email, login }, secureRequest(apiKey)))
     .then(({ data }) => emptySchema.validate(data).then(() => undefined));
 
-const changePassword = (apiKey: string | null, params: { currentPassword: string; newPassword: string }) =>
-  _securedRequest(apiKey, {
-    method: "POST",
-    url: `${context}/changepassword`,
-    data: params,
-  }).then(({ data }) => apiKeySchema.validate(data));
-
-const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
-  axios.request({
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-    ...config,
-  });
-
-export const userService = {
-  changePassword,
-};
+export const changePassword = (apiKey: string, { currentPassword, newPassword }: ChangePasswordDetailsParams) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUserChangepassword(null, { currentPassword, newPassword }, secureRequest(apiKey)))
+    .then(({ data }) => apiKeySchema.validate(data));

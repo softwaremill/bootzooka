@@ -7,7 +7,6 @@ import { BiArrowFromBottom } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
-import { userService } from "services";
 import { FormikInput, FeedbackButton } from "components";
 import { useMutation } from "react-query";
 
