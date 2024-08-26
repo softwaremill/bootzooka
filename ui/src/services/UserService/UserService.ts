@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import api from "api-client/apiClient";
 import { Client } from "api-client/openapi.d";
 import { LoginParams, RegisterParamsPayload } from "pages";
+import { ProfileDetailsParams } from "pages/Profile/components/ProfileDetails";
 
 const context = "api/v1/user";
 
@@ -50,12 +51,11 @@ export const getCurrentUser = (apiKey: string) =>
     .then((client) => client.getUser(null, null, secureRequest(apiKey)))
     .then(({ data }) => userDetailsSchema.validate(data));
 
-const changeProfileDetails = (apiKey: string | null, params: { email: string; login: string }) =>
-  _securedRequest(apiKey, {
-    method: "POST",
-    url: context,
-    data: params,
-  }).then(({ data }) => emptySchema.validate(data));
+export const changeProfileDetails = (apiKey: string, { email, login }: ProfileDetailsParams) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUser(null, { email, login }, secureRequest(apiKey)))
+    .then(({ data }) => emptySchema.validate(data).then(() => undefined));
 
 const changePassword = (apiKey: string | null, params: { currentPassword: string; newPassword: string }) =>
   _securedRequest(apiKey, {
@@ -73,6 +73,5 @@ const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
   });
 
 export const userService = {
-  changeProfileDetails,
   changePassword,
 };
