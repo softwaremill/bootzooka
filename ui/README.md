@@ -12,6 +12,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
+#### API client & associated types
+
+Before running `yarn start`, make sure to run `sbt "backend/generateOpenAPISpec"` in the project's root directory. This command will generate the `<project_root>/backend/target/openapi.yaml` file.
+
+API types in `./src/api-client` directory (in `openapi.d.ts` file) are generated upon UI application start (`yarn start`), based on the `openapi.yaml` contents. A file watch is engaged, re-generating types on each change to the `<project_root>/backend/target/openapi.yaml` file.
+
 ### `yarn test`
 
 Launches the test runner in the interactive watch mode.<br />
