@@ -39,7 +39,7 @@
     "yup": "^1.3.3"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"yarn generate:openapi-types\" \"yarn watch:openapi\"",
+    "start": "yarn generate:openapi-types && concurrently \"react-scripts start\" \"yarn watch:openapi\"",
     "build": "yarn generate:openapi-types && react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll=false",
