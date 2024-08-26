@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
-import { userService } from "services";
 import { ProfileDetails } from "./ProfileDetails";
 import { renderWithClient } from "tests";
 
@@ -12,7 +11,7 @@ const loggedUserState: UserState = {
 };
 const dispatch = jest.fn();
 
-jest.mock("services");
+const onChangeProfileDetails = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -21,7 +20,7 @@ beforeEach(() => {
 test("renders current user data", () => {
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-      <ProfileDetails />
+      <ProfileDetails onChangeProfileDetails={onChangeProfileDetails} />
     </UserContext.Provider>,
   );
 
@@ -32,7 +31,7 @@ test("renders current user data", () => {
 test("renders lack of current user data", () => {
   renderWithClient(
     <UserContext.Provider value={{ state: { ...loggedUserState, user: null }, dispatch }}>
-      <ProfileDetails />
+      <ProfileDetails onChangeProfileDetails={onChangeProfileDetails} />
     </UserContext.Provider>,
   );
 
@@ -41,11 +40,11 @@ test("renders lack of current user data", () => {
 });
 
 test("handles change details success", async () => {
-  (userService.changeProfileDetails as jest.Mock).mockResolvedValueOnce({});
+  onChangeProfileDetails.mockResolvedValueOnce({});
 
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-      <ProfileDetails />
+      <ProfileDetails onChangeProfileDetails={onChangeProfileDetails} />
     </UserContext.Provider>,
   );
 
@@ -55,7 +54,7 @@ test("handles change details success", async () => {
   await userEvent.type(screen.getByLabelText("Email address"), "test@email.address");
   await userEvent.click(screen.getByText("Update profile data"));
 
-  expect(userService.changeProfileDetails).toHaveBeenCalledWith("test-api-key", {
+  expect(onChangeProfileDetails).toHaveBeenCalledWith("test-api-key", {
     email: "test@email.address",
     login: "test-login",
   });
@@ -70,11 +69,11 @@ test("handles change details success", async () => {
 });
 
 test("handles change details error", async () => {
-  (userService.changeProfileDetails as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
+  onChangeProfileDetails.mockRejectedValueOnce(new Error("Test Error"));
 
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-      <ProfileDetails />
+      <ProfileDetails onChangeProfileDetails={onChangeProfileDetails} />
     </UserContext.Provider>,
   );
 
@@ -84,7 +83,7 @@ test("handles change details error", async () => {
   await userEvent.type(screen.getByLabelText("Email address"), "test@email.address");
   await userEvent.click(screen.getByText("Update profile data"));
 
-  expect(userService.changeProfileDetails).toHaveBeenCalledWith("test-api-key", {
+  expect(onChangeProfileDetails).toHaveBeenCalledWith("test-api-key", {
     email: "test@email.address",
     login: "test-login",
   });

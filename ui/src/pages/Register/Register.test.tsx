@@ -3,14 +3,13 @@ import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "@remix-run/router";
 import { UserContext, initialUserState } from "contexts";
-import { userService } from "services";
 import { Register } from "./Register";
 import { renderWithClient } from "tests";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
 
-jest.mock("services");
+const onRegisterUser = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -20,7 +19,7 @@ test("renders header", () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Register />
+        <Register onRegisterUser={onRegisterUser} />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -32,7 +31,7 @@ test("redirects when registered", () => {
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
-        <Register />
+        <Register onRegisterUser={onRegisterUser} />
       </UserContext.Provider>
     </HistoryRouter>,
   );
@@ -41,12 +40,12 @@ test("redirects when registered", () => {
 });
 
 test("handles register success", async () => {
-  (userService.registerUser as jest.Mock).mockResolvedValueOnce({ apiKey: "test-api-key" });
+  onRegisterUser.mockResolvedValueOnce({ apiKey: "test-api-key" });
 
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Register />
+        <Register onRegisterUser={onRegisterUser} />
       </UserContext.Provider>
     </HistoryRouter>,
   );
@@ -59,7 +58,7 @@ test("handles register success", async () => {
 
   await screen.findByRole("success");
 
-  expect(userService.registerUser).toHaveBeenCalledWith({
+  expect(onRegisterUser).toHaveBeenCalledWith({
     login: "test-login",
     email: "test@email.address.pl",
     password: "test-password",
@@ -69,12 +68,12 @@ test("handles register success", async () => {
 });
 
 test("handles register error", async () => {
-  (userService.registerUser as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
+  onRegisterUser.mockRejectedValueOnce(new Error("Test Error"));
 
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Register />
+        <Register onRegisterUser={onRegisterUser} />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -85,7 +84,7 @@ test("handles register error", async () => {
   await userEvent.type(screen.getByLabelText("Repeat password"), "test-password");
   await userEvent.click(screen.getByText("Create new account"));
 
-  expect(userService.registerUser).toHaveBeenCalledWith({
+  expect(onRegisterUser).toHaveBeenCalledWith({
     login: "test-login",
     email: "test@email.address.pl",
     password: "test-password",

@@ -4,7 +4,6 @@ import Form from "react-bootstrap/Form";
 import { BiLogInCircle } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { userService } from "services";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
 import { useMutation } from "react-query";
@@ -14,9 +13,13 @@ const validationSchema = Yup.object({
   password: Yup.string().required("Required"),
 });
 
-type LoginParams = Yup.InferType<typeof validationSchema>;
+export type LoginParams = Yup.InferType<typeof validationSchema>;
 
-export const Login: React.FC = () => {
+type Props = {
+  onLogin(payload: LoginParams): Promise<{ apiKey: string }>;
+};
+
+export const Login: React.FC<Props> = ({ onLogin }) => {
   const {
     dispatch,
     state: { loggedIn },
@@ -24,7 +27,7 @@ export const Login: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const mutation = useMutation(userService.login, {
+  const mutation = useMutation(onLogin, {
     onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
   });
 

@@ -7,6 +7,8 @@ import { renderWithClient } from "tests";
 
 const dispatch = jest.fn();
 
+const onLogin = jest.fn();
+
 beforeEach(() => {
   jest.clearAllMocks();
 });
@@ -16,7 +18,7 @@ test("renders protected route for unlogged user", () => {
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login onLogin={onLogin} />} />
           <Route element={<ProtectedRoute />}>
             <Route index element={<>Protected Text</>} />
           </Route>
@@ -38,7 +40,7 @@ test("renders protected route for logged user", () => {
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login onLogin={onLogin} />} />
           <Route element={<ProtectedRoute />}>
             <Route index element={<>Protected Text</>} />
           </Route>

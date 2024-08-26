@@ -7,7 +7,6 @@ import { BiArrowFromBottom } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
-import { userService } from "services";
 import { FormikInput, FeedbackButton } from "components";
 import { useMutation } from "react-query";
 
@@ -20,16 +19,21 @@ const validationSchema = Yup.object({
 });
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
+export type ChangePasswordDetailsParams = Omit<PasswordDetailsParams, "repeatedPassword">;
 
-export const PasswordDetails: React.FC = () => {
+type Props = {
+  onChangePassword(apiKey: string, payload: ChangePasswordDetailsParams): Promise<{ apiKey: string }>;
+};
+
+export const PasswordDetails: React.FC<Props> = ({ onChangePassword }) => {
   const {
     state: { apiKey },
     dispatch,
   } = React.useContext(UserContext);
 
   const mutation = useMutation(
-    ({ currentPassword, newPassword }: PasswordDetailsParams) =>
-      userService.changePassword(apiKey, { currentPassword, newPassword }),
+    ({ values, apiKeyValue }: { values: PasswordDetailsParams; apiKeyValue: string }) =>
+      onChangePassword(apiKeyValue, { currentPassword: values.currentPassword, newPassword: values.newPassword }),
     {
       onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
     },
@@ -43,32 +47,38 @@ export const PasswordDetails: React.FC = () => {
     <Container className="py-5">
       <Row>
         <Col md={9} lg={7} xl={6} className="mx-auto">
-          <h3 className="mb-4">Password details</h3>
-          <Formik<PasswordDetailsParams>
-            initialValues={{
-              currentPassword: "",
-              newPassword: "",
-              repeatedPassword: "",
-            }}
-            onSubmit={(values) => mutation.mutate(values)}
-            validationSchema={validationSchema}
-          >
-            <Form as={FormikForm}>
-              <FormikInput name="currentPassword" label="Current password" type="password" />
-              <FormikInput name="newPassword" label="New password" type="password" />
-              <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
+          {apiKey ? (
+            <>
+              <h3 className="mb-4">Password details</h3>
+              <Formik<PasswordDetailsParams>
+                initialValues={{
+                  currentPassword: "",
+                  newPassword: "",
+                  repeatedPassword: "",
+                }}
+                onSubmit={(values) => mutation.mutate({ values, apiKeyValue: apiKey })}
+                validationSchema={validationSchema}
+              >
+                <Form as={FormikForm}>
+                  <FormikInput name="currentPassword" label="Current password" type="password" />
+                  <FormikInput name="newPassword" label="New password" type="password" />
+                  <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
 
-              <FeedbackButton
-                className="float-end"
-                type="submit"
-                label="Update password"
-                variant="dark"
-                Icon={BiArrowFromBottom}
-                mutation={mutation}
-                successLabel="Password changed"
-              />
-            </Form>
-          </Formik>
+                  <FeedbackButton
+                    className="float-end"
+                    type="submit"
+                    label="Update password"
+                    variant="dark"
+                    Icon={BiArrowFromBottom}
+                    mutation={mutation}
+                    successLabel="Password changed"
+                  />
+                </Form>
+              </Formik>
+            </>
+          ) : (
+            <h3 className="mb-4">Password details not available.</h3>
+          )}
         </Col>
       </Row>
     </Container>

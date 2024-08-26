@@ -4,13 +4,12 @@ import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-rou
 import { createMemoryHistory } from "@remix-run/router";
 import { Login } from "./Login";
 import { UserContext, initialUserState } from "contexts";
-import { userService } from "services";
 import { renderWithClient } from "tests";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
 
-jest.mock("services");
+const onLogin = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -20,7 +19,7 @@ test("renders header", () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login />
+        <Login onLogin={onLogin} />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -32,7 +31,7 @@ test("redirects when logged in", () => {
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
-        <Login />
+        <Login onLogin={onLogin} />
       </UserContext.Provider>
     </HistoryRouter>,
   );
@@ -41,12 +40,12 @@ test("redirects when logged in", () => {
 });
 
 test("handles login success", async () => {
-  (userService.login as jest.Mock).mockResolvedValueOnce({ apiKey: "test-api-key" });
+  onLogin.mockResolvedValueOnce({ apiKey: "test-api-key" });
 
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login />
+        <Login onLogin={onLogin} />
       </UserContext.Provider>
     </HistoryRouter>,
   );
@@ -57,17 +56,17 @@ test("handles login success", async () => {
 
   await screen.findByRole("success");
 
-  expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(onLogin).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
   expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
 });
 
 test("handles login error", async () => {
-  (userService.login as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
+  onLogin.mockRejectedValueOnce(new Error("Test Error"));
 
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login />
+        <Login onLogin={onLogin} />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -78,6 +77,6 @@ test("handles login error", async () => {
 
   await screen.findByRole("error");
 
-  expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(onLogin).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
   expect(dispatch).not.toHaveBeenCalled();
 });

@@ -4,7 +4,6 @@ import Form from "react-bootstrap/Form";
 import { BiUserPlus } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { userService } from "services";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
 import { useMutation } from "react-query";
@@ -19,8 +18,13 @@ const validationSchema = Yup.object({
 });
 
 type RegisterParams = Yup.InferType<typeof validationSchema>;
+export type RegisterParamsPayload = Omit<RegisterParams, "repeatedPassword">;
 
-export const Register: React.FC = () => {
+type Props = {
+  onRegisterUser(payload: RegisterParamsPayload): Promise<{ apiKey: string }>;
+};
+
+export const Register: React.FC<Props> = ({ onRegisterUser }) => {
   const {
     dispatch,
     state: { loggedIn },
@@ -29,7 +33,7 @@ export const Register: React.FC = () => {
   const navigate = useNavigate();
 
   const mutation = useMutation(
-    ({ login, email, password }: RegisterParams) => userService.registerUser({ login, email, password }),
+    ({ login, email, password }: RegisterParams) => onRegisterUser({ login, email, password }),
     {
       onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
     },

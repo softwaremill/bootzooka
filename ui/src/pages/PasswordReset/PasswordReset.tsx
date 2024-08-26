@@ -6,7 +6,6 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
-import { passwordService } from "services";
 import { FormikInput, FeedbackButton } from "components";
 import { useMutation } from "react-query";
 
@@ -19,11 +18,18 @@ const validationSchema = Yup.object({
 
 type PasswordResetParams = Yup.InferType<typeof validationSchema>;
 
-export const PasswordReset: React.FC = () => {
+export type PasswordResetRequestParams = {
+  code: string;
+  password: string;
+};
+
+type Props = {
+  onPasswordReset(params: PasswordResetRequestParams): Promise<void>;
+};
+
+export const PasswordReset: React.FC<Props> = ({ onPasswordReset }) => {
   const code = new URLSearchParams(window.location.search).get("code") || "";
-  const mutation = useMutation(({ password }: PasswordResetParams) =>
-    passwordService.resetPassword({ password, code }),
-  );
+  const mutation = useMutation(({ password }: PasswordResetParams) => onPasswordReset({ password, code }));
 
   return (
     <Container className="py-5">
