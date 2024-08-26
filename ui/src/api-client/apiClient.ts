@@ -1,6 +1,6 @@
 import OpenAPIClientAxios from "openapi-client-axios";
 
-const apiSpecPath = "http://localhost:3000/openapi.yaml";
+const apiSpecPath = "http://localhost:8080/api/v1/docs/docs.yaml";
 
 const api = new OpenAPIClientAxios({
   definition: apiSpecPath,
