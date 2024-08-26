@@ -3,7 +3,7 @@ import useLoginOnApiKey from "./useLoginOnApiKey";
 import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
 import { UserContext } from "contexts";
 import { Top, ForkMe, Routes, Footer, Loader } from "../";
-import { logout, getCurrentUser } from "services";
+import { logout, getCurrentUser, getVersion } from "services";
 
 export const Main: React.FC = () => {
   const {
@@ -23,7 +23,7 @@ export const Main: React.FC = () => {
       <ForkMe>
         <Routes />
       </ForkMe>
-      <Footer />
+      <Footer onGetVersion={getVersion} />
     </>
   );
 };

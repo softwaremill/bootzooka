@@ -1,14 +1,13 @@
-import axios from "axios";
 import * as Yup from "yup";
-
-const context = "api/v1/admin";
+import api from "api-client/apiClient";
+import { Client } from "api-client/openapi.d";
 
 const versionSchema = Yup.object().required().shape({
   buildSha: Yup.string().required(),
 });
 
-const getVersion = () => axios.get(`${context}/version`).then(({ data }) => versionSchema.validate(data));
-
-export const versionService = {
-  getVersion,
-};
+export const getVersion = () =>
+  api
+    .getClient<Client>()
+    .then((client) => client.getAdminVersion())
+    .then(({ data }) => versionSchema.validate(data));
