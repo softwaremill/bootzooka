@@ -13,7 +13,7 @@ import complete.DefaultParsers._
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.9.8"
 val tapirVersion = "1.11.2"
-val oxVersion = "0.3.5"
+val oxVersion = "0.3.6"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.2.1",
@@ -103,7 +103,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
     haltOnCmdResultError(runYarnTask())
   },
   autoCompilerPlugins := true,
-  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % "0.3.5"),
+  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % "0.3.6"),
   Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException"
 )
 
