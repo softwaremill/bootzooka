@@ -33,7 +33,7 @@ val httpDependencies = Seq(
 val monitoringDependencies = Seq(
   "com.softwaremill.sttp.client3" %% "opentelemetry-metrics-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
-  "io.opentelemetry" % "opentelemetry-exporter-otlp" % "1.41.0"
+  "io.opentelemetry" % "opentelemetry-exporter-otlp" % "1.42.0"
 )
 
 val jsonDependencies = Seq(
