@@ -20,7 +20,7 @@ class Auth[T](authTokenOps: AuthTokenOps[T], db: DB, clock: Clock) extends Loggi
   private val random = SecureRandom.getInstance("NativePRNGNonBlocking")
 
   /** Authenticates using the given authentication token. If the token is invalid, a [[Fail.Unauthorized]] error is returned. Otherwise,
-    * returns the id of the authenticated user  .
+    * returns the id of the authenticated user .
     */
   def apply(id: Id[T])(using IO): Either[Fail.Unauthorized, Id[User]] =
     db.transact(authTokenOps.findById(id)) match {

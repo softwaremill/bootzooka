@@ -1,7 +1,6 @@
 import sbtbuildinfo.BuildInfoKey.action
 import sbtbuildinfo.BuildInfoKeys.{buildInfoKeys, buildInfoOptions, buildInfoPackage}
 import sbtbuildinfo.{BuildInfoKey, BuildInfoOption}
-import com.softwaremill.SbtSoftwareMillCommon.commonSmlBuildSettings
 
 import sbt._
 import Keys._
@@ -87,7 +86,7 @@ lazy val yarnTask = inputKey[Unit]("Run yarn with arguments")
 lazy val copyWebapp = taskKey[Unit]("Copy webapp")
 lazy val generateOpenAPISpec = taskKey[Unit]("Generate the OpenAPI specification for the HTTP API")
 
-lazy val commonSettings = commonSmlBuildSettings ++ Seq(
+lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "3.5.0",
   libraryDependencies ++= commonDependencies,
@@ -106,7 +105,8 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   },
   autoCompilerPlugins := true,
   addCompilerPlugin("com.softwaremill.ox" %% "plugin" % oxVersion),
-  Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException"
+  Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException",
+  scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
 )
 
 lazy val buildInfoSettings = Seq(

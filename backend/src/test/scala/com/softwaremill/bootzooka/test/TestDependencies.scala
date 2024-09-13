@@ -26,8 +26,6 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres:
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
-
-    given Ox = currentOx
     dependencies = Dependencies.create(TestConfig, _ => stub, currentDb, testClock)
   }
 

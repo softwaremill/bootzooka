@@ -40,7 +40,7 @@ object Dependencies:
 
     create(config, sttpBackend, db, DefaultClock)
 
-  def create(config: Config, sttpBackend: OpenTelemetry => SttpBackend[Identity, Any], db: DB, clock: Clock)(using Ox, IO): Dependencies =
+  def create(config: Config, sttpBackend: OpenTelemetry => SttpBackend[Identity, Any], db: DB, clock: Clock)(using IO): Dependencies =
     val otel = createOtel()
     autowire[Dependencies](
       membersOf(config),
@@ -57,8 +57,6 @@ object Dependencies:
           otel,
           httpConfig
         ),
-      classOf[ApiKeyAuthToken],
-      classOf[PasswordResetAuthToken],
       classOf[EmailService],
       new Auth(_: ApiKeyAuthToken, _: DB, _: Clock),
       new Auth(_: PasswordResetAuthToken, _: DB, _: Clock)
