@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.test
 
 import com.softwaremill.bootzooka.Dependencies
-import org.scalatest.{Args, BeforeAndAfterAll, Status, Suite}
+import io.opentelemetry.api.OpenTelemetry
+import org.scalatest.{BeforeAndAfterAll, Suite}
 import ox.IO.globalForTesting.given
-import ox.{Ox, supervised}
 import sttp.client3.testing.SttpBackendStub
 import sttp.client3.{HttpClientSyncBackend, SttpBackend}
 import sttp.shared.Identity
@@ -13,20 +13,14 @@ import scala.compiletime.uninitialized
 
 trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres:
   self: Suite & BaseTest =>
+
   var dependencies: Dependencies = uninitialized
 
   private val stub: SttpBackendStub[Identity, Any] = HttpClientSyncBackend.stub
-  private var currentOx: Ox = uninitialized
-
-  abstract override protected def runTests(testName: Option[String], args: Args): Status =
-    supervised {
-      currentOx = summon[Ox]
-      super.runTests(testName, args)
-    }
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
-    dependencies = Dependencies.create(TestConfig, _ => stub, currentDb, testClock)
+    dependencies = Dependencies.create(TestConfig, OpenTelemetry.noop(), stub, currentDb, testClock)
   }
 
   private lazy val serverStub: SttpBackend[Identity, Any] =

@@ -30,22 +30,20 @@ object Dependencies:
 
   def create(using Ox, IO): Dependencies =
     val config = Config.read.tap(Config.log)
-
-    def sttpBackend(otel: OpenTelemetry): SttpBackend[Identity, Any] =
-      useInScope(
-        Slf4jLoggingBackend(OpenTelemetryMetricsBackend(new SetCorrelationIdBackend(HttpClientSyncBackend()), otel), includeTiming = true)
-      )(_.close())
-
+    val otel = createOtel()
+    val sttpBackend = useInScope(
+      Slf4jLoggingBackend(OpenTelemetryMetricsBackend(new SetCorrelationIdBackend(HttpClientSyncBackend()), otel), includeTiming = true)
+    )(_.close())
     val db: DB = useCloseableInScope(DB.createTestMigrate(config.db))
 
-    create(config, sttpBackend, db, DefaultClock)
+    create(config, otel, sttpBackend, db, DefaultClock)
 
-  def create(config: Config, sttpBackend: OpenTelemetry => SttpBackend[Identity, Any], db: DB, clock: Clock)(using IO): Dependencies =
-    val otel = createOtel()
+  /** Create the service graph using the given infrastructure services & configuration. */
+  def create(config: Config, otel: OpenTelemetry, sttpBackend: SttpBackend[Identity, Any], db: DB, clock: Clock)(using IO): Dependencies =
     autowire[Dependencies](
       membersOf(config),
       otel,
-      sttpBackend(otel),
+      sttpBackend,
       db,
       DefaultIdGenerator,
       clock,
