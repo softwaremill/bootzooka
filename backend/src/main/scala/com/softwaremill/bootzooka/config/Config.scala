@@ -31,7 +31,7 @@ object Config extends Logging:
                       |-----------------
                       |""".stripMargin
 
-    val info = TreeMap(BuildInfo.toMap.toSeq: _*).foldLeft(baseInfo) { case (str, (k, v)) =>
+    val info = TreeMap(BuildInfo.toMap.toSeq*).foldLeft(baseInfo) { case (str, (k, v)) =>
       str + s"$k: $v\n"
     }
 

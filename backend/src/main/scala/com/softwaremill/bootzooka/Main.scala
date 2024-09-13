@@ -9,7 +9,7 @@ object Main extends OxApp.Simple with Logging:
   Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 
   override def run(using Ox, IO): Unit =
-    val deps = new Dependencies() {}
+    val deps = Dependencies.create
 
     deps.emailService.startProcesses()
     val binding = deps.httpApi.start()

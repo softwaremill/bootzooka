@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.*
 import com.softwaremill.bootzooka.util.Strings.Id
-import ox.{IO, either, sleep}
+import ox.{IO, sleep}
 import ox.either.{fail, ok}
 
 import java.security.SecureRandom

@@ -11,15 +11,15 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val password4jVersion = "1.8.2"
-val sttpVersion = "3.9.7"
-val tapirVersion = "1.11.0"
-val oxVersion = "0.3.3"
+val sttpVersion = "3.9.8"
+val tapirVersion = "1.11.2"
+val oxVersion = "0.3.8"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.2.1",
-  "org.postgresql" % "postgresql" % "42.7.3",
+  "org.postgresql" % "postgresql" % "42.7.4",
   "com.zaxxer" % "HikariCP" % "5.1.0",
-  "org.flywaydb" % "flyway-database-postgresql" % "10.17.0"
+  "org.flywaydb" % "flyway-database-postgresql" % "10.18.0"
 )
 
 val httpDependencies = Seq(
@@ -33,17 +33,17 @@ val httpDependencies = Seq(
 val monitoringDependencies = Seq(
   "com.softwaremill.sttp.client3" %% "opentelemetry-metrics-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
-  "io.opentelemetry" % "opentelemetry-exporter-otlp" % "1.40.0"
+  "io.opentelemetry" % "opentelemetry-exporter-otlp" % "1.42.1"
 )
 
 val jsonDependencies = Seq(
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.7",
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.9",
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
   "com.softwaremill.sttp.client3" %% "jsoniter" % sttpVersion
 )
 
 val loggingDependencies = Seq(
-  "ch.qos.logback" % "logback-classic" % "1.5.6",
+  "ch.qos.logback" % "logback-classic" % "1.5.8",
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
@@ -55,7 +55,8 @@ val configDependencies = Seq(
 
 val baseDependencies = Seq(
   "com.softwaremill.ox" %% "core" % oxVersion,
-  "com.softwaremill.quicklens" %% "quicklens" % "1.9.7"
+  "com.softwaremill.quicklens" %% "quicklens" % "1.9.8",
+  "com.softwaremill.macwire" %% "macros" % "2.6.0" % Provided
 )
 
 val apiDocsDependencies = Seq(
@@ -88,7 +89,7 @@ lazy val generateOpenAPISpec = taskKey[Unit]("Generate the OpenAPI specification
 
 lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "3.3.3",
+  scalaVersion := "3.5.0",
   libraryDependencies ++= commonDependencies,
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
@@ -104,7 +105,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
     haltOnCmdResultError(runYarnTask())
   },
   autoCompilerPlugins := true,
-  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % "0.3.2"),
+  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % oxVersion),
   Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException"
 )
 
