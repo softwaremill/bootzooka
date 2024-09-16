@@ -4,11 +4,11 @@ import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http.*
 import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
-import com.softwaremill.bootzooka.util.{Endpoints, ServerEndpoints}
+import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
 import ox.IO
 import sttp.tapir.Schema
 
-class PasswordResetApi(passwordResetService: PasswordResetService, db: DB)(using IO):
+class PasswordResetApi(passwordResetService: PasswordResetService, db: DB)(using IO) extends ServerEndpoints:
   import PasswordResetApi._
 
   private val passwordResetServerEndpoint = passwordResetEndpoint.handle { data =>
@@ -20,12 +20,12 @@ class PasswordResetApi(passwordResetService: PasswordResetService, db: DB)(using
     ForgotPassword_OUT()
   }
 
-  val serverEndpoints: ServerEndpoints = List(
+  override val endpoints = List(
     passwordResetServerEndpoint,
     forgotPasswordServerEndpoint
   )
 
-object PasswordResetApi:
+object PasswordResetApi extends EndpointsForDocs:
   private val PasswordResetPath = "passwordreset"
 
   private val passwordResetEndpoint = baseEndpoint.post
@@ -38,7 +38,7 @@ object PasswordResetApi:
     .in(jsonBody[ForgotPassword_IN])
     .out(jsonBody[ForgotPassword_OUT])
 
-  val endpoints: Endpoints = List(
+  override val endpointsForDocs = List(
     passwordResetEndpoint,
     forgotPasswordEndpoint
   ).map(_.tag("passwordreset"))

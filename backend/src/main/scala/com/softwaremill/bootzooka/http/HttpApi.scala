@@ -1,9 +1,8 @@
 package com.softwaremill.bootzooka.http
 
-import com.softwaremill.bootzooka.OpenAPISpec
+import com.softwaremill.bootzooka.OpenAPIDescription
 import com.softwaremill.bootzooka.infrastructure.CorrelationIdInterceptor
 import com.softwaremill.bootzooka.logging.Logging
-import com.softwaremill.bootzooka.util.{Endpoints, ServerEndpoints}
 import io.opentelemetry.api.OpenTelemetry
 import ox.{IO, Ox}
 import sttp.shared.Identity
@@ -18,22 +17,22 @@ import sttp.tapir.server.netty.sync.{NettySyncServer, NettySyncServerBinding, Ne
 import sttp.tapir.swagger.SwaggerUIOptions
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
-/** Exposes the endpoint descriptions (defined using tapir) using a Netty-based server, adding CORS, metrics, api docs support.
+/** Exposes the endpoints (defined using Tapir) using a Netty-based server, adding CORS, metrics, docs support.
   *
-  * The following endpoints are exposed:
-  *   - `/api/v1` - the API
-  *   - `/api/v1/docs` - swagger UI for the API
-  *   - `/` - serving frontend resources
+  * The following paths are exposed:
+  *   - `/api/v1` - the API endpoints
+  *   - `/api/v1/docs` - Swagger UI for the API
+  *   - `/` - frontend resources
   *
   * @param serverEndpoints
   *   Endpoints to be exposed by the server
   * @param endpointsForDocs
-  *   Endpoints for which documentation is exposed. Should contain the same endpoints as `serverEndpoints`, but possibly with additional
+  *   Endpoints for which documentation is exposed. Should contain the same endpoints as [[serverEndpoints]], but possibly with additional
   *   metadata
   */
 class HttpApi(
-    serverEndpoints: ServerEndpoints,
-    endpointsForDocs: Endpoints,
+    serverEndpoints: List[ServerEndpoint[Any, Identity]],
+    endpointsForDocs: List[AnyEndpoint],
     otel: OpenTelemetry,
     config: HttpConfig
 ) extends Logging:
@@ -41,16 +40,16 @@ class HttpApi(
 
   private val serverOptions: NettySyncServerOptions = NettySyncServerOptions.customiseInterceptors
     .prependInterceptor(CorrelationIdInterceptor)
-    // all errors are formatted as JSON, and there are no other additional routes
+    // all errors are formatted as JSON, and no additional routes are added to the server
     .defaultHandlers(msg => ValuedEndpointOutput(Http.jsonErrorOutOutput, Error_OUT(msg)), notFoundWhenRejected = true)
     .corsInterceptor(CORSInterceptor.default[Identity])
     .metricsInterceptor(OpenTelemetryMetrics.default[Identity](otel).metricsInterceptor())
     .options
 
   val allEndpoints: List[ServerEndpoint[Any, Identity]] = {
-    // Creating the documentation using `mainEndpoints`. The /api/v1 context path is added using Swagger's options, not to the endpoints.
+    // The /api/v1 context path is added using Swagger's options, not to the endpoints.
     val docsEndpoints = SwaggerInterpreter(swaggerUIOptions = SwaggerUIOptions.default.copy(contextPath = apiContextPath))
-      .fromEndpoints[Identity](endpointsForDocs, OpenAPISpec.Title, OpenAPISpec.Version)
+      .fromEndpoints[Identity](endpointsForDocs, OpenAPIDescription.Title, OpenAPIDescription.Version)
 
     // For /api/v1 requests, first trying the API; then the docs. Prepending the context path to each endpoint.
     val apiEndpoints =

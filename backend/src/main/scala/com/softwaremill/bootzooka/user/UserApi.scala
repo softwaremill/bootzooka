@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
-import com.softwaremill.bootzooka.util.{Endpoints, ServerEndpoints}
+import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
 import com.softwaremill.bootzooka.util.Strings.{Id, asId}
 import ox.IO
 import sttp.tapir.*
@@ -16,7 +16,7 @@ import sttp.tapir.json.jsoniter.jsonBody
 import java.time.Instant
 import scala.concurrent.duration.*
 
-class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Metrics)(using IO):
+class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Metrics)(using IO) extends ServerEndpoints:
   import UserApi._
 
   // endpoint implementations
@@ -54,7 +54,7 @@ class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Met
     db.transactEither(userService.changeUser(id, data.login, data.email)).map(_ => UpdateUser_OUT())
   }
 
-  val serverEndpoints: ServerEndpoints = List(
+  override val endpoints = List(
     registerUserServerEndpoint,
     loginServerEndpoint,
     logoutServerEndpoint,
@@ -64,7 +64,7 @@ class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Met
   )
 end UserApi
 
-object UserApi:
+object UserApi extends EndpointsForDocs:
   // endpoint descriptions
 
   private val UserPath = "user"
@@ -98,8 +98,7 @@ object UserApi:
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
 
-  // TODO: simplify using https://github.com/softwaremill/macwire/issues/341 once available
-  val endpoints: Endpoints = List(
+  override val endpointsForDocs = List(
     registerUserEndpoint,
     loginEndpoint,
     logoutEndpoint,
