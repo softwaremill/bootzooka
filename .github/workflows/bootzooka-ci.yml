@@ -41,7 +41,7 @@ jobs:
 
       - name: Generate OpenAPI Spec
         id: generate-openapi-spec
-        run: sbt "backend/generateOpenAPISpec"
+        run: sbt "backend/generateOpenAPIDescription"
 
       - name: Run tests
         id: run-tests

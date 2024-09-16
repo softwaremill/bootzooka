@@ -55,7 +55,7 @@ val configDependencies = Seq(
 val baseDependencies = Seq(
   "com.softwaremill.ox" %% "core" % oxVersion,
   "com.softwaremill.quicklens" %% "quicklens" % "1.9.8",
-  "com.softwaremill.macwire" %% "macros" % "2.6.0" % Provided
+  "com.softwaremill.macwire" %% "macros" % "2.6.2" % Provided
 )
 
 val apiDocsDependencies = Seq(
@@ -84,7 +84,7 @@ lazy val uiDirectory = settingKey[File]("Path to the ui project directory")
 lazy val updateYarn = taskKey[Unit]("Update yarn")
 lazy val yarnTask = inputKey[Unit]("Run yarn with arguments")
 lazy val copyWebapp = taskKey[Unit]("Copy webapp")
-lazy val generateOpenAPISpec = taskKey[Unit]("Generate the OpenAPI specification for the HTTP API")
+lazy val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI description for the HTTP API")
 
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
@@ -189,11 +189,11 @@ lazy val backend: Project = (project in file("backend"))
       IO.copyDirectory(source, target)
     },
     copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value,
-    generateOpenAPISpec := Def.taskDyn {
+    generateOpenAPIDescription := Def.taskDyn {
       val log = streams.value.log
       val targetPath = ((Compile / target).value / "openapi.yaml").toString
       Def.task {
-        (Compile / runMain).toTask(s" com.softwaremill.bootzooka.writeOpenAPISpec $targetPath").value
+        (Compile / runMain).toTask(s" com.softwaremill.bootzooka.writeOpenAPIDescription $targetPath").value
       }
     }.value,
     // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application

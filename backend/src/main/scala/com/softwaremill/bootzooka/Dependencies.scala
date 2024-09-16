@@ -3,15 +3,15 @@ package com.softwaremill.bootzooka
 import com.softwaremill.bootzooka.admin.VersionApi
 import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.sender.EmailSender
-import com.softwaremill.bootzooka.email.{EmailModel, EmailService, EmailTemplates}
+import com.softwaremill.bootzooka.email.EmailService
 import com.softwaremill.bootzooka.http.{HttpApi, HttpConfig}
 import com.softwaremill.bootzooka.infrastructure.{DB, SetCorrelationIdBackend}
 import com.softwaremill.bootzooka.metrics.Metrics
-import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken, PasswordResetCodeModel, PasswordResetService}
-import com.softwaremill.bootzooka.security.{ApiKeyAuthToken, ApiKeyModel, ApiKeyService, Auth}
-import com.softwaremill.bootzooka.user.{UserApi, UserModel, UserService}
+import com.softwaremill.bootzooka.passwordreset.{PasswordResetAuthToken, PasswordResetApi}
+import com.softwaremill.bootzooka.security.{ApiKeyAuthToken, ApiKeyService, Auth}
+import com.softwaremill.bootzooka.user.UserApi
 import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator, IdGenerator}
-import com.softwaremill.macwire.{autowire, membersOf}
+import com.softwaremill.macwire.{autowire, autowireMembersOf}
 import io.opentelemetry.api.OpenTelemetry
 import io.opentelemetry.exporter.otlp.metrics.OtlpGrpcMetricExporter
 import io.opentelemetry.sdk.OpenTelemetrySdk
@@ -45,7 +45,7 @@ object Dependencies:
   /** Create the service graph using the given infrastructure services & configuration. */
   def create(config: Config, otel: OpenTelemetry, sttpBackend: SttpBackend[Identity, Any], db: DB, clock: Clock)(using IO): Dependencies =
     autowire[Dependencies](
-      membersOf(config),
+      autowireMembersOf(config),
       otel,
       sttpBackend,
       db,
