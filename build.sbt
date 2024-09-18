@@ -11,7 +11,7 @@ import complete.DefaultParsers._
 
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.9.8"
-val tapirVersion = "1.11.2"
+val tapirVersion = "1.11.4"
 val oxVersion = "0.3.8"
 
 val dbDependencies = Seq(
@@ -36,7 +36,7 @@ val monitoringDependencies = Seq(
 )
 
 val jsonDependencies = Seq(
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.9",
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.10",
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
   "com.softwaremill.sttp.client3" %% "jsoniter" % sttpVersion
 )
@@ -54,7 +54,7 @@ val configDependencies = Seq(
 
 val baseDependencies = Seq(
   "com.softwaremill.ox" %% "core" % oxVersion,
-  "com.softwaremill.quicklens" %% "quicklens" % "1.9.8",
+  "com.softwaremill.quicklens" %% "quicklens" % "1.9.9",
   "com.softwaremill.macwire" %% "macros" % "2.6.2" % Provided
 )
 
