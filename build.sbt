@@ -70,14 +70,10 @@ val emailDependencies = Seq(
   "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
 )
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.19" % Test
-
-val unitTestingStack = Seq(scalatest)
-
-val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.1.0" % Test
-val dbTestingStack = Seq(embeddedPostgres)
-
-val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
+val testingDependencies = Seq(
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
+  "com.opentable.components" % "otj-pg-embedded" % "1.1.0" % Test
+)
 
 lazy val uiProjectName = "ui"
 lazy val uiDirectory = settingKey[File]("Path to the ui project directory")
@@ -89,7 +85,6 @@ lazy val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI descri
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "3.5.0",
-  libraryDependencies ++= commonDependencies,
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
     streams.value.log("Updating npm/yarn dependencies")
@@ -102,11 +97,7 @@ lazy val commonSettings = Seq(
     def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
     streams.value.log("Running yarn task: " + taskName)
     haltOnCmdResultError(runYarnTask())
-  },
-  autoCompilerPlugins := true,
-  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % oxVersion),
-  Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException",
-  scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
+  }
 )
 
 lazy val buildInfoSettings = Seq(
@@ -180,7 +171,9 @@ lazy val rootProject = (project in file("."))
 
 lazy val backend: Project = (project in file("backend"))
   .settings(
-    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
+    libraryDependencies ++= baseDependencies ++ testingDependencies ++ loggingDependencies ++
+      configDependencies ++ dbDependencies ++ httpDependencies ++ jsonDependencies ++
+      apiDocsDependencies ++ monitoringDependencies ++ securityDependencies ++ emailDependencies,
     Compile / mainClass := Some("com.softwaremill.bootzooka.Main"),
     copyWebapp := {
       val source = uiDirectory.value / "build"
@@ -197,7 +190,11 @@ lazy val backend: Project = (project in file("backend"))
       }
     }.value,
     // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application
-    run / fork := true
+    run / fork := true,
+    autoCompilerPlugins := true,
+    addCompilerPlugin("com.softwaremill.ox" %% "plugin" % oxVersion),
+    Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException",
+    scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)

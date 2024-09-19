@@ -20,11 +20,11 @@
     <appender-ref ref="STDOUT"/>
   </logger>
 
-  <logger name="sttp.client3" level="${LOG_LEVEL:-DEBUG}" additivity="false">
+  <logger name="sttp.client3" level="${LOG_LEVEL:-INFO}" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
 
-  <logger name="sttp.tapir" level="${LOG_LEVEL:-DEBUG}" additivity="false">
+  <logger name="sttp.tapir" level="${LOG_LEVEL:-INFO}" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
 
