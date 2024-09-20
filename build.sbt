@@ -13,6 +13,7 @@ val password4jVersion = "1.8.2"
 val sttpVersion = "3.9.8"
 val tapirVersion = "1.11.4"
 val oxVersion = "0.3.8"
+val otelVersion = "1.42.1"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.2.1",
@@ -29,10 +30,11 @@ val httpDependencies = Seq(
   "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion
 )
 
-val monitoringDependencies = Seq(
+val observabilityDependencies = Seq(
   "com.softwaremill.sttp.client3" %% "opentelemetry-metrics-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
-  "io.opentelemetry" % "opentelemetry-exporter-otlp" % "1.42.1"
+  "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion,
+  "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion
 )
 
 val jsonDependencies = Seq(
@@ -174,7 +176,7 @@ lazy val backend: Project = (project in file("backend"))
   .settings(
     libraryDependencies ++= baseDependencies ++ testingDependencies ++ loggingDependencies ++
       configDependencies ++ dbDependencies ++ httpDependencies ++ jsonDependencies ++
-      apiDocsDependencies ++ monitoringDependencies ++ securityDependencies ++ emailDependencies,
+      apiDocsDependencies ++ observabilityDependencies ++ securityDependencies ++ emailDependencies,
     Compile / mainClass := Some("com.softwaremill.bootzooka.Main"),
     copyWebapp := {
       val source = uiDirectory.value / "build"
