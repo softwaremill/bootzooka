@@ -20,6 +20,8 @@ import sttp.client3.opentelemetry.OpenTelemetryMetricsBackend
 import sttp.client3.{HttpClientSyncBackend, SttpBackend}
 import sttp.shared.Identity
 import sttp.tapir.AnyEndpoint
+import io.opentelemetry.instrumentation.jmx.engine.JmxMetricInsight
+import com.softwaremill.bootzooka.metrics.JmxMetricInstaller
 
 case class Dependencies(httpApi: HttpApi, emailService: EmailService)
 
@@ -31,7 +33,11 @@ object Dependencies:
 
   def create(using Ox, IO): Dependencies =
     val config = Config.read.tap(Config.log)
-    val otel = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk()
+
+    val autoOtelSdk = AutoConfiguredOpenTelemetrySdk.initialize()
+    val otel = autoOtelSdk.getOpenTelemetrySdk()
+    JmxMetricInstaller.initialize(autoOtelSdk)
+
     val sttpBackend = useInScope(
       Slf4jLoggingBackend(OpenTelemetryMetricsBackend(new SetCorrelationIdBackend(HttpClientSyncBackend()), otel), includeTiming = true)
     )(_.close())

@@ -34,7 +34,8 @@ val observabilityDependencies = Seq(
   "com.softwaremill.sttp.client3" %% "opentelemetry-metrics-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
   "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion,
-  "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion
+  "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
+  "io.opentelemetry.instrumentation" % "opentelemetry-jmx-metrics" % "2.8.0-alpha"
 )
 
 val jsonDependencies = Seq(

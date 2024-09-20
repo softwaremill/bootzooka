@@ -31,7 +31,7 @@
   <logger name="sttp.tapir" level="${LOG_LEVEL:-INFO}" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
-
+  
   <root level="${LOG_LEVEL:-INFO}">
     <appender-ref ref="STDOUT"/>
   </root>
