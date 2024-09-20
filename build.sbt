@@ -43,6 +43,7 @@ val jsonDependencies = Seq(
 
 val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.8",
+  "org.slf4j" % "jul-to-slf4j" % "1.7.36", // forward e.g. otel logs which use JUL to SLF4J
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
@@ -181,7 +182,15 @@ lazy val backend: Project = (project in file("backend"))
       streams.value.log.info(s"Copying the webapp resources from $source to $target")
       IO.copyDirectory(source, target)
     },
-    copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value,
+    copyWebapp := copyWebapp
+      .dependsOn(
+        Def
+          .sequential(
+            generateOpenAPIDescription,
+            yarnTask.toTask(" build")
+          )
+      )
+      .value,
     generateOpenAPIDescription := Def.taskDyn {
       val log = streams.value.log
       val targetPath = ((Compile / target).value / "openapi.yaml").toString
