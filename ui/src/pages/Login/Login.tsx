@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
 import { useMutation } from "react-query";
+import { Components } from "../../api-client/openapi";
 
 const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),
@@ -16,7 +17,7 @@ const validationSchema = Yup.object({
 export type LoginParams = Yup.InferType<typeof validationSchema>;
 
 type Props = {
-  onLogin(payload: LoginParams): Promise<{ apiKey: string }>;
+  onLogin(payload: Components.Schemas.LoginIN): Promise<{ apiKey: string }>;
 };
 
 export const Login: React.FC<Props> = ({ onLogin }) => {

@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
 import { useMutation } from "react-query";
+import { Components } from "../../api-client/openapi";
 
 const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -18,10 +19,9 @@ const validationSchema = Yup.object({
 });
 
 type RegisterParams = Yup.InferType<typeof validationSchema>;
-export type RegisterParamsPayload = Omit<RegisterParams, "repeatedPassword">;
 
 type Props = {
-  onRegisterUser(payload: RegisterParamsPayload): Promise<{ apiKey: string }>;
+  onRegisterUser(payload: Components.Schemas.RegisterIN): Promise<{ apiKey: string }>;
 };
 
 export const Register: React.FC<Props> = ({ onRegisterUser }) => {

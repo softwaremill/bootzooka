@@ -1,10 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import * as Yup from "yup";
 import api from "api-client/apiClient";
-import { Client } from "api-client/openapi.d";
-import { LoginParams, RegisterParamsPayload } from "pages";
-import { ProfileDetailsParams } from "pages/Profile/components/ProfileDetails";
-import { ChangePasswordDetailsParams } from "pages/Profile/components/PasswordDetails";
+import { Client, Components } from "api-client/openapi.d";
 
 const apiKeySchema = Yup.object().required().shape({
   apiKey: Yup.string().required(),
@@ -26,13 +23,13 @@ const secureRequest = (apiKey: string): AxiosRequestConfig => ({
   },
 });
 
-export const login = (params: LoginParams) =>
+export const login = (payload: Components.Schemas.LoginIN) =>
   api
     .getClient<Client>()
-    .then((client) => client.postUserLogin(null, { ...params, apiKeyValidHours: 1 }))
+    .then((client) => client.postUserLogin(null, { ...payload, apiKeyValidHours: 1 }))
     .then(({ data }) => apiKeySchema.validate(data));
 
-export const register = (payload: RegisterParamsPayload) =>
+export const register = (payload: Components.Schemas.RegisterIN) =>
   api
     .getClient<Client>()
     .then((client) => client.postUserRegister(null, payload))
@@ -50,14 +47,14 @@ export const getCurrentUser = (apiKey: string) =>
     .then((client) => client.getUser(null, null, secureRequest(apiKey)))
     .then(({ data }) => userDetailsSchema.validate(data));
 
-export const changeProfileDetails = (apiKey: string, { email, login }: ProfileDetailsParams) =>
+export const changeProfileDetails = (apiKey: string, payload: Components.Schemas.UpdateUserIN) =>
   api
     .getClient<Client>()
-    .then((client) => client.postUser(null, { email, login }, secureRequest(apiKey)))
+    .then((client) => client.postUser(null, payload, secureRequest(apiKey)))
     .then(({ data }) => emptySchema.validate(data).then(() => undefined));
 
-export const changePassword = (apiKey: string, { currentPassword, newPassword }: ChangePasswordDetailsParams) =>
+export const changePassword = (apiKey: string, payload: Components.Schemas.ChangePasswordIN) =>
   api
     .getClient<Client>()
-    .then((client) => client.postUserChangepassword(null, { currentPassword, newPassword }, secureRequest(apiKey)))
+    .then((client) => client.postUserChangepassword(null, payload, secureRequest(apiKey)))
     .then(({ data }) => apiKeySchema.validate(data));
