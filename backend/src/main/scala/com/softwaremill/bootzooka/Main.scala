@@ -3,8 +3,13 @@ package com.softwaremill.bootzooka
 import com.softwaremill.bootzooka.logging.Logging
 import ox.logback.InheritableMDC
 import ox.{IO, Ox, OxApp, never}
+import org.slf4j.bridge.SLF4JBridgeHandler
 
 object Main extends OxApp.Simple with Logging:
+  // route JUL to SLF4J
+  SLF4JBridgeHandler.removeHandlersForRootLogger()
+  SLF4JBridgeHandler.install()
+
   InheritableMDC.init
   Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 

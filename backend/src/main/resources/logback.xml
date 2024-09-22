@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<configuration scan="true">
+<configuration>
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <resetJUL>true</resetJUL>
+  </contextListener>
+
   <if condition='p("LOGBACK_JSON_ENCODE").equals("true")'>
     <then>
       <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -20,16 +24,15 @@
     <appender-ref ref="STDOUT"/>
   </logger>
 
-  <logger name="sttp.client3" level="${LOG_LEVEL:-DEBUG}" additivity="false">
+  <logger name="sttp.client3" level="${LOG_LEVEL:-INFO}" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
 
-  <logger name="sttp.tapir" level="${LOG_LEVEL:-DEBUG}" additivity="false">
+  <logger name="sttp.tapir" level="${LOG_LEVEL:-INFO}" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
-
+  
   <root level="${LOG_LEVEL:-INFO}">
     <appender-ref ref="STDOUT"/>
   </root>
-
 </configuration>

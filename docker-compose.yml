@@ -1,4 +1,3 @@
-version: '3'
 services:
   bootzooka:
     image: 'softwaremill/bootzooka:latest'
@@ -13,6 +12,11 @@ services:
       SQL_HOST: 'bootzooka-db'
       SQL_PORT: '5432'
       API_HOST: '0.0.0.0'
+      OTEL_EXPORTER_OTLP_ENDPOINT: 'http://observability:4317'
+      OTEL_SERVICE_NAME: 'bootzooka'
+      OTEL_METRIC_EXPORT_INTERVAL: '500' # The default is 60s, in development it's useful to see the metrics faster 
+      OTEL_RESOURCE_ATTRIBUTES: 'service.instance.id=local,service.version=latest'
+
   bootzooka-db:
     image: 'postgres'
     ports:
@@ -21,3 +25,9 @@ services:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'b00t200k4'
       POSTGRES_DB: 'bootzooka'
+
+  # OpenTelemetry Collector, Prometheus, Loki, Tempo, Grafana
+  observability:
+    image: 'grafana/otel-lgtm'
+    ports:
+      - '3000:3000' # Grafana's UI

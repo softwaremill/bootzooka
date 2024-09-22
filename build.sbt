@@ -11,8 +11,9 @@ import complete.DefaultParsers._
 
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.9.8"
-val tapirVersion = "1.11.2"
+val tapirVersion = "1.11.4"
 val oxVersion = "0.3.8"
+val otelVersion = "1.42.1"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.2.1",
@@ -29,20 +30,23 @@ val httpDependencies = Seq(
   "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion
 )
 
-val monitoringDependencies = Seq(
+val observabilityDependencies = Seq(
   "com.softwaremill.sttp.client3" %% "opentelemetry-metrics-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
-  "io.opentelemetry" % "opentelemetry-exporter-otlp" % "1.42.1"
+  "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion,
+  "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
+  "io.opentelemetry.instrumentation" % "opentelemetry-jmx-metrics" % "2.8.0-alpha"
 )
 
 val jsonDependencies = Seq(
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.9",
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.10",
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
   "com.softwaremill.sttp.client3" %% "jsoniter" % sttpVersion
 )
 
 val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.8",
+  "org.slf4j" % "jul-to-slf4j" % "1.7.36", // forward e.g. otel logs which use JUL to SLF4J
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
@@ -54,7 +58,7 @@ val configDependencies = Seq(
 
 val baseDependencies = Seq(
   "com.softwaremill.ox" %% "core" % oxVersion,
-  "com.softwaremill.quicklens" %% "quicklens" % "1.9.8",
+  "com.softwaremill.quicklens" %% "quicklens" % "1.9.9",
   "com.softwaremill.macwire" %% "macros" % "2.6.2" % Provided
 )
 
@@ -70,14 +74,10 @@ val emailDependencies = Seq(
   "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
 )
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.19" % Test
-
-val unitTestingStack = Seq(scalatest)
-
-val embeddedPostgres = "com.opentable.components" % "otj-pg-embedded" % "1.1.0" % Test
-val dbTestingStack = Seq(embeddedPostgres)
-
-val commonDependencies = baseDependencies ++ unitTestingStack ++ loggingDependencies ++ configDependencies
+val testingDependencies = Seq(
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
+  "com.opentable.components" % "otj-pg-embedded" % "1.1.0" % Test
+)
 
 lazy val uiProjectName = "ui"
 lazy val uiDirectory = settingKey[File]("Path to the ui project directory")
@@ -89,7 +89,6 @@ lazy val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI descri
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "3.5.0",
-  libraryDependencies ++= commonDependencies,
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
     streams.value.log("Updating npm/yarn dependencies")
@@ -102,11 +101,7 @@ lazy val commonSettings = Seq(
     def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
     streams.value.log("Running yarn task: " + taskName)
     haltOnCmdResultError(runYarnTask())
-  },
-  autoCompilerPlugins := true,
-  addCompilerPlugin("com.softwaremill.ox" %% "plugin" % oxVersion),
-  Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException",
-  scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
+  }
 )
 
 lazy val buildInfoSettings = Seq(
@@ -180,7 +175,9 @@ lazy val rootProject = (project in file("."))
 
 lazy val backend: Project = (project in file("backend"))
   .settings(
-    libraryDependencies ++= dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ monitoringDependencies ++ dbTestingStack ++ securityDependencies ++ emailDependencies,
+    libraryDependencies ++= baseDependencies ++ testingDependencies ++ loggingDependencies ++
+      configDependencies ++ dbDependencies ++ httpDependencies ++ jsonDependencies ++
+      apiDocsDependencies ++ observabilityDependencies ++ securityDependencies ++ emailDependencies,
     Compile / mainClass := Some("com.softwaremill.bootzooka.Main"),
     copyWebapp := {
       val source = uiDirectory.value / "build"
@@ -188,7 +185,15 @@ lazy val backend: Project = (project in file("backend"))
       streams.value.log.info(s"Copying the webapp resources from $source to $target")
       IO.copyDirectory(source, target)
     },
-    copyWebapp := copyWebapp.dependsOn(yarnTask.toTask(" build")).value,
+    copyWebapp := copyWebapp
+      .dependsOn(
+        Def
+          .sequential(
+            generateOpenAPIDescription,
+            yarnTask.toTask(" build")
+          )
+      )
+      .value,
     generateOpenAPIDescription := Def.taskDyn {
       val log = streams.value.log
       val targetPath = ((Compile / target).value / "openapi.yaml").toString
@@ -197,7 +202,11 @@ lazy val backend: Project = (project in file("backend"))
       }
     }.value,
     // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application
-    run / fork := true
+    run / fork := true,
+    autoCompilerPlugins := true,
+    addCompilerPlugin("com.softwaremill.ox" %% "plugin" % oxVersion),
+    Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException",
+    scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)

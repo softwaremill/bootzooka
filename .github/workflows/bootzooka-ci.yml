@@ -11,8 +11,6 @@ on:
   release:
     types:
       - released
-    paths-ignore:
-      - "helm/**"
 
 jobs:
   verify:
@@ -21,23 +19,14 @@ jobs:
     steps:
       - name: Check-out repository
         id: repo-checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        id: jdk-setup
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 21
-
-      - name: Cache SBT
-        id: cache-sbt
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.sbt
-            ~/.ivy2/cache
-            ~/.coursier
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'sbt'
 
       - name: Generate OpenAPI Spec
         id: generate-openapi-spec
@@ -60,33 +49,26 @@ jobs:
     steps:
       - name: Check-out repository
         id: repo-checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        id: jdk-setup
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 21
-
-      - name: Cache SBT
-        id: cache-sbt
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.sbt
-            ~/.ivy2/cache
-            ~/.coursier
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'sbt'
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Extract version
         run: |
           version=${GITHUB_REF/refs\/tags\/v/}
           echo "VERSION=$version" >> $GITHUB_ENV
+
       - name: Publish release notes
         uses: release-drafter/release-drafter@v5
         with:
@@ -97,5 +79,6 @@ jobs:
           version: "v${{ env.VERSION }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Publish docker image
         run: sbt backend/docker:publish
