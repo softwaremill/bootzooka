@@ -24,9 +24,11 @@ docker run --name bootzooka-postgres -p 5432:5432 -e POSTGRES_PASSWORD=bootzooka
 Then, you can start the backend:
 
 ```sh
-export SQL_PASSWORD=bootzooka
-./backend-start.sh
+OTEL_SDK_DISABLED=true SQL_PASSWORD=bootzooka ./backend-start.sh
 ```
+
+Unless you've got an OpenTelemetry collector running, OpenTelemetry should be disabled to avoid telemetry export
+exceptions.
 
 ### Frontend: Yarn & webapp
 
