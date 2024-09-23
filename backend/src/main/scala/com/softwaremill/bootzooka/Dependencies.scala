@@ -14,13 +14,12 @@ import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator,
 import com.softwaremill.macwire.{autowire, autowireMembersOf}
 import io.opentelemetry.api.OpenTelemetry
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk
-import ox.{IO, Ox, tap, useCloseableInScope, useInScope}
+import ox.{Ox, tap, useCloseableInScope, useInScope}
 import sttp.client3.logging.slf4j.Slf4jLoggingBackend
 import sttp.client3.opentelemetry.OpenTelemetryMetricsBackend
 import sttp.client3.{HttpClientSyncBackend, SttpBackend}
 import sttp.shared.Identity
 import sttp.tapir.AnyEndpoint
-import io.opentelemetry.instrumentation.jmx.engine.JmxMetricInsight
 import com.softwaremill.bootzooka.metrics.JmxMetricInstaller
 
 case class Dependencies(httpApi: HttpApi, emailService: EmailService)
@@ -31,7 +30,7 @@ object Dependencies:
   private case class Apis(userApi: UserApi, passwordResetApi: PasswordResetApi, versionApi: VersionApi):
     def endpoints = List(userApi, passwordResetApi, versionApi).flatMap(_.endpoints)
 
-  def create(using Ox, IO): Dependencies =
+  def create(using Ox): Dependencies =
     val config = Config.read.tap(Config.log)
 
     val autoOtelSdk = AutoConfiguredOpenTelemetrySdk.initialize()
@@ -46,7 +45,7 @@ object Dependencies:
     create(config, otel, sttpBackend, db, DefaultClock)
 
   /** Create the service graph using the given infrastructure services & configuration. */
-  def create(config: Config, otel: OpenTelemetry, sttpBackend: SttpBackend[Identity, Any], db: DB, clock: Clock)(using IO): Dependencies =
+  def create(config: Config, otel: OpenTelemetry, sttpBackend: SttpBackend[Identity, Any], db: DB, clock: Clock): Dependencies =
     autowire[Dependencies](
       autowireMembersOf(config),
       otel,

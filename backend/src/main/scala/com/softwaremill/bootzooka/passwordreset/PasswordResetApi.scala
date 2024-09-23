@@ -5,10 +5,9 @@ import com.softwaremill.bootzooka.http.Http.*
 import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
-import ox.IO
 import sttp.tapir.Schema
 
-class PasswordResetApi(passwordResetService: PasswordResetService, db: DB)(using IO) extends ServerEndpoints:
+class PasswordResetApi(passwordResetService: PasswordResetService, db: DB) extends ServerEndpoints:
   import PasswordResetApi._
 
   private val passwordResetServerEndpoint = passwordResetEndpoint.handle { data =>

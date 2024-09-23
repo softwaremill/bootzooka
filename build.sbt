@@ -12,7 +12,7 @@ import complete.DefaultParsers._
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.9.8"
 val tapirVersion = "1.11.4"
-val oxVersion = "0.3.8"
+val oxVersion = "0.4.0"
 val otelVersion = "1.42.1"
 
 val dbDependencies = Seq(
@@ -203,9 +203,6 @@ lazy val backend: Project = (project in file("backend"))
     }.value,
     // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application
     run / fork := true,
-    autoCompilerPlugins := true,
-    addCompilerPlugin("com.softwaremill.ox" %% "plugin" % oxVersion),
-    Compile / scalacOptions += "-P:requireIO:javax.mail.MessagingException",
     scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
   )
   .enablePlugins(BuildInfoPlugin)

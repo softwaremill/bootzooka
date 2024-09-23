@@ -4,7 +4,7 @@ import com.softwaremill.bootzooka.OpenAPIDescription
 import com.softwaremill.bootzooka.infrastructure.CorrelationIdInterceptor
 import com.softwaremill.bootzooka.logging.Logging
 import io.opentelemetry.api.OpenTelemetry
-import ox.{IO, Ox}
+import ox.Ox
 import sttp.shared.Identity
 import sttp.tapir.*
 import sttp.tapir.files.{FilesOptions, staticResourcesGetServerEndpoint}
@@ -68,5 +68,5 @@ class HttpApi(
     apiEndpoints ++ webappEndpoints
   }
 
-  def start()(using Ox, IO): NettySyncServerBinding =
+  def start()(using Ox): NettySyncServerBinding =
     NettySyncServer(serverOptions, NettyConfig.default.host(config.host).port(config.port)).addEndpoints(allEndpoints).start()

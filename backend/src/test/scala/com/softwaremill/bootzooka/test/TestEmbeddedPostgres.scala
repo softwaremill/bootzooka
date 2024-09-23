@@ -7,7 +7,6 @@ import com.softwaremill.bootzooka.logging.Logging
 import org.flywaydb.core.Flyway
 import org.postgresql.jdbc.PgConnection
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
-import ox.IO.globalForTesting.given
 import ox.discard
 
 import scala.compiletime.uninitialized

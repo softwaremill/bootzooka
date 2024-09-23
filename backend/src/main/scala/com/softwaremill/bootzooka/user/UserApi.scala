@@ -9,14 +9,13 @@ import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
 import com.softwaremill.bootzooka.util.Strings.{Id, asId}
-import ox.IO
 import sttp.tapir.*
 import sttp.tapir.json.jsoniter.jsonBody
 
 import java.time.Instant
 import scala.concurrent.duration.*
 
-class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Metrics)(using IO) extends ServerEndpoints:
+class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Metrics) extends ServerEndpoints:
   import UserApi._
 
   // endpoint implementations

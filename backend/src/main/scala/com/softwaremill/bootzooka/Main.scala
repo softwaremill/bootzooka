@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka
 
 import com.softwaremill.bootzooka.logging.Logging
 import ox.logback.InheritableMDC
-import ox.{IO, Ox, OxApp, never}
+import ox.{Ox, OxApp, never}
 import org.slf4j.bridge.SLF4JBridgeHandler
 
 object Main extends OxApp.Simple with Logging:
@@ -13,7 +13,7 @@ object Main extends OxApp.Simple with Logging:
   InheritableMDC.init
   Thread.setDefaultUncaughtExceptionHandler((t, e) => logger.error("Uncaught exception in thread: " + t, e))
 
-  override def run(using Ox, IO): Unit =
+  override def run(using Ox): Unit =
     val deps = Dependencies.create
 
     deps.emailService.startProcesses()

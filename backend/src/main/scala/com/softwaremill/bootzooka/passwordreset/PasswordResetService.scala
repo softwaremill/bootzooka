@@ -9,7 +9,7 @@ import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.{User, UserModel}
 import com.softwaremill.bootzooka.util.*
 import com.softwaremill.bootzooka.util.Strings.{Id, asId, toLowerCased}
-import ox.{IO, either}
+import ox.either
 import ox.either.*
 
 class PasswordResetService(
@@ -47,7 +47,7 @@ class PasswordResetService(
     val resetLink = String.format(config.resetLinkPattern, code.id)
     emailTemplates.passwordReset(user.login, resetLink)
 
-  def resetPassword(code: String, newPassword: String)(using IO): Either[Fail, Unit] = either {
+  def resetPassword(code: String, newPassword: String): Either[Fail, Unit] = either {
     val userId = auth(code.asId[PasswordResetCode]).ok()
     logger.debug(s"Resetting password for user: $userId")
     db.transact(userModel.updatePassword(userId, User.hashPassword(newPassword)))

@@ -10,8 +10,6 @@ import java.nio.file.{Files, Paths}
 import java.time.Duration
 import scala.jdk.CollectionConverters.*
 
-import ox.IO.globalForTesting.given_IO
-
 // Copied & adjusted from: https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/instrumentation/jmx-metrics/javaagent/src/main/java/io/opentelemetry/instrumentation/javaagent/jmx/JmxMetricInsightInstaller.java
 // TODO: remove when jmx integration is available as a library: https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/12308
 object JmxMetricInstaller:

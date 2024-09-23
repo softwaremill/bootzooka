@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.test
 import com.softwaremill.bootzooka.Dependencies
 import io.opentelemetry.api.OpenTelemetry
 import org.scalatest.{BeforeAndAfterAll, Suite}
-import ox.IO.globalForTesting.given
 import sttp.client3.testing.SttpBackendStub
 import sttp.client3.{HttpClientSyncBackend, SttpBackend}
 import sttp.shared.Identity

@@ -5,7 +5,6 @@ import com.softwaremill.bootzooka.test.{BaseTest, RegisteredUser, TestDependenci
 import com.softwaremill.bootzooka.user.UserApi.*
 import org.scalatest.concurrent.Eventually
 import sttp.model.StatusCode
-import ox.IO.globalForTesting.given
 
 import scala.concurrent.duration.*
 
