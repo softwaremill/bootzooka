@@ -14,6 +14,7 @@ val sttpVersion = "3.9.8"
 val tapirVersion = "1.11.4"
 val oxVersion = "0.4.0"
 val otelVersion = "1.42.1"
+val otelInstrumentationVersion = "2.8.0-alpha"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.2.1",
@@ -35,7 +36,8 @@ val observabilityDependencies = Seq(
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
   "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion,
   "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
-  "io.opentelemetry.instrumentation" % "opentelemetry-jmx-metrics" % "2.8.0-alpha"
+  "io.opentelemetry.instrumentation" % "opentelemetry-jmx-metrics" % otelInstrumentationVersion,
+  "io.opentelemetry.instrumentation" % "opentelemetry-logback-appender-1.0" % otelInstrumentationVersion
 )
 
 val jsonDependencies = Seq(

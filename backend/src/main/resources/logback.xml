@@ -8,31 +8,38 @@
   <if condition='p("LOGBACK_JSON_ENCODE").equals("true")'>
     <then>
       <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
       </appender>
     </then>
     <else>
       <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-      <encoder>
-        <pattern>%d{HH:mm:ss.SSS}%boldYellow(%replace( [%X{cid}] ){' \[\] ', ' '})[%thread] %-5level %logger{5} - %msg%n%rEx</pattern>
-      </encoder>
-    </appender>
+        <encoder>
+          <pattern><![CDATA[%d{HH:mm:ss.SSS}%boldYellow(%replace( [%X{cid}] ){' \[\] ', ' '})[%thread] %-5level %logger{5} - %msg%n%rEx]]></pattern>
+        </encoder>
+      </appender>
     </else>
   </if>
 
+  <appender name="OpenTelemetry"
+    class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender"></appender>
+
   <logger name="com.softwaremill.bootzooka" level="${LOG_LEVEL:-DEBUG}" additivity="false">
-    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="OpenTelemetry" />
   </logger>
 
   <logger name="sttp.client3" level="${LOG_LEVEL:-INFO}" additivity="false">
-    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="OpenTelemetry" />
   </logger>
 
-  <logger name="sttp.tapir" level="${LOG_LEVEL:-INFO}" additivity="false">
-    <appender-ref ref="STDOUT"/>
+  <logger name="sttp.tapir" level="${LOG_LEVEL:-DEBUG}" additivity="false">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="OpenTelemetry" />
   </logger>
-  
+
   <root level="${LOG_LEVEL:-INFO}">
-    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="OpenTelemetry" />
   </root>
 </configuration>
