@@ -13,15 +13,15 @@ import com.softwaremill.bootzooka.user.UserApi
 import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator, IdGenerator}
 import com.softwaremill.macwire.{autowire, autowireMembersOf}
 import io.opentelemetry.api.OpenTelemetry
+import io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender
+import io.opentelemetry.instrumentation.runtimemetrics.java8.{Classes, Cpu, GarbageCollector, MemoryPools, Threads}
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk
-import ox.{Ox, tap, useCloseableInScope, useInScope}
+import ox.{Ox, discard, tap, useCloseableInScope, useInScope}
 import sttp.client3.logging.slf4j.Slf4jLoggingBackend
 import sttp.client3.opentelemetry.OpenTelemetryMetricsBackend
 import sttp.client3.{HttpClientSyncBackend, SttpBackend}
 import sttp.shared.Identity
 import sttp.tapir.AnyEndpoint
-import com.softwaremill.bootzooka.metrics.JmxMetricInstaller
-import io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender
 
 case class Dependencies(httpApi: HttpApi, emailService: EmailService)
 
@@ -61,6 +61,13 @@ object Dependencies:
   private def initializeOtel(): OpenTelemetry =
     AutoConfiguredOpenTelemetrySdk
       .initialize()
-      .tap(JmxMetricInstaller.initialize)
       .getOpenTelemetrySdk()
+      .tap { otel =>
+        // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/runtime-telemetry/runtime-telemetry-java8/library
+        Classes.registerObservers(otel)
+        Cpu.registerObservers(otel)
+        MemoryPools.registerObservers(otel)
+        Threads.registerObservers(otel)
+        GarbageCollector.registerObservers(otel).discard
+      }
       .tap(OpenTelemetryAppender.install)

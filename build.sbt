@@ -36,7 +36,7 @@ val observabilityDependencies = Seq(
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
   "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion,
   "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
-  "io.opentelemetry.instrumentation" % "opentelemetry-jmx-metrics" % otelInstrumentationVersion,
+  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java8" % otelInstrumentationVersion,
   "io.opentelemetry.instrumentation" % "opentelemetry-logback-appender-1.0" % otelInstrumentationVersion
 )
 
