@@ -18,7 +18,7 @@ val oxVersion = "0.3.9"
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.2.1",
   "org.postgresql" % "postgresql" % "42.7.4",
-  "com.zaxxer" % "HikariCP" % "5.1.0",
+  "com.zaxxer" % "HikariCP" % "6.0.0",
   "org.flywaydb" % "flyway-database-postgresql" % "10.18.0"
 )
 
