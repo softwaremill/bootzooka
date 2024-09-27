@@ -3,15 +3,18 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
-import { versionService } from "services";
 import { useQuery } from "react-query";
 
 interface VersionData {
   buildSha: string;
 }
 
-export const Footer: React.FC = () => {
-  const query = useQuery<VersionData>("version", versionService.getVersion);
+type Props = {
+  onGetVersion(): Promise<{ buildSha: string }>;
+};
+
+export const Footer: React.FC<Props> = ({ onGetVersion }) => {
+  const query = useQuery<VersionData>("version", onGetVersion);
 
   return (
     <Container fluid className="fixed-bottom bg-dark text-light d-none d-sm-block">

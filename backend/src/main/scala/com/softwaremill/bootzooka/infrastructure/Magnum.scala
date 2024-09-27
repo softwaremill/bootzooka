@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import com.augustnagro.magnum.{DbCodec, DbCon, DbTx, Frag}
+import com.augustnagro.magnum.{DbCodec, Frag}
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.util.Strings.*
 

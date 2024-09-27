@@ -6,15 +6,18 @@ import { Link } from "react-router-dom";
 import { BiPowerOff, BiHappy } from "react-icons/bi";
 import { UserContext } from "contexts";
 import { useMutation } from "react-query";
-import { userService } from "../../services";
 
-export const Top: React.FC = () => {
+type Props = {
+  onLogout(apiKey: string): Promise<void>;
+};
+
+export const Top: React.FC<Props> = ({ onLogout }) => {
   const {
     state: { user, loggedIn, apiKey },
     dispatch,
   } = React.useContext(UserContext);
 
-  const handleLogOut = useMutation(() => userService.logout(apiKey), {
+  const handleLogOut = useMutation((apiKeyValue: string) => onLogout(apiKeyValue), {
     onSuccess: () => dispatch({ type: "LOG_OUT" }),
   });
 
@@ -34,13 +37,13 @@ export const Top: React.FC = () => {
               Home
             </Nav.Link>
             <div className="flex-grow-1" />
-            {loggedIn ? (
+            {loggedIn && apiKey !== null ? (
               <>
                 <Nav.Link as={Link} to="/profile" className="text-lg-end">
                   <BiHappy />
                   &nbsp;{user?.login}
                 </Nav.Link>{" "}
-                <Nav.Link className="text-lg-end" onClick={() => handleLogOut.mutate()}>
+                <Nav.Link className="text-lg-end" onClick={() => handleLogOut.mutate(apiKey)}>
                   <BiPowerOff />
                   &nbsp;Logout
                 </Nav.Link>

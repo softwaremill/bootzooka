@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { UserContext, UserState } from "contexts";
-import { userService } from "services";
 import { PasswordDetails } from "./PasswordDetails";
 import { renderWithClient } from "tests";
 
@@ -12,7 +11,7 @@ const mockState: UserState = {
 };
 const dispatch = jest.fn();
 
-jest.mock("services");
+const onChangePassword = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -21,7 +20,7 @@ beforeEach(() => {
 test("renders header", () => {
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails />
+      <PasswordDetails onChangePassword={onChangePassword} />
     </UserContext.Provider>,
   );
 
@@ -30,11 +29,11 @@ test("renders header", () => {
 
 test("handles change password success", async () => {
   const apiKey = "test-api-key";
-  (userService.changePassword as jest.Mock).mockResolvedValueOnce({ apiKey });
+  onChangePassword.mockResolvedValueOnce({ apiKey });
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails />
+      <PasswordDetails onChangePassword={onChangePassword} />
     </UserContext.Provider>,
   );
 
@@ -46,7 +45,7 @@ test("handles change password success", async () => {
   await screen.findByRole("success");
   await screen.findByText("Password changed");
 
-  expect(userService.changePassword).toHaveBeenCalledWith("test-api-key", {
+  expect(onChangePassword).toHaveBeenCalledWith("test-api-key", {
     currentPassword: "test-password",
     newPassword: "test-new-password",
   });
@@ -54,11 +53,11 @@ test("handles change password success", async () => {
 });
 
 test("handles change password error", async () => {
-  (userService.changePassword as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
+  onChangePassword.mockRejectedValueOnce(new Error("Test Error"));
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails />
+      <PasswordDetails onChangePassword={onChangePassword} />
     </UserContext.Provider>,
   );
 
@@ -67,7 +66,7 @@ test("handles change password error", async () => {
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
   await userEvent.click(screen.getByText("Update password"));
 
-  expect(userService.changePassword).toHaveBeenCalledWith("test-api-key", {
+  expect(onChangePassword).toHaveBeenCalledWith("test-api-key", {
     currentPassword: "test-password",
     newPassword: "test-new-password",
   });

@@ -13,7 +13,7 @@ java -jar backend/target/scala-VERSION/bootzooka.jar
 
 ## Docker
 
-To build a docker image, run `backend/docker:publishLocal`. This will create the `docker:latest` image.
+To build a docker image, run `backend/Docker/publishLocal`. This will create the `docker:latest` image.
 
 You can test the image by using the provided `docker-compose.yml` file.
 

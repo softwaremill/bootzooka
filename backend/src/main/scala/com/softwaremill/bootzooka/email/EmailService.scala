@@ -6,7 +6,7 @@ import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator
-import ox.{Fork, IO, Ox, discard, forever, fork, sleep}
+import ox.{Fork, Ox, discard, forever, fork, sleep}
 
 import scala.util.control.NonFatal
 
@@ -26,7 +26,7 @@ class EmailService(
     val id = idGenerator.nextId[Email]()
     emailModel.insert(Email(id, data))
 
-  def sendBatch()(using IO): Unit =
+  def sendBatch(): Unit =
     val emails = db.transact(emailModel.find(config.batchSize))
     if emails.nonEmpty then logger.info(s"Sending ${emails.size} emails")
     emails.map(_.data).foreach(emailSender.apply)
@@ -35,7 +35,7 @@ class EmailService(
   /** Starts an asynchronous process which attempts to send batches of emails in defined intervals, as well as updates a metric which holds
     * the size of the email queue.
     */
-  def startProcesses()(using Ox, IO): Unit =
+  def startProcesses()(using Ox): Unit =
     foreverPeriodically("Exception when sending emails") {
       sendBatch()
     }

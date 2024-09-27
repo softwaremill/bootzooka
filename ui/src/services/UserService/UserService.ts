@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig } from "axios";
 import * as Yup from "yup";
-
-const context = "api/v1/user";
+import api from "api-client/apiClient";
+import { Client, Components } from "api-client/openapi.d";
 
 const apiKeySchema = Yup.object().required().shape({
   apiKey: Yup.string().required(),
@@ -13,54 +13,48 @@ const userDetailsSchema = Yup.object().required().shape({
   login: Yup.string().required(),
 });
 
+export type UserDetails = Yup.InferType<typeof userDetailsSchema>;
+
 const emptySchema = Yup.object().required().shape({});
 
-const registerUser = (params: { login: string; email: string; password: string }) =>
-  axios.post(`${context}/register`, params).then(({ data }) => apiKeySchema.validate(data));
+const secureRequest = (apiKey: string): AxiosRequestConfig => ({
+  headers: {
+    Authorization: `Bearer ${apiKey}`,
+  },
+});
 
-const login = (params: { loginOrEmail: string; password: string }) =>
-  axios.post(`${context}/login`, { ...params, apiKeyValidHours: 1 }).then(({ data }) => apiKeySchema.validate(data));
+export const login = (payload: Components.Schemas.LoginIN) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUserLogin(null, { ...payload, apiKeyValidHours: 1 }))
+    .then(({ data }) => apiKeySchema.validate(data));
 
-const logout = (apiKey: string | null) =>
-  _securedRequest(apiKey, {
-    method: "POST",
-    url: `${context}/logout`,
-    data: { apiKey },
-  }).then(({ data }) => emptySchema.validate(data));
+export const register = (payload: Components.Schemas.RegisterIN) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUserRegister(null, payload))
+    .then(({ data }) => apiKeySchema.validate(data));
 
-const getCurrentUser = (apiKey: string | null) =>
-  _securedRequest(apiKey, {
-    method: "GET",
-    url: context,
-  }).then(({ data }) => userDetailsSchema.validate(data));
+export const logout = (apiKey: string) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUserLogout(null, { apiKey }, secureRequest(apiKey)))
+    .then(({ data }) => emptySchema.validate(data).then(() => undefined));
 
-const changeProfileDetails = (apiKey: string | null, params: { email: string; login: string }) =>
-  _securedRequest(apiKey, {
-    method: "POST",
-    url: context,
-    data: params,
-  }).then(({ data }) => emptySchema.validate(data));
+export const getCurrentUser = (apiKey: string) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.getUser(null, null, secureRequest(apiKey)))
+    .then(({ data }) => userDetailsSchema.validate(data));
 
-const changePassword = (apiKey: string | null, params: { currentPassword: string; newPassword: string }) =>
-  _securedRequest(apiKey, {
-    method: "POST",
-    url: `${context}/changepassword`,
-    data: params,
-  }).then(({ data }) => apiKeySchema.validate(data));
+export const changeProfileDetails = (apiKey: string, payload: Components.Schemas.UpdateUserIN) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUser(null, payload, secureRequest(apiKey)))
+    .then(({ data }) => emptySchema.validate(data).then(() => undefined));
 
-const _securedRequest = (apiKey: string | null, config: AxiosRequestConfig) =>
-  axios.request({
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-    ...config,
-  });
-
-export const userService = {
-  registerUser,
-  login,
-  logout,
-  getCurrentUser,
-  changeProfileDetails,
-  changePassword,
-};
+export const changePassword = (apiKey: string, payload: Components.Schemas.ChangePasswordIN) =>
+  api
+    .getClient<Client>()
+    .then((client) => client.postUserChangepassword(null, payload, secureRequest(apiKey)))
+    .then(({ data }) => apiKeySchema.validate(data));

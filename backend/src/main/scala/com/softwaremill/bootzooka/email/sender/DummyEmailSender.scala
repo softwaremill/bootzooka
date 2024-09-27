@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka.email.sender
 
 import com.softwaremill.bootzooka.email.EmailData
 import com.softwaremill.bootzooka.logging.Logging
-import ox.IO
 
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 import scala.jdk.CollectionConverters.*
@@ -12,7 +11,7 @@ object DummyEmailSender extends EmailSender with Logging:
 
   def reset(): Unit = sentEmails.clear()
 
-  override def apply(email: EmailData)(using IO): Unit =
+  override def apply(email: EmailData): Unit =
     sentEmails.put(email)
     logger.info(s"Would send email, if this wasn't a dummy email service implementation: $email")
 
