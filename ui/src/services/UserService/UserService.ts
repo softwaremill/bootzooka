@@ -3,11 +3,11 @@ import * as Yup from "yup";
 import api from "api-client/apiClient";
 import { Client, Components } from "api-client/openapi.d";
 
-const apiKeySchema = Yup.object().required().shape({
+const apiKeySchema = Yup.object().shape({
   apiKey: Yup.string().required(),
 });
 
-const userDetailsSchema = Yup.object().required().shape({
+const userDetailsSchema = Yup.object().shape({
   createdOn: Yup.string().required(),
   email: Yup.string().required(),
   login: Yup.string().required(),
@@ -15,7 +15,7 @@ const userDetailsSchema = Yup.object().required().shape({
 
 export type UserDetails = Yup.InferType<typeof userDetailsSchema>;
 
-const emptySchema = Yup.object().required().shape({});
+const emptySchema = Yup.object().shape({});
 
 const secureRequest = (apiKey: string): AxiosRequestConfig => ({
   headers: {
@@ -23,38 +23,48 @@ const secureRequest = (apiKey: string): AxiosRequestConfig => ({
   },
 });
 
+const handleRequest = async <T>(
+  requestFn: (client: Client) => Promise<T>,
+  schema: Yup.ObjectSchema<any>
+) => {
+  try {
+    const client = await api.getClient<Client>();
+    const response = await requestFn(client);
+
+    const responseData = (response as any)?.data ?? response;
+    return schema.validate(responseData);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const postRequest = <T>(
+  endpointFn: (client: Client, data: any, config?: AxiosRequestConfig) => Promise<T>,
+  apiKey: string | null,
+  payload: any,
+  schema: Yup.ObjectSchema<any>
+) => handleRequest((client) => endpointFn(client, payload, apiKey ? secureRequest(apiKey) : undefined), schema);
+
+const getRequest = <T>(
+  endpointFn: (client: Client, config?: AxiosRequestConfig) => Promise<T>,
+  apiKey: string,
+  schema: Yup.ObjectSchema<any>
+) => handleRequest((client) => endpointFn(client, secureRequest(apiKey)), schema);
+
 export const login = (payload: Components.Schemas.LoginIN) =>
-  api
-    .getClient<Client>()
-    .then((client) => client.postUserLogin(null, { ...payload, apiKeyValidHours: 1 }))
-    .then(({ data }) => apiKeySchema.validate(data));
+  postRequest((client, data) => client.postUserLogin(null, { ...data, apiKeyValidHours: 1 }), null, payload, apiKeySchema);
 
 export const register = (payload: Components.Schemas.RegisterIN) =>
-  api
-    .getClient<Client>()
-    .then((client) => client.postUserRegister(null, payload))
-    .then(({ data }) => apiKeySchema.validate(data));
+  postRequest((client, data) => client.postUserRegister(null, data), null, payload, apiKeySchema);
 
 export const logout = (apiKey: string) =>
-  api
-    .getClient<Client>()
-    .then((client) => client.postUserLogout(null, { apiKey }, secureRequest(apiKey)))
-    .then(({ data }) => emptySchema.validate(data).then(() => undefined));
+  postRequest((client, data) => client.postUserLogout(null, data), apiKey, { apiKey }, emptySchema);
 
 export const getCurrentUser = (apiKey: string) =>
-  api
-    .getClient<Client>()
-    .then((client) => client.getUser(null, null, secureRequest(apiKey)))
-    .then(({ data }) => userDetailsSchema.validate(data));
+  getRequest((client) => client.getUser(null, null), apiKey, userDetailsSchema);
 
 export const changeProfileDetails = (apiKey: string, payload: Components.Schemas.UpdateUserIN) =>
-  api
-    .getClient<Client>()
-    .then((client) => client.postUser(null, payload, secureRequest(apiKey)))
-    .then(({ data }) => emptySchema.validate(data).then(() => undefined));
+  postRequest((client, data) => client.postUser(null, data), apiKey, payload, emptySchema);
 
 export const changePassword = (apiKey: string, payload: Components.Schemas.ChangePasswordIN) =>
-  api
-    .getClient<Client>()
-    .then((client) => client.postUserChangepassword(null, payload, secureRequest(apiKey)))
-    .then(({ data }) => apiKeySchema.validate(data));
+  postRequest((client, data) => client.postUserChangepassword(null, data), apiKey, payload, apiKeySchema);
