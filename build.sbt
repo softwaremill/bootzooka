@@ -12,7 +12,7 @@ import complete.DefaultParsers._
 
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.10.0"
-val tapirVersion = "1.11.4"
+val tapirVersion = "1.11.5"
 val oxVersion = "0.3.9"
 
 val dbDependencies = Seq(
