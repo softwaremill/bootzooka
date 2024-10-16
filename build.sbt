@@ -43,7 +43,7 @@ val jsonDependencies = Seq(
 )
 
 val loggingDependencies = Seq(
-  "ch.qos.logback" % "logback-classic" % "1.5.10",
+  "ch.qos.logback" % "logback-classic" % "1.5.11",
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
