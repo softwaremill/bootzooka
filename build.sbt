@@ -13,7 +13,7 @@ import complete.DefaultParsers._
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.10.1"
 val tapirVersion = "1.11.4"
-val oxVersion = "0.3.9"
+val oxVersion = "0.5.5"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.0",
