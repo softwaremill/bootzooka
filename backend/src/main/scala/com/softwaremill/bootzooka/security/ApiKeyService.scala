@@ -26,4 +26,3 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
   def invalidateAllForUser(userId: Id[User])(using DbTx): Unit =
     logger.debug(s"Invalidating all api keys for user $userId")
     apiKeyModel.deleteAllForUser(userId)
-

@@ -27,7 +27,7 @@ class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
   /** Runs `f` in a transaction. The transaction is commited if the result is a [[Right]], and rolled back otherwise. */
   def transactEither[E, T](f: DbTx ?=> Either[E, T])(using IO): Either[E, T] =
     try com.augustnagro.magnum.transact(transactor)(Right(f.fold(e => throw LeftException(e), identity)))
-    catch case e: LeftException[E] => Left(e.left)
+    catch case e: LeftException[?] => Left(e.asInstanceOf[LeftException[E]].left)
 
   /** Runs `f` in a transaction. The result cannot be an `Either`, as then [[transactEither]] should be used. The transaction is commited if
     * no exception is thrown.
