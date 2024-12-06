@@ -15,8 +15,8 @@ class UserModel:
   private val userRepo = Repo[User, User, Id[User]]
   private val u = TableInfo[User, User, Id[User]]
 
-  def insert(user: User)(using DbTx): Unit = userRepo.insert(user)
-  def findById(id: Id[User])(using DbTx): Option[User] = userRepo.findById(id)
+  export userRepo.{insert, findById}
+
   def findByEmail(email: LowerCased)(using DbTx): Option[User] = findBy(
     Spec[User].where(sql"${u.emailLowerCase} = $email")
   )

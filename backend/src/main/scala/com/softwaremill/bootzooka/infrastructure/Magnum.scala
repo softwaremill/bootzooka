@@ -15,27 +15,4 @@ object Magnum extends Logging:
   given DbCodec[LowerCased] = DbCodec.StringCodec.biMap(_.toLowerCased, _.toString)
 
   // proxies to the magnum functions/types, so that we can have only one import
-  export com.augustnagro.magnum.sql
-  type DbTx = com.augustnagro.magnum.DbTx
-  type DbCon = com.augustnagro.magnum.DbCon
-  type DbCodec[E] = com.augustnagro.magnum.DbCodec[E]
-
-  /** Logs the SQL queries which are slow or end up in an exception. */
-  // TODO: https://github.com/AugustNagro/magnum/issues/32
-// private val SlowThreshold = 200.millis
-//  implicit def doobieLogHandler[M[_]: Sync]: LogHandler[M] = new LogHandler[M] {
-//    override def run(logEvent: LogEvent): M[Unit] = Sync[M].delay(
-//      logEvent match {
-//        case Success(sql, _, _, exec, processing) =>
-//          if (exec > SlowThreshold || processing > SlowThreshold) {
-//            logger.warn(s"Slow query (execution: $exec, processing: $processing): $sql")
-//          }
-//
-//        case ProcessingFailure(sql, args, _, exec, processing, failure) =>
-//          logger.error(s"Processing failure (execution: $exec, processing: $processing): $sql | args: $args", failure)
-//
-//        case ExecFailure(sql, args, _, exec, failure) =>
-//          logger.error(s"Execution failure (execution: $exec): $sql | args: $args", failure)
-//      }
-//    )
-//  }
+  export com.augustnagro.magnum.{sql, DbTx, DbCon, DbCodec}

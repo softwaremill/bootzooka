@@ -16,7 +16,7 @@ val tapirVersion = "1.11.4"
 val oxVersion = "0.3.9"
 
 val dbDependencies = Seq(
-  "com.augustnagro" %% "magnum" % "1.3.0",
+  "com.augustnagro" %% "magnum" % "1.3.1",
   "org.postgresql" % "postgresql" % "42.7.4",
   "com.zaxxer" % "HikariCP" % "6.0.0",
   "org.flywaydb" % "flyway-database-postgresql" % "10.20.0"
@@ -45,6 +45,7 @@ val jsonDependencies = Seq(
 val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.11",
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
+  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.7" % Runtime,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
 )
