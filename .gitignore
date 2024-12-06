@@ -9,3 +9,6 @@ data/
 *.bloop
 *.metals
 .bsp
+
+metals.sbt
+.vscode
