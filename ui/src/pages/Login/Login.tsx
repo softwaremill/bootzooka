@@ -6,8 +6,8 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import { useMutation } from "react-query";
-import { Components } from "../../api-client/openapi";
+import { useMutation } from "@tanstack/react-query";
+import {usePostUserLogin} from "../../api/apiComponents";
 
 const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),
@@ -16,11 +16,9 @@ const validationSchema = Yup.object({
 
 export type LoginParams = Yup.InferType<typeof validationSchema>;
 
-type Props = {
-  onLogin(payload: Components.Schemas.LoginIN): Promise<{ apiKey: string }>;
-};
+type Props = {};
 
-export const Login: React.FC<Props> = ({ onLogin }) => {
+export const Login: React.FC<Props> = ({}) => {
   const {
     dispatch,
     state: { loggedIn },
@@ -28,9 +26,9 @@ export const Login: React.FC<Props> = ({ onLogin }) => {
 
   const navigate = useNavigate();
 
-  const mutation = useMutation(onLogin, {
-    onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
-  });
+  const mutation = usePostUserLogin();
+  const login = mutation.mutateAsync;
+
 
   useEffect(() => {
     if (loggedIn) navigate("/main");
@@ -44,7 +42,7 @@ export const Login: React.FC<Props> = ({ onLogin }) => {
           loginOrEmail: "",
           password: "",
         }}
-        onSubmit={(values) => mutation.mutate(values)}
+        onSubmit={(values) => login({body: values})}
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>

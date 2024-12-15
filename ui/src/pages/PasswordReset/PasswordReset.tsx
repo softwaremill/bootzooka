@@ -7,29 +7,21 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { FormikInput, FeedbackButton } from "components";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
+import {usePostPasswordresetReset} from "../../api/apiComponents";
 
 const validationSchema = Yup.object({
+  code: Yup.string().required("Required"),
   password: Yup.string().min(3, "At least 3 characters required").required("Required"),
-  repeatedPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Required"),
 });
 
 type PasswordResetParams = Yup.InferType<typeof validationSchema>;
 
-export type PasswordResetRequestParams = {
-  code: string;
-  password: string;
-};
+type Props = {};
 
-type Props = {
-  onPasswordReset(params: PasswordResetRequestParams): Promise<void>;
-};
-
-export const PasswordReset: React.FC<Props> = ({ onPasswordReset }) => {
+export const PasswordReset: React.FC<Props> = () => {
   const code = new URLSearchParams(window.location.search).get("code") || "";
-  const mutation = useMutation(({ password }: PasswordResetParams) => onPasswordReset({ password, code }));
+  const mutation = usePostPasswordresetReset()
 
   return (
     <Container className="py-5">
@@ -38,10 +30,10 @@ export const PasswordReset: React.FC<Props> = ({ onPasswordReset }) => {
           <h3>Password details</h3>
           <Formik<PasswordResetParams>
             initialValues={{
+              code: "",
               password: "",
-              repeatedPassword: "",
             }}
-            onSubmit={(values) => mutation.mutate(values)}
+            onSubmit={(values) => mutation.mutate({body: values})}
             validationSchema={validationSchema}
           >
             <Form as={FormikForm}>

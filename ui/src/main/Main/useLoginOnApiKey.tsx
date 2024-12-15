@@ -1,20 +1,15 @@
 import React from "react";
 import { UserContext } from "contexts";
-import { UserDetails } from "services";
+import {useGetUser} from "../../api/apiComponents";
 
-const useLoginOnApiKey = (getCurrentUser: (apiKey: string) => Promise<UserDetails>) => {
+const useLoginOnApiKey = () => {
   const {
     dispatch,
     state: { apiKey },
   } = React.useContext(UserContext);
 
-  React.useEffect(() => {
-    if (!apiKey) return;
+  const {} = useGetUser({});
 
-    getCurrentUser(apiKey)
-      .then((user) => dispatch({ type: "LOG_IN", user }))
-      .catch(() => dispatch({ type: "LOG_OUT" }));
-  }, [apiKey, dispatch, getCurrentUser]);
 };
 
 export default useLoginOnApiKey;

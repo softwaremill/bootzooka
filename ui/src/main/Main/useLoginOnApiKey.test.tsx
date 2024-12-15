@@ -9,7 +9,7 @@ const getCurrentUser = jest.fn();
 
 const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({ actions, label }) => {
   const { state, dispatch } = React.useContext(UserContext);
-  useLoginOnApiKey(getCurrentUser);
+  useLoginOnApiKey();
   return (
     <>
       <div>

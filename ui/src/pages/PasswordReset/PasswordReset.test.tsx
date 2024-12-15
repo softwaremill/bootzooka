@@ -10,7 +10,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  renderWithClient(<PasswordReset onPasswordReset={onPasswordReset} />);
+  renderWithClient(<PasswordReset />);
 
   expect(screen.getByText("Password details")).toBeInTheDocument();
 });
@@ -20,7 +20,7 @@ test("handles password reset success", async () => {
   (window as any).location = new URL("https://www.example.com/password-reset?code=test-code");
   onPasswordReset.mockResolvedValueOnce({});
 
-  renderWithClient(<PasswordReset onPasswordReset={onPasswordReset} />);
+  renderWithClient(<PasswordReset />);
 
   await userEvent.type(screen.getByLabelText("New password"), "test-new-password");
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
@@ -37,7 +37,7 @@ test("handles lack of url code", async () => {
   (window as any).location = new URL("https://www.example.com/password-reset");
   onPasswordReset.mockResolvedValueOnce({});
 
-  renderWithClient(<PasswordReset onPasswordReset={onPasswordReset} />);
+  renderWithClient(<PasswordReset />);
 
   await userEvent.type(screen.getByLabelText("New password"), "test-new-password");
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
@@ -51,7 +51,7 @@ test("handles password reset error", async () => {
   (window as any).location = new URL("https://www.example.com/password-reset?code=test-code");
   onPasswordReset.mockRejectedValueOnce(new Error("Test Error"));
 
-  renderWithClient(<PasswordReset onPasswordReset={onPasswordReset} />);
+  renderWithClient(<PasswordReset />);
 
   await userEvent.type(screen.getByLabelText("New password"), "test-new-password");
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");

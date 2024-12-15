@@ -10,7 +10,7 @@ beforeEach(() => {
 });
 
 test("renders header", () => {
-  renderWithClient(<RecoverLostPassword onClaimPasswordReset={onClaimPasswordReset} />);
+  renderWithClient(<RecoverLostPassword />);
 
   expect(screen.getByText("Recover lost password")).toBeInTheDocument();
 });
@@ -18,7 +18,7 @@ test("renders header", () => {
 test("handles password recover success", async () => {
   onClaimPasswordReset.mockResolvedValueOnce({});
 
-  renderWithClient(<RecoverLostPassword onClaimPasswordReset={onClaimPasswordReset} />);
+  renderWithClient(<RecoverLostPassword />);
 
   await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
   await userEvent.click(screen.getByText("Reset password"));
@@ -32,7 +32,7 @@ test("handles password recover success", async () => {
 test("handles password recover error", async () => {
   onClaimPasswordReset.mockRejectedValueOnce(new Error("Test Error"));
 
-  renderWithClient(<RecoverLostPassword onClaimPasswordReset={onClaimPasswordReset} />);
+  renderWithClient(<RecoverLostPassword />);
 
   await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
   await userEvent.click(screen.getByText("Reset password"));

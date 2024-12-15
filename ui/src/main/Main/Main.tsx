@@ -3,7 +3,6 @@ import useLoginOnApiKey from "./useLoginOnApiKey";
 import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
 import { UserContext } from "contexts";
 import { Top, ForkMe, Routes, Footer, Loader } from "../";
-import { logout, getCurrentUser, getVersion } from "services";
 
 export const Main: React.FC = () => {
   const {
@@ -11,7 +10,7 @@ export const Main: React.FC = () => {
   } = React.useContext(UserContext);
 
   useLocalStoragedApiKey();
-  useLoginOnApiKey(getCurrentUser);
+  useLoginOnApiKey();
 
   if (loggedIn === null) {
     return <Loader />;
@@ -19,11 +18,11 @@ export const Main: React.FC = () => {
 
   return (
     <>
-      <Top onLogout={logout} />
+      <Top />
       <ForkMe>
         <Routes />
       </ForkMe>
-      <Footer onGetVersion={getVersion} />
+      <Footer />
     </>
   );
 };

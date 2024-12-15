@@ -5,21 +5,17 @@ import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 import { BiPowerOff, BiHappy } from "react-icons/bi";
 import { UserContext } from "contexts";
-import { useMutation } from "react-query";
+import {usePostUserLogout} from "../../api/apiComponents";
 
-type Props = {
-  onLogout(apiKey: string): Promise<void>;
-};
+type Props = {};
 
-export const Top: React.FC<Props> = ({ onLogout }) => {
+export const Top: React.FC<Props> = ({}) => {
   const {
     state: { user, loggedIn, apiKey },
     dispatch,
   } = React.useContext(UserContext);
 
-  const handleLogOut = useMutation((apiKeyValue: string) => onLogout(apiKeyValue), {
-    onSuccess: () => dispatch({ type: "LOG_OUT" }),
-  });
+  const {mutateAsync: logout} = usePostUserLogout();
 
   return (
     <Navbar variant="dark" bg="dark" sticky="top" collapseOnSelect expand="lg">
@@ -43,7 +39,7 @@ export const Top: React.FC<Props> = ({ onLogout }) => {
                   <BiHappy />
                   &nbsp;{user?.login}
                 </Nav.Link>{" "}
-                <Nav.Link className="text-lg-end" onClick={() => handleLogOut.mutate(apiKey)}>
+                <Nav.Link className="text-lg-end" onClick={() => logout({body: {apiKey}})}>
                   <BiPowerOff />
                   &nbsp;Logout
                 </Nav.Link>

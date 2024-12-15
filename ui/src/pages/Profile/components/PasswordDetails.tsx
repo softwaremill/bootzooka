@@ -8,7 +8,7 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { FormikInput, FeedbackButton } from "components";
-import { useMutation } from "react-query";
+import {usePostUserChangepassword} from "../../../api/apiComponents";
 
 const validationSchema = Yup.object({
   currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -19,25 +19,16 @@ const validationSchema = Yup.object({
 });
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
-export type ChangePasswordDetailsParams = Omit<PasswordDetailsParams, "repeatedPassword">;
 
-type Props = {
-  onChangePassword(apiKey: string, payload: ChangePasswordDetailsParams): Promise<{ apiKey: string }>;
-};
+type Props = {};
 
-export const PasswordDetails: React.FC<Props> = ({ onChangePassword }) => {
+export const PasswordDetails: React.FC<Props> = ({}) => {
   const {
     state: { apiKey },
     dispatch,
   } = React.useContext(UserContext);
 
-  const mutation = useMutation(
-    ({ values, apiKeyValue }: { values: PasswordDetailsParams; apiKeyValue: string }) =>
-      onChangePassword(apiKeyValue, { currentPassword: values.currentPassword, newPassword: values.newPassword }),
-    {
-      onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
-    },
-  );
+  const mutation = usePostUserChangepassword()
 
   React.useEffect(() => {
     localStorage.setItem("apiKey", apiKey || "");
@@ -56,7 +47,7 @@ export const PasswordDetails: React.FC<Props> = ({ onChangePassword }) => {
                   newPassword: "",
                   repeatedPassword: "",
                 }}
-                onSubmit={(values) => mutation.mutate({ values, apiKeyValue: apiKey })}
+                onSubmit={(values) => mutation.mutate({ body: values })}
                 validationSchema={validationSchema}
               >
                 <Form as={FormikForm}>

@@ -7,6 +7,7 @@
     "node": ">=16"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.62.7",
     "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.2",
@@ -30,11 +31,10 @@
     "react-bootstrap": "^2.9.2",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
-    "react-query": "^3.39.3",
     "react-router-bootstrap": "^0.26.2",
     "react-router-dom": "^6.21.1",
     "react-scripts": "^5.0.1",
-    "typescript": "5.1.6",
+    "typescript": "4.9.5",
     "yup": "^1.3.3"
   },
   "scripts": {
@@ -79,6 +79,8 @@
     ]
   },
   "devDependencies": {
+    "@openapi-codegen/cli": "^2.0.2",
+    "@openapi-codegen/typescript": "^8.0.2",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^8.2.2"
   }

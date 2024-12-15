@@ -20,7 +20,7 @@ beforeEach(() => {
 test("renders current user data", () => {
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-      <ProfileDetails onChangeProfileDetails={onChangeProfileDetails} />
+      <ProfileDetails />
     </UserContext.Provider>,
   );
 
@@ -31,7 +31,7 @@ test("renders current user data", () => {
 test("renders lack of current user data", () => {
   renderWithClient(
     <UserContext.Provider value={{ state: { ...loggedUserState, user: null }, dispatch }}>
-      <ProfileDetails onChangeProfileDetails={onChangeProfileDetails} />
+      <ProfileDetails />
     </UserContext.Provider>,
   );
 
@@ -44,7 +44,7 @@ test("handles change details success", async () => {
 
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-      <ProfileDetails onChangeProfileDetails={onChangeProfileDetails} />
+      <ProfileDetails />
     </UserContext.Provider>,
   );
 
@@ -73,7 +73,7 @@ test("handles change details error", async () => {
 
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-      <ProfileDetails onChangeProfileDetails={onChangeProfileDetails} />
+      <ProfileDetails />
     </UserContext.Provider>,
   );
 

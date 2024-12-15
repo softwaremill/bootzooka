@@ -20,7 +20,7 @@ beforeEach(() => {
 test("renders header", () => {
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails onChangePassword={onChangePassword} />
+      <PasswordDetails />
     </UserContext.Provider>,
   );
 
@@ -33,7 +33,7 @@ test("handles change password success", async () => {
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails onChangePassword={onChangePassword} />
+      <PasswordDetails />
     </UserContext.Provider>,
   );
 
@@ -57,7 +57,7 @@ test("handles change password error", async () => {
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails onChangePassword={onChangePassword} />
+      <PasswordDetails />
     </UserContext.Provider>,
   );
 

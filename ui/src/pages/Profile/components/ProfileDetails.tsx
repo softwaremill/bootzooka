@@ -8,7 +8,8 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { FormikInput, FeedbackButton } from "components";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
+import {usePostUser} from "../../../api/apiComponents";
 
 const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -17,25 +18,15 @@ const validationSchema = Yup.object({
 
 export type ProfileDetailsParams = Yup.InferType<typeof validationSchema>;
 
-type Props = {
-  onChangeProfileDetails(apiKey: string, payload: ProfileDetailsParams): Promise<void>;
-};
+type Props = {};
 
-export const ProfileDetails: React.FC<Props> = ({ onChangeProfileDetails }) => {
+export const ProfileDetails: React.FC<Props> = ({}) => {
   const {
     dispatch,
     state: { apiKey, user },
   } = React.useContext(UserContext);
 
-  const mutation = useMutation(
-    ({ values, apiKeyValue }: { values: ProfileDetailsParams; apiKeyValue: string }) =>
-      onChangeProfileDetails(apiKeyValue, values),
-    {
-      onSuccess: (_, { values }) => {
-        dispatch({ type: "UPDATE_USER_DATA", user: values });
-      },
-    },
-  );
+  const mutation = usePostUser();
 
   return (
     <Container className="py-5">
@@ -49,7 +40,7 @@ export const ProfileDetails: React.FC<Props> = ({ onChangeProfileDetails }) => {
                   login: user?.login || "",
                   email: user?.email || "",
                 }}
-                onSubmit={(values) => mutation.mutate({ values, apiKeyValue: apiKey })}
+                onSubmit={(values) => mutation.mutate({ body: values })}
                 validationSchema={validationSchema}
               >
                 <Form as={FormikForm}>

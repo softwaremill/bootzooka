@@ -23,7 +23,7 @@ test("renders brand name", () => {
   renderWithClient(
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
-        <Top onLogout={onLogout} />
+        <Top />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -35,7 +35,7 @@ test("renders nav bar unlogged user", () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
-        <Top onLogout={onLogout} />
+        <Top />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -50,7 +50,7 @@ test("renders nav bar for logged user", () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-        <Top onLogout={onLogout} />
+        <Top />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -67,7 +67,7 @@ test("handles logout logged user", async () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-        <Top onLogout={onLogout} />
+        <Top />
       </UserContext.Provider>
     </MemoryRouter>,
   );

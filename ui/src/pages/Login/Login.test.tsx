@@ -19,7 +19,7 @@ test("renders header", () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login onLogin={onLogin} />
+        <Login />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -31,7 +31,7 @@ test("redirects when logged in", () => {
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
-        <Login onLogin={onLogin} />
+        <Login />
       </UserContext.Provider>
     </HistoryRouter>,
   );
@@ -45,7 +45,7 @@ test("handles login success", async () => {
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login onLogin={onLogin} />
+        <Login />
       </UserContext.Provider>
     </HistoryRouter>,
   );
@@ -66,7 +66,7 @@ test("handles login error", async () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Login onLogin={onLogin} />
+        <Login />
       </UserContext.Provider>
     </MemoryRouter>,
   );

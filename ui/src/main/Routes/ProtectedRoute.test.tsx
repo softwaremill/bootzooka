@@ -18,7 +18,7 @@ test("renders protected route for unlogged user", () => {
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes>
-          <Route path="/login" element={<Login onLogin={onLogin} />} />
+          <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoute />}>
             <Route index element={<>Protected Text</>} />
           </Route>
@@ -40,7 +40,7 @@ test("renders protected route for logged user", () => {
     <MemoryRouter initialEntries={[""]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes>
-          <Route path="/login" element={<Login onLogin={onLogin} />} />
+          <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoute />}>
             <Route index element={<>Protected Text</>} />
           </Route>

@@ -19,7 +19,7 @@ test("renders header", () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Register onRegisterUser={onRegisterUser} />
+        <Register />
       </UserContext.Provider>
     </MemoryRouter>,
   );
@@ -31,7 +31,7 @@ test("redirects when registered", () => {
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
-        <Register onRegisterUser={onRegisterUser} />
+        <Register />
       </UserContext.Provider>
     </HistoryRouter>,
   );
@@ -45,7 +45,7 @@ test("handles register success", async () => {
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Register onRegisterUser={onRegisterUser} />
+        <Register />
       </UserContext.Provider>
     </HistoryRouter>,
   );
@@ -73,7 +73,7 @@ test("handles register error", async () => {
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
-        <Register onRegisterUser={onRegisterUser} />
+        <Register />
       </UserContext.Provider>
     </MemoryRouter>,
   );

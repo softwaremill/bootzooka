@@ -11,7 +11,7 @@ beforeEach(() => {
 test("renders version data", async () => {
   onGetVersion.mockResolvedValueOnce({ buildDate: "testDate", buildSha: "testSha" });
 
-  renderWithClient(<Footer onGetVersion={onGetVersion} />);
+  renderWithClient(<Footer />);
 
   const info = screen.getByText(/Bootzooka - application scaffolding by /);
 
