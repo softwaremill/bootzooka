@@ -56,7 +56,7 @@ val configDependencies = Seq(
 
 val baseDependencies = Seq(
   "com.softwaremill.ox" %% "core" % oxVersion,
-  "com.softwaremill.quicklens" %% "quicklens" % "1.9.9"
+  "com.softwaremill.quicklens" %% "quicklens" % "1.9.11"
 )
 
 val apiDocsDependencies = Seq(
