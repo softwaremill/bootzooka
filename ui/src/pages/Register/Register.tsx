@@ -6,8 +6,6 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import { useMutation } from "@tanstack/react-query";
-import { Components } from "../../api-client/openapi";
 import {usePostUserRegister} from "../../api/apiComponents";
 
 const validationSchema = Yup.object({
@@ -32,6 +30,14 @@ export const Register: React.FC<Props> = ({}) => {
   const navigate = useNavigate();
 
   const mutation = usePostUserRegister();
+  const { isSuccess, data } = mutation;
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      const {apiKey} = data;
+      dispatch({ type: "SET_API_KEY", apiKey });
+    }
+  }, [isSuccess, dispatch]);
 
   React.useEffect(() => {
     if (loggedIn) navigate("/main");

@@ -30,6 +30,7 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
     case "SET_API_KEY":
       return produce(state, (draftState) => {
         draftState.apiKey = action.apiKey;
+        draftState.loggedIn = action.apiKey !== null;
       });
 
     case "UPDATE_USER_DATA":

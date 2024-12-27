@@ -7,7 +7,6 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { FormikInput, FeedbackButton } from "components";
-import { useMutation } from "@tanstack/react-query";
 import {usePostPasswordresetReset} from "../../api/apiComponents";
 
 const validationSchema = Yup.object({
@@ -20,7 +19,6 @@ type PasswordResetParams = Yup.InferType<typeof validationSchema>;
 type Props = {};
 
 export const PasswordReset: React.FC<Props> = () => {
-  const code = new URLSearchParams(window.location.search).get("code") || "";
   const mutation = usePostPasswordresetReset()
 
   return (

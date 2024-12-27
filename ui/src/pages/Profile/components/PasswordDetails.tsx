@@ -6,9 +6,9 @@ import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { UserContext } from "contexts";
+import {UserAction, UserContext} from "contexts";
 import { FormikInput, FeedbackButton } from "components";
-import {usePostUserChangepassword} from "../../../api/apiComponents";
+import  {usePostUserChangepassword } from "../../../api/apiComponents";
 
 const validationSchema = Yup.object({
   currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -24,15 +24,19 @@ type Props = {};
 
 export const PasswordDetails: React.FC<Props> = ({}) => {
   const {
-    state: { apiKey },
+    state: { user, loggedIn, apiKey },
     dispatch,
   } = React.useContext(UserContext);
 
   const mutation = usePostUserChangepassword()
+  const { isSuccess, data } = mutation;
 
   React.useEffect(() => {
-    localStorage.setItem("apiKey", apiKey || "");
-  }, [apiKey]);
+    console.log("PasswordDetails: apiKey", data?.apiKey);
+    if (isSuccess) {
+      dispatch({ type: "SET_API_KEY", apiKey: data.apiKey });
+    }
+  }, [isSuccess, data]);
 
   return (
     <Container className="py-5">

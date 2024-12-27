@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
@@ -15,7 +15,13 @@ export const Top: React.FC<Props> = ({}) => {
     dispatch,
   } = React.useContext(UserContext);
 
-  const {mutateAsync: logout} = usePostUserLogout();
+  const {mutateAsync: logout, isSuccess} = usePostUserLogout();
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch({ type: "LOG_OUT" });
+    }
+  }, [isSuccess, dispatch]);
 
   return (
     <Navbar variant="dark" bg="dark" sticky="top" collapseOnSelect expand="lg">

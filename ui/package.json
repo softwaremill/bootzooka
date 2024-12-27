@@ -45,7 +45,7 @@
     "test:ci": "CI=true react-scripts test --maxWorkers 2",
     "lint": "eslint --ext .ts,.tsx . && prettier --write ./src",
     "eject": "react-scripts eject",
-    "generate:openapi-types": "npx openapicmd typegen ../backend/target/openapi.yaml > src/api-client/openapi.d.ts",
+    "generate:openapi-types": "npx openapi-codegen gen apiWeb",
     "watch:openapi": "chokidar '../backend/target/openapi.yaml' -c 'yarn generate:openapi-types'",
     "start:frontend": "yarn start"
   },

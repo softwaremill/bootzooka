@@ -1,6 +1,6 @@
 import { ApiContext } from "./apiContext";
 
-const baseUrl = ""; // TODO add your baseUrl
+const baseUrl = process.env.BASE_URL;
 
 export type ErrorWrapper<TError> =
   | TError
@@ -42,6 +42,10 @@ export async function apiFetch<
       "Content-Type": "application/json",
       ...headers,
     };
+
+    if (localStorage.getItem("apiKey")) {
+      requestHeaders["Authorization"] = `Bearer ${localStorage.getItem("apiKey")}`;
+    }
 
     /**
      * As the fetch API is being used, when multipart/form-data is specified

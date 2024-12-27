@@ -8,7 +8,6 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { FormikInput, FeedbackButton } from "components";
-import { useMutation } from "@tanstack/react-query";
 import {usePostUser} from "../../../api/apiComponents";
 
 const validationSchema = Yup.object({
@@ -27,6 +26,13 @@ export const ProfileDetails: React.FC<Props> = ({}) => {
   } = React.useContext(UserContext);
 
   const mutation = usePostUser();
+  const { data, isSuccess } = mutation;
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      dispatch({type: "UPDATE_USER_DATA", user: data});
+    }
+  }, [isSuccess, dispatch]);
 
   return (
     <Container className="py-5">
