@@ -21,9 +21,9 @@ And on the frontend:
 * [react](https://reactjs.org)
 * [Swagger](https://swagger.io) (interactive API docs)
 * [yarn](https://yarnpkg.com) (build tool)
-* [openapi-client-axios](https://www.npmjs.com/package/openapi-client-axios) (JS library for consuming OpenAPI-enabled APIs)
 * [formik](https://formik.org/) (forms)
 * [yup](https://www.npmjs.com/package/yup/v/1.3.3) (validation)
+* [openapi-codegen](https://github.com/fabien0102/openapi-codegen) (generate ui functions from OpenAPI specifications)
 
 ### Why Scala?
 
@@ -47,6 +47,6 @@ Tapir defines a programmer-friendly API for describing HTTP endpoints which can 
 
 To put it simply, [SBT](https://www.scala-sbt.org) is the build tool of choice for Scala, yarn - for JavaScript.
 
-### Why openapi-client-axios?
+### Why openapi-codegen?
 
-It's a simple and easy-to-use JS library that generates API clients based on the OpenAPI specification with axios. It simplifies client-side development, comparing to OpenAPI which is more versatile and foundational but requires additional tooling to provide similar functionality.
+This library is designed to generate TypeScript code from OpenAPI specifications, facilitating type-safe interactions with APIs in frontend applications. Codegen generates TypeScript types based on the OpenAPI schemas, ensuring that the data structures used in the application are type-safe and aligned with the API specifications. It also generates hooks for React Query and creates functions that can make requests to APIs while maintaining type safety, which helps prevent runtime errors due to type mismatches.
