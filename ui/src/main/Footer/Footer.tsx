@@ -10,6 +10,7 @@ type Props = {};
 export const Footer: React.FC<Props> = ({}) => {
   const mutation = useGetAdminVersion({});
 
+
   return (
     <Container fluid className="fixed-bottom bg-dark text-light d-none d-sm-block">
       <Container>

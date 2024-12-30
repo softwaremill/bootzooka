@@ -1,6 +1,6 @@
 import { ApiContext } from "./apiContext";
 
-const baseUrl = process.env.BASE_URL;
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export type ErrorWrapper<TError> =
   | TError
@@ -43,8 +43,8 @@ export async function apiFetch<
       ...headers,
     };
 
-    if (localStorage.getItem("apiKey")) {
-      requestHeaders["Authorization"] = `Bearer ${localStorage.getItem("apiKey")}`;
+    if (!requestHeaders.Authorization && localStorage.getItem("apiKey")) {
+      requestHeaders.Authorization = `Bearer ${localStorage.getItem("apiKey")}`;
     }
 
     /**

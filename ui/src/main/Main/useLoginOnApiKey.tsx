@@ -9,18 +9,26 @@ const useLoginOnApiKey = () => {
   } = React.useContext(UserContext);
 
 
-  const { data } = useGetUser({} );
+  const { data, refetch } = useGetUser({headers: {Authorization: `Bearer ${apiKey}` }}, {retry: 1});
 
   useEffect(() => {
     if (!apiKey) return;
 
-    if (data) {
-      dispatch({ type: "LOG_IN", user: data });
-    }
-    // else {
-    //   dispatch({type: "LOG_OUT"});
-    // }
-  }, [apiKey, data, dispatch]);
+    refetch()
+    .then(
+      (response) => {
+        if (response.data) {
+          dispatch({ type: "LOG_IN", user: response.data });
+        }
+        else {
+          dispatch({type: "LOG_OUT"});
+        }
+      })
+    .catch((error) => {
+      dispatch({type: "LOG_OUT"});
+    })
+
+  }, [apiKey, dispatch]);
 
 };
 

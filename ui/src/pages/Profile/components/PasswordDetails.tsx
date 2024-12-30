@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import {UserAction, UserContext} from "contexts";
+import { UserContext} from "contexts";
 import { FormikInput, FeedbackButton } from "components";
 import  {usePostUserChangepassword } from "../../../api/apiComponents";
 
@@ -32,11 +32,15 @@ export const PasswordDetails: React.FC<Props> = ({}) => {
   const { isSuccess, data } = mutation;
 
   React.useEffect(() => {
-    console.log("PasswordDetails: apiKey", data?.apiKey);
     if (isSuccess) {
-      dispatch({ type: "SET_API_KEY", apiKey: data.apiKey });
+      const { apiKey } = data;
+      dispatch({ type: "SET_API_KEY", apiKey });
     }
   }, [isSuccess, data]);
+
+  React.useEffect(() => {
+    localStorage.setItem("apiKey", apiKey || "");
+  }, [apiKey]);
 
   return (
     <Container className="py-5">
