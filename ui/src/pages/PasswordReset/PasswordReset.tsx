@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { FormikInput, FeedbackButton } from "components";
-import { usePostPasswordresetReset } from "../../api/apiComponents";
+import { usePostPasswordresetReset } from "api/apiComponents";
 
 const validationSchema = Yup.object({
   code: Yup.string().required("Required"),

@@ -8,7 +8,8 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { FormikInput, FeedbackButton } from "components";
-import { usePostUserChangepassword } from "../../../api/apiComponents";
+import { usePostUserChangepassword } from "api/apiComponents";
+
 
 const validationSchema = Yup.object({
   currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),

@@ -1,9 +1,9 @@
 import { screen } from "@testing-library/react";
 import { Footer } from "./Footer";
 import { renderWithClient } from "tests";
-import { useGetAdminVersion } from "../../api/apiComponents"; // Import your hook
+import { useGetAdminVersion } from "api/apiComponents";
 
-jest.mock("../../api/apiComponents", () => ({
+jest.mock("api/apiComponents", () => ({
   useGetAdminVersion: jest.fn(),
 }));
 

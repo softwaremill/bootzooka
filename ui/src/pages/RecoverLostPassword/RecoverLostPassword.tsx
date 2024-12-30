@@ -4,7 +4,7 @@ import { BiReset } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import { usePostPasswordresetForgot } from "../../api/apiComponents";
+import { usePostPasswordresetForgot } from "api/apiComponents";
 
 const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),

@@ -6,7 +6,7 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import { usePostUserLogin } from "../../api/apiComponents";
+import { usePostUserLogin } from "api/apiComponents";
 
 const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),

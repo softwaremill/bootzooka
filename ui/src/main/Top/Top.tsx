@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 import { BiPowerOff, BiHappy } from "react-icons/bi";
 import { UserContext } from "contexts";
-import { usePostUserLogout } from "../../api/apiComponents";
+import { usePostUserLogout } from "api/apiComponents";
 
 type Props = {};
 

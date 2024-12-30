@@ -6,7 +6,7 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import { usePostUserRegister } from "../../api/apiComponents";
+import { usePostUserRegister } from "api/apiComponents";
 
 const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
