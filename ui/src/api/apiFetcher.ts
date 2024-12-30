@@ -2,9 +2,7 @@ import { ApiContext } from "./apiContext";
 
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
-export type ErrorWrapper<TError> =
-  | TError
-  | { status: "unknown"; payload: string };
+export type ErrorWrapper<TError> = TError | { status: "unknown"; payload: string };
 
 export type ApiFetcherOptions<TBody, THeaders, TQueryParams, TPathParams> = {
   url: string;
@@ -31,12 +29,7 @@ export async function apiFetch<
   pathParams,
   queryParams,
   signal,
-}: ApiFetcherOptions<
-  TBody,
-  THeaders,
-  TQueryParams,
-  TPathParams
->): Promise<TData> {
+}: ApiFetcherOptions<TBody, THeaders, TQueryParams, TPathParams>): Promise<TData> {
   try {
     const requestHeaders: HeadersInit = {
       "Content-Type": "application/json",
@@ -53,27 +46,16 @@ export async function apiFetch<
      * the correct boundary.
      * https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects#sending_files_using_a_formdata_object
      */
-    if (
-      requestHeaders["Content-Type"]
-        .toLowerCase()
-        .includes("multipart/form-data")
-    ) {
+    if (requestHeaders["Content-Type"].toLowerCase().includes("multipart/form-data")) {
       delete requestHeaders["Content-Type"];
     }
 
-    const response = await window.fetch(
-      `${baseUrl}${resolveUrl(url, queryParams, pathParams)}`,
-      {
-        signal,
-        method: method.toUpperCase(),
-        body: body
-          ? body instanceof FormData
-            ? body
-            : JSON.stringify(body)
-          : undefined,
-        headers: requestHeaders,
-      },
-    );
+    const response = await window.fetch(`${baseUrl}${resolveUrl(url, queryParams, pathParams)}`, {
+      signal,
+      method: method.toUpperCase(),
+      body: body ? (body instanceof FormData ? body : JSON.stringify(body)) : undefined,
+      headers: requestHeaders,
+    });
     if (!response.ok) {
       let error: ErrorWrapper<TError>;
       try {
@@ -81,10 +63,7 @@ export async function apiFetch<
       } catch (e) {
         error = {
           status: "unknown" as const,
-          payload:
-            e instanceof Error
-              ? `Unexpected error (${e.message})`
-              : "Unexpected error",
+          payload: e instanceof Error ? `Unexpected error (${e.message})` : "Unexpected error",
         };
       }
 
@@ -100,19 +79,14 @@ export async function apiFetch<
   } catch (e) {
     let errorObject: Error = {
       name: "unknown" as const,
-      message:
-        e instanceof Error ? `Network error (${e.message})` : "Network error",
+      message: e instanceof Error ? `Network error (${e.message})` : "Network error",
       stack: e as string,
     };
     throw errorObject;
   }
 }
 
-const resolveUrl = (
-  url: string,
-  queryParams: Record<string, string> = {},
-  pathParams: Record<string, string> = {},
-) => {
+const resolveUrl = (url: string, queryParams: Record<string, string> = {}, pathParams: Record<string, string> = {}) => {
   let query = new URLSearchParams(queryParams).toString();
   if (query) query = `?${query}`;
   return url.replace(/\{\w*\}/g, (key) => pathParams[key.slice(1, -1)]) + query;

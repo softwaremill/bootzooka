@@ -6,7 +6,7 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import {usePostUserLogin} from "../../api/apiComponents";
+import { usePostUserLogin } from "../../api/apiComponents";
 
 const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),
@@ -31,7 +31,7 @@ export const Login: React.FC<Props> = ({}) => {
 
   useEffect(() => {
     if (isSuccess) {
-      const {apiKey} = data;
+      const { apiKey } = data;
       dispatch({ type: "SET_API_KEY", apiKey });
     }
   }, [isSuccess, dispatch]);
@@ -48,7 +48,7 @@ export const Login: React.FC<Props> = ({}) => {
           loginOrEmail: "",
           password: "",
         }}
-        onSubmit={(values) => login({body: values})}
+        onSubmit={(values) => login({ body: values })}
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>

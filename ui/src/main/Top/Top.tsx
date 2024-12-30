@@ -1,11 +1,11 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 import { BiPowerOff, BiHappy } from "react-icons/bi";
 import { UserContext } from "contexts";
-import {usePostUserLogout} from "../../api/apiComponents";
+import { usePostUserLogout } from "../../api/apiComponents";
 
 type Props = {};
 
@@ -15,7 +15,7 @@ export const Top: React.FC<Props> = ({}) => {
     dispatch,
   } = React.useContext(UserContext);
 
-  const {mutateAsync: logout, isSuccess} = usePostUserLogout();
+  const { mutateAsync: logout, isSuccess } = usePostUserLogout();
 
   useEffect(() => {
     if (isSuccess) {
@@ -45,7 +45,7 @@ export const Top: React.FC<Props> = ({}) => {
                   <BiHappy />
                   &nbsp;{user?.login}
                 </Nav.Link>{" "}
-                <Nav.Link className="text-lg-end" onClick={() => logout({body: {apiKey}})}>
+                <Nav.Link className="text-lg-end" onClick={() => logout({ body: { apiKey } })}>
                   <BiPowerOff />
                   &nbsp;Logout
                 </Nav.Link>

@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { BiArrowFromBottom } from "react-icons/bi";
 import { FormikInput, FeedbackButton } from "components";
-import {usePostPasswordresetReset} from "../../api/apiComponents";
+import { usePostPasswordresetReset } from "../../api/apiComponents";
 
 const validationSchema = Yup.object({
   code: Yup.string().required("Required"),
@@ -19,7 +19,7 @@ type PasswordResetParams = Yup.InferType<typeof validationSchema>;
 type Props = {};
 
 export const PasswordReset: React.FC<Props> = () => {
-  const mutation = usePostPasswordresetReset()
+  const mutation = usePostPasswordresetReset();
 
   return (
     <Container className="py-5">
@@ -31,7 +31,7 @@ export const PasswordReset: React.FC<Props> = () => {
               code: "",
               password: "",
             }}
-            onSubmit={(values) => mutation.mutate({body: values})}
+            onSubmit={(values) => mutation.mutate({ body: values })}
             validationSchema={validationSchema}
           >
             <Form as={FormikForm}>
