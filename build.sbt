@@ -92,7 +92,6 @@ lazy val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI descri
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "3.5.0",
-  libraryDependencies ++= commonDependencies,
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
     streams.value.log("Updating npm/yarn dependencies")
