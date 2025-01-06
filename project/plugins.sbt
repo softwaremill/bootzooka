@@ -6,6 +6,6 @@ addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill-common" % "
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.3.0")
 
-addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.10.4")
+addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.11.0")
 
 addSbtPlugin("com.github.sbt" % "sbt-git" % "2.1.0")
