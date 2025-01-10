@@ -19,23 +19,37 @@ export type PostUserRegisterVariables = {
   body: Schemas.RegisterIN;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPostUserRegister = (variables: PostUserRegisterVariables, signal?: AbortSignal) =>
-  apiFetch<Schemas.RegisterOUT, PostUserRegisterError, Schemas.RegisterIN, {}, {}, {}>({
-    url: "/user/register",
-    method: "post",
-    ...variables,
-    signal,
-  });
+export const fetchPostUserRegister = (
+  variables: PostUserRegisterVariables,
+  signal?: AbortSignal,
+) =>
+  apiFetch<
+    Schemas.RegisterOUT,
+    PostUserRegisterError,
+    Schemas.RegisterIN,
+    {},
+    {},
+    {}
+  >({ url: "/user/register", method: "post", ...variables, signal });
 
 export const usePostUserRegister = (
   options?: Omit<
-    reactQuery.UseMutationOptions<Schemas.RegisterOUT, PostUserRegisterError, PostUserRegisterVariables>,
+    reactQuery.UseMutationOptions<
+      Schemas.RegisterOUT,
+      PostUserRegisterError,
+      PostUserRegisterVariables
+    >,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useApiContext();
-  return reactQuery.useMutation<Schemas.RegisterOUT, PostUserRegisterError, PostUserRegisterVariables>({
-    mutationFn: (variables: PostUserRegisterVariables) => fetchPostUserRegister({ ...fetcherOptions, ...variables }),
+  return reactQuery.useMutation<
+    Schemas.RegisterOUT,
+    PostUserRegisterError,
+    PostUserRegisterVariables
+  >({
+    mutationFn: (variables: PostUserRegisterVariables) =>
+      fetchPostUserRegister({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
@@ -49,7 +63,10 @@ export type PostUserLoginVariables = {
   body: Schemas.LoginIN;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPostUserLogin = (variables: PostUserLoginVariables, signal?: AbortSignal) =>
+export const fetchPostUserLogin = (
+  variables: PostUserLoginVariables,
+  signal?: AbortSignal,
+) =>
   apiFetch<Schemas.LoginOUT, PostUserLoginError, Schemas.LoginIN, {}, {}, {}>({
     url: "/user/login",
     method: "post",
@@ -59,13 +76,22 @@ export const fetchPostUserLogin = (variables: PostUserLoginVariables, signal?: A
 
 export const usePostUserLogin = (
   options?: Omit<
-    reactQuery.UseMutationOptions<Schemas.LoginOUT, PostUserLoginError, PostUserLoginVariables>,
+    reactQuery.UseMutationOptions<
+      Schemas.LoginOUT,
+      PostUserLoginError,
+      PostUserLoginVariables
+    >,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useApiContext();
-  return reactQuery.useMutation<Schemas.LoginOUT, PostUserLoginError, PostUserLoginVariables>({
-    mutationFn: (variables: PostUserLoginVariables) => fetchPostUserLogin({ ...fetcherOptions, ...variables }),
+  return reactQuery.useMutation<
+    Schemas.LoginOUT,
+    PostUserLoginError,
+    PostUserLoginVariables
+  >({
+    mutationFn: (variables: PostUserLoginVariables) =>
+      fetchPostUserLogin({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
@@ -79,23 +105,37 @@ export type PostUserLogoutVariables = {
   body: Schemas.LogoutIN;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPostUserLogout = (variables: PostUserLogoutVariables, signal?: AbortSignal) =>
-  apiFetch<Schemas.LogoutOUT, PostUserLogoutError, Schemas.LogoutIN, {}, {}, {}>({
-    url: "/user/logout",
-    method: "post",
-    ...variables,
-    signal,
-  });
+export const fetchPostUserLogout = (
+  variables: PostUserLogoutVariables,
+  signal?: AbortSignal,
+) =>
+  apiFetch<
+    Schemas.LogoutOUT,
+    PostUserLogoutError,
+    Schemas.LogoutIN,
+    {},
+    {},
+    {}
+  >({ url: "/user/logout", method: "post", ...variables, signal });
 
 export const usePostUserLogout = (
   options?: Omit<
-    reactQuery.UseMutationOptions<Schemas.LogoutOUT, PostUserLogoutError, PostUserLogoutVariables>,
+    reactQuery.UseMutationOptions<
+      Schemas.LogoutOUT,
+      PostUserLogoutError,
+      PostUserLogoutVariables
+    >,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useApiContext();
-  return reactQuery.useMutation<Schemas.LogoutOUT, PostUserLogoutError, PostUserLogoutVariables>({
-    mutationFn: (variables: PostUserLogoutVariables) => fetchPostUserLogout({ ...fetcherOptions, ...variables }),
+  return reactQuery.useMutation<
+    Schemas.LogoutOUT,
+    PostUserLogoutError,
+    PostUserLogoutVariables
+  >({
+    mutationFn: (variables: PostUserLogoutVariables) =>
+      fetchPostUserLogout({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
@@ -109,13 +149,18 @@ export type PostUserChangepasswordVariables = {
   body: Schemas.ChangePasswordIN;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPostUserChangepassword = (variables: PostUserChangepasswordVariables, signal?: AbortSignal) =>
-  apiFetch<Schemas.ChangePasswordOUT, PostUserChangepasswordError, Schemas.ChangePasswordIN, {}, {}, {}>({
-    url: "/user/changepassword",
-    method: "post",
-    ...variables,
-    signal,
-  });
+export const fetchPostUserChangepassword = (
+  variables: PostUserChangepasswordVariables,
+  signal?: AbortSignal,
+) =>
+  apiFetch<
+    Schemas.ChangePasswordOUT,
+    PostUserChangepasswordError,
+    Schemas.ChangePasswordIN,
+    {},
+    {},
+    {}
+  >({ url: "/user/changepassword", method: "post", ...variables, signal });
 
 export const usePostUserChangepassword = (
   options?: Omit<
@@ -146,7 +191,10 @@ export type GetUserError = Fetcher.ErrorWrapper<{
 
 export type GetUserVariables = ApiContext["fetcherOptions"];
 
-export const fetchGetUser = (variables: GetUserVariables, signal?: AbortSignal) =>
+export const fetchGetUser = (
+  variables: GetUserVariables,
+  signal?: AbortSignal,
+) =>
   apiFetch<Schemas.GetUserOUT, GetUserError, undefined, {}, {}, {}>({
     url: "/user",
     method: "get",
@@ -154,7 +202,7 @@ export const fetchGetUser = (variables: GetUserVariables, signal?: AbortSignal) 
     signal,
   });
 
-export const useGetUser = <TData = Schemas.GetUserOUT>(
+export const useGetUser = <TData = Schemas.GetUserOUT,>(
   variables: GetUserVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<Schemas.GetUserOUT, GetUserError, TData>,
@@ -164,7 +212,8 @@ export const useGetUser = <TData = Schemas.GetUserOUT>(
   const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
   return reactQuery.useQuery<Schemas.GetUserOUT, GetUserError, TData>({
     queryKey: queryKeyFn({ path: "/user", operationId: "getUser", variables }),
-    queryFn: ({ signal }) => fetchGetUser({ ...fetcherOptions, ...variables }, signal),
+    queryFn: ({ signal }) =>
+      fetchGetUser({ ...fetcherOptions, ...variables }, signal),
     ...options,
     ...queryOptions,
   });
@@ -179,20 +228,37 @@ export type PostUserVariables = {
   body: Schemas.UpdateUserIN;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPostUser = (variables: PostUserVariables, signal?: AbortSignal) =>
-  apiFetch<Schemas.UpdateUserOUT, PostUserError, Schemas.UpdateUserIN, {}, {}, {}>({
-    url: "/user",
-    method: "post",
-    ...variables,
-    signal,
-  });
+export const fetchPostUser = (
+  variables: PostUserVariables,
+  signal?: AbortSignal,
+) =>
+  apiFetch<
+    Schemas.UpdateUserOUT,
+    PostUserError,
+    Schemas.UpdateUserIN,
+    {},
+    {},
+    {}
+  >({ url: "/user", method: "post", ...variables, signal });
 
 export const usePostUser = (
-  options?: Omit<reactQuery.UseMutationOptions<Schemas.UpdateUserOUT, PostUserError, PostUserVariables>, "mutationFn">,
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.UpdateUserOUT,
+      PostUserError,
+      PostUserVariables
+    >,
+    "mutationFn"
+  >,
 ) => {
   const { fetcherOptions } = useApiContext();
-  return reactQuery.useMutation<Schemas.UpdateUserOUT, PostUserError, PostUserVariables>({
-    mutationFn: (variables: PostUserVariables) => fetchPostUser({ ...fetcherOptions, ...variables }),
+  return reactQuery.useMutation<
+    Schemas.UpdateUserOUT,
+    PostUserError,
+    PostUserVariables
+  >({
+    mutationFn: (variables: PostUserVariables) =>
+      fetchPostUser({ ...fetcherOptions, ...variables }),
     ...options,
   });
 };
@@ -206,13 +272,18 @@ export type PostPasswordresetResetVariables = {
   body: Schemas.PasswordResetIN;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPostPasswordresetReset = (variables: PostPasswordresetResetVariables, signal?: AbortSignal) =>
-  apiFetch<Schemas.PasswordResetOUT, PostPasswordresetResetError, Schemas.PasswordResetIN, {}, {}, {}>({
-    url: "/passwordreset/reset",
-    method: "post",
-    ...variables,
-    signal,
-  });
+export const fetchPostPasswordresetReset = (
+  variables: PostPasswordresetResetVariables,
+  signal?: AbortSignal,
+) =>
+  apiFetch<
+    Schemas.PasswordResetOUT,
+    PostPasswordresetResetError,
+    Schemas.PasswordResetIN,
+    {},
+    {},
+    {}
+  >({ url: "/passwordreset/reset", method: "post", ...variables, signal });
 
 export const usePostPasswordresetReset = (
   options?: Omit<
@@ -225,13 +296,15 @@ export const usePostPasswordresetReset = (
   >,
 ) => {
   const { fetcherOptions } = useApiContext();
-  return reactQuery.useMutation<Schemas.PasswordResetOUT, PostPasswordresetResetError, PostPasswordresetResetVariables>(
-    {
-      mutationFn: (variables: PostPasswordresetResetVariables) =>
-        fetchPostPasswordresetReset({ ...fetcherOptions, ...variables }),
-      ...options,
-    },
-  );
+  return reactQuery.useMutation<
+    Schemas.PasswordResetOUT,
+    PostPasswordresetResetError,
+    PostPasswordresetResetVariables
+  >({
+    mutationFn: (variables: PostPasswordresetResetVariables) =>
+      fetchPostPasswordresetReset({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
 };
 
 export type PostPasswordresetForgotError = Fetcher.ErrorWrapper<{
@@ -243,13 +316,18 @@ export type PostPasswordresetForgotVariables = {
   body: Schemas.ForgotPasswordIN;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPostPasswordresetForgot = (variables: PostPasswordresetForgotVariables, signal?: AbortSignal) =>
-  apiFetch<Schemas.ForgotPasswordOUT, PostPasswordresetForgotError, Schemas.ForgotPasswordIN, {}, {}, {}>({
-    url: "/passwordreset/forgot",
-    method: "post",
-    ...variables,
-    signal,
-  });
+export const fetchPostPasswordresetForgot = (
+  variables: PostPasswordresetForgotVariables,
+  signal?: AbortSignal,
+) =>
+  apiFetch<
+    Schemas.ForgotPasswordOUT,
+    PostPasswordresetForgotError,
+    Schemas.ForgotPasswordIN,
+    {},
+    {},
+    {}
+  >({ url: "/passwordreset/forgot", method: "post", ...variables, signal });
 
 export const usePostPasswordresetForgot = (
   options?: Omit<
@@ -280,7 +358,10 @@ export type GetAdminVersionError = Fetcher.ErrorWrapper<{
 
 export type GetAdminVersionVariables = ApiContext["fetcherOptions"];
 
-export const fetchGetAdminVersion = (variables: GetAdminVersionVariables, signal?: AbortSignal) =>
+export const fetchGetAdminVersion = (
+  variables: GetAdminVersionVariables,
+  signal?: AbortSignal,
+) =>
   apiFetch<Schemas.VersionOUT, GetAdminVersionError, undefined, {}, {}, {}>({
     url: "/admin/version",
     method: "get",
@@ -288,7 +369,7 @@ export const fetchGetAdminVersion = (variables: GetAdminVersionVariables, signal
     signal,
   });
 
-export const useGetAdminVersion = <TData = Schemas.VersionOUT>(
+export const useGetAdminVersion = <TData = Schemas.VersionOUT,>(
   variables: GetAdminVersionVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<Schemas.VersionOUT, GetAdminVersionError, TData>,
@@ -302,7 +383,8 @@ export const useGetAdminVersion = <TData = Schemas.VersionOUT>(
       operationId: "getAdminVersion",
       variables,
     }),
-    queryFn: ({ signal }) => fetchGetAdminVersion({ ...fetcherOptions, ...variables }, signal),
+    queryFn: ({ signal }) =>
+      fetchGetAdminVersion({ ...fetcherOptions, ...variables }, signal),
     ...options,
     ...queryOptions,
   });
