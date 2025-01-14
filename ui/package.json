@@ -42,7 +42,7 @@
     "test:ci": "CI=true react-scripts test --maxWorkers 2",
     "lint": "eslint --ext .ts,.tsx . && prettier --write ./src",
     "eject": "react-scripts eject",
-    "generate:openapi-types": "npx openapi-codegen gen apiWeb",
+    "generate:openapi-types": "npx openapi-codegen gen apiWeb --source file --relativePath ../backend/target/openapi.yaml",
     "watch:openapi": "chokidar '../backend/target/openapi.yaml' -c 'yarn generate:openapi-types'",
     "start:frontend": "yarn start"
   },
