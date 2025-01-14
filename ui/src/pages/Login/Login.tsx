@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { BiLogInCircle } from "react-icons/bi";
@@ -15,9 +15,7 @@ const validationSchema = Yup.object({
 
 export type LoginParams = Yup.InferType<typeof validationSchema>;
 
-type Props = {};
-
-export const Login: React.FC<Props> = ({}) => {
+export const Login = () => {
   const {
     dispatch,
     state: { loggedIn },
@@ -25,16 +23,13 @@ export const Login: React.FC<Props> = ({}) => {
 
   const navigate = useNavigate();
 
-  const mutation = usePostUserLogin();
-  const { isSuccess, data } = mutation;
-  const login = mutation.mutateAsync;
-
-  useEffect(() => {
-    if (isSuccess) {
-      const { apiKey } = data;
+  const mutation = usePostUserLogin({
+    onSuccess: ({ apiKey }) => {
       dispatch({ type: "SET_API_KEY", apiKey });
-    }
-  }, [isSuccess, dispatch]);
+    },
+  });
+
+  const login = mutation.mutateAsync;
 
   useEffect(() => {
     if (loggedIn) navigate("/main");

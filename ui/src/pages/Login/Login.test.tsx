@@ -69,6 +69,10 @@ test("handles login success", async () => {
     isSuccess: true,
     isError: false,
     error: "",
+    onSuccess: dispatch({
+      type: "SET_API_KEY",
+      apiKey: "test-api-key",
+    }),
   });
 
   renderWithClient(

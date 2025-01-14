@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { BiUserPlus } from "react-icons/bi";
@@ -19,27 +19,25 @@ const validationSchema = Yup.object({
 
 type RegisterParams = Yup.InferType<typeof validationSchema>;
 
-type Props = {};
-
-export const Register: React.FC<Props> = ({}) => {
+export const Register = () => {
   const {
     dispatch,
     state: { loggedIn },
-  } = React.useContext(UserContext);
+  } = useContext(UserContext);
 
   const navigate = useNavigate();
 
   const mutation = usePostUserRegister();
   const { isSuccess, data } = mutation;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       const { apiKey } = data;
       dispatch({ type: "SET_API_KEY", apiKey });
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, dispatch, data]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (loggedIn) navigate("/main");
   }, [loggedIn, navigate]);
 

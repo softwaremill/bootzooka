@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
@@ -7,13 +7,11 @@ import { BiPowerOff, BiHappy } from "react-icons/bi";
 import { UserContext } from "contexts";
 import { usePostUserLogout } from "api/apiComponents";
 
-type Props = {};
-
-export const Top: React.FC<Props> = ({}) => {
+export const Top = () => {
   const {
     state: { user, loggedIn, apiKey },
     dispatch,
-  } = React.useContext(UserContext);
+  } = useContext(UserContext);
 
   const { mutateAsync: logout, isSuccess } = usePostUserLogout();
 

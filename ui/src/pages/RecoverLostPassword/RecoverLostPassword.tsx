@@ -1,4 +1,3 @@
-import React from "react";
 import Form from "react-bootstrap/Form";
 import { BiReset } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
@@ -12,9 +11,7 @@ const validationSchema = Yup.object({
 
 export type RecoverLostPasswordParams = Yup.InferType<typeof validationSchema>;
 
-type Props = {};
-
-export const RecoverLostPassword: React.FC<Props> = ({}) => {
+export const RecoverLostPassword = () => {
   const mutation = usePostPasswordresetForgot();
 
   return (

@@ -16,7 +16,16 @@ You will also see any lint errors in the console.
 
 Before running `yarn start`, make sure to run `sbt "backend/generateOpenAPIDescription"` in the project's root directory. This command will generate the `<project_root>/backend/target/openapi.yaml` file.
 
-API types in `./src/api-client` directory (in `openapi.d.ts` file) are generated upon UI application start (`yarn start`), based on the `openapi.yaml` contents. A file watch is engaged, re-generating types on each change to the `<project_root>/backend/target/openapi.yaml` file.
+Type-safe React Query hooks are generated upon UI application start (`yarn start`), based on the `openapi.yaml` contents.
+
+These files are:
+
+- `src/api/{namespace}Fetcher.ts` - defines a function that will make requests to your API.
+- `src/api/{namespace}Context.ts` - the context that provides `{namespace}Fetcher` to other components.
+- `src/api/{namespace}Components.ts` - generated React Query components (if you selected React Query as part of initialization).
+- `src/api/{namespace}Schemas.ts` - the generated Typescript types from the provided Open API schemas.
+
+A file watch is engaged, re-generating types on each change to the `<project_root>/backend/target/openapi.yaml` file.
 
 ### `yarn test`
 

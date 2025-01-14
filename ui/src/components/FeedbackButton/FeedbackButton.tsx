@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactElement } from "react";
 import Button, { ButtonProps } from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
@@ -15,13 +15,13 @@ interface FeedbackButtonProps extends ButtonProps {
   successLabel?: string;
 }
 
-export const FeedbackButton = <TMutationData,>({
+export const FeedbackButton = ({
   mutation,
   label,
   Icon,
   successLabel = "Success",
   ...buttonProps
-}: FeedbackButtonProps): React.ReactElement => {
+}: FeedbackButtonProps): ReactElement => {
   useFormikValuesChanged(() => {
     !mutation.isIdle && mutation.reset();
   });

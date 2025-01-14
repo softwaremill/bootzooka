@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -17,22 +17,20 @@ const validationSchema = Yup.object({
 
 export type ProfileDetailsParams = Yup.InferType<typeof validationSchema>;
 
-type Props = {};
-
-export const ProfileDetails: React.FC<Props> = ({}) => {
+export const ProfileDetails = () => {
   const {
     dispatch,
     state: { apiKey, user },
-  } = React.useContext(UserContext);
+  } = useContext(UserContext);
 
   const mutation = usePostUser();
   const { data, isSuccess } = mutation;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       dispatch({ type: "UPDATE_USER_DATA", user: data });
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, dispatch, data]);
 
   return (
     <Container className="py-5">

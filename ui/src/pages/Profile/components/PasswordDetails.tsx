@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -20,25 +20,23 @@ const validationSchema = Yup.object({
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 
-type Props = {};
-
-export const PasswordDetails: React.FC<Props> = ({}) => {
+export const PasswordDetails = () => {
   const {
-    state: { user, loggedIn, apiKey },
+    state: { apiKey },
     dispatch,
-  } = React.useContext(UserContext);
+  } = useContext(UserContext);
 
   const mutation = usePostUserChangepassword();
   const { isSuccess, data } = mutation;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       const { apiKey } = data;
       dispatch({ type: "SET_API_KEY", apiKey });
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, data, dispatch]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem("apiKey", apiKey || "");
   }, [apiKey]);
 
