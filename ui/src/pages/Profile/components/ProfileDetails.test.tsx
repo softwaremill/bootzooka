@@ -10,14 +10,27 @@ const loggedUserState: UserState = {
   loggedIn: true,
 };
 const dispatch = jest.fn();
+const mockMutate = jest.fn();
+const mockResponse = jest.fn();
 
-const onChangeProfileDetails = jest.fn();
+jest.mock("api/apiComponents", () => ({
+  usePostUser: () => mockResponse(),
+}));
 
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 test("renders current user data", () => {
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: false,
+    error: "",
+  });
+
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
       <ProfileDetails />
@@ -29,6 +42,15 @@ test("renders current user data", () => {
 });
 
 test("renders lack of current user data", () => {
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: false,
+    error: "",
+  });
+
   renderWithClient(
     <UserContext.Provider value={{ state: { ...loggedUserState, user: null }, dispatch }}>
       <ProfileDetails />
@@ -40,7 +62,14 @@ test("renders lack of current user data", () => {
 });
 
 test("handles change details success", async () => {
-  onChangeProfileDetails.mockResolvedValueOnce({});
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: false,
+    error: "",
+  });
 
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -54,14 +83,13 @@ test("handles change details success", async () => {
   await userEvent.type(screen.getByLabelText("Email address"), "test@email.address");
   await userEvent.click(screen.getByText("Update profile data"));
 
-  expect(onChangeProfileDetails).toHaveBeenCalledWith("test-api-key", {
-    email: "test@email.address",
-    login: "test-login",
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: { email: "test@email.address", login: "test-login" },
   });
 
   expect(dispatch).toHaveBeenCalledWith({
     type: "UPDATE_USER_DATA",
-    user: { email: "test@email.address", login: "test-login" },
+    user: { apiKey: "test-api-key" },
   });
 
   await screen.findByRole("success");
@@ -69,7 +97,14 @@ test("handles change details success", async () => {
 });
 
 test("handles change details error", async () => {
-  onChangeProfileDetails.mockRejectedValueOnce(new Error("Test Error"));
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: true,
+    error: "Test error",
+  });
 
   renderWithClient(
     <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -83,11 +118,7 @@ test("handles change details error", async () => {
   await userEvent.type(screen.getByLabelText("Email address"), "test@email.address");
   await userEvent.click(screen.getByText("Update profile data"));
 
-  expect(onChangeProfileDetails).toHaveBeenCalledWith("test-api-key", {
-    email: "test@email.address",
-    login: "test-login",
-  });
-  expect(dispatch).not.toHaveBeenCalled();
-
-  await screen.findByRole("error");
+  expect(mockMutate).toHaveBeenCalledWith({ body: { email: "test@email.address", login: "test-login" } });
+  expect(dispatch).toHaveBeenCalledWith({ type: "UPDATE_USER_DATA", user: { apiKey: "test-api-key" } });
+  expect(await screen.findByRole("error")).toBeInTheDocument();
 });

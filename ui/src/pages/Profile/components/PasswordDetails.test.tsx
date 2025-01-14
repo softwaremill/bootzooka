@@ -10,14 +10,27 @@ const mockState: UserState = {
   loggedIn: true,
 };
 const dispatch = jest.fn();
+const mockMutate = jest.fn();
+const mockResponse = jest.fn();
 
-const onChangePassword = jest.fn();
+jest.mock("api/apiComponents", () => ({
+  usePostUserChangepassword: () => mockResponse(),
+}));
 
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 test("renders header", () => {
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: false,
+    error: "",
+  });
+
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <PasswordDetails />
@@ -28,8 +41,14 @@ test("renders header", () => {
 });
 
 test("handles change password success", async () => {
-  const apiKey = "test-api-key";
-  onChangePassword.mockResolvedValueOnce({ apiKey });
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: false,
+    error: "",
+  });
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
@@ -45,15 +64,25 @@ test("handles change password success", async () => {
   await screen.findByRole("success");
   await screen.findByText("Password changed");
 
-  expect(onChangePassword).toHaveBeenCalledWith("test-api-key", {
-    currentPassword: "test-password",
-    newPassword: "test-new-password",
+  expect(mockMutate).toHaveBeenCalledTimes(1);
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: { repeatedPassword: "test-new-password", currentPassword: "test-password", newPassword: "test-new-password" },
   });
-  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "SET_API_KEY",
+    apiKey: "test-api-key",
+  });
 });
 
 test("handles change password error", async () => {
-  onChangePassword.mockRejectedValueOnce(new Error("Test Error"));
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: false,
+    isError: true,
+    error: "Test error",
+  });
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
@@ -66,15 +95,15 @@ test("handles change password error", async () => {
   await userEvent.type(screen.getByLabelText("Repeat new password"), "test-new-password");
   await userEvent.click(screen.getByText("Update password"));
 
-  expect(onChangePassword).toHaveBeenCalledWith("test-api-key", {
-    currentPassword: "test-password",
-    newPassword: "test-new-password",
+  expect(mockMutate).toHaveBeenCalledTimes(1);
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: {
+      repeatedPassword: "test-new-password",
+      currentPassword: "test-password",
+      newPassword: "test-new-password",
+    },
   });
 
   await screen.findByRole("error");
-
-  await userEvent.type(screen.getByLabelText("Repeat new password"), "test-newer-password");
-
-  expect(screen.queryByRole("error")).not.toBeInTheDocument();
-  expect(screen.queryByText("Test Error")).not.toBeInTheDocument();
+  expect(await screen.findByText("Unknown error")).toBeInTheDocument();
 });

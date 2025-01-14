@@ -8,14 +8,27 @@ import { renderWithClient } from "tests";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
+const mockMutate = jest.fn();
+const mockResponse = jest.fn();
 
-const onRegisterUser = jest.fn();
+jest.mock("api/apiComponents", () => ({
+  usePostUserRegister: () => mockResponse(),
+}));
 
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 test("renders header", () => {
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    isSuccess: true,
+    data: { apiKey: "test-api-key" },
+    isError: false,
+    error: "",
+  });
+
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
@@ -28,6 +41,15 @@ test("renders header", () => {
 });
 
 test("redirects when registered", () => {
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    isSuccess: true,
+    data: { apiKey: "test-api-key" },
+    isError: false,
+    error: "",
+  });
+
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
@@ -40,7 +62,14 @@ test("redirects when registered", () => {
 });
 
 test("handles register success", async () => {
-  onRegisterUser.mockResolvedValueOnce({ apiKey: "test-api-key" });
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    isSuccess: true,
+    data: { apiKey: "test-api-key" },
+    isError: false,
+    error: "",
+  });
 
   renderWithClient(
     <HistoryRouter history={history}>
@@ -58,17 +87,27 @@ test("handles register success", async () => {
 
   await screen.findByRole("success");
 
-  expect(onRegisterUser).toHaveBeenCalledWith({
-    login: "test-login",
-    email: "test@email.address.pl",
-    password: "test-password",
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: {
+      login: "test-login",
+      email: "test@email.address.pl",
+      password: "test-password",
+      repeatedPassword: "test-password",
+    },
   });
 
   expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
 });
 
 test("handles register error", async () => {
-  onRegisterUser.mockRejectedValueOnce(new Error("Test Error"));
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: false,
+    isError: true,
+    error: "Test error",
+  });
 
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
@@ -84,10 +123,13 @@ test("handles register error", async () => {
   await userEvent.type(screen.getByLabelText("Repeat password"), "test-password");
   await userEvent.click(screen.getByText("Create new account"));
 
-  expect(onRegisterUser).toHaveBeenCalledWith({
-    login: "test-login",
-    email: "test@email.address.pl",
-    password: "test-password",
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: {
+      login: "test-login",
+      email: "test@email.address.pl",
+      password: "test-password",
+      repeatedPassword: "test-password",
+    },
   });
   expect(dispatch).not.toHaveBeenCalled();
 

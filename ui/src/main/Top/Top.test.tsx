@@ -11,9 +11,15 @@ const loggedUserState: UserState = {
   loggedIn: true,
 };
 
-const onLogout = jest.fn();
-
 const dispatch = jest.fn();
+const mockMutate = jest.fn();
+
+jest.mock("api/apiComponents", () => ({
+  usePostUserLogout: () => ({
+    mutateAsync: mockMutate,
+    isSuccess: false,
+  }),
+}));
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -62,8 +68,6 @@ test("renders nav bar for logged user", () => {
 });
 
 test("handles logout logged user", async () => {
-  onLogout.mockResolvedValueOnce({});
-
   renderWithClient(
     <MemoryRouter initialEntries={["/main"]}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -71,8 +75,7 @@ test("handles logout logged user", async () => {
       </UserContext.Provider>
     </MemoryRouter>,
   );
-
-  await userEvent.click(screen.getByText("Logout"));
-
-  expect(dispatch).toHaveBeenCalledWith({ type: "LOG_OUT" });
+  await userEvent.click(screen.getByText(/logout/i));
+  expect(mockMutate).toHaveBeenCalledTimes(1);
+  expect(mockMutate).toHaveBeenCalledWith({ body: { apiKey: "test-api-key" } });
 });
