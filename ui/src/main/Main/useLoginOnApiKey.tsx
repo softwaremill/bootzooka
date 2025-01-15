@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { UserContext } from "contexts";
-import { userService } from "services";
+import { useGetUser } from "api/apiComponents";
 
 const useLoginOnApiKey = () => {
   const {
@@ -8,14 +8,24 @@ const useLoginOnApiKey = () => {
     state: { apiKey },
   } = React.useContext(UserContext);
 
-  React.useEffect(() => {
+  const result = useGetUser({ headers: { Authorization: `Bearer ${apiKey}` } }, { retry: 1 });
+
+  useEffect(() => {
     if (!apiKey) return;
 
-    userService
-      .getCurrentUser(apiKey)
-      .then((user) => dispatch({ type: "LOG_IN", user }))
-      .catch(() => dispatch({ type: "LOG_OUT" }));
-  }, [apiKey, dispatch]);
+    result
+      ?.refetch()
+      .then((response) => {
+        if (response.data) {
+          dispatch({ type: "LOG_IN", user: response.data });
+        } else {
+          dispatch({ type: "LOG_OUT" });
+        }
+      })
+      .catch((error) => {
+        dispatch({ type: "LOG_OUT" });
+      });
+  }, [apiKey, dispatch, result]);
 };
 
 export default useLoginOnApiKey;

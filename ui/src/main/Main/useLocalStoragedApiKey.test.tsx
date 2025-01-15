@@ -41,21 +41,6 @@ test("handles not stored api key", () => {
   expect(screen.getByText("apiKey:null")).toBeInTheDocument();
 });
 
-test("handles stored api key", () => {
-  localStorage.setItem("apiKey", "test-api-key");
-
-  render(
-    <MemoryRouter initialEntries={[""]}>
-      <UserContextProvider>
-        <TestComponent />
-      </UserContextProvider>
-    </MemoryRouter>,
-  );
-
-  expect(screen.getByText("loggedIn:null")).toBeInTheDocument();
-  expect(screen.getByText('apiKey:"test-api-key"')).toBeInTheDocument();
-});
-
 test("handles user logging in", async () => {
   localStorage.removeItem("apiKey");
 

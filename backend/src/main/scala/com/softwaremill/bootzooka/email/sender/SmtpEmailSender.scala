@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka.email.sender
 
 import com.softwaremill.bootzooka.email.{EmailData, SmtpConfig}
 import com.softwaremill.bootzooka.logging.Logging
-import ox.{IO, discard}
+import ox.discard
 
 import java.util.{Date, Properties}
 import javax.mail.internet.{InternetAddress, MimeMessage}
@@ -10,7 +10,7 @@ import javax.mail.{Address, Message, Session, Transport}
 
 /** Sends emails synchronously using SMTP. */
 class SmtpEmailSender(config: SmtpConfig) extends EmailSender with Logging:
-  def apply(email: EmailData)(using IO): Unit =
+  def apply(email: EmailData): Unit =
     val emailToSend = new SmtpEmailSender.EmailDescription(List(email.recipient), email.content, email.subject)
     SmtpEmailSender.send(
       config.host,
@@ -39,7 +39,7 @@ object SmtpEmailSender:
       from: String,
       encoding: String,
       emailDescription: EmailDescription
-  )(using IO): Unit =
+  ): Unit =
     val props = setupSmtpServerProperties(sslConnection, smtpHost, smtpPort, verifySSLCertificate)
 
     // Get a mail session
@@ -91,16 +91,16 @@ object SmtpEmailSender:
       props.put("mail.smtp.port", smtpPort.toString)
     props
 
-  private def createSmtpTransportFrom(session: Session, sslConnection: Boolean)(using IO): Transport =
+  private def createSmtpTransportFrom(session: Session, sslConnection: Boolean): Transport =
     if (sslConnection) session.getTransport("smtps") else session.getTransport("smtp")
 
-  private def sendEmail(transport: Transport, m: MimeMessage)(using IO): Unit =
+  private def sendEmail(transport: Transport, m: MimeMessage): Unit =
     transport.sendMessage(m, m.getAllRecipients)
 
-  private def connectToSmtpServer(transport: Transport, smtpUsername: String, smtpPassword: String)(using IO): Unit =
+  private def connectToSmtpServer(transport: Transport, smtpUsername: String, smtpPassword: String): Unit =
     if smtpUsername != null && smtpUsername.nonEmpty then transport.connect(smtpUsername, smtpPassword) else transport.connect()
 
-  private def convertStringEmailsToAddresses(emails: Array[String])(using IO): Array[Address] =
+  private def convertStringEmailsToAddresses(emails: Array[String]): Array[Address] =
     emails.map(new InternetAddress(_))
 
   case class EmailDescription(

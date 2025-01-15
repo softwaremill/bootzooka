@@ -15,7 +15,7 @@ on:
 jobs:
   lint-chart:
     name: Lint Helm Chart
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check-out repository
         id: repo-checkout
@@ -34,7 +34,7 @@ jobs:
     needs:
       - lint-chart
     name: Install & Test Helm Chart
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         k8s:
@@ -67,7 +67,7 @@ jobs:
       - lint-chart
       - install-test-chart
     name: Validate Helm Chart Docs
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check-out repository
         id: repo-checkout
@@ -91,7 +91,7 @@ jobs:
       - install-test-chart
       - validate-chart-docs
     name: Publish Helm Chart
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check-out repository
         id: repo-checkout

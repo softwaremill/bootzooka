@@ -1,17 +1,11 @@
-import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
-import { versionService } from "services";
-import { useQuery } from "react-query";
+import { useGetAdminVersion } from "api/apiComponents";
 
-interface VersionData {
-  buildSha: string;
-}
-
-export const Footer: React.FC = () => {
-  const query = useQuery<VersionData>("version", versionService.getVersion);
+export const Footer = () => {
+  const mutation = useGetAdminVersion({});
 
   return (
     <Container fluid className="fixed-bottom bg-dark text-light d-none d-sm-block">
@@ -24,10 +18,10 @@ export const Footer: React.FC = () => {
             </small>
           </Col>
           <Col sm={6} className="text-end py-4">
-            {query.isIdle && <></>}
-            {query.isLoading && <Spinner animation="border" size="sm" role="loader" />}
-            {query.isError && <></>}
-            {query.isSuccess && <small className="text-break">Version: {query.data.buildSha}</small>}
+            {mutation.isPending && <></>}
+            {mutation.isLoading && <Spinner animation="border" size="sm" role="loader" />}
+            {mutation.isError && <></>}
+            {mutation.isSuccess && <small className="text-break">Version: {mutation.data.buildSha}</small>}
           </Col>
         </Row>
       </Container>

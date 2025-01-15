@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactElement } from "react";
 import Button, { ButtonProps } from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
@@ -6,27 +6,27 @@ import { IconType } from "react-icons";
 import { BsExclamationCircle, BsCheck } from "react-icons/bs";
 import useFormikValuesChanged from "./useFormikValuesChanged";
 import { ErrorMessage } from "../";
-import { UseMutationResult } from "react-query";
+import { UseMutationResult } from "@tanstack/react-query";
 
-interface FeedbackButtonProps<TMutationData> extends ButtonProps {
+interface FeedbackButtonProps extends ButtonProps {
   label: string;
   Icon: IconType;
-  mutation: UseMutationResult<TMutationData, any, any, any>;
+  mutation: UseMutationResult<any, any, any>;
   successLabel?: string;
 }
 
-export const FeedbackButton = <TMutationData,>({
+export const FeedbackButton = ({
   mutation,
   label,
   Icon,
   successLabel = "Success",
   ...buttonProps
-}: FeedbackButtonProps<TMutationData>): React.ReactElement => {
+}: FeedbackButtonProps): ReactElement => {
   useFormikValuesChanged(() => {
     !mutation.isIdle && mutation.reset();
   });
 
-  if (mutation.isLoading) {
+  if (mutation.isPending) {
     return (
       <Button {...buttonProps} disabled>
         <Spinner as="span" animation="border" size="sm" role="loader" />
