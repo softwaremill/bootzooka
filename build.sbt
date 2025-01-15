@@ -11,16 +11,16 @@ import complete.DefaultParsers._
 
 val password4jVersion = "1.8.2"
 val sttpVersion = "3.10.1"
-val tapirVersion = "1.11.6"
+val tapirVersion = "1.11.12"
 val oxVersion = "0.5.8"
-val otelVersion = "1.43.0"
+val otelVersion = "1.46.0"
 val otelInstrumentationVersion = "2.8.0-alpha"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.1",
-  "org.postgresql" % "postgresql" % "42.7.4",
+  "org.postgresql" % "postgresql" % "42.7.5",
   "com.zaxxer" % "HikariCP" % "6.0.0",
-  "org.flywaydb" % "flyway-database-postgresql" % "10.20.0"
+  "org.flywaydb" % "flyway-database-postgresql" % "10.20.1"
 )
 
 val httpDependencies = Seq(
@@ -41,14 +41,14 @@ val observabilityDependencies = Seq(
 )
 
 val jsonDependencies = Seq(
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.15",
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.33.0",
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
   "com.softwaremill.sttp.client3" %% "jsoniter" % sttpVersion
 )
 
 val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.11",
-  "org.slf4j" % "jul-to-slf4j" % "1.7.36", // forward e.g. otel logs which use JUL to SLF4J
+  "org.slf4j" % "jul-to-slf4j" % "2.0.16", // forward e.g. otel logs which use JUL to SLF4J
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
   "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.7" % Runtime,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
@@ -56,13 +56,13 @@ val loggingDependencies = Seq(
 )
 
 val configDependencies = Seq(
-  "com.github.pureconfig" %% "pureconfig-core" % "0.17.7"
+  "com.github.pureconfig" %% "pureconfig-core" % "0.17.8"
 )
 
 val baseDependencies = Seq(
   "com.softwaremill.ox" %% "core" % oxVersion,
   "com.softwaremill.quicklens" %% "quicklens" % "1.9.9",
-  "com.softwaremill.macwire" %% "macros" % "2.6.2" % Provided
+  "com.softwaremill.macwire" %% "macros" % "2.6.4" % Provided
 )
 
 val apiDocsDependencies = Seq(
@@ -91,7 +91,7 @@ lazy val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI descri
 
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "3.5.0",
+  scalaVersion := "3.5.2",
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
     streams.value.log("Updating npm/yarn dependencies")
