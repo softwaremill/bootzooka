@@ -1,20 +1,18 @@
-import React from "react";
 import Form from "react-bootstrap/Form";
 import { BiReset } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { passwordService } from "services";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import { useMutation } from "react-query";
+import { usePostPasswordresetForgot } from "api/apiComponents";
 
 const validationSchema = Yup.object({
   loginOrEmail: Yup.string().required("Required"),
 });
 
-type RecoverLostPasswordParams = Yup.InferType<typeof validationSchema>;
+export type RecoverLostPasswordParams = Yup.InferType<typeof validationSchema>;
 
-export const RecoverLostPassword: React.FC = () => {
-  const mutation = useMutation(passwordService.claimPasswordReset);
+export const RecoverLostPassword = () => {
+  const mutation = usePostPasswordresetForgot();
 
   return (
     <TwoColumnHero>
@@ -23,7 +21,7 @@ export const RecoverLostPassword: React.FC = () => {
         initialValues={{
           loginOrEmail: "",
         }}
-        onSubmit={(values) => mutation.mutate(values)}
+        onSubmit={(values) => mutation.mutate({ body: values })}
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>

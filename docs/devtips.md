@@ -45,18 +45,13 @@ This will bring into scope custom [Magnum](https://github.com/AugustNagro/magnum
 
 ### HTTP API
 
-If you are describing new endpoints, import all members of the current `Http` instance:
+If you are describing new endpoints, import all members of `Http`:
 
 ```scala
-import com.softwaremill.bootzooka.http.Http
-
-class UserApi(http: Http):
-  import http.*
-
-  ...
+import com.softwaremill.bootzooka.http.Http.*
 ```
 
-This will bring into scope Tapir builder methods and schemas for documentation.
+This will bring into scope Tapir builder methods and schemas for documentation, along with Bootzooka-specific customizations.
 
 ### Logging
 

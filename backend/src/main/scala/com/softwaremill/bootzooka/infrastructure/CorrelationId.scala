@@ -20,7 +20,7 @@ object CorrelationId:
 
 /** An sttp backend wrapper, which sets the current correlation id (from [[CorrelationId.forkLocal]]) on all outgoing requests. */
 class SetCorrelationIdBackend[P](delegate: SttpBackend[Identity, P]) extends SttpBackend[Identity, P]:
-  override def send[T, R >: P with Effect[Identity]](request: Request[T, R]): Response[T] =
+  override def send[T, R >: P & Effect[Identity]](request: Request[T, R]): Response[T] =
     val request2 = Option(MDC.get(CorrelationIdInterceptor.MDCKey)) match {
       case Some(cid) => request.header(CorrelationIdInterceptor.HeaderName, cid)
       case None      => request

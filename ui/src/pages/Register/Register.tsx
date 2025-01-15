@@ -1,13 +1,12 @@
-import React from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { BiUserPlus } from "react-icons/bi";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { userService } from "services";
 import { UserContext } from "contexts";
 import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import { useMutation } from "react-query";
+import { usePostUserRegister } from "api/apiComponents";
 
 const validationSchema = Yup.object({
   login: Yup.string().min(3, "At least 3 characters required").required("Required"),
@@ -20,22 +19,25 @@ const validationSchema = Yup.object({
 
 type RegisterParams = Yup.InferType<typeof validationSchema>;
 
-export const Register: React.FC = () => {
+export const Register = () => {
   const {
     dispatch,
     state: { loggedIn },
-  } = React.useContext(UserContext);
+  } = useContext(UserContext);
 
   const navigate = useNavigate();
 
-  const mutation = useMutation(
-    ({ login, email, password }: RegisterParams) => userService.registerUser({ login, email, password }),
-    {
-      onSuccess: ({ apiKey }) => dispatch({ type: "SET_API_KEY", apiKey }),
-    },
-  );
+  const mutation = usePostUserRegister();
+  const { isSuccess, data } = mutation;
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (isSuccess) {
+      const { apiKey } = data;
+      dispatch({ type: "SET_API_KEY", apiKey });
+    }
+  }, [isSuccess, dispatch, data]);
+
+  useEffect(() => {
     if (loggedIn) navigate("/main");
   }, [loggedIn, navigate]);
 
@@ -49,7 +51,7 @@ export const Register: React.FC = () => {
           password: "",
           repeatedPassword: "",
         }}
-        onSubmit={(values) => mutation.mutate(values)}
+        onSubmit={(values) => mutation.mutate({ body: values })}
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>

@@ -7,8 +7,8 @@ import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.*
 import com.softwaremill.bootzooka.util.Strings.Id
+import ox.sleep
 import ox.either.{fail, ok}
-import ox.{IO, sleep}
 
 import java.security.SecureRandom
 import java.time.Instant
@@ -22,7 +22,7 @@ class Auth[T](authTokenOps: AuthTokenOps[T], db: DB, clock: Clock) extends Loggi
   /** Authenticates using the given authentication token. If the token is invalid, a [[Fail.Unauthorized]] error is returned. Otherwise,
     * returns the id of the authenticated user .
     */
-  def apply(id: Id[T])(using IO): Either[Fail.Unauthorized, Id[User]] =
+  def apply(id: Id[T]): Either[Fail.Unauthorized, Id[User]] =
     db.transact(authTokenOps.findById(id)) match {
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")

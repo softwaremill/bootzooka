@@ -7,14 +7,15 @@ import com.softwaremill.bootzooka.logging.Logging
 import org.flywaydb.core.Flyway
 import org.postgresql.jdbc.PgConnection
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
-import ox.IO.globalForTesting.given
 import ox.discard
+
+import scala.compiletime.uninitialized
 
 /** Base trait for tests which use the database. The database is cleaned after each test. */
 trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll with Logging { self: Suite =>
-  private var postgres: EmbeddedPostgres = _
-  private var currentDbConfig: DBConfig = _
-  var currentDb: DB = _
+  private var postgres: EmbeddedPostgres = uninitialized
+  private var currentDbConfig: DBConfig = uninitialized
+  var currentDb: DB = uninitialized
 
   //
 

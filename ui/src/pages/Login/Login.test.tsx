@@ -4,19 +4,31 @@ import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-rou
 import { createMemoryHistory } from "@remix-run/router";
 import { Login } from "./Login";
 import { UserContext, initialUserState } from "contexts";
-import { userService } from "services";
 import { renderWithClient } from "tests";
 
 const history = createMemoryHistory({ initialEntries: ["/login"] });
 const dispatch = jest.fn();
+const mockMutate = jest.fn();
+const mockResponse = jest.fn();
 
-jest.mock("services");
+jest.mock("api/apiComponents", () => ({
+  usePostUserLogin: () => mockResponse(),
+}));
 
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 test("renders header", () => {
+  mockResponse.mockReturnValueOnce({
+    mutateAsync: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: false,
+    error: "",
+  });
+
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
@@ -29,6 +41,15 @@ test("renders header", () => {
 });
 
 test("redirects when logged in", () => {
+  mockResponse.mockReturnValueOnce({
+    mutateAsync: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: false,
+    error: "",
+  });
+
   renderWithClient(
     <HistoryRouter history={history}>
       <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
@@ -41,7 +62,18 @@ test("redirects when logged in", () => {
 });
 
 test("handles login success", async () => {
-  (userService.login as jest.Mock).mockResolvedValueOnce({ apiKey: "test-api-key" });
+  mockResponse.mockReturnValueOnce({
+    mutateAsync: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: true,
+    isError: false,
+    error: "",
+    onSuccess: dispatch({
+      type: "SET_API_KEY",
+      apiKey: "test-api-key",
+    }),
+  });
 
   renderWithClient(
     <HistoryRouter history={history}>
@@ -57,12 +89,28 @@ test("handles login success", async () => {
 
   await screen.findByRole("success");
 
-  expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
-  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: {
+      loginOrEmail: "test-login",
+      password: "test-password",
+    },
+  });
+
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "SET_API_KEY",
+    apiKey: "test-api-key",
+  });
 });
 
 test("handles login error", async () => {
-  (userService.login as jest.Mock).mockRejectedValueOnce(new Error("Test Error"));
+  mockResponse.mockReturnValueOnce({
+    mutateAsync: mockMutate,
+    reset: jest.fn(),
+    data: { apiKey: "test-api-key" },
+    isSuccess: false,
+    isError: true,
+    error: "Test error",
+  });
 
   renderWithClient(
     <MemoryRouter initialEntries={["/login"]}>
@@ -78,6 +126,6 @@ test("handles login error", async () => {
 
   await screen.findByRole("error");
 
-  expect(userService.login).toHaveBeenCalledWith({ loginOrEmail: "test-login", password: "test-password" });
+  expect(mockMutate).toHaveBeenCalledWith({ body: { loginOrEmail: "test-login", password: "test-password" } });
   expect(dispatch).not.toHaveBeenCalled();
 });

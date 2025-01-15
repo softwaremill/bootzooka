@@ -11,33 +11,33 @@ on:
   release:
     types:
       - released
-    paths-ignore:
-      - "helm/**"
 
 jobs:
   verify:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Check-out repository
         id: repo-checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        id: jdk-setup
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 21
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'sbt'
 
-      - name: Cache SBT
-        id: cache-sbt
-        uses: actions/cache@v2
+      - uses: sbt/setup-sbt@v1    
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          path: |
-            ~/.sbt
-            ~/.ivy2/cache
-            ~/.coursier
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          node-version: 22
+
+      - name: Generate OpenAPI Spec
+        id: generate-openapi-spec
+        run: sbt "backend/generateOpenAPIDescription"
 
       - name: Run tests
         id: run-tests
@@ -51,38 +51,31 @@ jobs:
   deploy:
     if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
     needs: [ verify ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Check-out repository
         id: repo-checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        id: jdk-setup
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 21
-
-      - name: Cache SBT
-        id: cache-sbt
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.sbt
-            ~/.ivy2/cache
-            ~/.coursier
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'sbt'
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Extract version
         run: |
           version=${GITHUB_REF/refs\/tags\/v/}
           echo "VERSION=$version" >> $GITHUB_ENV
+
       - name: Publish release notes
         uses: release-drafter/release-drafter@v5
         with:
@@ -93,5 +86,6 @@ jobs:
           version: "v${{ env.VERSION }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Publish docker image
         run: sbt backend/docker:publish
