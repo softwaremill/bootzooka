@@ -14,7 +14,7 @@ on:
 
 jobs:
   verify:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Check-out repository
@@ -44,7 +44,7 @@ jobs:
   deploy:
     if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
     needs: [ verify ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Check-out repository
