@@ -50,7 +50,7 @@ val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.11",
   "org.slf4j" % "jul-to-slf4j" % "2.0.16", // forward e.g. otel logs which use JUL to SLF4J
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
-  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.7" % Runtime,
+  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.16" % Runtime,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
   "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
 )
