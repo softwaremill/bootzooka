@@ -7,6 +7,8 @@ import { renderWithClient } from "tests";
 
 const dispatch = jest.fn();
 
+const onLogin = jest.fn();
+
 beforeEach(() => {
   jest.clearAllMocks();
 });

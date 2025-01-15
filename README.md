@@ -6,10 +6,15 @@
 
 ## Quick start
 
+### Using Docker compose
+
+The fastest way to experiment with Bootzooka is using the provided Docker compose setup. It starts three images: 
+Bootzooka itself (either locally built or downloaded), PostgreSQL server and Graphana LGTM for observability.
+
 ### Backend: PostgreSQL & API
 
-In order to run Bootzooka, you'll need a running instance of PostgreSQL with a `bootzooka` database. You can spin
-up one easily using docker:
+To run Bootzooka's backend locally, you'll still need a running instance of PostgreSQL with a `bootzooka` database. 
+You can spin up one easily using docker:
 
 ```sh
 # use "bootzooka" as a password
@@ -19,9 +24,11 @@ docker run --name bootzooka-postgres -p 5432:5432 -e POSTGRES_PASSWORD=bootzooka
 Then, you can start the backend:
 
 ```sh
-export SQL_PASSWORD=bootzooka
-./backend-start.sh
+OTEL_SDK_DISABLED=true SQL_PASSWORD=bootzooka ./backend-start.sh
 ```
+
+Unless you've got an OpenTelemetry collector running, OpenTelemetry should be disabled to avoid telemetry export
+exceptions.
 
 ### Frontend: Yarn & webapp
 

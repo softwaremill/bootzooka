@@ -1,5 +1,5 @@
-import { QueryClient, QueryClientProvider } from "react-query";
-import React, { ReactElement } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactElement } from "react";
 import { render } from "@testing-library/react";
 
 const defaultQueryClient = new QueryClient();
