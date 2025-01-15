@@ -73,6 +73,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@openapi-codegen/cli": "^2.0.2",
     "@openapi-codegen/typescript": "^8.0.2",
     "chokidar-cli": "^3.0.0",
