@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watchAll=false",
-    "test:ci": "CI=true vitest --maxWorkers 2",
+    "test:ci": "CI=true vitest",
     "lint": "eslint .",
     "generate:openapi-types": "npx openapi-codegen gen apiWeb --source file --relativePath ../backend/target/openapi.yaml",
     "watch:openapi": "chokidar '../backend/target/openapi.yaml' -c 'yarn generate:openapi-types'",
