@@ -1,12 +1,11 @@
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import { Main } from "main";
-import { UserContextProvider } from "contexts";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter } from 'react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Main } from 'main/Main/Main';
+import { UserContextProvider } from 'contexts';
 
 const queryClient = new QueryClient();
 
-export const App: React.FC = () => (
+export const App = () => (
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
       <UserContextProvider>

@@ -1,22 +1,15 @@
-import { useContext, useEffect } from "react";
-import Form from "react-bootstrap/Form";
-import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import { BiArrowFromBottom } from "react-icons/bi";
-import { Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
-import { UserContext } from "contexts";
-import { FormikInput, FeedbackButton } from "components";
-import { usePostUserChangepassword } from "api/apiComponents";
-
-const validationSchema = Yup.object({
-  currentPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
-  newPassword: Yup.string().min(3, "At least 3 characters required").required("Required"),
-  repeatedPassword: Yup.string()
-    .oneOf([Yup.ref("newPassword")], "Passwords must match")
-    .required("Required"),
-});
+import { useContext, useEffect } from 'react';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import { BiArrowFromBottom } from 'react-icons/bi';
+import { Formik, Form as FormikForm } from 'formik';
+import * as Yup from 'yup';
+import { UserContext } from 'contexts/UserContext/User.context';
+import { FormikInput, FeedbackButton } from 'components';
+import { usePostUserChangepassword } from 'api/apiComponents';
+import { validationSchema } from './PasswordDetails.validations';
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 
@@ -32,12 +25,12 @@ export const PasswordDetails = () => {
   useEffect(() => {
     if (isSuccess) {
       const { apiKey } = data;
-      dispatch({ type: "SET_API_KEY", apiKey });
+      dispatch({ type: 'SET_API_KEY', apiKey });
     }
   }, [isSuccess, data, dispatch]);
 
   useEffect(() => {
-    localStorage.setItem("apiKey", apiKey || "");
+    localStorage.setItem('apiKey', apiKey || '');
   }, [apiKey]);
 
   return (
@@ -49,17 +42,29 @@ export const PasswordDetails = () => {
               <h3 className="mb-4">Password details</h3>
               <Formik<PasswordDetailsParams>
                 initialValues={{
-                  currentPassword: "",
-                  newPassword: "",
-                  repeatedPassword: "",
+                  currentPassword: '',
+                  newPassword: '',
+                  repeatedPassword: '',
                 }}
                 onSubmit={(values) => mutation.mutate({ body: values })}
                 validationSchema={validationSchema}
               >
                 <Form as={FormikForm}>
-                  <FormikInput name="currentPassword" label="Current password" type="password" />
-                  <FormikInput name="newPassword" label="New password" type="password" />
-                  <FormikInput name="repeatedPassword" label="Repeat new password" type="password" />
+                  <FormikInput
+                    name="currentPassword"
+                    label="Current password"
+                    type="password"
+                  />
+                  <FormikInput
+                    name="newPassword"
+                    label="New password"
+                    type="password"
+                  />
+                  <FormikInput
+                    name="repeatedPassword"
+                    label="Repeat new password"
+                    type="password"
+                  />
 
                   <FeedbackButton
                     className="float-end"

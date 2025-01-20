@@ -1,12 +1,12 @@
-import { ReactElement } from "react";
-import Button, { ButtonProps } from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
-import Form from "react-bootstrap/Form";
-import { IconType } from "react-icons";
-import { BsExclamationCircle, BsCheck } from "react-icons/bs";
-import useFormikValuesChanged from "./useFormikValuesChanged";
-import { ErrorMessage } from "../";
-import { UseMutationResult } from "@tanstack/react-query";
+import { ReactElement } from 'react';
+import Button, { ButtonProps } from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
+import Form from 'react-bootstrap/Form';
+import { IconType } from 'react-icons';
+import { BsExclamationCircle, BsCheck } from 'react-icons/bs';
+import useFormikValuesChanged from './useFormikValuesChanged';
+import { ErrorMessage } from '../';
+import { UseMutationResult } from '@tanstack/react-query';
 
 interface FeedbackButtonProps extends ButtonProps {
   label: string;
@@ -19,14 +19,14 @@ export const FeedbackButton = ({
   mutation,
   label,
   Icon,
-  successLabel = "Success",
+  successLabel = 'Success',
   ...buttonProps
 }: FeedbackButtonProps): ReactElement => {
   useFormikValuesChanged(() => {
-    !mutation.isIdle && mutation.reset();
+    return !mutation.isIdle && mutation.reset();
   });
 
-  if (mutation.isPending) {
+  if (mutation?.isPending) {
     return (
       <Button {...buttonProps} disabled>
         <Spinner as="span" animation="border" size="sm" role="loader" />
@@ -35,7 +35,7 @@ export const FeedbackButton = ({
     );
   }
 
-  if (mutation.isError) {
+  if (mutation?.isError) {
     return (
       <div>
         <Button {...buttonProps} variant="danger">
@@ -49,14 +49,16 @@ export const FeedbackButton = ({
     );
   }
 
-  if (mutation.isSuccess) {
+  if (mutation?.isSuccess) {
     return (
       <div>
         <Button {...buttonProps} variant="success">
           <BsCheck role="success" />
           &nbsp;{label}
         </Button>
-        <Form.Text className="text-success d-inline-block mx-3">{successLabel}</Form.Text>
+        <Form.Text className="text-success d-inline-block mx-3">
+          {successLabel}
+        </Form.Text>
       </div>
     );
   }

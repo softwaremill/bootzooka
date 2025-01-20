@@ -1,11 +1,11 @@
-import { useEffect, useContext } from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import Container from "react-bootstrap/Container";
-import { Link } from "react-router-dom";
-import { BiPowerOff, BiHappy } from "react-icons/bi";
-import { UserContext } from "contexts";
-import { usePostUserLogout } from "api/apiComponents";
+import { useEffect, useContext } from 'react';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
+import { Link } from 'react-router';
+import { BiPowerOff, BiHappy } from 'react-icons/bi';
+import { UserContext } from 'contexts/UserContext/User.context';
+import { usePostUserLogout } from 'api/apiComponents';
 
 export const Top = () => {
   const {
@@ -17,7 +17,7 @@ export const Top = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch({ type: "LOG_OUT" });
+      dispatch({ type: 'LOG_OUT' });
     }
   }, [isSuccess, dispatch]);
 
@@ -42,8 +42,11 @@ export const Top = () => {
                 <Nav.Link as={Link} to="/profile" className="text-lg-end">
                   <BiHappy />
                   &nbsp;{user?.login}
-                </Nav.Link>{" "}
-                <Nav.Link className="text-lg-end" onClick={() => logout({ body: { apiKey } })}>
+                </Nav.Link>{' '}
+                <Nav.Link
+                  className="text-lg-end"
+                  onClick={() => logout({ body: { apiKey } })}
+                >
                   <BiPowerOff />
                   &nbsp;Logout
                 </Nav.Link>

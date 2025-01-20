@@ -1,19 +1,15 @@
-import { useContext, useEffect } from "react";
-import Form from "react-bootstrap/Form";
-import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import { BiArrowFromBottom } from "react-icons/bi";
-import { Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
-import { UserContext } from "contexts";
-import { FormikInput, FeedbackButton } from "components";
-import { usePostUser } from "api/apiComponents";
-
-const validationSchema = Yup.object({
-  login: Yup.string().min(3, "At least 3 characters required").required("Required"),
-  email: Yup.string().email("Correct email address required").required("Required"),
-});
+import { useContext, useEffect } from 'react';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import { BiArrowFromBottom } from 'react-icons/bi';
+import { Formik, Form as FormikForm } from 'formik';
+import * as Yup from 'yup';
+import { FormikInput, FeedbackButton } from 'components';
+import { usePostUser } from 'api/apiComponents';
+import { UserContext } from 'contexts/UserContext/User.context';
+import { validationSchema } from './ProfileDetails.validations';
 
 export type ProfileDetailsParams = Yup.InferType<typeof validationSchema>;
 
@@ -28,7 +24,7 @@ export const ProfileDetails = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch({ type: "UPDATE_USER_DATA", user: data });
+      dispatch({ type: 'UPDATE_USER_DATA', user: data });
     }
   }, [isSuccess, dispatch, data]);
 
@@ -41,8 +37,8 @@ export const ProfileDetails = () => {
               <h3 className="mb-4">Profile details</h3>
               <Formik<ProfileDetailsParams>
                 initialValues={{
-                  login: user?.login || "",
-                  email: user?.email || "",
+                  login: user?.login || '',
+                  email: user?.email || '',
                 }}
                 onSubmit={(values) => mutation.mutate({ body: values })}
                 validationSchema={validationSchema}

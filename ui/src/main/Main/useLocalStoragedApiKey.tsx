@@ -1,32 +1,32 @@
-import React from "react";
-import { UserContext } from "contexts";
+import { useContext, useEffect, useRef } from 'react';
+import { UserContext } from 'contexts/UserContext/User.context';
 
 const useLocalStoragedApiKey = () => {
   const {
     dispatch,
     state: { apiKey, loggedIn },
-  } = React.useContext(UserContext);
+  } = useContext(UserContext);
 
-  const apiKeyRef = React.useRef(apiKey);
+  const apiKeyRef = useRef(apiKey);
 
-  React.useEffect(() => {
+  useEffect(() => {
     apiKeyRef.current = apiKey;
   }, [apiKey, dispatch]);
 
-  React.useEffect(() => {
-    const storedApiKey = localStorage.getItem("apiKey");
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem('apiKey');
 
-    if (!storedApiKey) return dispatch({ type: "LOG_OUT" });
+    if (!storedApiKey) return dispatch({ type: 'LOG_OUT' });
 
-    dispatch({ type: "SET_API_KEY", apiKey: storedApiKey });
+    dispatch({ type: 'SET_API_KEY', apiKey: storedApiKey });
   }, [dispatch]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     switch (loggedIn) {
       case true:
-        return localStorage.setItem("apiKey", apiKeyRef.current || "");
+        return localStorage.setItem('apiKey', apiKeyRef.current || '');
       case false:
-        return localStorage.removeItem("apiKey");
+        return localStorage.removeItem('apiKey');
       case null:
       default:
         return;

@@ -1,47 +1,52 @@
-import { screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { UserContext, initialUserState } from "contexts";
-import { Main } from "./Main";
-import { renderWithClient } from "tests";
+import { screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
+import { UserContext } from 'contexts/UserContext/User.context';
+import { initialUserState } from 'contexts/UserContext/UserContext.constants';
+import { renderWithClient } from 'tests';
+import { Main } from './Main';
 
-const dispatch = jest.fn();
+const dispatch = vi.fn();
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
-test("shows loader on unspecified logged in status", () => {
+test('shows loader on unspecified logged in status', () => {
   renderWithClient(
-    <MemoryRouter initialEntries={[""]}>
+    <MemoryRouter initialEntries={['']}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
-  expect(screen.getByRole("loader")).toBeInTheDocument();
+  expect(screen.getByRole('loader')).toBeInTheDocument();
 });
 
-test("shows app on logged in status", () => {
+test('shows app on logged in status', () => {
   renderWithClient(
-    <MemoryRouter initialEntries={[""]}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
+    <MemoryRouter initialEntries={['']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}
+      >
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
-  expect(screen.getByText("Welcome to Bootzooka!")).toBeInTheDocument();
+  expect(screen.getByText('Welcome to Bootzooka!')).toBeInTheDocument();
 });
 
-test("shows app on logged out status", () => {
+test('shows app on logged out status', () => {
   renderWithClient(
-    <MemoryRouter initialEntries={[""]}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+    <MemoryRouter initialEntries={['']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+      >
         <Main />
       </UserContext.Provider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
-  expect(screen.getByText("Welcome to Bootzooka!")).toBeInTheDocument();
+  expect(screen.getByText('Welcome to Bootzooka!')).toBeInTheDocument();
 });

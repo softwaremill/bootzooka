@@ -1,7 +1,14 @@
-import React from "react";
-import { Routes as RouterRoutes, Route } from "react-router-dom";
-import { Welcome, Login, Register, RecoverLostPassword, SecretMain, Profile, NotFound } from "pages";
-import { ProtectedRoute } from "./ProtectedRoute";
+import { Routes as RouterRoutes, Route } from 'react-router';
+import {
+  Welcome,
+  Login,
+  Register,
+  RecoverLostPassword,
+  SecretMain,
+  Profile,
+  NotFound,
+} from 'pages';
+import { ProtectedRoute } from './ProtectedRoute';
 
 export const Routes: React.FC = () => (
   <RouterRoutes>
