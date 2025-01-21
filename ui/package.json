@@ -12,7 +12,7 @@
     "build": "yarn generate:openapi-types && tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage --watchAll=false",
+    "test:coverage": "vitest run --coverage",
     "test:ci": "CI=true vitest",
     "lint": "eslint .",
     "generate:openapi-types": "npx openapi-codegen gen apiWeb --source file --relativePath ../backend/target/openapi.yaml",

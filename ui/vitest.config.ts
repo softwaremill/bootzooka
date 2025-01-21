@@ -13,7 +13,12 @@ export default defineConfig((env) =>
         coverage: {
           reporter: ['text', 'json', 'html'],
           include: ['src/**/*'],
-          exclude: [],
+          exclude: [
+            'src/api/*',
+            'src/main.tsx',
+            'src/vite-env.d.ts',
+            'src/main/index.ts',
+          ],
         },
       },
     })
