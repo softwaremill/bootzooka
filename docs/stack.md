@@ -1,29 +1,29 @@
 ---
 layout: default
-title:  "Technology stack"
+title: "Technology stack"
 ---
 
 When picking Bootzooka's technology stack we wanted to use modern, but reasonably proven technologies. So while you won't find the latest, hottest frameworks here, you also won't see any JSPs or &lt;marquee&gt; tags. The components are easy to replace, so if you'd like to experiment with a new library, this should be a matter of replacing only a small part of Bootzooka. Also, we try to update the stack once in a while, so that it's up-to-date with current developments and trends.
 
 Bootzooka's stack consists of the following technologies/tools, on the backend:
 
-* [Scala](https://www.scala-lang.org) (JVM based, functional language)
-* [Tapir](https://github.com/softwaremill/tapir) (endpoint description library) + [netty](https://netty.io) (backend networking layer)
-* SQL database, by default [PostgreSQL](https://www.postgresql.org) (persistence)
-* [Magnum](https://github.com/AugustNagro/magnum) (type-safe database access) + [flyway](https://flywaydb.org) (schema evolution)
-* [Ox](https://github.com/softwaremill/ox) (error handling, concurrency & resource management)
-* [SBT](https://www.scala-sbt.org) (build tool)
-* [OpenTelemetry](https://opentelemetry.io) (metrics & tracing)
+- [Scala](https://www.scala-lang.org) (JVM based, functional language)
+- [Tapir](https://github.com/softwaremill/tapir) (endpoint description library) + [netty](https://netty.io) (backend networking layer)
+- SQL database, by default [PostgreSQL](https://www.postgresql.org) (persistence)
+- [Magnum](https://github.com/AugustNagro/magnum) (type-safe database access) + [flyway](https://flywaydb.org) (schema evolution)
+- [Ox](https://github.com/softwaremill/ox) (error handling, concurrency & resource management)
+- [SBT](https://www.scala-sbt.org) (build tool)
+- [OpenTelemetry](https://opentelemetry.io) (metrics & tracing)
 
 And on the frontend:
 
-* [TypeScript](https://www.typescriptlang.org) (JavaScript superset)
-* [react](https://reactjs.org)
-* [Swagger](https://swagger.io) (interactive API docs)
-* [yarn](https://yarnpkg.com) (build tool)
-* [formik](https://formik.org/) (forms)
-* [yup](https://www.npmjs.com/package/yup/v/1.3.3) (validation)
-* [openapi-codegen](https://github.com/fabien0102/openapi-codegen) (generate ui functions from OpenAPI specifications)
+- [TypeScript](https://www.typescriptlang.org) (JavaScript superset)
+- [react](https://react.dev/)
+- [Swagger](https://swagger.io) (interactive API docs)
+- [yarn](https://yarnpkg.com) (build tool)
+- [formik](https://formik.org/) (forms)
+- [yup](https://www.npmjs.com/package/yup/v/1.3.3) (validation)
+- [openapi-codegen](https://github.com/fabien0102/openapi-codegen) (generate ui functions from OpenAPI specifications)
 
 ### Why Scala?
 

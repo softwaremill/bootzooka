@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 'Getting started'
+title: "Getting started"
 ---
 
 ## Prerequisites
@@ -9,7 +9,7 @@ In order to build and develop on Bootzooka foundations you need the following:
 
 - Java JDK >= 21
 - [sbt](http://www.scala-sbt.org/) >= 1.10
-- Node.js >= 16.0 (We recommend [nvm](https://github.com/creationix/nvm) - node version manager)
+- Node.js >= 22 (We recommend [nvm](https://github.com/nvm-sh/nvm) - node version manager)
 - PostgreSQL
 
 ## How to run
