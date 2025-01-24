@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { UserContext } from 'contexts/UserContext/User.context';
 
-const useLocalStoragedApiKey = () => {
+const useLocalStorageApiKey = () => {
   const {
     dispatch,
     state: { apiKey, loggedIn },
@@ -34,4 +34,4 @@ const useLocalStoragedApiKey = () => {
   }, [loggedIn]);
 };
 
-export default useLocalStoragedApiKey;
+export default useLocalStorageApiKey;

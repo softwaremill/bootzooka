@@ -17,10 +17,11 @@ Bootzooka's stack consists of the following technologies/tools, on the backend:
 
 And on the frontend:
 
+- [Vite](https://vite.dev/) (build tool)
 - [TypeScript](https://www.typescriptlang.org) (JavaScript superset)
 - [react](https://react.dev/)
 - [Swagger](https://swagger.io) (interactive API docs)
-- [yarn](https://yarnpkg.com) (build tool)
+- [yarn](https://yarnpkg.com) (package manager)
 - [formik](https://formik.org/) (forms)
 - [yup](https://www.npmjs.com/package/yup/v/1.3.3) (validation)
 - [openapi-codegen](https://github.com/fabien0102/openapi-codegen) (generate ui functions from OpenAPI specifications)

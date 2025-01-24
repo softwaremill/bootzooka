@@ -4,14 +4,14 @@ import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { UserContextProvider, UserAction } from 'contexts';
 import { UserContext } from 'contexts/UserContext/User.context';
-import useLocalStoragedApiKey from './useLocalStoragedApiKey';
+import useLocalStorageApiKey from './useLocalStorageApiKey';
 
 const TestComponent: React.FC<{ actions?: UserAction[]; label?: string }> = ({
   actions,
   label,
 }) => {
   const { state, dispatch } = useContext(UserContext);
-  useLocalStoragedApiKey();
+  useLocalStorageApiKey();
   return (
     <>
       <div>

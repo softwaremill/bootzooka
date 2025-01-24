@@ -5,7 +5,7 @@ export const validationSchema = Yup.object({
     .min(3, 'At least 3 characters required')
     .required('Required'),
   email: Yup.string()
-    .email('Correct email address required')
+    .email('Valid email address required')
     .required('Required'),
   password: Yup.string()
     .min(5, 'At least 5 characters required')
