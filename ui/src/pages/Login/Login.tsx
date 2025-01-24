@@ -1,17 +1,13 @@
-import { useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/Form";
-import { BiLogInCircle } from "react-icons/bi";
-import { Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
-import { UserContext } from "contexts";
-import { TwoColumnHero, FormikInput, FeedbackButton } from "components";
-import { usePostUserLogin } from "api/apiComponents";
-
-const validationSchema = Yup.object({
-  loginOrEmail: Yup.string().required("Required"),
-  password: Yup.string().required("Required"),
-});
+import { useContext, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router';
+import Form from 'react-bootstrap/Form';
+import { BiLogInCircle } from 'react-icons/bi';
+import { Formik, Form as FormikForm } from 'formik';
+import * as Yup from 'yup';
+import { UserContext } from 'contexts/UserContext/User.context';
+import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
+import { usePostUserLogin } from 'api/apiComponents';
+import { validationSchema } from './Login.validations';
 
 export type LoginParams = Yup.InferType<typeof validationSchema>;
 
@@ -25,24 +21,21 @@ export const Login = () => {
 
   const mutation = usePostUserLogin({
     onSuccess: ({ apiKey }) => {
-      dispatch({ type: "SET_API_KEY", apiKey });
+      dispatch({ type: 'SET_API_KEY', apiKey });
     },
   });
 
-  const login = mutation.mutateAsync;
+  const login = mutation?.mutateAsync;
 
   useEffect(() => {
-    if (loggedIn) navigate("/main");
+    if (loggedIn) navigate('/main');
   }, [loggedIn, navigate]);
 
   return (
     <TwoColumnHero>
       <h3 className="mb-4">Please sign in</h3>
       <Formik<LoginParams>
-        initialValues={{
-          loginOrEmail: "",
-          password: "",
-        }}
+        initialValues={{ loginOrEmail: '', password: '' }}
         onSubmit={(values) => login({ body: values })}
         validationSchema={validationSchema}
       >

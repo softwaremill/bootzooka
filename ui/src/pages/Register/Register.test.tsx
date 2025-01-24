@@ -1,137 +1,176 @@
-import { screen } from "@testing-library/react";
-import { userEvent } from "@testing-library/user-event";
-import { MemoryRouter, unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
-import { createMemoryHistory } from "@remix-run/router";
-import { UserContext, initialUserState } from "contexts";
-import { Register } from "./Register";
-import { renderWithClient } from "tests";
+import { screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { MemoryRouter, useLocation } from 'react-router';
+import { renderWithClient } from 'tests';
+import { Register } from './Register';
+import { UserContext } from 'contexts/UserContext/User.context';
+import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 
-const history = createMemoryHistory({ initialEntries: ["/login"] });
-const dispatch = jest.fn();
-const mockMutate = jest.fn();
-const mockResponse = jest.fn();
+const dispatch = vi.fn();
+const mockMutate = vi.fn();
+const mockResponse = vi.fn();
 
-jest.mock("api/apiComponents", () => ({
+const LocationDisplay = () => {
+  const location = useLocation();
+
+  return <div data-testid="location-display">{location.pathname}</div>;
+};
+
+vi.mock('api/apiComponents', () => ({
   usePostUserRegister: () => mockResponse(),
 }));
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
-test("renders header", () => {
-  mockResponse.mockReturnValueOnce({
+test('renders header', () => {
+  mockResponse.mockReturnValue({
     mutate: mockMutate,
-    reset: jest.fn(),
+    reset: vi.fn(),
     isSuccess: true,
-    data: { apiKey: "test-api-key" },
+    isPending: false,
+    data: { apiKey: 'test-api-key' },
     isError: false,
-    error: "",
+    error: '',
+    onSuccess: dispatch({
+      type: 'SET_API_KEY',
+      apiKey: 'test-api-key',
+    }),
   });
 
   renderWithClient(
-    <MemoryRouter initialEntries={["/login"]}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+    <MemoryRouter initialEntries={['/login']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+      >
         <Register />
       </UserContext.Provider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
-  expect(screen.getByText("Please sign up")).toBeInTheDocument();
+  expect(screen.getByText('Please sign up')).toBeInTheDocument();
 });
 
-test("redirects when registered", () => {
+test('redirects when registered', () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
-    reset: jest.fn(),
+    reset: vi.fn(),
     isSuccess: true,
-    data: { apiKey: "test-api-key" },
+    isPending: false,
+    data: { apiKey: 'test-api-key' },
     isError: false,
-    error: "",
+    error: '',
   });
 
   renderWithClient(
-    <HistoryRouter history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}>
+    <MemoryRouter initialEntries={['/login']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}
+      >
         <Register />
+        <LocationDisplay />
       </UserContext.Provider>
-    </HistoryRouter>,
+    </MemoryRouter>
   );
 
-  expect(history.location.pathname).toEqual("/main");
+  expect(screen.getByTestId('location-display')).toHaveTextContent('/main');
 });
 
-test("handles register success", async () => {
+test('handles register success', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
-    reset: jest.fn(),
+    reset: vi.fn(),
     isSuccess: true,
-    data: { apiKey: "test-api-key" },
+    data: { apiKey: 'test-api-key' },
     isError: false,
-    error: "",
+    error: '',
+    onSuccess: dispatch({
+      type: 'SET_API_KEY',
+      apiKey: 'test-api-key',
+    }),
   });
 
   renderWithClient(
-    <HistoryRouter history={history}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+    <MemoryRouter initialEntries={['/login']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+      >
         <Register />
       </UserContext.Provider>
-    </HistoryRouter>,
+    </MemoryRouter>
   );
 
-  await userEvent.type(screen.getByLabelText("Login"), "test-login");
-  await userEvent.type(screen.getByLabelText("Email address"), "test@email.address.pl");
-  await userEvent.type(screen.getByLabelText("Password"), "test-password");
-  await userEvent.type(screen.getByLabelText("Repeat password"), "test-password");
-  await userEvent.click(screen.getByText("Create new account"));
+  await userEvent.type(screen.getByLabelText('Login'), 'test-login');
+  await userEvent.type(
+    screen.getByLabelText('Email address'),
+    'test@email.address.pl'
+  );
+  await userEvent.type(screen.getByLabelText('Password'), 'test-password');
+  await userEvent.type(
+    screen.getByLabelText('Repeat password'),
+    'test-password'
+  );
+  await userEvent.click(screen.getByText('Create new account'));
 
-  await screen.findByRole("success");
+  await screen.findByRole('success');
 
   expect(mockMutate).toHaveBeenCalledWith({
     body: {
-      login: "test-login",
-      email: "test@email.address.pl",
-      password: "test-password",
-      repeatedPassword: "test-password",
+      login: 'test-login',
+      email: 'test@email.address.pl',
+      password: 'test-password',
+      repeatedPassword: 'test-password',
     },
   });
 
-  expect(dispatch).toHaveBeenCalledWith({ apiKey: "test-api-key", type: "SET_API_KEY" });
+  expect(dispatch).toHaveBeenCalledWith({
+    apiKey: 'test-api-key',
+    type: 'SET_API_KEY',
+  });
 });
 
-test("handles register error", async () => {
+test('handles register error', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
-    reset: jest.fn(),
-    data: { apiKey: "test-api-key" },
+    reset: vi.fn(),
+    data: { apiKey: 'test-api-key' },
     isSuccess: false,
     isError: true,
-    error: "Test error",
+    error: 'Test error',
   });
 
   renderWithClient(
-    <MemoryRouter initialEntries={["/login"]}>
-      <UserContext.Provider value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}>
+    <MemoryRouter initialEntries={['/login']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+      >
         <Register />
       </UserContext.Provider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
-  await userEvent.type(screen.getByLabelText("Login"), "test-login");
-  await userEvent.type(screen.getByLabelText("Email address"), "test@email.address.pl");
-  await userEvent.type(screen.getByLabelText("Password"), "test-password");
-  await userEvent.type(screen.getByLabelText("Repeat password"), "test-password");
-  await userEvent.click(screen.getByText("Create new account"));
+  await userEvent.type(screen.getByLabelText('Login'), 'test-login');
+  await userEvent.type(
+    screen.getByLabelText('Email address'),
+    'test@email.address.pl'
+  );
+  await userEvent.type(screen.getByLabelText('Password'), 'test-password');
+  await userEvent.type(
+    screen.getByLabelText('Repeat password'),
+    'test-password'
+  );
+  await userEvent.click(screen.getByText('Create new account'));
 
   expect(mockMutate).toHaveBeenCalledWith({
     body: {
-      login: "test-login",
-      email: "test@email.address.pl",
-      password: "test-password",
-      repeatedPassword: "test-password",
+      login: 'test-login',
+      email: 'test@email.address.pl',
+      password: 'test-password',
+      repeatedPassword: 'test-password',
     },
   });
   expect(dispatch).not.toHaveBeenCalled();
 
-  await screen.findByRole("error");
+  await screen.findByRole('error');
 });

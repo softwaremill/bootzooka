@@ -1,25 +1,26 @@
-import { screen } from "@testing-library/react";
-import { Footer } from "./Footer";
-import { renderWithClient } from "tests";
-import { useGetAdminVersion } from "api/apiComponents";
+import { Mock } from 'vitest';
+import { screen } from '@testing-library/react';
+import { renderWithClient } from 'tests';
+import { useGetAdminVersion } from 'api/apiComponents';
+import { Footer } from './Footer';
 
-jest.mock("api/apiComponents", () => ({
-  useGetAdminVersion: jest.fn(),
+vi.mock('api/apiComponents', () => ({
+  useGetAdminVersion: vi.fn(),
 }));
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
-test("renders version data", async () => {
-  const mockedUseGetAdminVersion = useGetAdminVersion as jest.Mock;
+test('renders version data', async () => {
+  const mockedUseGetAdminVersion = useGetAdminVersion as Mock;
 
   mockedUseGetAdminVersion.mockReturnValue({
     isPending: false,
     isLoading: false,
     isError: false,
     isSuccess: true,
-    data: { buildDate: "testDate", buildSha: "testSha" },
+    data: { buildDate: 'testDate', buildSha: 'testSha' },
   });
 
   renderWithClient(<Footer />);

@@ -1,5 +1,5 @@
-import type { QueryKey, UseQueryOptions } from "@tanstack/react-query";
-import { QueryOperation } from "./apiComponents";
+import type { QueryKey, UseQueryOptions } from '@tanstack/react-query';
+import { QueryOperation } from './apiComponents';
 
 export type ApiContext = {
   fetcherOptions: {
@@ -35,7 +35,12 @@ export function useApiContext<
   TError = unknown,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
->(_queryOptions?: Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, "queryKey" | "queryFn">): ApiContext {
+>(
+  _queryOptions?: Omit<
+    UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+    'queryKey' | 'queryFn'
+  >
+): ApiContext {
   return {
     fetcherOptions: {},
     queryOptions: {},
@@ -46,10 +51,10 @@ export function useApiContext<
 export const queryKeyFn = (operation: QueryOperation) => {
   const queryKey: unknown[] = hasPathParams(operation)
     ? operation.path
-        .split("/")
+        .split('/')
         .filter(Boolean)
         .map((i) => resolvePathParam(i, operation.variables.pathParams))
-    : operation.path.split("/").filter(Boolean);
+    : operation.path.split('/').filter(Boolean);
 
   if (hasQueryParams(operation)) {
     queryKey.push(operation.variables.queryParams);
@@ -63,14 +68,14 @@ export const queryKeyFn = (operation: QueryOperation) => {
 };
 // Helpers
 const resolvePathParam = (key: string, pathParams: Record<string, string>) => {
-  if (key.startsWith("{") && key.endsWith("}")) {
+  if (key.startsWith('{') && key.endsWith('}')) {
     return pathParams[key.slice(1, -1)];
   }
   return key;
 };
 
 const hasPathParams = (
-  operation: QueryOperation,
+  operation: QueryOperation
 ): operation is QueryOperation & {
   variables: { pathParams: Record<string, string> };
 } => {
@@ -78,7 +83,7 @@ const hasPathParams = (
 };
 
 const hasBody = (
-  operation: QueryOperation,
+  operation: QueryOperation
 ): operation is QueryOperation & {
   variables: { body: Record<string, unknown> };
 } => {
@@ -86,7 +91,7 @@ const hasBody = (
 };
 
 const hasQueryParams = (
-  operation: QueryOperation,
+  operation: QueryOperation
 ): operation is QueryOperation & {
   variables: { queryParams: Record<string, unknown> };
 } => {

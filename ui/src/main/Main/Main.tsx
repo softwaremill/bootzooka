@@ -1,15 +1,19 @@
-import React from "react";
-import useLoginOnApiKey from "./useLoginOnApiKey";
-import useLocalStoragedApiKey from "./useLocalStoragedApiKey";
-import { UserContext } from "contexts";
-import { Top, ForkMe, Routes, Footer, Loader } from "../";
+import { useContext } from 'react';
+import { UserContext } from 'contexts/UserContext/User.context';
+import { Top } from 'main/Top/Top';
+import { Footer } from 'main/Footer/Footer';
+import { Loader } from 'main/Loader/Loader';
+import { ForkMe } from 'main/ForkMe/ForkMe';
+import { Routes } from 'main/Routes/Routes';
+import useLoginOnApiKey from './useLoginOnApiKey';
+import useLocalStorageApiKey from './useLocalStorageApiKey';
 
-export const Main: React.FC = () => {
+export const Main = () => {
   const {
     state: { loggedIn },
-  } = React.useContext(UserContext);
+  } = useContext(UserContext);
 
-  useLocalStoragedApiKey();
+  useLocalStorageApiKey();
   useLoginOnApiKey();
 
   if (loggedIn === null) {

@@ -1,21 +1,21 @@
-import { screen } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { UserContext, UserState, initialUserState } from "contexts";
-import { ProtectedRoute } from "./ProtectedRoute";
-import { Login } from "pages";
-import { renderWithClient } from "tests";
+import { screen } from '@testing-library/react';
+import { MemoryRouter, Routes, Route } from 'react-router';
+import { UserState } from 'contexts';
+import { UserContext } from 'contexts/UserContext/User.context';
+import { initialUserState } from 'contexts/UserContext/UserContext.constants';
+import { renderWithClient } from 'tests';
+import { Login } from 'pages';
+import { ProtectedRoute } from './ProtectedRoute';
 
-const dispatch = jest.fn();
-
-const onLogin = jest.fn();
+const dispatch = vi.fn();
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
-test("renders protected route for unlogged user", () => {
+test('renders protected route for unlogged user', () => {
   renderWithClient(
-    <MemoryRouter initialEntries={[""]}>
+    <MemoryRouter initialEntries={['']}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -24,20 +24,20 @@ test("renders protected route for unlogged user", () => {
           </Route>
         </Routes>
       </UserContext.Provider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
-  expect(screen.getByText("Please sign in")).toBeInTheDocument();
+  expect(screen.getByText('Please sign in')).toBeInTheDocument();
 });
 
-test("renders protected route for logged user", () => {
+test('renders protected route for logged user', () => {
   const loggedUserState: UserState = {
     ...initialUserState,
     loggedIn: true,
   };
 
   renderWithClient(
-    <MemoryRouter initialEntries={[""]}>
+    <MemoryRouter initialEntries={['']}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -46,8 +46,8 @@ test("renders protected route for logged user", () => {
           </Route>
         </Routes>
       </UserContext.Provider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
-  expect(screen.getByText("Protected Text")).toBeInTheDocument();
+  expect(screen.getByText('Protected Text')).toBeInTheDocument();
 });

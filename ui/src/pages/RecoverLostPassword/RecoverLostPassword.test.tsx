@@ -1,71 +1,75 @@
-import { screen } from "@testing-library/react";
-import { userEvent } from "@testing-library/user-event";
-import { RecoverLostPassword } from "./RecoverLostPassword";
-import { renderWithClient } from "tests";
+import { screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { renderWithClient } from 'tests';
+import { RecoverLostPassword } from './RecoverLostPassword';
 
-const mockMutate = jest.fn();
-const mockResponse = jest.fn();
+const mockMutate = vi.fn();
+const mockResponse = vi.fn();
 
-jest.mock("api/apiComponents", () => ({
+vi.mock('api/apiComponents', () => ({
   usePostPasswordresetForgot: () => mockResponse(),
 }));
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
-test("renders header", () => {
+test('renders header', () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
-    reset: jest.fn(),
-    data: { apiKey: "test-api-key" },
+    reset: vi.fn(),
+    data: { apiKey: 'test-api-key' },
     isSuccess: true,
     isError: false,
-    error: "",
+    error: '',
   });
 
   renderWithClient(<RecoverLostPassword />);
 
-  expect(screen.getByText("Recover lost password")).toBeInTheDocument();
+  expect(screen.getByText('Recover lost password')).toBeInTheDocument();
 });
 
-test("handles password recover success", async () => {
+test('handles password recover success', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
-    reset: jest.fn(),
-    data: { apiKey: "test-api-key" },
+    reset: vi.fn(),
+    data: { apiKey: 'test-api-key' },
     isSuccess: true,
     isError: false,
-    error: "",
+    error: '',
   });
 
   renderWithClient(<RecoverLostPassword />);
 
-  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
-  await userEvent.click(screen.getByText("Reset password"));
+  await userEvent.type(screen.getByLabelText('Login or email'), 'test-login');
+  await userEvent.click(screen.getByText('Reset password'));
 
-  expect(mockMutate).toHaveBeenCalledWith({ body: { loginOrEmail: "test-login" } });
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: { loginOrEmail: 'test-login' },
+  });
 
-  await screen.findByRole("success");
-  await screen.findByText("Password reset claim success");
+  await screen.findByRole('success');
+  await screen.findByText('Password reset claim success');
 });
 
-test("handles password recover error", async () => {
+test('handles password recover error', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
-    reset: jest.fn(),
-    data: { apiKey: "test-api-key" },
+    reset: vi.fn(),
+    data: { apiKey: 'test-api-key' },
     isSuccess: false,
     isError: true,
-    error: "Test error",
+    error: 'Test error',
   });
 
   renderWithClient(<RecoverLostPassword />);
 
-  await userEvent.type(screen.getByLabelText("Login or email"), "test-login");
-  await userEvent.click(screen.getByText("Reset password"));
+  await userEvent.type(screen.getByLabelText('Login or email'), 'test-login');
+  await userEvent.click(screen.getByText('Reset password'));
 
-  expect(mockMutate).toHaveBeenCalledWith({ body: { loginOrEmail: "test-login" } });
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: { loginOrEmail: 'test-login' },
+  });
 
-  await screen.findByRole("error");
+  await screen.findByRole('error');
 });

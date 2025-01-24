@@ -1,8 +1,7 @@
-import React from "react";
-import { Field, FieldProps } from "formik";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Field, FieldProps } from 'formik';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 interface FormikInputProps {
   type?: string;
@@ -10,7 +9,11 @@ interface FormikInputProps {
   label: string;
 }
 
-export const FormikInput: React.FC<FormikInputProps> = ({ type = "text", name, label }) => (
+export const FormikInput: React.FC<FormikInputProps> = ({
+  type = 'text',
+  name,
+  label,
+}) => (
   <Field name={name}>
     {({ field, meta }: FieldProps<string>) => (
       <Form.Group className="mb-4" as={Row}>

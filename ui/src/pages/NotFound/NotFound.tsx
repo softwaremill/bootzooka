@@ -1,6 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Container from "react-bootstrap/Container";
+import { Link } from 'react-router';
+import Container from 'react-bootstrap/Container';
 
 export const NotFound: React.FC = () => (
   <Container className="py-5 text-center">
@@ -12,10 +11,14 @@ export const NotFound: React.FC = () => (
         <Link to="/">Home page</Link>
       </li>
       <li>
-        <a href="http://softwaremill.com">SoftwareMill - our company Home Page</a>
+        <a href="http://softwaremill.com">
+          SoftwareMill - our company Home Page
+        </a>
       </li>
       <li>
-        <a href="https://github.com/softwaremill/bootzooka/">Bootzooka on GitHub</a>
+        <a href="https://github.com/softwaremill/bootzooka/">
+          Bootzooka on GitHub
+        </a>
       </li>
     </ul>
   </Container>
