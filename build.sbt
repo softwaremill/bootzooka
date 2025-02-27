@@ -47,7 +47,7 @@ val jsonDependencies = Seq(
 )
 
 val loggingDependencies = Seq(
-  "ch.qos.logback" % "logback-classic" % "1.5.16",
+  "ch.qos.logback" % "logback-classic" % "1.5.17",
   "org.slf4j" % "jul-to-slf4j" % "2.0.17", // forward e.g. otel logs which use JUL to SLF4J
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
   "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17" % Runtime,
