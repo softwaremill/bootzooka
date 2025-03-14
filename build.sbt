@@ -10,7 +10,7 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val password4jVersion = "1.8.2"
-val sttpVersion = "3.10.3"
+val sttpVersion = "4.0.0-RC1"
 val tapirVersion = "1.11.19"
 val oxVersion = "0.5.12"
 val otelVersion = "1.48.0"
@@ -24,15 +24,15 @@ val dbDependencies = Seq(
 )
 
 val httpDependencies = Seq(
-  "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
-  "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpVersion,
+  "com.softwaremill.sttp.client4" %% "core" % sttpVersion,
+  "com.softwaremill.sttp.client4" %% "slf4j-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % tapirVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion
 )
 
 val observabilityDependencies = Seq(
-  "com.softwaremill.sttp.client3" %% "opentelemetry-metrics-backend" % sttpVersion,
+  "com.softwaremill.sttp.client4" %% "opentelemetry-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-tracing" % tapirVersion,
   "com.softwaremill.ox" %% "otel-context" % oxVersion,
@@ -45,7 +45,7 @@ val observabilityDependencies = Seq(
 val jsonDependencies = Seq(
   "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.33.2",
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
-  "com.softwaremill.sttp.client3" %% "jsoniter" % sttpVersion
+  "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion
 )
 
 val loggingDependencies = Seq(

@@ -2,12 +2,12 @@ package com.softwaremill.bootzooka.email.sender
 
 import com.softwaremill.bootzooka.email.{EmailData, MailgunConfig}
 import com.softwaremill.bootzooka.logging.Logging
-import sttp.client3.*
+import sttp.client4.*
 
 /** Sends emails using the [[https://www.mailgun.com Mailgun]] service. The external http call is done using
   * [[sttp https://github.com/softwaremill/sttp]].
   */
-class MailgunEmailSender(config: MailgunConfig, sttpBackend: SttpBackend[Identity, Any]) extends EmailSender with Logging:
+class MailgunEmailSender(config: MailgunConfig, sttpBackend: SyncBackend) extends EmailSender with Logging:
   override def apply(email: EmailData): Unit =
     basicRequest.auth
       .basic("api", config.apiKey.value)

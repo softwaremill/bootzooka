@@ -3,8 +3,7 @@ package com.softwaremill.bootzooka.test
 import com.softwaremill.bootzooka.Dependencies
 import io.opentelemetry.api.OpenTelemetry
 import org.scalatest.{BeforeAndAfterAll, Suite}
-import sttp.client3.testing.SttpBackendStub
-import sttp.client3.{HttpClientSyncBackend, SttpBackend}
+import sttp.client3.SttpBackend
 import sttp.shared.Identity
 import sttp.tapir.server.stub.TapirStubInterpreter
 
@@ -15,15 +14,14 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres:
 
   var dependencies: Dependencies = uninitialized
 
-  private val stub: SttpBackendStub[Identity, Any] = HttpClientSyncBackend.stub
-
   override protected def beforeAll(): Unit = {
     super.beforeAll()
-    dependencies = Dependencies.create(TestConfig, OpenTelemetry.noop(), stub, currentDb, testClock)
+    dependencies =
+      Dependencies.create(TestConfig, OpenTelemetry.noop(), sttp.client4.httpclient.HttpClientSyncBackend.stub, currentDb, testClock)
   }
 
   private lazy val serverStub: SttpBackend[Identity, Any] =
-    TapirStubInterpreter[Identity, Any](stub)
+    TapirStubInterpreter[Identity, Any](sttp.client3.HttpClientSyncBackend.stub)
       .whenServerEndpointsRunLogic(dependencies.httpApi.allEndpoints)
       .backend()
 

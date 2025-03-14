@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.http
 
 import com.softwaremill.bootzooka.OpenAPIDescription
-import com.softwaremill.bootzooka.infrastructure.CorrelationIdInterceptor
+import com.softwaremill.bootzooka.infrastructure.SetTraceIdInMDCInterceptor
 import com.softwaremill.bootzooka.logging.Logging
 import io.opentelemetry.api.OpenTelemetry
 import ox.Ox
@@ -40,8 +40,8 @@ class HttpApi(
   private val apiContextPath = List("api", "v1")
 
   private val serverOptions: NettySyncServerOptions = NettySyncServerOptions.customiseInterceptors
-    .prependInterceptor(CorrelationIdInterceptor)
     .prependInterceptor(OpenTelemetryTracing(otel))
+    .prependInterceptor(SetTraceIdInMDCInterceptor)
     // all errors are formatted as JSON, and no additional routes are added to the server
     .defaultHandlers(msg => ValuedEndpointOutput(Http.jsonErrorOutOutput, Error_OUT(msg)), notFoundWhenRejected = true)
     .corsInterceptor(CORSInterceptor.default[Identity])

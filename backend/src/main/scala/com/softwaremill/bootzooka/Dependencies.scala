@@ -5,7 +5,7 @@ import com.softwaremill.bootzooka.config.Config
 import com.softwaremill.bootzooka.email.EmailService
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.http.{HttpApi, HttpConfig}
-import com.softwaremill.bootzooka.infrastructure.{DB, SetCorrelationIdBackend}
+import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken}
 import com.softwaremill.bootzooka.security.{ApiKeyAuthToken, ApiKeyService, Auth}
@@ -17,10 +17,10 @@ import io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppen
 import io.opentelemetry.instrumentation.runtimemetrics.java8.{Classes, Cpu, GarbageCollector, MemoryPools, Threads}
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk
 import ox.{Ox, discard, tap, useCloseableInScope, useInScope}
-import sttp.client3.logging.slf4j.Slf4jLoggingBackend
-import sttp.client3.opentelemetry.OpenTelemetryMetricsBackend
-import sttp.client3.{HttpClientSyncBackend, SttpBackend}
-import sttp.shared.Identity
+import sttp.client4.SyncBackend
+import sttp.client4.httpclient.HttpClientSyncBackend
+import sttp.client4.logging.slf4j.Slf4jLoggingBackend
+import sttp.client4.opentelemetry.{OpenTelemetryMetricsBackend, OpenTelemetryTracingSyncBackend}
 import sttp.tapir.AnyEndpoint
 
 case class Dependencies(httpApi: HttpApi, emailService: EmailService)
@@ -35,14 +35,14 @@ object Dependencies:
     val config = Config.read.tap(Config.log)
     val otel = initializeOtel()
     val sttpBackend = useInScope(
-      Slf4jLoggingBackend(OpenTelemetryMetricsBackend(new SetCorrelationIdBackend(HttpClientSyncBackend()), otel), includeTiming = true)
+      Slf4jLoggingBackend(OpenTelemetryMetricsBackend(OpenTelemetryTracingSyncBackend(HttpClientSyncBackend(), otel), otel))
     )(_.close())
     val db: DB = useCloseableInScope(DB.createTestMigrate(config.db))
 
     create(config, otel, sttpBackend, db, DefaultClock)
 
   /** Create the service graph using the given infrastructure services & configuration. */
-  def create(config: Config, otel: OpenTelemetry, sttpBackend: SttpBackend[Identity, Any], db: DB, clock: Clock): Dependencies =
+  def create(config: Config, otel: OpenTelemetry, sttpBackend: SyncBackend, db: DB, clock: Clock): Dependencies =
     autowire[Dependencies](
       autowireMembersOf(config),
       otel,

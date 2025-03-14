@@ -5,20 +5,11 @@
     <resetJUL>true</resetJUL>
   </contextListener>
 
-  <if condition='p("LOGBACK_JSON_ENCODE").equals("true")'>
-    <then>
-      <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-      </appender>
-    </then>
-    <else>
-      <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-          <pattern><![CDATA[%d{HH:mm:ss.SSS}%boldYellow(%replace( [%X{cid}] ){' \[\] ', ' '})[%thread] %-5level %logger{5} - %msg%n%rEx]]></pattern>
-        </encoder>
-      </appender>
-    </else>
-  </if>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern><![CDATA[%d{HH:mm:ss.SSS}%boldYellow(%replace( [%X{traceId}] ){' \[\] ', ' '})[%thread] %-5level %logger{5} - %msg%n%rEx]]></pattern>
+    </encoder>
+  </appender>
 
   <appender name="OpenTelemetry"
     class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender"></appender>
@@ -28,7 +19,7 @@
     <appender-ref ref="OpenTelemetry" />
   </logger>
 
-  <logger name="sttp.client3" level="${LOG_LEVEL:-INFO}" additivity="false">
+  <logger name="sttp.client4" level="${LOG_LEVEL:-INFO}" additivity="false">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="OpenTelemetry" />
   </logger>
