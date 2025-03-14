@@ -21,7 +21,7 @@ If this is your first attempt to run `ui`, please go to `ui` project and run
 
     yarn install
 
-This will install all required dependencies for this project. If all is well you can start your development version of frontend by issuing `yarn start` from command line (or running the provided `frontend-start` script in the main directory). It should start your browser and point you to [Bootzooka home page](http://0.0.0.0:3000/#/).
+This will install all required dependencies for this project. If all is well you can start your development version of frontend by issuing `yarn start` from command line (or running the provided `frontend-start` script in the main directory). It should start your browser and point you to [Bootzooka home page](http://0.0.0.0:8081/#/).
 
 ## Development
 
@@ -36,7 +36,7 @@ The most important tasks exposed are:
 
 ## `yarn start` task
 
-This task serves Bootzooka application on port `3000` on `0.0.0.0` (it is available to all hosts from the same network). Your default browser should open at this location. All requests to the backend will be proxied to port `8080` where it expects the server to be run.
+This task serves Bootzooka application on port `8081` on `0.0.0.0` (it is available to all hosts from the same network). Your default browser should open at this location. All requests to the backend will be proxied to port `8080` where it expects the server to be run.
 
 Hot reload is in place already (provided by the Vite stack), so every change is automatically compiled (if necessary) and browser is automatically refreshed to apply changes. No need to refresh it by hand.
 

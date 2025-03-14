@@ -34,6 +34,8 @@ val httpDependencies = Seq(
 val observabilityDependencies = Seq(
   "com.softwaremill.sttp.client3" %% "opentelemetry-metrics-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-tracing" % tapirVersion,
+  "com.softwaremill.ox" %% "otel-context" % oxVersion,
   "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion,
   "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
   "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java8" % otelInstrumentationVersion,
@@ -182,21 +184,7 @@ lazy val backend: Project = (project in file("backend"))
       configDependencies ++ dbDependencies ++ httpDependencies ++ jsonDependencies ++
       apiDocsDependencies ++ observabilityDependencies ++ securityDependencies ++ emailDependencies,
     Compile / mainClass := Some("com.softwaremill.bootzooka.Main"),
-    copyWebapp := {
-      val source = uiDirectory.value / "build"
-      val target = (Compile / classDirectory).value / "webapp"
-      streams.value.log.info(s"Copying the webapp resources from $source to $target")
-      IO.copyDirectory(source, target)
-    },
-    copyWebapp := copyWebapp
-      .dependsOn(
-        Def
-          .sequential(
-            generateOpenAPIDescription,
-            yarnTask.toTask(" build")
-          )
-      )
-      .value,
+    // generates the target/openapi.yaml file which is then used by the UI to generate service stubs
     generateOpenAPIDescription := Def.taskDyn {
       val log = streams.value.log
       val targetPath = ((Compile / target).value / "openapi.yaml").toString
@@ -204,13 +192,25 @@ lazy val backend: Project = (project in file("backend"))
         (Compile / runMain).toTask(s" com.softwaremill.bootzooka.writeOpenAPIDescription $targetPath").value
       }
     }.value,
+    // used by fat-jar and docker builds, to copy the UI files to a single bundle
+    copyWebapp := {
+      val source = uiDirectory.value / "build"
+      val target = (Compile / classDirectory).value / "webapp"
+      streams.value.log.info(s"Copying the webapp resources from $source to $target")
+      IO.copyDirectory(source, target)
+    },
+    copyWebapp := copyWebapp.dependsOn(Def.sequential(generateOpenAPIDescription, yarnTask.toTask(" build"))).value,
+    // used by backend-start.sh, to restart the application when sources change
+    reStart := {
+      generateOpenAPIDescription.value
+      reStart.evaluated
+    },
     // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application
     run / fork := true,
     scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)
-  .settings(Revolver.settings)
   .settings(buildInfoSettings)
   .settings(fatJarSettings)
   .enablePlugins(DockerPlugin)

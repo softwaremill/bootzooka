@@ -8,12 +8,12 @@
 
 ### Using Docker compose
 
-The fastest way to experiment with Bootzooka is using the provided Docker compose setup. It starts three images: 
+The fastest way to experiment with Bootzooka is using the provided Docker compose setup. It starts three images:
 Bootzooka itself (either locally built or downloaded), PostgreSQL server and Graphana LGTM for observability.
 
 ### Backend: PostgreSQL & API
 
-To run Bootzooka's backend locally, you'll still need a running instance of PostgreSQL with a `bootzooka` database. 
+To run Bootzooka's backend locally, you'll still need a running instance of PostgreSQL with a `bootzooka` database.
 You can spin up one easily using docker:
 
 ```sh
@@ -44,7 +44,7 @@ Then, you can start the frontend:
 ./frontend-start.sh
 ```
 
-And open `http://localhost:3000`.
+And open `http://localhost:8081`.
 
 ## Commercial Support
 
@@ -52,4 +52,4 @@ We offer commercial support for Bootzooka and related technologies, as well as d
 
 ## Copyright
 
-Copyright (C) 2013-2024 SoftwareMill [https://softwaremill.com](https://softwaremill.com).
+Copyright (C) 2013-2025 SoftwareMill [https://softwaremill.com](https://softwaremill.com).

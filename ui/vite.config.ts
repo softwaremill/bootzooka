@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       open: true,
-      port: 3000,
+      port: 8081,
     },
     resolve: {
       alias: {

@@ -4,13 +4,11 @@ import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.http.Http.*
 import com.softwaremill.bootzooka.infrastructure.DB
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
 import com.softwaremill.bootzooka.util.Strings.{Id, asId}
 import sttp.tapir.*
-import sttp.tapir.json.jsoniter.jsonBody
 
 import java.time.Instant
 import scala.concurrent.duration.*

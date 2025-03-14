@@ -4,7 +4,6 @@ import com.softwaremill.bootzooka.logging.Logging
 import org.slf4j.MDC
 import ox.logback.InheritableMDC
 import sttp.client3.*
-import sttp.client3.{Response, SttpBackend}
 import sttp.capabilities.Effect
 import sttp.monad.MonadError
 import sttp.tapir.server.interceptor.{EndpointInterceptor, RequestHandler, RequestInterceptor, Responder}

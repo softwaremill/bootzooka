@@ -3,7 +3,6 @@ package com.softwaremill.bootzooka.passwordreset
 import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http.*
 import com.softwaremill.bootzooka.infrastructure.DB
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
 import sttp.tapir.Schema
 

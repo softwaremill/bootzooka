@@ -14,6 +14,7 @@ import sttp.tapir.server.metrics.opentelemetry.OpenTelemetryMetrics
 import sttp.tapir.server.model.ValuedEndpointOutput
 import sttp.tapir.server.netty.NettyConfig
 import sttp.tapir.server.netty.sync.{NettySyncServer, NettySyncServerBinding, NettySyncServerOptions}
+import sttp.tapir.server.tracing.opentelemetry.OpenTelemetryTracing
 import sttp.tapir.swagger.SwaggerUIOptions
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
@@ -40,6 +41,7 @@ class HttpApi(
 
   private val serverOptions: NettySyncServerOptions = NettySyncServerOptions.customiseInterceptors
     .prependInterceptor(CorrelationIdInterceptor)
+    .prependInterceptor(OpenTelemetryTracing(otel))
     // all errors are formatted as JSON, and no additional routes are added to the server
     .defaultHandlers(msg => ValuedEndpointOutput(Http.jsonErrorOutOutput, Error_OUT(msg)), notFoundWhenRejected = true)
     .corsInterceptor(CORSInterceptor.default[Identity])

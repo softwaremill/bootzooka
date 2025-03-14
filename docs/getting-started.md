@@ -30,6 +30,6 @@ To run the backend server part, enter the main directory and type `./backend-sta
 
 ### Browser client
 
-To run the frontend server part, enter the main directory and type `./frontend-start.sh`. This should open `http://localhost:3000/` in your browser (frontend listens on port 3000, backend on port 8080; so all backend HTTP requests will be proxied to port 8080).
+To run the frontend server part, enter the main directory and type `./frontend-start.sh`. This should open `http://localhost:8081/` in your browser (frontend listens on port 8081, backend on port 8080; so all backend HTTP requests will be proxied to port 8080).
 
 For details of frontend build and architecture please refer to the [frontend docs](frontend.html).
