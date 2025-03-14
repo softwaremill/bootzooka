@@ -55,6 +55,4 @@ This will bring into scope Tapir builder methods and schemas for documentation, 
 
 ### Logging
 
-Logging is performed using [scala logging](https://github.com/lightbend/scala-logging). Extend `Logging` to bring into scope a `logger` value.
-
-Bootzooka also supports correlation ids. The id is read from the `X-Correlation-ID` header of incoming requests (see `CorrelationIdInterceptor`), or a new one is generated. The correlation ids are included in all outgoing http requests (see `SetCorrelationIdBackend`).
+Logging is performed using Slf4j. Extend `Logging` to bring into scope a `logger` value. The logs that are output to the console include the current trace id.
