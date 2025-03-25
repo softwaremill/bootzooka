@@ -19,7 +19,7 @@ val otelInstrumentationVersion = "2.8.0-alpha"
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.1",
   "org.postgresql" % "postgresql" % "42.7.5",
-  "com.zaxxer" % "HikariCP" % "6.2.1",
+  "com.zaxxer" % "HikariCP" % "6.3.0",
   "org.flywaydb" % "flyway-database-postgresql" % "11.4.1"
 )
 
