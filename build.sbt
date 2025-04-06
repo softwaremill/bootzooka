@@ -54,7 +54,7 @@ val loggingDependencies = Seq(
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
   "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17" % Runtime,
   "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
-  "net.logstash.logback" % "logstash-logback-encoder" % "8.0" % Runtime
+  "net.logstash.logback" % "logstash-logback-encoder" % "8.1" % Runtime
 )
 
 val configDependencies = Seq(
