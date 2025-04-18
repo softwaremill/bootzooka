@@ -20,7 +20,7 @@ import ox.{Ox, discard, tap, useCloseableInScope, useInScope}
 import sttp.client4.SyncBackend
 import sttp.client4.httpclient.HttpClientSyncBackend
 import sttp.client4.logging.slf4j.Slf4jLoggingBackend
-import sttp.client4.opentelemetry.{OpenTelemetryMetricsBackend, OpenTelemetryTracingSyncBackend}
+import sttp.client4.opentelemetry.{OpenTelemetryMetricsBackend, OpenTelemetryTracingBackend}
 import sttp.tapir.AnyEndpoint
 
 case class Dependencies(httpApi: HttpApi, emailService: EmailService)
@@ -35,7 +35,7 @@ object Dependencies:
     val config = Config.read.tap(Config.log)
     val otel = initializeOtel()
     val sttpBackend = useInScope(
-      Slf4jLoggingBackend(OpenTelemetryMetricsBackend(OpenTelemetryTracingSyncBackend(HttpClientSyncBackend(), otel), otel))
+      Slf4jLoggingBackend(OpenTelemetryMetricsBackend(OpenTelemetryTracingBackend(HttpClientSyncBackend(), otel), otel))
     )(_.close())
     val db: DB = useCloseableInScope(DB.createTestMigrate(config.db))
 
