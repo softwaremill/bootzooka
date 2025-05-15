@@ -81,7 +81,7 @@ val emailDependencies = Seq(
 
 val testingDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-  "com.opentable.components" % "otj-pg-embedded" % "1.1.0" % Test
+  "com.opentable.components" % "otj-pg-embedded" % "1.1.1" % Test
 )
 
 lazy val uiProjectName = "ui"
