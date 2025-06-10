@@ -43,7 +43,7 @@ val observabilityDependencies = Seq(
 )
 
 val jsonDependencies = Seq(
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.36.3",
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.36.4",
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
   "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion
 )
