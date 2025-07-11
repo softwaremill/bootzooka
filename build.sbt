@@ -20,7 +20,7 @@ val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.1",
   "org.postgresql" % "postgresql" % "42.7.7",
   "com.zaxxer" % "HikariCP" % "6.3.0",
-  "org.flywaydb" % "flyway-database-postgresql" % "11.10.1"
+  "org.flywaydb" % "flyway-database-postgresql" % "11.10.2"
 )
 
 val httpDependencies = Seq(
