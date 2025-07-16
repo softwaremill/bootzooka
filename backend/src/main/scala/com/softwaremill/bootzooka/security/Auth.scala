@@ -8,7 +8,6 @@ import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.*
 import com.softwaremill.bootzooka.util.Strings.Id
 import ox.sleep
-import ox.either.{fail, ok}
 
 import java.security.SecureRandom
 import java.time.Instant

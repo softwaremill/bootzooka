@@ -101,13 +101,20 @@ lazy val commonSettings = Seq(
     haltOnCmdResultError(Process("yarn install", uiDirectory.value).!)
   },
   yarnTask := {
-    val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
     updateYarn.value
+    val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
     val localYarnCommand = "yarn " + taskName
     def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
     streams.value.log("Running yarn task: " + taskName)
     haltOnCmdResultError(runYarnTask())
-  }
+  },
+  // seting up the version
+  git.formattedShaVersion := {
+    val base = git.baseVersion.?.value
+    val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, Some("dirty"))
+    git.gitHeadCommit.value.map(sha => git.defaultFormatShaVersion(base, sha.take(7), suffix))
+  },
+  version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest"))
 )
 
 lazy val buildInfoSettings = Seq(
@@ -134,27 +141,10 @@ lazy val dockerSettings = Seq(
   Docker / packageName := "bootzooka",
   dockerUsername := Some("softwaremill"),
   dockerUpdateLatest := true,
-  Docker / stage := (Docker / stage).dependsOn(copyWebapp).value,
-  Docker / version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest")),
-  git.uncommittedSignifier := Some("dirty"),
-  ThisBuild / git.formattedShaVersion := {
-    val base = git.baseVersion.?.value
-    val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
-    git.gitHeadCommit.value.map { sha =>
-      git.defaultFormatShaVersion(base, sha.take(7), suffix)
-    }
-  }
+  Docker / stage := (Docker / stage).dependsOn(copyWebapp).value
 )
 
-def haltOnCmdResultError(result: Int): Unit = if (result != 0) {
-  throw new Exception("Build failed.")
-}
-
-def now(): String = {
-  import java.text.SimpleDateFormat
-  import java.util.Date
-  new SimpleDateFormat("yyyy-MM-dd-hhmmss").format(new Date())
-}
+def haltOnCmdResultError(result: Int): Unit = if (result != 0) { throw new Exception("Build failed.") }
 
 lazy val rootProject = (project in file("."))
   .settings(commonSettings)
@@ -177,7 +167,7 @@ lazy val backend: Project = (project in file("backend"))
     }.value,
     // used by docker builds, to copy the UI files to a single bundle
     copyWebapp := {
-      val source = uiDirectory.value / "build"
+      val source = uiDirectory.value / "dist"
       val target = (Compile / classDirectory).value / "webapp"
       streams.value.log.info(s"Copying the webapp resources from $source to $target")
       IO.copyDirectory(source, target)

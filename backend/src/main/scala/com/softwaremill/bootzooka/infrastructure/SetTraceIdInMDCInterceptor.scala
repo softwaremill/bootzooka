@@ -19,6 +19,6 @@ object SetTraceIdInMDCInterceptor extends RequestInterceptor[Identity] with Logg
     RequestHandler.from { case (request, endpoints, monad) =>
       val traceId = Span.current().getSpanContext().getTraceId()
       InheritableMDC.unsupervisedWhere(MDCKey -> traceId) {
-        requestHandler(EndpointInterceptor.noop)(request, endpoints)(monad)
+        requestHandler(EndpointInterceptor.noop)(request, endpoints)(using monad)
       }
     }
