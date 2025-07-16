@@ -68,6 +68,6 @@ object Dependencies:
         Cpu.registerObservers(otel)
         MemoryPools.registerObservers(otel)
         Threads.registerObservers(otel)
-        GarbageCollector.registerObservers(otel).discard
+        GarbageCollector.registerObservers(otel, false).discard
       }
       .tap(OpenTelemetryAppender.install)
