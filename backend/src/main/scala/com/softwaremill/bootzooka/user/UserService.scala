@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util.*
 import com.softwaremill.bootzooka.util.Strings.{Id, toLowerCased}
-import ox.either
+import ox.*
 import ox.either.ok
 
 import scala.concurrent.duration.Duration

@@ -26,7 +26,7 @@ class Auth[T](authTokenOps: AuthTokenOps[T], db: DB, clock: Clock) extends Loggi
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
-        sleep(random.nextInt(1000).millis)
+        sleep(random.nextInt(100).millis)
         Left(Fail.Unauthorized("Unauthorized"))
       case Some(token) if expired(token) =>
         logger.info(s"${authTokenOps.tokenName} expired: $token")
