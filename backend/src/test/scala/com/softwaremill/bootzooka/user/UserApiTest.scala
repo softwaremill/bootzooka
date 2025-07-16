@@ -5,6 +5,7 @@ import com.softwaremill.bootzooka.test.{BaseTest, RegisteredUser, TestDependenci
 import com.softwaremill.bootzooka.user.UserApi.*
 import org.scalatest.concurrent.Eventually
 import sttp.model.StatusCode
+import ox.discard
 
 import scala.concurrent.duration.*
 
@@ -134,10 +135,10 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val apiKey = requests.loginUser(login, password, Some(3)).body.shouldDeserializeTo[Login_OUT].apiKey
 
     // then
-    requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
+    requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT].discard
 
     testClock.forward(2.hours)
-    requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
+    requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT].discard
 
     testClock.forward(2.hours)
     requests.getUser(apiKey).code shouldBe StatusCode.Unauthorized
@@ -193,7 +194,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.changePassword(apiKey, password, newPassword)
 
     // then
-    response1.body.shouldDeserializeTo[ChangePassword_OUT]
+    response1.body.shouldDeserializeTo[ChangePassword_OUT].discard
     requests.loginUser(login, password, None).code shouldBe StatusCode.Unauthorized
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Ok
   }
@@ -257,7 +258,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.updateUser(apiKey, newLogin, email)
 
     // then
-    response1.body.shouldDeserializeTo[UpdateUser_OUT]
+    response1.body.shouldDeserializeTo[UpdateUser_OUT].discard
     val body = requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
     body.login shouldBe newLogin
     body.email shouldBe email
@@ -289,7 +290,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.updateUser(apiKey, login, newEmail)
 
     // then
-    response1.body.shouldDeserializeTo[UpdateUser_OUT]
+    response1.body.shouldDeserializeTo[UpdateUser_OUT].discard
     val body = requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
     body.login shouldBe login
     body.email shouldBe newEmail
@@ -322,7 +323,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.updateUser(apiKey, "   " + newLogin + "   ", "   " + newEmail + "   ")
 
     // then
-    response1.body.shouldDeserializeTo[UpdateUser_OUT]
+    response1.body.shouldDeserializeTo[UpdateUser_OUT].discard
     val body = requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
     body.login shouldBe newLogin
     body.email shouldBe newEmail

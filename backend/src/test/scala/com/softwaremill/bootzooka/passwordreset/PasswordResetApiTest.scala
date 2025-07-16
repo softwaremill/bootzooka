@@ -5,6 +5,7 @@ import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword
 import com.softwaremill.bootzooka.test.*
 import org.scalatest.concurrent.Eventually
 import sttp.model.StatusCode
+import ox.discard
 
 class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies with TestSupport:
 
@@ -15,7 +16,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     // when
     val response1 = requests.forgotPassword(login)
-    response1.body.shouldDeserializeTo[ForgotPassword_OUT]
+    response1.body.shouldDeserializeTo[ForgotPassword_OUT].discard
 
     // then
     val code = eventually {
@@ -24,7 +25,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     // when
     val response2 = requests.resetPassword(code, newPassword)
-    response2.body.shouldDeserializeTo[PasswordReset_OUT]
+    response2.body.shouldDeserializeTo[PasswordReset_OUT].discard
 
     // then
     requests.loginUser(login, password, None).code shouldBe StatusCode.Unauthorized
@@ -39,7 +40,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     // when
     val response1 = requests.forgotPassword(login)
-    response1.body.shouldDeserializeTo[ForgotPassword_OUT]
+    response1.body.shouldDeserializeTo[ForgotPassword_OUT].discard
 
     // then
     val code = eventually {
@@ -47,8 +48,8 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
     }
 
     // when
-    requests.resetPassword(code, newPassword).body.shouldDeserializeTo[PasswordReset_OUT]
-    requests.resetPassword(code, newPassword).body.shouldDeserializeToError
+    requests.resetPassword(code, newPassword).body.shouldDeserializeTo[PasswordReset_OUT].discard
+    requests.resetPassword(code, newPassword).body.shouldDeserializeToError.discard
 
     // then
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Ok
@@ -76,7 +77,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     // when
     val response2 = requests.resetPassword("invalid", newPassword)
-    response2.body.shouldDeserializeToError
+    response2.body.shouldDeserializeToError.discard
 
     // then
     requests.loginUser(login, password, None).code shouldBe StatusCode.Ok

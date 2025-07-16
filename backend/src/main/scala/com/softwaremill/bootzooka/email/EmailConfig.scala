@@ -2,7 +2,6 @@ package com.softwaremill.bootzooka.email
 
 import com.softwaremill.bootzooka.config.Sensitive
 import pureconfig.ConfigReader
-import pureconfig.generic.derivation.default.*
 
 import scala.concurrent.duration.FiniteDuration
 

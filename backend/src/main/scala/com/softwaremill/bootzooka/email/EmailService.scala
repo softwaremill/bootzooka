@@ -38,7 +38,7 @@ class EmailService(
   def startProcesses()(using Ox): Unit =
     foreverPeriodically("Exception when sending emails") {
       sendBatch()
-    }
+    }.discard
 
     foreverPeriodically("Exception when counting emails") {
       val count = db.transact(emailModel.count())

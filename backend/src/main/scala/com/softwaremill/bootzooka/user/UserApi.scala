@@ -32,9 +32,8 @@ class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Met
 
   private def authedEndpoint[I, O](e: Endpoint[Id[ApiKey], I, Fail, O, Any]) = e.handleSecurity(authData => auth(authData))
 
-  private val logoutServerEndpoint = authedEndpoint(logoutEndpoint).handleSuccess { _ => data =>
-    db.transactEither(Right(userService.logout(data.apiKey.asId[ApiKey])))
-    Logout_OUT()
+  private val logoutServerEndpoint = authedEndpoint(logoutEndpoint).handle { _ => data =>
+    db.transactEither(Right(userService.logout(data.apiKey.asId[ApiKey]))).map(_ => Logout_OUT())
   }
 
   private val changePasswordServerEndpoint = authedEndpoint(changePasswordEndpoint).handle { id => data =>

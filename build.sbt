@@ -180,7 +180,10 @@ lazy val backend: Project = (project in file("backend"))
     },
     // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application
     run / fork := true,
-    scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
+    // use sbt-tpolecat, but without fatal warnings
+    scalacOptions ~= (_.filterNot(Set("-Xfatal-warnings"))),
+    Test / scalacOptions += "-Wconf:msg=unused value of type org.scalatest.Assertion:s",
+    Test / scalacOptions += "-Wconf:msg=unused value of type org.scalatest.compatible.Assertion:s"
   )
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)
