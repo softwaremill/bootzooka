@@ -32,4 +32,3 @@ services:
     image: 'grafana/otel-lgtm'
     ports:
       - '3000:3000' # Grafana's UI
-      - '4317:4317' # Exporter

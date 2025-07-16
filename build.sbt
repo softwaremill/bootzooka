@@ -128,24 +128,6 @@ lazy val buildInfoSettings = Seq(
   buildInfoObject := "BuildInfo"
 )
 
-lazy val fatJarSettings = Seq(
-  assembly / assemblyJarName := "bootzooka.jar",
-  assembly := assembly.dependsOn(copyWebapp).value,
-  assembly / assemblyMergeStrategy := {
-    // SwaggerUI: https://tapir.softwaremill.com/en/latest/docs/openapi.html#using-swaggerui-with-sbt-assembly
-    case PathList("META-INF", "maven", "org.webjars", "swagger-ui", "pom.properties") => MergeStrategy.singleOrError
-    case PathList("META-INF", "resources", "webjars", "swagger-ui", _*)               => MergeStrategy.singleOrError
-    // other
-    case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
-    case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.discard
-    case PathList(ps @ _*) if ps.last endsWith "module-info.class"            => MergeStrategy.discard
-    case PathList(ps @ _*) if ps.last endsWith "okio.kotlin_module"           => MergeStrategy.discard
-    case x =>
-      val oldStrategy = (assembly / assemblyMergeStrategy).value
-      oldStrategy(x)
-  }
-)
-
 lazy val dockerSettings = Seq(
   dockerExposedPorts := Seq(8080),
   dockerBaseImage := "eclipse-temurin:21",
@@ -193,7 +175,7 @@ lazy val backend: Project = (project in file("backend"))
         (Compile / runMain).toTask(s" com.softwaremill.bootzooka.writeOpenAPIDescription $targetPath").value
       }
     }.value,
-    // used by fat-jar and docker builds, to copy the UI files to a single bundle
+    // used by docker builds, to copy the UI files to a single bundle
     copyWebapp := {
       val source = uiDirectory.value / "build"
       val target = (Compile / classDirectory).value / "webapp"
@@ -213,7 +195,6 @@ lazy val backend: Project = (project in file("backend"))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings)
   .settings(buildInfoSettings)
-  .settings(fatJarSettings)
   .enablePlugins(DockerPlugin)
   .enablePlugins(JavaServerAppPackaging)
   .settings(dockerSettings)

@@ -144,8 +144,6 @@ object RenameProject {
       info(s"Moving classes to new packages")
       moveSources(baseDir, initialRootPackage, targetRootPackage)
       info(s"Removing unnecessary files")
-      delete(baseDir / "activator.properties")
-      delete(baseDir / "CHANGELOG.md")
       delete(baseDir / "README.md")
       info(
         "Done! If you changed your mind -> run `git reset --hard HEAD; git clean -d -f` to restore state before renaming"
