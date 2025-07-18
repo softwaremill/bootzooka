@@ -14,45 +14,43 @@ val otelVersion = "1.52.0"
 val otelInstrumentationVersion = "2.17.1-alpha"
 
 val dbDependencies = Seq(
-  "com.augustnagro" %% "magnum" % "1.3.1",
-  "org.postgresql" % "postgresql" % "42.7.7",
-  "com.zaxxer" % "HikariCP" % "6.3.0",
-  "org.flywaydb" % "flyway-database-postgresql" % "11.10.3"
+  "com.augustnagro" %% "magnum" % "1.3.1", // Scala DB client
+  "org.postgresql" % "postgresql" % "42.7.7", // JDBC driver
+  "com.zaxxer" % "HikariCP" % "6.3.0", // connection pool
+  "org.flywaydb" % "flyway-database-postgresql" % "11.10.3" // database migrations
 )
 
 val httpDependencies = Seq(
-  "com.softwaremill.sttp.client4" %% "core" % sttpVersion,
+  "com.softwaremill.sttp.client4" %% "core" % sttpVersion, // HTTP client
   "com.softwaremill.sttp.client4" %% "slf4j-backend" % sttpVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % tapirVersion, // HTTP server, using the synchronous Netty backend
+  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion, // testing HTTP endpoints
+  "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion // serving static files
 )
 
 val observabilityDependencies = Seq(
-  "com.softwaremill.sttp.client4" %% "opentelemetry-backend" % sttpVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-tracing" % tapirVersion,
-  "com.softwaremill.ox" %% "otel-context" % oxVersion,
+  "com.softwaremill.sttp.client4" %% "opentelemetry-backend" % sttpVersion, // OTEL <-> sttp integation
+  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion, // OTEL <-> Tapir integation
+  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-tracing" % tapirVersion, // OTEL <-> Tapir integation
+  "com.softwaremill.ox" %% "otel-context" % oxVersion, // OTEL context propagation in Ox scopes
   "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion exclude ("io.opentelemetry", "opentelemetry-exporter-sender-okhttp"),
   "io.opentelemetry" % "opentelemetry-exporter-sender-jdk" % otelVersion,
   "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
-  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java8" % otelInstrumentationVersion,
-  "io.opentelemetry.instrumentation" % "opentelemetry-logback-appender-1.0" % otelInstrumentationVersion
+  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java8" % otelInstrumentationVersion, // OTEL JVM metrics
+  "io.opentelemetry.instrumentation" % "opentelemetry-logback-appender-1.0" % otelInstrumentationVersion // send logs via OTEL
 )
 
 val jsonDependencies = Seq(
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.36.7",
-  "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
-  "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion
+  "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion, // main JSON library
+  "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion, // Tapir <-> jsoniter integation
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.36.7" // automatic codec derivation
 )
 
 val loggingDependencies = Seq(
-  "ch.qos.logback" % "logback-classic" % "1.5.18",
-  "org.slf4j" % "jul-to-slf4j" % "2.0.17", // forward e.g. otel logs which use JUL to SLF4J
-  "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
-  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17" % Runtime,
-  "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
-  "net.logstash.logback" % "logstash-logback-encoder" % "8.1" % Runtime
+  "ch.qos.logback" % "logback-classic" % "1.5.18", // main logging library
+  "org.slf4j" % "jul-to-slf4j" % "2.0.17", // forward e.g. OTEL and Magnum logs which use JUL to SLF4J
+  "com.softwaremill.ox" %% "mdc-logback" % oxVersion, // support MDCs which propagate within Ox scopes
+  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17" % Runtime // route Java's platform logging (separate from JUL) to SLF4J
 )
 
 val configDependencies = Seq(
@@ -60,26 +58,26 @@ val configDependencies = Seq(
 )
 
 val baseDependencies = Seq(
-  "com.softwaremill.ox" %% "core" % oxVersion,
+  "com.softwaremill.ox" %% "core" % oxVersion, // concurrency, streaming & error handling utilities
   "com.softwaremill.quicklens" %% "quicklens" % "1.9.12",
-  "com.softwaremill.macwire" %% "macros" % "2.6.6" % Provided
+  "com.softwaremill.macwire" %% "macros" % "2.6.6" % Provided // compile-time generation of dependency tree (DI replacement)
 )
 
 val apiDocsDependencies = Seq(
-  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion // Swagger UI for the HTTP API
 )
 
 val securityDependencies = Seq(
-  "com.password4j" % "password4j" % password4jVersion
+  "com.password4j" % "password4j" % password4jVersion // password hashing
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
+  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation") // JavaMail API when emails are sent directly
 )
 
 val testingDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-  "com.opentable.components" % "otj-pg-embedded" % "1.1.1" % Test
+  "com.opentable.components" % "otj-pg-embedded" % "1.1.1" % Test // embedded PostgreSQL for tests
 )
 
 val allBackendDependencies = baseDependencies ++ testingDependencies ++ loggingDependencies ++ configDependencies ++
