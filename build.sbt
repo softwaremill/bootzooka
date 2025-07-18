@@ -2,9 +2,6 @@ import sbtbuildinfo.BuildInfoKey.action
 import sbtbuildinfo.BuildInfoKeys.{buildInfoKeys, buildInfoOptions, buildInfoPackage}
 import sbtbuildinfo.{BuildInfoKey, BuildInfoOption}
 
-import sbt._
-import Keys._
-
 import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
@@ -85,16 +82,29 @@ val testingDependencies = Seq(
   "com.opentable.components" % "otj-pg-embedded" % "1.1.1" % Test
 )
 
-lazy val uiProjectName = "ui"
-lazy val uiDirectory = settingKey[File]("Path to the ui project directory")
-lazy val updateYarn = taskKey[Unit]("Update yarn")
-lazy val yarnTask = inputKey[Unit]("Run yarn with arguments")
-lazy val copyWebapp = taskKey[Unit]("Copy webapp")
-lazy val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI description for the HTTP API")
+val allBackendDependencies = baseDependencies ++ testingDependencies ++ loggingDependencies ++ configDependencies ++
+  dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ observabilityDependencies ++
+  securityDependencies ++ emailDependencies
+
+// other constants
+
+val mainClassName = "com.softwaremill.bootzooka.Main"
+val uiProjectName = "ui"
+
+// custom tasks & settings
+
+val uiDirectory = settingKey[File]("Path to the ui project directory") // capturing as a setting to run yarn during the build
+val updateYarn = taskKey[Unit]("Update yarn") // separate task so that update is run once per build
+val yarnTask = inputKey[Unit]("Run yarn with arguments")
+val copyWebapp = taskKey[Unit]("Copy webapp")
+val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI description for the HTTP API")
+
+def haltOnCmdResultError(result: Int): Unit = if (result != 0) { throw new Exception("Build failed.") }
 
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "3.7.1",
+  // ui build used by multiple subprojects
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
   updateYarn := {
     streams.value.log("Updating npm/yarn dependencies")
@@ -108,7 +118,7 @@ lazy val commonSettings = Seq(
     streams.value.log("Running yarn task: " + taskName)
     haltOnCmdResultError(runYarnTask())
   },
-  // seting up the version
+  // version
   git.formattedShaVersion := {
     val base = git.baseVersion.?.value
     val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, Some("dirty"))
@@ -117,46 +127,17 @@ lazy val commonSettings = Seq(
   version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest"))
 )
 
-lazy val buildInfoSettings = Seq(
-  buildInfoKeys := Seq[BuildInfoKey](
-    name,
-    version,
-    scalaVersion,
-    sbtVersion,
-    action("lastCommitHash") {
-      import scala.sys.process._
-      // if the build is done outside of a git repository, we still want it to succeed
-      Try("git rev-parse HEAD".!!.trim).getOrElse("?")
-    }
-  ),
-  buildInfoOptions += BuildInfoOption.ToJson,
-  buildInfoOptions += BuildInfoOption.ToMap,
-  buildInfoPackage := "com.softwaremill.bootzooka.version",
-  buildInfoObject := "BuildInfo"
-)
-
-lazy val dockerSettings = Seq(
-  dockerExposedPorts := Seq(8080),
-  dockerBaseImage := "eclipse-temurin:21",
-  Docker / packageName := "bootzooka",
-  dockerUsername := Some("softwaremill"),
-  dockerUpdateLatest := true,
-  Docker / stage := (Docker / stage).dependsOn(copyWebapp).value
-)
-
-def haltOnCmdResultError(result: Int): Unit = if (result != 0) { throw new Exception("Build failed.") }
-
 lazy val rootProject = (project in file("."))
   .settings(commonSettings)
   .settings(name := "bootzooka")
-  .aggregate(backend, ui)
+  .aggregate(backend, ui, docker)
 
 lazy val backend: Project = (project in file("backend"))
+  .settings(commonSettings)
   .settings(
-    libraryDependencies ++= baseDependencies ++ testingDependencies ++ loggingDependencies ++
-      configDependencies ++ dbDependencies ++ httpDependencies ++ jsonDependencies ++
-      apiDocsDependencies ++ observabilityDependencies ++ securityDependencies ++ emailDependencies,
-    Compile / mainClass := Some("com.softwaremill.bootzooka.Main"),
+    libraryDependencies ++= allBackendDependencies,
+    // in case the backend jar is used outside of Docker, specifying the main class
+    Compile / mainClass := Some(mainClassName),
     // generates the target/openapi.yaml file which is then used by the UI to generate service stubs
     generateOpenAPIDescription := Def.taskDyn {
       val log = streams.value.log
@@ -165,15 +146,8 @@ lazy val backend: Project = (project in file("backend"))
         (Compile / runMain).toTask(s" com.softwaremill.bootzooka.writeOpenAPIDescription $targetPath").value
       }
     }.value,
-    // used by docker builds, to copy the UI files to a single bundle
-    copyWebapp := {
-      val source = uiDirectory.value / "dist"
-      val target = (Compile / classDirectory).value / "webapp"
-      streams.value.log.info(s"Copying the webapp resources from $source to $target")
-      IO.copyDirectory(source, target)
-    },
-    copyWebapp := copyWebapp.dependsOn(Def.sequential(generateOpenAPIDescription, yarnTask.toTask(" build"))).value,
-    // used by backend-start.sh, to restart the application when sources change
+    // used by backend-start.sh, to restart the application when sources change; the OpenAPI spec needs to be
+    // regenerated so that the UI updates accordingly
     reStart := {
       generateOpenAPIDescription.value
       reStart.evaluated
@@ -182,19 +156,59 @@ lazy val backend: Project = (project in file("backend"))
     run / fork := true,
     // use sbt-tpolecat, but without fatal warnings
     scalacOptions ~= (_.filterNot(Set("-Xfatal-warnings"))),
+    // silence unused assertion results warnings in tests
     Test / scalacOptions += "-Wconf:msg=unused value of type org.scalatest.Assertion:s",
     Test / scalacOptions += "-Wconf:msg=unused value of type org.scalatest.compatible.Assertion:s"
   )
+  // the build information is displayed in the UI, and provided by an API endpoint
   .enablePlugins(BuildInfoPlugin)
-  .settings(commonSettings)
-  .settings(buildInfoSettings)
-  .enablePlugins(DockerPlugin)
-  .enablePlugins(JavaServerAppPackaging)
-  .settings(dockerSettings)
+  .settings(
+    buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
+      scalaVersion,
+      sbtVersion,
+      action("lastCommitHash") {
+        import scala.sys.process._
+        // if the build is done outside of a git repository, we still want it to succeed
+        Try("git rev-parse HEAD".!!.trim).getOrElse("?")
+      }
+    ),
+    buildInfoOptions += BuildInfoOption.ToJson,
+    buildInfoOptions += BuildInfoOption.ToMap,
+    buildInfoPackage := "com.softwaremill.bootzooka.version",
+    buildInfoObject := "BuildInfo"
+  )
 
 lazy val ui = (project in file(uiProjectName))
   .settings(commonSettings)
   .settings(Test / test := (Test / test).dependsOn(yarnTask.toTask(" test:ci")).value)
-  .settings(cleanFiles += baseDirectory.value / "build")
+  .settings(cleanFiles += baseDirectory.value / "dist")
+
+lazy val docker = (project in file("docker"))
+  .settings(commonSettings)
+  .settings(
+    copyWebapp := {
+      val source = uiDirectory.value / "dist"
+      val target = (Compile / classDirectory).value / "webapp"
+      streams.value.log.info(s"Copying the webapp resources from $source to $target")
+      IO.copyDirectory(source, target)
+    },
+    // There are no source files in this project, we're just using it to generate a jar with the UI files.
+    // To do that, we need to first generate the OpenAPI spec, build the UI, and copy the UI files.
+    Compile / compile := (Compile / compile)
+      .dependsOn(Def.sequential(backend / generateOpenAPIDescription, yarnTask.toTask(" build"), copyWebapp))
+      .value,
+    // Docker settings
+    Compile / mainClass := Some(mainClassName),
+    dockerExposedPorts := Seq(8080),
+    dockerBaseImage := "eclipse-temurin:21",
+    Docker / packageName := "bootzooka",
+    dockerUsername := Some("softwaremill"),
+    dockerUpdateLatest := true
+  )
+  .dependsOn(backend)
+  .enablePlugins(DockerPlugin)
+  .enablePlugins(JavaServerAppPackaging)
 
 RenameProject.settings
