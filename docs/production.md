@@ -32,4 +32,6 @@ helm fetch softwaremill/bootzooka --untar
 helm install --generate-name bootzooka
 ```
 
-Please see [Bootzooka Helm Chart documentation](https://github.com/softwaremill/bootzooka/blob/master/helm/bootzooka/README.md) for more information, including configuration options.
+Please see [Bootzooka Helm Chart
+documentation](https://github.com/softwaremill/bootzooka/blob/master/helm/bootzooka/README.md) for more information,
+including configuration options.
