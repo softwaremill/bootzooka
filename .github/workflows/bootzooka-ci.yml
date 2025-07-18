@@ -39,11 +39,6 @@ jobs:
         id: generate-openapi-spec
         run: sbt "backend/generateOpenAPIDescription"
 
-      - name: Test UI build
-        id: test-ui-install
-        run: yarn install
-        working-directory: ./ui
-
       - name: Run tests
         id: run-tests
         run: sbt test
@@ -60,7 +55,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Publish docker image
-        run: sbt backend/docker:publish
+        run: sbt docker/docker:publish
 
   deploy:
     if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
