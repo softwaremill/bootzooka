@@ -16,7 +16,7 @@ In order to build and develop on Bootzooka foundations you need the following:
 
 Because (as said before) Bootzooka consists of two separate applications, in development you need to run both separately. This way the server-side code can be reloaded independently of the frontend code: if, for example, you make a small change to an HTML file, thanks to live-reload you'll see the changes immediately, rebuilding and reloading only the frontend part, while the server is running undisturbed.
 
-**NOTE: This is not the case in production by default. When the final fat-jar application package or docker image is built it contains both client and server parts.**
+**NOTE: This is not the case in production by default. When the final docker image is built it contains both client and server parts.**
 
 ### Database
 

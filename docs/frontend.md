@@ -56,4 +56,4 @@ This task runs tests just once (useful in CI environments, where an exit code is
 
 ## Distribution and deployment
 
-Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist` (which are generated during `yarn build`) are used by `backend` to build the final fat-jar application. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components.
+Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist` (which are generated during `yarn build`) are used by `backend` to build the Docker image. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components.

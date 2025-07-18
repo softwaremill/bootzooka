@@ -1,8 +1,12 @@
 ![Bootzooka](https://github.com/softwaremill/bootzooka/raw/master/banner.png)
 
-[See the docs](http://softwaremill.github.io/bootzooka/) for more information.
+[Bootzooka documentation](http://softwaremill.github.io/bootzooka/)
 
 [![CI](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20CI/badge.svg)](https://github.com/softwaremill/bootzooka/actions?query=workflow%3A%22Bootzooka+CI%22)
+
+Bootzooka is a scaffolding project to allow quick start of development of a microservice or a web application. 
+If you'd like to have a jump start developing a Scala-based project, skipping the boring parts and focusing on the 
+real business value, this template might be for you!
 
 # Run locally using Docker
 
@@ -64,6 +68,9 @@ And open `http://localhost:8081`. The frontend will automatically reload when th
 source. The frontend connects to the backend on the 8080 port, as specified in the environment file.
 
 # Project info
+
+[The docs](http://softwaremill.github.io/bootzooka/) dive deeper into various aspects of the project (architecture,
+tech stack, development tips).
 
 ## Commercial Support
 
