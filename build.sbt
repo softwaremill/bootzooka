@@ -205,7 +205,7 @@ lazy val docker = (project in file("docker"))
     dockerUsername := Some("softwaremill"),
     dockerUpdateLatest := true
   )
-  .dependsOn(backend)
+  .dependsOn(backend, ui)
   .enablePlugins(DockerPlugin)
   .enablePlugins(JavaServerAppPackaging)
 
