@@ -1,12 +1,13 @@
 ![Bootzooka](https://github.com/softwaremill/bootzooka/raw/master/banner.png)
 
-[Bootzooka documentation](http://softwaremill.github.io/bootzooka/)
-
 [![CI](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20CI/badge.svg)](https://github.com/softwaremill/bootzooka/actions?query=workflow%3A%22Bootzooka+CI%22)
 
 Bootzooka is a scaffolding project to allow quick start of development of a microservice or a web application. 
 If you'd like to have a jump start developing a Scala-based project, skipping the boring parts and focusing on the 
 real business value, this template might be for you!
+
+You can start testing or developing Bootzooka right away with the below setup, or proceed to the mor ecomplete
+[Bootzooka documentation](http://softwaremill.github.io/bootzooka/).
 
 # Run locally using Docker
 

@@ -19,7 +19,9 @@ As a package manager, Bootzooka's UI uses [Yarn](https://yarnpkg.com). Make sure
 
 If this is your first attempt to run `ui`, please go to `ui` project and run
 
-    yarn install
+```
+yarn install
+```
 
 This will install all required dependencies for this project. If all is well you can start your development version of frontend by issuing `yarn start` from command line (or running the provided `frontend-start` script in the main directory). It should start your browser and point you to [Bootzooka home page](http://0.0.0.0:8081/#/).
 
@@ -56,4 +58,4 @@ This task runs tests just once (useful in CI environments, where an exit code is
 
 ## Distribution and deployment
 
-Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist` (which are generated during `yarn build`) are used by `backend` to build the Docker image. All necessary integration with SBT (backend build) is provided. That means when you issue `package` in SBT, you get a complete web application which contains both server side and frontend components.
+Although in development `ui` is separate project there is no need to deploy it separately. All files from `ui/dist` (which are generated during `yarn build`) are used to build the Docker image. All necessary integration with SBT is provided. 

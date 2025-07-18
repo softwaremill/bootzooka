@@ -5,8 +5,8 @@ title:  "Development tips"
 
 Generally during development you'll need two processes:
 
-* sbt running the backend server
-* yarn server which automatically picks up any changes
+* sbt, which auto-reloads the backend app on backend source code changes
+* yarn server, which auto-reloads the frontend app on frontend source code changes
 
 ## Cloning
 
@@ -19,7 +19,7 @@ If you are planning to use Bootzooka as scaffolding for your own project, consid
 * `test` - run all the tests
 * `project <sub-project-name>` - switch context to the given sub-project, then all the commands will be executed only for
 that sub-project, this can be also achieved with e.g.: `<sub-project-name>/test`
-* `~backend/re-start` - runs the backend server and waits for source code changes to automatically compile changed file and to reload it
+* `~backend/re-start` - runs the backend server and waits for source code changes to automatically compile changed file and to reload it. Used by the `./backend-start.sh` script
 
 ## Database schema evolution
 
@@ -27,7 +27,7 @@ With Flyway, all you need to do is to put DDL script within bootzooka-backend/sr
 
 ## Developing frontend without backend
 
-If you'd like to work only on the frontend, without starting the backend, you can proxy requests to a working, remote backend instance. In `ui/package.json` you need to edit the proxy settings.
+If you'd like to work only on the frontend, without starting the backend, you can proxy requests to a working, remote backend instance. Update the `ui/.env` file accordingly.
 
 ## Imports
 

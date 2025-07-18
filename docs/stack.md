@@ -40,7 +40,7 @@ React is one of the most popular JavaScript framework right now, developed and s
 
 Ox provides the necessary utilities needed when writing direct-style Scala: structured concurrency, error handling, resource management and resiliency.
 
-### Why tapir + netty?
+### Why Tapir + netty?
 
 Tapir defines a programmer-friendly API for describing HTTP endpoints which can be interpreted as a server, or as Swagger/OpenAPI documentation. Netty is a battle-proven and fast networking library for the JVM.
 
