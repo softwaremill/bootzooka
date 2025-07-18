@@ -111,16 +111,15 @@ lazy val commonSettings = Seq(
   version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest"))
 )
 
-// Global settings and tasks defined at ThisBuild scope
+// defining the updateYarn task in the global scope so that it's always run at most once per build
+// otherwise, two `yarn install` might end up running concurrently, which leads to errors
 ThisBuild / uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName
-
 ThisBuild / updateYarn := {
   val log = (ThisBuild / streams).value.log
   val uiDir = (ThisBuild / uiDirectory).value
   log.info("Updating npm/yarn dependencies")
   haltOnCmdResultError(Process("yarn install", uiDir).!)
 }
-
 ThisBuild / yarnTask := {
   (ThisBuild / updateYarn).value
   val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
