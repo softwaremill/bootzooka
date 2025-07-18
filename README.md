@@ -2,7 +2,7 @@
 
 [See the docs](http://softwaremill.github.io/bootzooka/) for more information.
 
-[![ CI ](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20CI/badge.svg)](https://github.com/softwaremill/bootzooka/actions?query=workflow%3A%22Bootzooka+CI%22)
+[![CI](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20CI/badge.svg)](https://github.com/softwaremill/bootzooka/actions?query=workflow%3A%22Bootzooka+CI%22)
 
 # Run locally using Docker
 
@@ -62,6 +62,8 @@ Then, you can start the frontend:
 
 And open `http://localhost:8081`. The frontend will automatically reload when there are any changes in the frontend
 source. The frontend connects to the backend on the 8080 port, as specified in the environment file.
+
+# Project info
 
 ## Commercial Support
 
