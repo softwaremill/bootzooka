@@ -102,16 +102,6 @@ def haltOnCmdResultError(result: Int): Unit = if (result != 0) { throw new Excep
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
   scalaVersion := "3.7.1",
-  // ui build used by multiple subprojects
-  uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
-  yarnTask := {
-    (rootProject / updateYarn).value
-    val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
-    val localYarnCommand = "yarn " + taskName
-    def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
-    streams.value.log("Running yarn task: " + taskName)
-    haltOnCmdResultError(runYarnTask())
-  },
   // version
   git.formattedShaVersion := {
     val base = git.baseVersion.?.value
@@ -121,15 +111,30 @@ lazy val commonSettings = Seq(
   version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest"))
 )
 
-lazy val rootProject = (project in file("."))
+// Global settings and tasks defined at ThisBuild scope
+ThisBuild / uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName
+
+ThisBuild / updateYarn := {
+  val log = (ThisBuild / streams).value.log
+  val uiDir = (ThisBuild / uiDirectory).value
+  log.info("Updating npm/yarn dependencies")
+  haltOnCmdResultError(Process("yarn install", uiDir).!)
+}
+
+ThisBuild / yarnTask := {
+  (ThisBuild / updateYarn).value
+  val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
+  val localYarnCommand = "yarn " + taskName
+  val log = (ThisBuild / streams).value.log
+  val uiDir = (ThisBuild / uiDirectory).value
+  def runYarnTask() = Process(localYarnCommand, uiDir).!
+  log.info("Running yarn task: " + taskName)
+  haltOnCmdResultError(runYarnTask())
+}
+
+lazy val rootProject: Project = (project in file("."))
   .settings(commonSettings)
   .settings(name := "bootzooka")
-  .settings(
-    updateYarn := {
-      streams.value.log("Updating npm/yarn dependencies")
-      haltOnCmdResultError(Process("yarn install", uiDirectory.value).!)
-    }
-  )
   .aggregate(backend, ui, docker)
 
 lazy val backend: Project = (project in file("backend"))
@@ -180,12 +185,12 @@ lazy val backend: Project = (project in file("backend"))
     buildInfoObject := "BuildInfo"
   )
 
-lazy val ui = (project in file(uiProjectName))
+lazy val ui: Project = (project in file(uiProjectName))
   .settings(commonSettings)
   .settings(Test / test := (Test / test).dependsOn(yarnTask.toTask(" test:ci")).value)
   .settings(cleanFiles += baseDirectory.value / "dist")
 
-lazy val docker = (project in file("docker"))
+lazy val docker: Project = (project in file("docker"))
   .settings(commonSettings)
   .settings(
     copyWebapp := {
