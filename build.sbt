@@ -104,12 +104,8 @@ lazy val commonSettings = Seq(
   scalaVersion := "3.7.1",
   // ui build used by multiple subprojects
   uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
-  updateYarn := {
-    streams.value.log("Updating npm/yarn dependencies")
-    haltOnCmdResultError(Process("yarn install", uiDirectory.value).!)
-  },
   yarnTask := {
-    updateYarn.value
+    (rootProject / updateYarn).value
     val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
     val localYarnCommand = "yarn " + taskName
     def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
@@ -128,6 +124,12 @@ lazy val commonSettings = Seq(
 lazy val rootProject = (project in file("."))
   .settings(commonSettings)
   .settings(name := "bootzooka")
+  .settings(
+    updateYarn := {
+      streams.value.log("Updating npm/yarn dependencies")
+      haltOnCmdResultError(Process("yarn install", uiDirectory.value).!)
+    }
+  )
   .aggregate(backend, ui, docker)
 
 lazy val backend: Project = (project in file("backend"))
