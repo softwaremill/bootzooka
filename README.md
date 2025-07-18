@@ -4,32 +4,46 @@
 
 [![ CI ](https://github.com/softwaremill/bootzooka/workflows/Bootzooka%20CI/badge.svg)](https://github.com/softwaremill/bootzooka/actions?query=workflow%3A%22Bootzooka+CI%22)
 
-## Quick start
+# Run locally using Docker
 
-### Using Docker compose
+If you'd like to see the project in action, the fastest way is to use the provided Docker compose setup. It starts 
+three images: Bootzooka itself (either locally built or downloaded), PostgreSQL server and Graphana LGTM for 
+observability.
 
-The fastest way to experiment with Bootzooka is using the provided Docker compose setup. It starts three images:
-Bootzooka itself (either locally built or downloaded), PostgreSQL server and Graphana LGTM for observability.
+# Run locally for development
 
-### Backend: PostgreSQL & API
+If you'd like to modify some of Bootzooka's parts, or develop your own application using the template, you'll need
+to start the backend & frontend in development modes separately.
 
-To run Bootzooka's backend locally, you'll still need a running instance of PostgreSQL with a `bootzooka` database.
-You can spin up one easily using docker:
+## Database
+
+First, you'll need a PostgreSQL database running. One of the options is to start one using Docker; here a `bootzooka`
+database will be created:
 
 ```sh
 # use "bootzooka" as a password
 docker run --name bootzooka-postgres -p 5432:5432 -e POSTGRES_PASSWORD=bootzooka -e POSTGRES_DB=bootzooka -d postgres
 ```
 
-Then, you can start the backend:
+## Backend
+
+Then, you can start the backend. You'll need the JVM 21+ and [SBT](https://www.scala-sbt.org) installed:
 
 ```sh
 SQL_PASSWORD=bootzooka ./backend-start.sh
 ```
 
-By default, OpenTelemetry is disabled to avoid telemetry export exceptions. If you have a collector running, edit the startp script appropriately.
+By default, OpenTelemetry is disabled to avoid telemetry export exceptions (which is available and explorable if you
+are using the Docker compose setup). If you have a collector running, edit the startp script appropriately.
 
-### Frontend: Yarn & webapp
+The backend will start on [`http://localhost:8080`](http://localhost:8080). You can explore the API docs using the
+Swagger UI by navigating to [`http://localhost:8080/api/v1/docs`](http://localhost:8080/api/v1/docs).
+
+When any source files change on the backend, it will be automatically restarted. Moreover, if there are new or 
+changed endpoint definitions, the OpenAPI description will be regenerated, which is then used by the frontend
+to generate service stubs.
+
+## Frontend
 
 You will need the [yarn package manager](https://yarnpkg.com) to run the UI. Install it using your package manager or:
 
@@ -37,17 +51,22 @@ You will need the [yarn package manager](https://yarnpkg.com) to run the UI. Ins
 curl -o- -L https://yarnpkg.com/install.sh | bash
 ```
 
+Create a `ui/.env` file, using the `ui/.env.example`. Unless you changed the port of the backend, the default value
+will be fine.
+
 Then, you can start the frontend:
 
 ```sh
 ./frontend-start.sh
 ```
 
-And open `http://localhost:8081`.
+And open `http://localhost:8081`. The frontend will automatically reload when there are any changes in the frontend
+source. The frontend connects to the backend on the 8080 port, as specified in the environment file.
 
 ## Commercial Support
 
-We offer commercial support for Bootzooka and related technologies, as well as development services. [Contact us](https://softwaremill.com) to learn more about our offer!
+We offer commercial support for Bootzooka and related technologies, as well as development services. 
+[Contact us](https://softwaremill.com) to learn more about our offer!
 
 ## Copyright
 
