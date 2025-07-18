@@ -39,6 +39,11 @@ jobs:
         id: generate-openapi-spec
         run: sbt "backend/generateOpenAPIDescription"
 
+      - name: Test UI build
+        id: test-ui-install
+        run: yarn install
+        working-directory: ./ui
+
       - name: Run tests
         id: run-tests
         run: sbt test
