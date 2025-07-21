@@ -17,3 +17,4 @@ object DummyEmailSender extends EmailSender with Logging:
 
   def findSentEmail(recipient: String, subjectContains: String): Option[EmailData] =
     sentEmails.iterator().asScala.find(email => email.recipient == recipient && email.subject.contains(subjectContains))
+end DummyEmailSender

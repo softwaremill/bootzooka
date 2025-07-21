@@ -17,3 +17,4 @@ class Metrics(otel: OpenTelemetry):
       .gaugeBuilder("bootzooka_email_queue_gauge")
       .setDescription("How many emails are waiting to be sent")
       .build()
+end Metrics

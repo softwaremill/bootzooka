@@ -47,6 +47,7 @@ class UserService(
       userModel.insert(user)
       emailScheduler.schedule(EmailData(emailClean, confirmationEmail))
       apiKeyService.create(user.id, config.defaultApiKeyValid)
+    end doRegister
 
     either:
       validateUserData(Some(loginClean), Some(emailClean), Some(password)).ok()
@@ -81,6 +82,8 @@ class UserService(
             logger.debug(s"Changing login for user: $userId, to: $newLoginClean")
             userModel.updateLogin(userId, newLoginClean, newLogintoLowerCased)
             true
+      end match
+    end changeLogin
 
     def validateLogin() = validateUserData(Some(newLoginClean), None, None)
 
@@ -168,3 +171,4 @@ private[user] def validateUserData(loginOpt: Option[String], emailOpt: Option[St
     _ <- validateEmail(emailOpt)
     _ <- validatePassword(passwordOpt)
   yield ()).left.map(Fail.IncorrectInput(_))
+end validateUserData

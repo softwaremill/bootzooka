@@ -11,12 +11,12 @@ object EmailTemplateRenderer:
     val source = Source
       .fromURL(getClass.getResource(s"/templates/email/$templateNameWithoutExtension.txt"), "UTF-8")
 
-    try {
+    try
       val rawTemplate = source.getLines().mkString("\n")
       params.foldLeft(rawTemplate) { case (template, (param, paramValue)) =>
         template.replaceAll(s"\\{\\{$param\\}\\}", paramValue.toString)
       }
-    } finally source.close()
+    finally source.close()
   end prepareTemplate
 
   private def splitToContentAndSubject(template: String): EmailSubjectContent =
@@ -34,3 +34,4 @@ object EmailTemplateRenderer:
 
   private def addSignature(email: EmailSubjectContent): EmailSubjectContent =
     email.copy(content = s"${email.content}\n$signature")
+end EmailTemplateRenderer

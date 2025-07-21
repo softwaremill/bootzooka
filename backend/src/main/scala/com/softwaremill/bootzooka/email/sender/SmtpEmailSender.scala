@@ -24,6 +24,8 @@ class SmtpEmailSender(config: SmtpConfig) extends EmailSender with Logging:
       emailToSend
     )
     logger.debug(s"Email: ${email.subject}, to: ${email.recipient}, sent")
+  end apply
+end SmtpEmailSender
 
 /** Copied from softwaremill-common:
   * https://github.com/softwaremill/softwaremill-common/blob/master/softwaremill-sqs/src/main/java/com/softwaremill/common/sqs/email/EmailSender.java
@@ -62,12 +64,10 @@ object SmtpEmailSender:
     m.setText(emailDescription.message, encoding, "plain")
 
     val transport = createSmtpTransportFrom(session, sslConnection)
-    try {
+    try
       connectToSmtpServer(transport, smtpUsername, smtpPassword)
       sendEmail(transport, m)
-    } finally {
-      transport.close()
-    }
+    finally transport.close()
   end send
 
   private def setupSmtpServerProperties(
@@ -82,17 +82,18 @@ object SmtpEmailSender:
       props.put("mail.smtps.host", smtpHost)
       props.put("mail.smtps.port", smtpPort.toString)
       props.put("mail.smtps.starttls.enable", "true")
-      if (!verifySSLCertificate) {
+      if !verifySSLCertificate then
         props.put("mail.smtps.ssl.checkserveridentity", "false")
         props.put("mail.smtps.ssl.trust", "*").discard
-      }
     else
       props.put("mail.smtp.host", smtpHost)
       props.put("mail.smtp.port", smtpPort.toString)
+    end if
     props
+  end setupSmtpServerProperties
 
   private def createSmtpTransportFrom(session: Session, sslConnection: Boolean): Transport =
-    if (sslConnection) session.getTransport("smtps") else session.getTransport("smtp")
+    if sslConnection then session.getTransport("smtps") else session.getTransport("smtp")
 
   private def sendEmail(transport: Transport, m: MimeMessage): Unit =
     transport.sendMessage(m, m.getAllRecipients)
@@ -112,4 +113,5 @@ object SmtpEmailSender:
       bccEmails: Array[String]
   ):
     def this(emails: List[String], message: String, subject: String) = this(emails.toArray, message, subject, Array(), Array(), Array())
+  end EmailDescription
 end SmtpEmailSender

@@ -48,7 +48,7 @@ class HttpApi(
     .metricsInterceptor(OpenTelemetryMetrics.default[Identity](otel).metricsInterceptor())
     .options
 
-  val allEndpoints: List[ServerEndpoint[Any, Identity]] = {
+  val allEndpoints: List[ServerEndpoint[Any, Identity]] =
     // The /api/v1 context path is added using Swagger's options, not to the endpoints.
     val docsEndpoints = SwaggerInterpreter(swaggerUIOptions = SwaggerUIOptions.default.copy(contextPath = apiContextPath))
       .fromEndpoints[Identity](endpointsForDocs, OpenAPIDescription.Title, OpenAPIDescription.Version)
@@ -68,7 +68,8 @@ class HttpApi(
       )
     )
     apiEndpoints ++ webappEndpoints
-  }
+  end allEndpoints
 
   def start()(using Ox): NettySyncServerBinding =
     NettySyncServer(serverOptions, NettyConfig.default.host(config.host).port(config.port)).addEndpoints(allEndpoints).start()
+end HttpApi

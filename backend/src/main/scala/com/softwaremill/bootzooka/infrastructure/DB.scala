@@ -34,6 +34,7 @@ class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
     com.augustnagro.magnum.transact(transactor)(f)
 
   override def close(): Unit = dataSource.close()
+end DB
 
 object DB extends Logging:
   private class LeftException[E](val left: E) extends RuntimeException with NoStackTrace
@@ -74,3 +75,5 @@ object DB extends Logging:
     val ds = new HikariDataSource(hikariConfig)
     connectAndMigrate(ds)
     DB(ds)
+  end createTestMigrate
+end DB

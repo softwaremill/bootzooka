@@ -11,3 +11,4 @@ object Strings:
     def asId[T]: Id[T] = s
     def asHashed: Hashed = s
     def toLowerCased[T]: LowerCased = s.toLowerCase(Locale.ENGLISH)
+end Strings

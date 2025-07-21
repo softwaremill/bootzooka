@@ -16,6 +16,7 @@ class ApiKeyModel:
   def findById(id: Id[ApiKey])(using DbTx): Option[ApiKey] = apiKeyRepo.findById(id)
   def deleteAllForUser(id: Id[User])(using DbTx): Unit = sql"""DELETE FROM $a WHERE ${a.userId} = $id""".update.run().discard
   def delete(id: Id[ApiKey])(using DbTx): Unit = apiKeyRepo.deleteById(id)
+end ApiKeyModel
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
 @SqlName("api_keys")

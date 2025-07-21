@@ -7,7 +7,7 @@ import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
 import sttp.tapir.Schema
 
 class PasswordResetApi(passwordResetService: PasswordResetService, db: DB) extends ServerEndpoints:
-  import PasswordResetApi._
+  import PasswordResetApi.*
 
   private val passwordResetServerEndpoint = passwordResetEndpoint.handle { data =>
     passwordResetService.resetPassword(data.code, data.password).map(_ => PasswordReset_OUT())
@@ -22,6 +22,7 @@ class PasswordResetApi(passwordResetService: PasswordResetService, db: DB) exten
     passwordResetServerEndpoint,
     forgotPasswordServerEndpoint
   )
+end PasswordResetApi
 
 object PasswordResetApi extends EndpointsForDocs:
   private val PasswordResetPath = "passwordreset"
@@ -48,3 +49,4 @@ object PasswordResetApi extends EndpointsForDocs:
 
   case class ForgotPassword_IN(loginOrEmail: String) derives ConfiguredJsonValueCodec, Schema
   case class ForgotPassword_OUT() derives ConfiguredJsonValueCodec, Schema
+end PasswordResetApi

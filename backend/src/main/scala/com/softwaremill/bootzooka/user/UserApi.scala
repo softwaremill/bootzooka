@@ -14,7 +14,7 @@ import java.time.Instant
 import scala.concurrent.duration.*
 
 class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Metrics) extends ServerEndpoints:
-  import UserApi._
+  import UserApi.*
 
   // endpoint implementations
 

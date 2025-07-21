@@ -38,3 +38,4 @@ object Config extends Logging:
   end log
 
   def read: Config = ConfigSource.default.loadOrThrow[Config]
+end Config

@@ -25,3 +25,5 @@ class MailgunEmailSender(config: MailgunConfig, sttpBackend: SyncBackend) extend
       .send(sttpBackend)
       .discard
     logger.debug(s"Email to: ${email.recipient} sent")
+  end apply
+end MailgunEmailSender

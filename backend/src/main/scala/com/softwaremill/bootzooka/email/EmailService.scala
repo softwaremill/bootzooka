@@ -44,6 +44,7 @@ class EmailService(
       val count = db.transact(emailModel.count())
       metrics.emailQueueGauge.set(count.toDouble)
     }.discard
+  end startProcesses
 
   private def foreverPeriodically(errorMsg: String)(t: => Unit)(using Ox): Fork[Nothing] =
     fork {

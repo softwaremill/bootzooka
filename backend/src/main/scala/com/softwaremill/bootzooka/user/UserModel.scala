@@ -53,7 +53,7 @@ case class User(
     createdOn: Instant
 ):
   def verifyPassword(password: String): PasswordVerificationStatus =
-    if (Password.check(password, passwordHash).`with`(PasswordHashing.Argon2)) PasswordVerificationStatus.Verified
+    if Password.check(password, passwordHash).`with`(PasswordHashing.Argon2) then PasswordVerificationStatus.Verified
     else PasswordVerificationStatus.VerificationFailed
 end User
 

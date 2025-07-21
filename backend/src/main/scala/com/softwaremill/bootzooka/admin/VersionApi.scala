@@ -11,13 +11,14 @@ import com.softwaremill.bootzooka.http.ServerEndpoints
 
 /** Defines an endpoint which exposes the current application version information. */
 class VersionApi extends ServerEndpoints:
-  import VersionApi._
+  import VersionApi.*
 
   private val versionServerEndpoint: ServerEndpoint[Any, Identity] = versionEndpoint.handleSuccess { _ =>
     Version_OUT(BuildInfo.lastCommitHash)
   }
 
   override val endpoints = List(versionServerEndpoint)
+end VersionApi
 
 object VersionApi extends EndpointsForDocs:
   private val AdminPath = "admin"
@@ -29,3 +30,4 @@ object VersionApi extends EndpointsForDocs:
   override val endpointsForDocs = List(versionEndpoint).map(_.tag("admin"))
 
   case class Version_OUT(buildSha: String) derives ConfiguredJsonValueCodec, Schema
+end VersionApi

@@ -18,6 +18,7 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
     logger.debug(s"Creating a new api key for user $userId, valid until: $validUntil")
     apiKeyModel.insert(apiKey)
     apiKey
+  end create
 
   def invalidate(id: Id[ApiKey])(using DbTx): Unit =
     logger.debug(s"Invalidating api key $id")
@@ -26,3 +27,4 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
   def invalidateAllForUser(userId: Id[User])(using DbTx): Unit =
     logger.debug(s"Invalidating all api keys for user $userId")
     apiKeyModel.deleteAllForUser(userId)
+end ApiKeyService

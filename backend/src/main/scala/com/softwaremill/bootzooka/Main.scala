@@ -29,3 +29,5 @@ object Main extends OxApp.Simple with Logging:
 
     // blocking until the application is shut down
     never
+  end run
+end Main

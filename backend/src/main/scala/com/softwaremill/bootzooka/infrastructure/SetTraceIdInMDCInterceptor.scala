@@ -22,3 +22,4 @@ object SetTraceIdInMDCInterceptor extends RequestInterceptor[Identity] with Logg
         requestHandler(EndpointInterceptor.noop)(request, endpoints)(using monad)
       }
     }
+end SetTraceIdInMDCInterceptor

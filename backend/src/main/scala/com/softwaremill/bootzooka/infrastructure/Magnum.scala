@@ -16,3 +16,4 @@ object Magnum extends Logging:
 
   // proxies to the magnum functions/types, so that we can have only one import
   export com.augustnagro.magnum.{sql, DbTx, DbCon, DbCodec}
+end Magnum

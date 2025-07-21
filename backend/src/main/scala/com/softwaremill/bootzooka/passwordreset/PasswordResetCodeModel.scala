@@ -27,3 +27,4 @@ class PasswordResetAuthToken(passwordResetCodeModel: PasswordResetCodeModel) ext
   override def validUntil: PasswordResetCode => Instant = _.validUntil
   // password reset code is a one-time token
   override def deleteWhenValid: Boolean = true
+end PasswordResetAuthToken
