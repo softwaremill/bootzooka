@@ -53,12 +53,12 @@ case class User(
     createdOn: Instant
 ):
   def verifyPassword(password: String): PasswordVerificationStatus =
-    if (Password.check(password, passwordHash) `with` PasswordHashing.Argon2) PasswordVerificationStatus.Verified
+    if (Password.check(password, passwordHash).`with`(PasswordHashing.Argon2)) PasswordVerificationStatus.Verified
     else PasswordVerificationStatus.VerificationFailed
 end User
 
 object User:
-  object PasswordHashing:
+  private[user] object PasswordHashing:
     val Argon2: Argon2Function =
       Argon2Function.getInstance(MemoryInKib, NumberOfIterations, LevelOfParallelism, LengthOfTheFinalHash, Type, Version)
 
