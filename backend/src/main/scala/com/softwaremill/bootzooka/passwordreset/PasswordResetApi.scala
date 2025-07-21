@@ -27,12 +27,12 @@ end PasswordResetApi
 object PasswordResetApi extends EndpointsForDocs:
   private val PasswordResetPath = "passwordreset"
 
-  private val passwordResetEndpoint = baseEndpoint.post
+  val passwordResetEndpoint = baseEndpoint.post
     .in(PasswordResetPath / "reset")
     .in(jsonBody[PasswordReset_IN])
     .out(jsonBody[PasswordReset_OUT])
 
-  private val forgotPasswordEndpoint = baseEndpoint.post
+  val forgotPasswordEndpoint = baseEndpoint.post
     .in(PasswordResetPath / "forgot")
     .in(jsonBody[ForgotPassword_IN])
     .out(jsonBody[ForgotPassword_OUT])

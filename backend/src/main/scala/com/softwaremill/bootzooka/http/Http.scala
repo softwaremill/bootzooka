@@ -19,6 +19,17 @@ object Http extends Tapir with TapirJsonJsoniter with Logging:
     case Fail.Unauthorized(msg)   => (StatusCode.Unauthorized, msg)
     case _                        => internalServerError
   }
+  // inverse of failToResponseData, used in tests to parse the response data into a Fail instance
+  private val responseDataToFail: (StatusCode, String) => Fail = {
+    case (StatusCode.NotFound, what)    => Fail.NotFound(what)
+    case (StatusCode.Conflict, msg)     => Fail.Conflict(msg)
+    case (StatusCode.BadRequest, msg)   => Fail.IncorrectInput(msg)
+    case (StatusCode.Forbidden, _)      => Fail.Forbidden
+    case (StatusCode.Unauthorized, msg) => Fail.Unauthorized(msg)
+    case (code, msg) =>
+      new Fail:
+        override def toString = msg
+  }
 
   //
 
@@ -28,8 +39,7 @@ object Http extends Tapir with TapirJsonJsoniter with Logging:
   private val failOutput: EndpointOutput[Fail] =
     statusCode
       .and(jsonErrorOutOutput.map(_.error)(Error_OUT.apply))
-      // we're not interpreting the endpoints as clients, so we don't need the mapping in one direction
-      .map((_, _) => throw new UnsupportedOperationException())(failToResponseData)
+      .map(responseDataToFail.tupled)(failToResponseData)
 
   /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class, translated from a [[Fail]] instance.

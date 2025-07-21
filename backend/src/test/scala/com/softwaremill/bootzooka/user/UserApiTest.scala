@@ -1,15 +1,16 @@
 package com.softwaremill.bootzooka.user
 
+import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
-import com.softwaremill.bootzooka.test.{BaseTest, RegisteredUser, TestDependencies, TestSupport}
+import com.softwaremill.bootzooka.test.{BaseTest, RegisteredUser, TestDependencies}
 import com.softwaremill.bootzooka.user.UserApi.*
+import org.scalatest.EitherValues
 import org.scalatest.concurrent.Eventually
 import sttp.model.StatusCode
-import ox.discard
 
 import scala.concurrent.duration.*
 
-class UserApiTest extends BaseTest with Eventually with TestDependencies with TestSupport:
+class UserApiTest extends BaseTest with Eventually with TestDependencies with EitherValues:
 
   "/user/register" should "register" in {
     // given
@@ -19,15 +20,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.registerUser(login, email, password)
 
     // then
-    response1.code shouldBe StatusCode.Ok
-    val apiKey = response1.body.shouldDeserializeTo[Register_OUT].apiKey
+    val apiKey = response1.body.value.apiKey
 
     // when
     val response4 = requests.getUser(apiKey)
 
     // then
-    val body = response4.body.shouldDeserializeTo[GetUser_OUT]
-    body.email shouldBe email
+    response4.body.value.email shouldBe email
   }
 
   "/user/register" should "register and ignore leading and trailing spaces" in {
@@ -38,15 +37,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.registerUser("   " + login + "   ", "   " + email + "   ", password)
 
     // then
-    response1.code shouldBe StatusCode.Ok
-    val apiKey = response1.body.shouldDeserializeTo[Register_OUT].apiKey
+    val apiKey = response1.body.value.apiKey
 
     // when
     val response4 = requests.getUser(apiKey)
 
     // then
-    val body = response4.body.shouldDeserializeTo[GetUser_OUT]
-    body.email shouldBe email
+    response4.body.value.email shouldBe email
   }
 
   "/user/register" should "not register if data is invalid" in {
@@ -58,7 +55,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
 
     // then
     response1.code shouldBe StatusCode.BadRequest
-    response1.body.shouldDeserializeToError
+    response1.body should matchPattern { case Left(_: Fail) => }
   }
 
   "/user/register" should "not register if email is taken" in {
@@ -91,7 +88,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.loginUser(login, password)
 
     // then
-    response1.body.shouldDeserializeTo[Login_OUT]
+    response1.body should matchPattern { case Right(_) => }
   }
 
   "/user/login" should "login the user using the email" in {
@@ -102,7 +99,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.loginUser(email, password)
 
     // then
-    response1.body.shouldDeserializeTo[Login_OUT]
+    response1.body should matchPattern { case Right(_) => }
   }
 
   "/user/login" should "login the user using uppercase email" in {
@@ -113,7 +110,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.loginUser(email.toUpperCase, password)
 
     // then
-    response1.body.shouldDeserializeTo[Login_OUT]
+    response1.body should matchPattern { case Right(_) => }
   }
 
   "/user/login" should "login the user with leading or trailing spaces" in {
@@ -124,7 +121,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.loginUser("   " + login + "   ", password)
 
     // then
-    response1.body.shouldDeserializeTo[Login_OUT]
+    response1.body should matchPattern { case Right(_) => }
   }
 
   "/user/login" should "login the user for the given number of hours" in {
@@ -132,13 +129,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val RegisteredUser(login, _, password, _) = requests.newRegisteredUsed()
 
     // when
-    val apiKey = requests.loginUser(login, password, Some(3)).body.shouldDeserializeTo[Login_OUT].apiKey
+    val apiKey = requests.loginUser(login, password, Some(3)).body.value.apiKey
 
     // then
-    requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT].discard
+    requests.getUser(apiKey).body should matchPattern { case Right(_) => }
 
     testClock.forward(2.hours)
-    requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT].discard
+    requests.getUser(apiKey).body should matchPattern { case Right(_) => }
 
     testClock.forward(2.hours)
     requests.getUser(apiKey).code shouldBe StatusCode.Unauthorized
@@ -150,8 +147,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
 
     // when
     val response = requests.loginUser("unknownLogin", password, Some(3))
-    response.code shouldBe StatusCode.Unauthorized
-    response.body.shouldDeserializeToError shouldBe "Incorrect login/email or password"
+    response.body shouldBe Left(Fail.Unauthorized("Incorrect login/email or password"))
   }
 
   "/user/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if password is incorrect for user" in {
@@ -160,8 +156,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
 
     // when
     val response = requests.loginUser(login, "wrongPassword", Some(3))
-    response.code shouldBe StatusCode.Unauthorized
-    response.body.shouldDeserializeToError shouldBe "Incorrect login/email or password"
+    response.body shouldBe Left(Fail.Unauthorized("Incorrect login/email or password"))
   }
 
   "/user/info" should "respond with 403 if the token is invalid" in {
@@ -194,7 +189,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.changePassword(apiKey, password, newPassword)
 
     // then
-    response1.body.shouldDeserializeTo[ChangePassword_OUT].discard
+    response1.body should matchPattern { case Right(_) => }
     requests.loginUser(login, password, None).code shouldBe StatusCode.Unauthorized
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Ok
   }
@@ -205,13 +200,13 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val newPassword = password + password
 
     // login again to create another session
-    val apiKey2 = requests.loginUser(login, password, Some(3)).body.shouldDeserializeTo[Login_OUT].apiKey
+    val apiKey2 = requests.loginUser(login, password, Some(3)).body.value.apiKey
 
     // when
     val response = requests.changePassword(apiKey1, password, newPassword)
 
     // then
-    val newApiKey = response.body.shouldDeserializeTo[ChangePassword_OUT].apiKey
+    val newApiKey = response.body.value.apiKey
     requests.getUser(newApiKey).code shouldBe StatusCode.Ok
     requests.getUser(apiKey1).code shouldBe StatusCode.Unauthorized
     requests.getUser(apiKey2).code shouldBe StatusCode.Unauthorized
@@ -226,8 +221,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.changePassword(apiKey, "invalid", newPassword)
 
     // then
-    response1.code shouldBe StatusCode.Unauthorized
-    response1.body.shouldDeserializeToError shouldBe "Incorrect current password"
+    response1.body shouldBe Left(Fail.Unauthorized("Incorrect current password"))
 
     requests.loginUser(login, password, None).code shouldBe StatusCode.Ok
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Unauthorized
@@ -242,8 +236,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.changePassword(apiKey, password, newPassword)
 
     // then
-    response1.code shouldBe StatusCode.BadRequest
-    response1.body.shouldDeserializeToError shouldBe "Password cannot be empty!"
+    response1.body shouldBe Left(Fail.IncorrectInput("Password cannot be empty!"))
 
     requests.loginUser(login, password, None).code shouldBe StatusCode.Ok
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Unauthorized
@@ -258,10 +251,10 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.updateUser(apiKey, newLogin, email)
 
     // then
-    response1.body.shouldDeserializeTo[UpdateUser_OUT].discard
-    val body = requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
-    body.login shouldBe newLogin
-    body.email shouldBe email
+    response1.body should matchPattern { case Right(_) => }
+    val getUserResponseBody = requests.getUser(apiKey).body.value
+    getUserResponseBody.login shouldBe newLogin
+    getUserResponseBody.email shouldBe email
   }
 
   "/user" should "update the login if the new login is invalid" in {
@@ -273,12 +266,11 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.updateUser(apiKey, newLogin, email)
 
     // then
-    response1.code shouldBe StatusCode.BadRequest
-    response1.body.shouldDeserializeToError shouldBe "Login is too short!"
+    response1.body shouldBe Left(Fail.IncorrectInput("Login is too short!"))
 
-    val body = requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
-    body.login shouldBe login
-    body.email shouldBe email
+    val getUserResponseBody = requests.getUser(apiKey).body.value
+    getUserResponseBody.login shouldBe login
+    getUserResponseBody.email shouldBe email
   }
 
   "/user" should "update the email" in {
@@ -290,10 +282,10 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.updateUser(apiKey, login, newEmail)
 
     // then
-    response1.body.shouldDeserializeTo[UpdateUser_OUT].discard
-    val body = requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
-    body.login shouldBe login
-    body.email shouldBe newEmail
+    response1.body should matchPattern { case Right(_) => }
+    val getUserResponseBody = requests.getUser(apiKey).body.value
+    getUserResponseBody.login shouldBe login
+    getUserResponseBody.email shouldBe newEmail
   }
 
   "/user" should "not update the email if the new email is invalid" in {
@@ -305,12 +297,11 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.updateUser(apiKey, login, newEmail)
 
     // then
-    response1.code shouldBe StatusCode.BadRequest
-    response1.body.shouldDeserializeToError shouldBe "Invalid e-mail format!"
+    response1.body shouldBe Left(Fail.IncorrectInput("Invalid e-mail format!"))
 
-    val body = requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
-    body.login shouldBe login
-    body.email shouldBe email
+    val getUserResponseBody = requests.getUser(apiKey).body.value
+    getUserResponseBody.login shouldBe login
+    getUserResponseBody.email shouldBe email
   }
 
   "/user" should "update the login and email with leading or trailing spaces" in {
@@ -323,9 +314,9 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     val response1 = requests.updateUser(apiKey, "   " + newLogin + "   ", "   " + newEmail + "   ")
 
     // then
-    response1.body.shouldDeserializeTo[UpdateUser_OUT].discard
-    val body = requests.getUser(apiKey).body.shouldDeserializeTo[GetUser_OUT]
-    body.login shouldBe newLogin
-    body.email shouldBe newEmail
+    response1.body should matchPattern { case Right(_) => }
+    val getUserResponseBody = requests.getUser(apiKey).body.value
+    getUserResponseBody.login shouldBe newLogin
+    getUserResponseBody.email shouldBe newEmail
   }
 end UserApiTest

@@ -65,31 +65,31 @@ object UserApi extends EndpointsForDocs:
 
   private val UserPath = "user"
 
-  private val registerUserEndpoint = baseEndpoint.post
+  val registerUserEndpoint = baseEndpoint.post
     .in(UserPath / "register")
     .in(jsonBody[Register_IN])
     .out(jsonBody[Register_OUT])
 
-  private val loginEndpoint = baseEndpoint.post
+  val loginEndpoint = baseEndpoint.post
     .in(UserPath / "login")
     .in(jsonBody[Login_IN])
     .out(jsonBody[Login_OUT])
 
-  private val logoutEndpoint = secureEndpoint[ApiKey].post
+  val logoutEndpoint = secureEndpoint[ApiKey].post
     .in(UserPath / "logout")
     .in(jsonBody[Logout_IN])
     .out(jsonBody[Logout_OUT])
 
-  private val changePasswordEndpoint = secureEndpoint[ApiKey].post
+  val changePasswordEndpoint = secureEndpoint[ApiKey].post
     .in(UserPath / "changepassword")
     .in(jsonBody[ChangePassword_IN])
     .out(jsonBody[ChangePassword_OUT])
 
-  private val getUserEndpoint = secureEndpoint[ApiKey].get
+  val getUserEndpoint = secureEndpoint[ApiKey].get
     .in(UserPath)
     .out(jsonBody[GetUser_OUT])
 
-  private val updateUserEndpoint = secureEndpoint[ApiKey].post
+  val updateUserEndpoint = secureEndpoint[ApiKey].post
     .in(UserPath)
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
