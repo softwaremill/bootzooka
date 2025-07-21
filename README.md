@@ -67,6 +67,14 @@ Then, you can start the frontend:
 And open `http://localhost:8081`. The frontend will automatically reload when there are any changes in the frontend
 source. The frontend connects to the backend on the 8080 port, as specified in the environment file.
 
+# Using the template
+
+If you'd like to use Bootzooka as a template for your own project it might be useful to:
+
+1. Clone the repository without history using `git clone --depth 1`
+2. Switch the git's origin to the new repository: `git remote set-url origin https://repo.com/OTHERREPOSITORY.git`
+3. Rename the project and the package using e.g. `sbt "renameProject com.mycompany avocado"`
+
 # Project info
 
 [The docs](http://softwaremill.github.io/bootzooka/) dive deeper into various aspects of the project (architecture, tech

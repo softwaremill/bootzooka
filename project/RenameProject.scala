@@ -48,16 +48,11 @@ object RenameProject {
 
       def info(msg: String) = streams.value.log.info(msg)
 
-      def removeRegexes(regexes: Traversable[String])(sourceString: String, file: File) =
-        regexes.foldLeft(sourceString)((currentString, regex) => {
-          currentString.replaceAll(regex, "")
-        })
-
       def notHiddenAndExcluding(excludedNames: Seq[String]) =
         new FileFilter {
           override def accept(file: File): Boolean =
             !(excludedNames.contains(file.getName) ||
-              file.isHidden ||
+              (file.isHidden && !file.getAbsolutePath().contains(".github")) ||
               file.getName.endsWith(".class") ||
               file.getName.endsWith(".gif") ||
               file.getName.endsWith(".png"))
@@ -121,14 +116,8 @@ object RenameProject {
       val initialName = name.value
       val initialRootPackage = "com.softwaremill.bootzooka"
       val targetRootPackage = cmd.packageName + "." + cmd.projectName
-      val excludes = List("README.md", "RenameProject.scala", "rename.sbt", "out", "node_modules", "target")
-      info("Removing scaffolding in HTML elements...")
+      val excludes = List("RenameProject.scala", "rename.sbt", "out", "node_modules", "target")
       val baseDir: File = baseDirectory.value
-      updateDirContent(
-        baseDir,
-        excludes,
-        removeRegexes(List("""(?s)<li id='scaffolding.*?li>""", """(?s)<span id='scaffolding.*?span>"""))
-      )
       info(s"Replacing project name and package name")
       updateDirContent(
         baseDir,
@@ -142,9 +131,7 @@ object RenameProject {
         )
       )
       info(s"Moving classes to new packages")
-      moveSources(baseDir, initialRootPackage, targetRootPackage)
-      info(s"Removing unnecessary files")
-      delete(baseDir / "README.md")
+      moveSources(baseDir, initialRootPackage, targetRootPackage)      
       info(
         "Done! If you changed your mind -> run `git reset --hard HEAD; git clean -d -f` to restore state before renaming"
       )
