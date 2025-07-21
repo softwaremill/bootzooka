@@ -84,7 +84,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Unauthorized
   }
 
-  def codeSentToEmail(email: String): String = {
+  def codeSentToEmail(email: String): String =
     dependencies.emailService.sendBatch()
 
     val emailData = DummyEmailSender
@@ -93,18 +93,19 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     codeFromResetPasswordEmail(emailData.content)
       .getOrElse(throw new IllegalStateException(s"No code found in: $emailData"))
-  }
+  end codeSentToEmail
 
   def codeWasNotSentToEmail(email: String): Unit =
     dependencies.emailService.sendBatch()
 
     val maybeEmail = DummyEmailSender.findSentEmail(email, "SoftwareMill Bootzooka password reset")
-    maybeEmail match {
+    maybeEmail match
       case Some(emailData) =>
         throw new IllegalStateException(s"There should be no password reset email sent to $email, but instead found $emailData")
       case None => ()
-    }
+  end codeWasNotSentToEmail
 
   def codeFromResetPasswordEmail(email: String): Option[String] =
     val regexp = "code=([\\w]*)".r
     regexp.findFirstMatchIn(email).map(_.group(1))
+end PasswordResetApiTest

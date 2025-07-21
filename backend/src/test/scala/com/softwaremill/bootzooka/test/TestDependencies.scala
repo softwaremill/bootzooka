@@ -14,11 +14,10 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres:
 
   var dependencies: Dependencies = uninitialized
 
-  override protected def beforeAll(): Unit = {
+  override protected def beforeAll(): Unit =
     super.beforeAll()
     dependencies =
       Dependencies.create(TestConfig, OpenTelemetry.noop(), sttp.client4.httpclient.HttpClientSyncBackend.stub, currentDb, testClock)
-  }
 
   private lazy val serverStub: SttpBackend[Identity, Any] =
     TapirStubInterpreter[Identity, Any](sttp.client3.HttpClientSyncBackend.stub)
@@ -26,3 +25,4 @@ trait TestDependencies extends BeforeAndAfterAll with TestEmbeddedPostgres:
       .backend()
 
   lazy val requests = new Requests(serverStub)
+end TestDependencies

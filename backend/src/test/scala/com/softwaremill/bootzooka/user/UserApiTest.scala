@@ -328,3 +328,4 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Te
     body.login shouldBe newLogin
     body.email shouldBe newEmail
   }
+end UserApiTest

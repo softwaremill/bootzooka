@@ -22,3 +22,4 @@ class TestClock(nowRef: AtomicReference[Instant]) extends Clock with Logging:
     nowRef.set(newNow)
 
   override def now(): Instant = nowRef.get()
+end TestClock

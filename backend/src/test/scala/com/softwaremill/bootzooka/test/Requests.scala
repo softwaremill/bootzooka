@@ -71,3 +71,4 @@ class Requests(backend: SttpBackend[Identity, Any]) extends TestSupport:
       .post(uri"$basePath/passwordreset/reset")
       .body(writeToString(PasswordReset_IN(code, password)))
       .send(backend)
+end Requests
