@@ -3,12 +3,11 @@ package com.softwaremill.bootzooka.test
 import com.github.plokhotnyuk.jsoniter_scala.core.writeToString
 import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_IN, PasswordReset_IN}
 import com.softwaremill.bootzooka.user.UserApi.*
-import sttp.client3.{Response, SttpBackend, UriContext, basicRequest}
-import sttp.shared.Identity
+import sttp.client4.*
 
 import scala.util.Random
 
-class Requests(backend: SttpBackend[Identity, Any]) extends TestSupport:
+class Requests(backend: SyncBackend) extends TestSupport:
   private val random = new Random()
 
   def randomLoginEmailPassword(): (String, String, String) =

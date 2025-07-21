@@ -24,7 +24,6 @@ val httpDependencies = Seq(
   "com.softwaremill.sttp.client4" %% "core" % sttpVersion, // HTTP client
   "com.softwaremill.sttp.client4" %% "slf4j-backend" % sttpVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % tapirVersion, // HTTP server, using the synchronous Netty backend
-  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion, // testing HTTP endpoints
   "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion // serving static files
 )
 
@@ -76,9 +75,11 @@ val emailDependencies = Seq(
 )
 
 val testingDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-  "com.opentable.components" % "otj-pg-embedded" % "1.1.1" % Test // embedded PostgreSQL for tests
-)
+  "org.scalatest" %% "scalatest" % "3.2.19",
+  "com.opentable.components" % "otj-pg-embedded" % "1.1.1", // embedded PostgreSQL for tests
+  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub4-server" % tapirVersion, // integration testing HTTP endpoints without starting a server
+  "com.softwaremill.sttp.tapir" %% "tapir-sttp-client4" % tapirVersion // interpreting endpoint descriptions as HTTP requests
+).map(_ % Test)
 
 val allBackendDependencies = baseDependencies ++ testingDependencies ++ loggingDependencies ++ configDependencies ++
   dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ observabilityDependencies ++
