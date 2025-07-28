@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
@@ -6,7 +5,7 @@ import { Link } from 'react-router';
 import { BiPowerOff, BiHappy } from 'react-icons/bi';
 import { useUserContext } from 'contexts/UserContext/User.context';
 import { usePostUserLogout } from 'api/apiComponents';
-import { useApiKeyState } from '../../hooks/auth';
+import { useApiKeyState } from 'hooks/auth';
 
 export const Top = () => {
   const {
@@ -17,13 +16,11 @@ export const Top = () => {
 
   const apiKey = apiKeyState?.apiKey;
 
-  const { mutateAsync: logout, isSuccess } = usePostUserLogout();
-
-  useEffect(() => {
-    if (isSuccess) {
+  const { mutateAsync: logout } = usePostUserLogout({
+    onSuccess: () => {
       dispatch({ type: 'LOG_OUT' });
-    }
-  }, [isSuccess, dispatch]);
+    },
+  });
 
   return (
     <Navbar variant="dark" bg="dark" sticky="top" collapseOnSelect expand="lg">
@@ -50,7 +47,6 @@ export const Top = () => {
                 <Nav.Link
                   className="text-lg-end"
                   onClick={() => {
-                    console.log(apiKey);
                     logout({ body: { apiKey } });
                   }}
                 >

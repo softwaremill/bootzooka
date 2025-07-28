@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import { FormikInput, FeedbackButton } from 'components';
 import { usePostUserChangepassword } from 'api/apiComponents';
 import { validationSchema } from './PasswordDetails.validations';
-import { useApiKeyState } from '../../../hooks/auth';
+import { useApiKeyState } from 'hooks/auth';
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 

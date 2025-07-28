@@ -5,7 +5,7 @@ import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
 import { validationSchema } from './Login.validations';
-import { useApiKeyState } from '../../hooks/auth';
+import { useApiKeyState } from 'hooks/auth';
 import { usePostUserLogin } from 'api/apiComponents';
 
 export type LoginParams = Yup.InferType<typeof validationSchema>;

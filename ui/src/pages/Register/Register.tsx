@@ -5,7 +5,7 @@ import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
 import { usePostUserRegister } from 'api/apiComponents';
 import { validationSchema } from './Register.validations';
 import { initialValues, RegisterParams } from './Register.utils';
-import { useApiKeyState } from '../../hooks/auth';
+import { useApiKeyState } from 'hooks/auth';
 
 export const Register = () => {
   const [, setApiKeyState] = useApiKeyState();

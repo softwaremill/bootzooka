@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
         main: path.resolve(__dirname, './src/main'),
         pages: path.resolve(__dirname, './src/pages'),
         tests: path.resolve(__dirname, './src/tests'),
+        hooks: path.resolve(__dirname, './src/hooks'),
       },
     },
   };
