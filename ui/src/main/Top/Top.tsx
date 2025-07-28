@@ -1,17 +1,22 @@
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router';
 import { BiPowerOff, BiHappy } from 'react-icons/bi';
-import { UserContext } from 'contexts/UserContext/User.context';
+import { useUserContext } from 'contexts/UserContext/User.context';
 import { usePostUserLogout } from 'api/apiComponents';
+import { useLocalStorage } from '@uidotdev/usehooks';
+import { ApiKeyState } from '../../hooks/auth';
 
 export const Top = () => {
   const {
-    state: { user, loggedIn, apiKey },
+    state: { user },
     dispatch,
-  } = useContext(UserContext);
+  } = useUserContext();
+  const [apiKeyState] = useLocalStorage<ApiKeyState | null>('apiKey');
+
+  const apiKey = apiKeyState?.apiKey;
 
   const { mutateAsync: logout, isSuccess } = usePostUserLogout();
 
@@ -37,7 +42,7 @@ export const Top = () => {
               Home
             </Nav.Link>
             <div className="flex-grow-1" />
-            {loggedIn && apiKey !== null ? (
+            {user && apiKey ? (
               <>
                 <Nav.Link as={Link} to="/profile" className="text-lg-end">
                   <BiHappy />
@@ -45,7 +50,10 @@ export const Top = () => {
                 </Nav.Link>{' '}
                 <Nav.Link
                   className="text-lg-end"
-                  onClick={() => logout({ body: { apiKey } })}
+                  onClick={() => {
+                    console.log(apiKey);
+                    logout({ body: { apiKey } });
+                  }}
                 >
                   <BiPowerOff />
                   &nbsp;Logout

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -8,16 +8,16 @@ import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { FormikInput, FeedbackButton } from 'components';
 import { usePostUser } from 'api/apiComponents';
-import { UserContext } from 'contexts/UserContext/User.context';
 import { validationSchema } from './ProfileDetails.validations';
+import { useUserContext } from 'contexts/UserContext/User.context';
 
 export type ProfileDetailsParams = Yup.InferType<typeof validationSchema>;
 
 export const ProfileDetails = () => {
   const {
     dispatch,
-    state: { apiKey, user },
-  } = useContext(UserContext);
+    state: { user },
+  } = useUserContext();
 
   const mutation = usePostUser();
   const { data, isSuccess } = mutation;
@@ -32,7 +32,7 @@ export const ProfileDetails = () => {
     <Container className="py-5">
       <Row>
         <Col md={9} lg={7} xl={6} className="mx-auto">
-          {apiKey ? (
+          {user ? (
             <>
               <h3 className="mb-4">Profile details</h3>
               <Formik<ProfileDetailsParams>

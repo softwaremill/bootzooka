@@ -19,6 +19,9 @@ export type PostUserRegisterVariables = {
   body: Schemas.RegisterIN;
 } & ApiContext["fetcherOptions"];
 
+/**
+ * Registers and logs in a new user, returning an API key.
+ */
 export const fetchPostUserRegister = (
   variables: PostUserRegisterVariables,
   signal?: AbortSignal,
@@ -32,6 +35,9 @@ export const fetchPostUserRegister = (
     {}
   >({ url: "/user/register", method: "post", ...variables, signal });
 
+/**
+ * Registers and logs in a new user, returning an API key.
+ */
 export const usePostUserRegister = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -63,6 +69,9 @@ export type PostUserLoginVariables = {
   body: Schemas.LoginIN;
 } & ApiContext["fetcherOptions"];
 
+/**
+ * Logs in a user, returning an API key.
+ */
 export const fetchPostUserLogin = (
   variables: PostUserLoginVariables,
   signal?: AbortSignal,
@@ -74,6 +83,9 @@ export const fetchPostUserLogin = (
     signal,
   });
 
+/**
+ * Logs in a user, returning an API key.
+ */
 export const usePostUserLogin = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -105,6 +117,9 @@ export type PostUserLogoutVariables = {
   body: Schemas.LogoutIN;
 } & ApiContext["fetcherOptions"];
 
+/**
+ * Logs out a user, invalidating the used API key.
+ */
 export const fetchPostUserLogout = (
   variables: PostUserLogoutVariables,
   signal?: AbortSignal,
@@ -118,6 +133,9 @@ export const fetchPostUserLogout = (
     {}
   >({ url: "/user/logout", method: "post", ...variables, signal });
 
+/**
+ * Logs out a user, invalidating the used API key.
+ */
 export const usePostUserLogout = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -191,6 +209,9 @@ export type GetUserError = Fetcher.ErrorWrapper<{
 
 export type GetUserVariables = ApiContext["fetcherOptions"];
 
+/**
+ * Gets the currently logged in user's information.
+ */
 export const fetchGetUser = (
   variables: GetUserVariables,
   signal?: AbortSignal,
@@ -202,6 +223,9 @@ export const fetchGetUser = (
     signal,
   });
 
+/**
+ * Gets the currently logged in user's information.
+ */
 export const useGetUser = <TData = Schemas.GetUserOUT,>(
   variables: GetUserVariables,
   options?: Omit<

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -6,32 +6,29 @@ import Row from 'react-bootstrap/Row';
 import { BiArrowFromBottom } from 'react-icons/bi';
 import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
-import { UserContext } from 'contexts/UserContext/User.context';
 import { FormikInput, FeedbackButton } from 'components';
 import { usePostUserChangepassword } from 'api/apiComponents';
 import { validationSchema } from './PasswordDetails.validations';
+import { useLocalStorage } from '@uidotdev/usehooks';
+import { ApiKeyState } from '../../../hooks/auth';
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 
 export const PasswordDetails = () => {
-  const {
-    state: { apiKey },
-    dispatch,
-  } = useContext(UserContext);
+  const [storageApiKeyState, setStorageApiKeyState] =
+    useLocalStorage<ApiKeyState | null>('apiKey');
 
   const mutation = usePostUserChangepassword();
   const { isSuccess, data } = mutation;
 
+  const apiKey = storageApiKeyState?.apiKey;
+
   useEffect(() => {
     if (isSuccess) {
       const { apiKey } = data;
-      dispatch({ type: 'SET_API_KEY', apiKey });
+      setStorageApiKeyState({ apiKey });
     }
-  }, [isSuccess, data, dispatch]);
-
-  useEffect(() => {
-    localStorage.setItem('apiKey', apiKey || '');
-  }, [apiKey]);
+  }, [isSuccess, setStorageApiKeyState, data]);
 
   return (
     <Container className="py-5">
