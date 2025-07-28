@@ -9,14 +9,12 @@ import * as Yup from 'yup';
 import { FormikInput, FeedbackButton } from 'components';
 import { usePostUserChangepassword } from 'api/apiComponents';
 import { validationSchema } from './PasswordDetails.validations';
-import { useLocalStorage } from '@uidotdev/usehooks';
-import { ApiKeyState } from '../../../hooks/auth';
+import { useApiKeyState } from '../../../hooks/auth';
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 
 export const PasswordDetails = () => {
-  const [storageApiKeyState, setStorageApiKeyState] =
-    useLocalStorage<ApiKeyState | null>('apiKey');
+  const [storageApiKeyState, setStorageApiKeyState] = useApiKeyState();
 
   const mutation = usePostUserChangepassword();
   const { isSuccess, data } = mutation;

@@ -5,11 +5,10 @@ import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
 import { usePostUserRegister } from 'api/apiComponents';
 import { validationSchema } from './Register.validations';
 import { initialValues, RegisterParams } from './Register.utils';
-import { useLocalStorage } from '@uidotdev/usehooks';
-import { ApiKeyState } from '../../hooks/auth';
+import { useApiKeyState } from '../../hooks/auth';
 
 export const Register = () => {
-  const [, setApiKeyState] = useLocalStorage<ApiKeyState | null>('apiKey');
+  const [, setApiKeyState] = useApiKeyState();
 
   const mutation = usePostUserRegister({
     onSuccess: ({ apiKey }) => {

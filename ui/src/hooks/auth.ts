@@ -7,8 +7,11 @@ export interface ApiKeyState {
   apiKey: string | null;
 }
 
+export const useApiKeyState = () =>
+  useLocalStorage<ApiKeyState | null>('apiKey');
+
 export const useUserCheck = () => {
-  const [apiKeyState] = useLocalStorage<ApiKeyState | null>('apiKey');
+  const [apiKeyState] = useApiKeyState();
   const { dispatch } = useUserContext();
 
   const { data, isSuccess, isError } = useGetUser(

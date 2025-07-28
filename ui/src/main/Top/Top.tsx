@@ -6,15 +6,14 @@ import { Link } from 'react-router';
 import { BiPowerOff, BiHappy } from 'react-icons/bi';
 import { useUserContext } from 'contexts/UserContext/User.context';
 import { usePostUserLogout } from 'api/apiComponents';
-import { useLocalStorage } from '@uidotdev/usehooks';
-import { ApiKeyState } from '../../hooks/auth';
+import { useApiKeyState } from '../../hooks/auth';
 
 export const Top = () => {
   const {
     state: { user },
     dispatch,
   } = useUserContext();
-  const [apiKeyState] = useLocalStorage<ApiKeyState | null>('apiKey');
+  const [apiKeyState] = useApiKeyState();
 
   const apiKey = apiKeyState?.apiKey;
 
