@@ -47,7 +47,10 @@ export const Top = () => {
                 <Nav.Link
                   className="text-lg-end"
                   onClick={() => {
-                    logout({ body: { apiKey } });
+                    logout({
+                      body: { apiKey },
+                      headers: { Authorization: `Bearer ${apiKey}` },
+                    });
                   }}
                 >
                   <BiPowerOff />
