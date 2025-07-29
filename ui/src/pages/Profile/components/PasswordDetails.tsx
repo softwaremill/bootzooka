@@ -41,7 +41,12 @@ export const PasswordDetails = () => {
                   newPassword: '',
                   repeatedPassword: '',
                 }}
-                onSubmit={(values) => mutation.mutate({ body: values })}
+                onSubmit={(values) =>
+                  mutation.mutate({
+                    body: values,
+                    headers: { Authorization: `Bearer ${apiKey}` },
+                  })
+                }
                 validationSchema={validationSchema}
               >
                 <Form as={FormikForm}>
