@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -16,17 +15,13 @@ type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 export const PasswordDetails = () => {
   const [storageApiKeyState, setStorageApiKeyState] = useApiKeyState();
 
-  const mutation = usePostUserChangepassword();
-  const { isSuccess, data } = mutation;
+  const mutation = usePostUserChangepassword({
+    onSuccess: ({ apiKey }) => {
+      setStorageApiKeyState({ apiKey });
+    },
+  });
 
   const apiKey = storageApiKeyState?.apiKey;
-
-  useEffect(() => {
-    if (isSuccess) {
-      const { apiKey } = data;
-      setStorageApiKeyState({ apiKey });
-    }
-  }, [isSuccess, setStorageApiKeyState, data]);
 
   return (
     <Container className="py-5">
