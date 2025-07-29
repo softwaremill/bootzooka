@@ -28,7 +28,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('renders header', () => {
+test('<Login /> should render the header', () => {
   mockApiKeyResponse.mockReturnValueOnce({
     mutateAsync: mockMutate,
     reset: vi.fn(),
@@ -52,7 +52,51 @@ test('renders header', () => {
   expect(screen.getByText('Please sign in')).toBeInTheDocument();
 });
 
-test('handles login success', async () => {
+test('<Login /> should handle the login form submission through the Enter key press', async () => {
+  mockApiKeyResponse.mockReturnValueOnce({
+    mutateAsync: mockMutate,
+    reset: vi.fn(),
+    data: { apiKey: 'test-api-key' },
+    isSuccess: true,
+    isError: false,
+    isPending: false,
+    error: '',
+    onSuccess: dispatch({
+      type: 'SET_API_KEY',
+      apiKey: 'test-api-key',
+    }),
+  });
+
+  renderWithClient(
+    <MemoryRouter initialEntries={['/login']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState }, dispatch }}
+      >
+        <Login />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
+
+  await userEvent.type(screen.getByLabelText('Login or email'), 'test-login');
+  await userEvent.type(screen.getByLabelText('Password'), 'test-password');
+  await userEvent.keyboard('{Enter}');
+
+  await screen.findByRole('success');
+
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: {
+      loginOrEmail: 'test-login',
+      password: 'test-password',
+    },
+  });
+
+  expect(dispatch).toHaveBeenCalledWith({
+    type: 'SET_API_KEY',
+    apiKey: 'test-api-key',
+  });
+});
+
+test('<Login /> should handle successful login attempt through the submit button click', async () => {
   mockApiKeyResponse.mockReturnValueOnce({
     mutateAsync: mockMutate,
     reset: vi.fn(),
@@ -96,7 +140,7 @@ test('handles login success', async () => {
   });
 });
 
-test('handles login error', async () => {
+test('<Login /> should handle failed login attempt', async () => {
   mockApiKeyResponse.mockReturnValueOnce({
     mutateAsync: mockMutate,
     reset: vi.fn(),
