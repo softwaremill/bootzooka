@@ -2,9 +2,10 @@ package com.softwaremill.bootzooka.passwordreset
 
 import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http.*
-import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
-import sttp.tapir.Schema
+import com.softwaremill.bootzooka.infrastructure.DB
+import sttp.tapir.*
+import sttp.tapir.json.jsoniter.*
 
 class PasswordResetApi(passwordResetService: PasswordResetService, db: DB) extends ServerEndpoints:
   import PasswordResetApi.*
