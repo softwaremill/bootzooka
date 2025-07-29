@@ -7,13 +7,11 @@ import { renderWithClient } from 'tests';
 import { Routes } from './Routes';
 
 const loggedUserState: UserState = {
-  apiKey: 'test-api-key',
   user: {
     login: 'user-login',
     email: 'email@address.pl',
     createdOn: '2020-10-09T09:57:17.995288Z',
   },
-  loggedIn: true,
 };
 
 const dispatch = vi.fn();
@@ -22,7 +20,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('renders main route', () => {
+test('<Routes /> should render the main route', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['']}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
@@ -34,7 +32,7 @@ test('renders main route', () => {
   expect(screen.getByText('Welcome to Bootzooka!')).toBeInTheDocument();
 });
 
-test('renders protected route for unlogged user', () => {
+test('<Routes /> should render protected route for unlogged user', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/main']}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
@@ -46,7 +44,7 @@ test('renders protected route for unlogged user', () => {
   expect(screen.getByText('Please sign in')).toBeInTheDocument();
 });
 
-test('renders protected route for logged user', () => {
+test('<Routes /> should render protected route for logged-in user', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/main']}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -60,7 +58,7 @@ test('renders protected route for logged user', () => {
   ).toBeInTheDocument();
 });
 
-test('renders not found page', () => {
+test('<Routes /> should render not found page', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/not-specified-route']}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
