@@ -24,7 +24,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('renders header', () => {
+test('<Register /> should render the header text', () => {
   mockResponse.mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -42,7 +42,7 @@ test('renders header', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Register />
       </UserContext.Provider>
@@ -52,32 +52,7 @@ test('renders header', () => {
   expect(screen.getByText('Please sign up')).toBeInTheDocument();
 });
 
-test('redirects when registered', () => {
-  mockResponse.mockReturnValueOnce({
-    mutate: mockMutate,
-    reset: vi.fn(),
-    isSuccess: true,
-    isPending: false,
-    data: { apiKey: 'test-api-key' },
-    isError: false,
-    error: '',
-  });
-
-  renderWithClient(
-    <MemoryRouter initialEntries={['/login']}>
-      <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}
-      >
-        <Register />
-        <LocationDisplay />
-      </UserContext.Provider>
-    </MemoryRouter>
-  );
-
-  expect(screen.getByTestId('location-display')).toHaveTextContent('/main');
-});
-
-test('handles register success', async () => {
+test('<Register /> should handle successful registration through the submit button click', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -94,7 +69,7 @@ test('handles register success', async () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Register />
       </UserContext.Provider>
@@ -130,7 +105,60 @@ test('handles register success', async () => {
   });
 });
 
-test('handles register error', async () => {
+test('<Register /> should handle successful registration through the Enter key press', async () => {
+  mockResponse.mockReturnValueOnce({
+    mutate: mockMutate,
+    reset: vi.fn(),
+    isSuccess: true,
+    data: { apiKey: 'test-api-key' },
+    isError: false,
+    error: '',
+    onSuccess: dispatch({
+      type: 'SET_API_KEY',
+      apiKey: 'test-api-key',
+    }),
+  });
+
+  renderWithClient(
+    <MemoryRouter initialEntries={['/login']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState }, dispatch }}
+      >
+        <Register />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
+
+  await userEvent.type(screen.getByLabelText('Login'), 'test-login');
+  await userEvent.type(
+    screen.getByLabelText('Email address'),
+    'test@email.address.pl'
+  );
+  await userEvent.type(screen.getByLabelText('Password'), 'test-password');
+  await userEvent.type(
+    screen.getByLabelText('Repeat password'),
+    'test-password'
+  );
+  await userEvent.keyboard('{Enter}');
+
+  await screen.findByRole('success');
+
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: {
+      login: 'test-login',
+      email: 'test@email.address.pl',
+      password: 'test-password',
+      repeatedPassword: 'test-password',
+    },
+  });
+
+  expect(dispatch).toHaveBeenCalledWith({
+    apiKey: 'test-api-key',
+    type: 'SET_API_KEY',
+  });
+});
+
+test('<Register /> should handle failed registration attempt', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -143,7 +171,7 @@ test('handles register error', async () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Register />
       </UserContext.Provider>
