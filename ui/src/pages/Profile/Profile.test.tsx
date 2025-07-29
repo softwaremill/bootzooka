@@ -5,13 +5,11 @@ import { renderWithClient } from 'tests';
 import { Profile } from './Profile';
 
 const mockState: UserState = {
-  apiKey: 'test-api-key',
   user: {
     login: 'user-login',
     email: 'email@address.pl',
     createdOn: '2020-10-09T09:57:17.995288Z',
   },
-  loggedIn: true,
 };
 
 const dispatch = vi.fn();
@@ -21,6 +19,7 @@ beforeEach(() => {
 });
 
 test('renders headers', () => {
+  localStorage.setItem('apiKey', '{ "apiKey": "test-api-key" }');
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
       <Profile />

@@ -37,8 +37,8 @@ export const ProfileDetails = () => {
               <h3 className="mb-4">Profile details</h3>
               <Formik<ProfileDetailsParams>
                 initialValues={{
-                  login: user?.login || '',
-                  email: user?.email || '',
+                  login: user.login || '',
+                  email: user.email || '',
                 }}
                 onSubmit={(values) => mutation.mutate({ body: values })}
                 validationSchema={validationSchema}

@@ -6,13 +6,11 @@ import { renderWithClient } from 'tests';
 import { ProfileDetails } from './ProfileDetails';
 
 const loggedUserState: UserState = {
-  apiKey: 'test-api-key',
   user: {
     login: 'user-login',
     email: 'email@address.pl',
     createdOn: '2020-10-09T09:57:17.995288Z',
   },
-  loggedIn: true,
 };
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
@@ -26,7 +24,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('renders current user data', () => {
+test('<ProfileDetails /> should render current user data', () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -50,7 +48,7 @@ test('renders current user data', () => {
   ).toEqual('email@address.pl');
 });
 
-test('renders lack of current user data', () => {
+test('<ProfileDetails /> should not render any existing user data', () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -61,22 +59,15 @@ test('renders lack of current user data', () => {
   });
 
   renderWithClient(
-    <UserContext.Provider
-      value={{ state: { ...loggedUserState, user: null }, dispatch }}
-    >
+    <UserContext.Provider value={{ state: { user: null }, dispatch }}>
       <ProfileDetails />
     </UserContext.Provider>
   );
 
-  expect((screen.getByLabelText('Login') as HTMLInputElement).value).toEqual(
-    ''
-  );
-  expect(
-    (screen.getByLabelText('Email address') as HTMLInputElement).value
-  ).toEqual('');
+  expect(screen.getByText('Profile details not available.')).toBeVisible();
 });
 
-test('handles change details success', async () => {
+test('<ProfileDetails /> should handle details update successfully', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -114,7 +105,7 @@ test('handles change details success', async () => {
   await screen.findByText('Profile details changed');
 });
 
-test('handles change details error', async () => {
+test('<ProfileDetails /> should handle details update error', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),
