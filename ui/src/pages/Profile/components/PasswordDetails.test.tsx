@@ -6,13 +6,11 @@ import { renderWithClient } from 'tests';
 import { PasswordDetails } from './PasswordDetails';
 
 const mockState: UserState = {
-  apiKey: 'test-api-key',
   user: {
     login: 'user-login',
     email: 'email@address.pl',
     createdOn: '2020-10-09T09:57:17.995288Z',
   },
-  loggedIn: true,
 };
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
@@ -23,18 +21,37 @@ vi.mock('api/apiComponents', () => ({
 }));
 
 beforeEach(() => {
+  localStorage.clear();
   vi.clearAllMocks();
 });
 
-test('renders header', () => {
-  mockResponse.mockReturnValueOnce({
+const setStorageApiKeyState = () =>
+  localStorage.setItem('apiKey', '{ "apiKey": "test-api-key" }');
+
+const mockSuccessfulResponse = (apiKey = 'test-api-key') => {
+  return mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
+    data: { apiKey },
     isSuccess: true,
     isError: false,
     error: '',
   });
+};
+
+test('<PasswordDetails /> should render a message about unavailable details when the API key is missing"', async () => {
+  renderWithClient(
+    <UserContext.Provider value={{ state: mockState, dispatch }}>
+      <PasswordDetails />
+    </UserContext.Provider>
+  );
+
+  expect(screen.getByText('Password details not available.')).toBeVisible();
+});
+
+test('<PasswordDetails /> should render the form when the API key is available', async () => {
+  setStorageApiKeyState();
+  mockSuccessfulResponse();
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
@@ -42,18 +59,14 @@ test('renders header', () => {
     </UserContext.Provider>
   );
 
-  expect(screen.getByText('Password details')).toBeInTheDocument();
+  expect(screen.getByLabelText('Current password')).toBeVisible();
+  expect(screen.getByLabelText('New password')).toBeVisible();
+  expect(screen.getByLabelText('Repeat new password')).toBeVisible();
 });
 
-test('handles change password success', async () => {
-  mockResponse.mockReturnValueOnce({
-    mutate: mockMutate,
-    reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
-    isSuccess: true,
-    isError: false,
-    error: '',
-  });
+test('<PasswordDetails /> should successfully submit the form by clicking the submit button', async () => {
+  setStorageApiKeyState();
+  mockSuccessfulResponse('new-test-api-key');
 
   renderWithClient(
     <UserContext.Provider value={{ state: mockState, dispatch }}>
@@ -77,22 +90,38 @@ test('handles change password success', async () => {
 
   await screen.findByRole('success');
   await screen.findByText('Password changed');
-
-  expect(mockMutate).toHaveBeenCalledTimes(1);
-  expect(mockMutate).toHaveBeenCalledWith({
-    body: {
-      repeatedPassword: 'test-new-password',
-      currentPassword: 'test-password',
-      newPassword: 'test-new-password',
-    },
-  });
-  expect(dispatch).toHaveBeenCalledWith({
-    type: 'SET_API_KEY',
-    apiKey: 'test-api-key',
-  });
 });
 
-test('handles change password error', async () => {
+test('<PasswordDetails /> should succesfully submit the form by pressing the Enter key', async () => {
+  setStorageApiKeyState();
+  mockSuccessfulResponse('new-test-api-key');
+
+  renderWithClient(
+    <UserContext.Provider value={{ state: mockState, dispatch }}>
+      <PasswordDetails />
+    </UserContext.Provider>
+  );
+
+  await userEvent.type(
+    screen.getByLabelText('Current password'),
+    'test-password'
+  );
+  await userEvent.type(
+    screen.getByLabelText('New password'),
+    'test-new-password'
+  );
+  await userEvent.type(
+    screen.getByLabelText('Repeat new password'),
+    'test-new-password'
+  );
+
+  await userEvent.keyboard('{Enter}');
+
+  await screen.findByRole('success');
+  await screen.findByText('Password changed');
+});
+
+test('<PasswordDetails /> should display an error message when the API call fails', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),

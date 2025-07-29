@@ -16,8 +16,8 @@ export const PasswordDetails = () => {
   const [storageApiKeyState, setStorageApiKeyState] = useApiKeyState();
 
   const mutation = usePostUserChangepassword({
-    onSuccess: ({ apiKey }) => {
-      setStorageApiKeyState({ apiKey });
+    onSuccess: ({ apiKey: newApiKey }) => {
+      setStorageApiKeyState({ apiKey: newApiKey });
     },
   });
 

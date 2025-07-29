@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { MemoryRouter, useLocation } from 'react-router';
+import { MemoryRouter } from 'react-router';
 import { renderWithClient } from 'tests';
 import { Register } from './Register';
 import { UserContext } from 'contexts/UserContext/User.context';
@@ -9,12 +9,6 @@ import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
 const mockResponse = vi.fn();
-
-const LocationDisplay = () => {
-  const location = useLocation();
-
-  return <div data-testid="location-display">{location.pathname}</div>;
-};
 
 vi.mock('api/apiComponents', () => ({
   usePostUserRegister: () => mockResponse(),
