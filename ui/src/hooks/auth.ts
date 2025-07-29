@@ -28,6 +28,12 @@ export const useUserCheck = () => {
     }
   }, [isSuccess, data, dispatch]);
 
+  useEffect(() => {
+    if (!apiKeyState?.apiKey) {
+      dispatch({ type: 'LOG_OUT' });
+    }
+  }, [apiKeyState, dispatch]);
+
   return {
     data,
     isSuccess,

@@ -6,18 +6,22 @@ import { BiPowerOff, BiHappy } from 'react-icons/bi';
 import { useUserContext } from 'contexts/UserContext/User.context';
 import { usePostUserLogout } from 'api/apiComponents';
 import { useApiKeyState } from 'hooks/auth';
+import { Button } from 'react-bootstrap';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const Top = () => {
   const {
     state: { user },
     dispatch,
   } = useUserContext();
-  const [apiKeyState] = useApiKeyState();
-
+  const [apiKeyState, setApiKeyState] = useApiKeyState();
   const apiKey = apiKeyState?.apiKey;
+  const client = useQueryClient();
 
   const { mutateAsync: logout } = usePostUserLogout({
     onSuccess: () => {
+      setApiKeyState(null);
+      client.clear();
       dispatch({ type: 'LOG_OUT' });
     },
   });
@@ -45,7 +49,7 @@ export const Top = () => {
                   &nbsp;{user?.login}
                 </Nav.Link>{' '}
                 <Nav.Link
-                  className="text-lg-end"
+                  as={Button}
                   onClick={() => {
                     logout({
                       body: { apiKey },
