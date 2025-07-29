@@ -8,7 +8,7 @@ import { screen } from '@testing-library/react';
 
 const dispatch = vi.fn();
 
-test('<PublicOnlyRoute /> should not render login page only for logged-in', () => {
+test('<PublicOnlyRoute /> should render login page for anonymous', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
@@ -25,19 +25,30 @@ test('<PublicOnlyRoute /> should not render login page only for logged-in', () =
   expect(screen.getByText('Please sign in')).toBeVisible();
 });
 
-test('<PublicOnlyRoute /> should render login page to anonymous user', () => {
+test('<PublicOnlyRoute /> should not render login page to logged in users', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
-      <UserContext.Provider value={{ state: initialUserState, dispatch }}>
+      <UserContext.Provider
+        value={{
+          state: {
+            user: {
+              login: 'test-user',
+              email: 'test@example.com',
+              createdOn: '2020-10-09T09:57:17.995288Z',
+            },
+          },
+          dispatch,
+        }}
+      >
         <Routes>
           <Route element={<PublicOnlyRoute />}>
             <Route path="/login" element={<Login />} />
           </Route>
-          <Route index element={<>Public Text</>} />
+          <Route path="*" element={<>Public Text</>} />
         </Routes>
       </UserContext.Provider>
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Please sign in')).toBeVisible();
+  expect(screen.getByText('Public Text')).toBeVisible();
 });

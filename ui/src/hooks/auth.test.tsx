@@ -51,7 +51,7 @@ test('useUserCheck() should fetch user data when the API key is available', () =
   });
 });
 
-test('useApiKeyState() should return null when no API key is stored', () => {
+test('useApiKeyState() should return undefined when no API key is stored', () => {
   const { result } = renderHook(() => useApiKeyState());
 
   expect(result.current[0]).toBeUndefined();

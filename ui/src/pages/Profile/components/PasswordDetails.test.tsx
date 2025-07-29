@@ -131,6 +131,8 @@ test('<PasswordDetails /> should successfully submit the form by clicking the su
       newPassword: 'test-new-password',
     },
   });
+
+  expect(storageHandler).toHaveBeenCalledTimes(1);
 });
 
 test('<PasswordDetails /> should succesfully submit the form by pressing the Enter key', async () => {
@@ -174,6 +176,8 @@ test('<PasswordDetails /> should succesfully submit the form by pressing the Ent
       newPassword: 'test-new-password',
     },
   });
+
+  expect(storageHandler).toHaveBeenCalledTimes(1);
 });
 
 test('<PasswordDetails /> should display an error message when the API call fails', async () => {
