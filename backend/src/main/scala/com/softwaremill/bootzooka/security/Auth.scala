@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.security
 
+import com.augustnagro.magnum.DbTx
 import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.infrastructure.DB
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.*

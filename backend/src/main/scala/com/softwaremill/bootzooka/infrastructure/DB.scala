@@ -1,18 +1,16 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import org.flywaydb.core.Flyway
-
-import scala.concurrent.duration.*
-import Magnum.*
-import com.augustnagro.magnum.{SqlLogger, Transactor, connect}
+import com.augustnagro.magnum.{DbCodec, DbTx, SqlLogger, Transactor, connect, sql}
 import com.softwaremill.bootzooka.infrastructure.DB.LeftException
 import com.softwaremill.bootzooka.logging.Logging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
+import org.flywaydb.core.Flyway
 import ox.*
 
 import java.io.Closeable
 import javax.sql.DataSource
 import scala.annotation.tailrec
+import scala.concurrent.duration.*
 import scala.util.NotGiven
 import scala.util.control.{NoStackTrace, NonFatal}
 

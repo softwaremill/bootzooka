@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.user
 
-import com.augustnagro.magnum.{Frag, PostgresDbType, Repo, Spec, SqlName, SqlNameMapper, Table, TableInfo}
+import com.augustnagro.magnum.{DbCodec, DbTx, Frag, PostgresDbType, Repo, Spec, SqlName, SqlNameMapper, Table, TableInfo, sql}
 import com.password4j.{Argon2Function, Password}
-import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
+import com.softwaremill.bootzooka.infrastructure.Magnum.given
 import com.softwaremill.bootzooka.user.User.PasswordHashing
 import com.softwaremill.bootzooka.user.User.PasswordHashing.Argon2Config.*
 import com.softwaremill.bootzooka.util.PasswordVerificationStatus
