@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { MemoryRouter, useLocation } from 'react-router';
+import { MemoryRouter } from 'react-router';
 import { UserContext } from 'contexts/UserContext/User.context';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { renderWithClient } from 'tests';
@@ -8,16 +8,20 @@ import { Login } from './Login';
 
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
-const mockResponse = vi.fn();
-
-const LocationDisplay = () => {
-  const location = useLocation();
-
-  return <div data-testid="location-display">{location.pathname}</div>;
-};
+const mockApiKeyResponse = vi.fn();
+const mockGetUserResponse = vi.fn(() => ({
+  data: {
+    user: {
+      login: 'test-user',
+      email: 'test-user@example.com',
+      createdOn: '2023-10-01T12:00:00Z',
+    },
+  },
+}));
 
 vi.mock('api/apiComponents', () => ({
-  usePostUserLogin: () => mockResponse(),
+  useGetUser: () => mockGetUserResponse(),
+  usePostUserLogin: () => mockApiKeyResponse(),
 }));
 
 beforeEach(() => {
@@ -25,7 +29,7 @@ beforeEach(() => {
 });
 
 test('renders header', () => {
-  mockResponse.mockReturnValueOnce({
+  mockApiKeyResponse.mockReturnValueOnce({
     mutateAsync: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
@@ -38,7 +42,7 @@ test('renders header', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Login />
       </UserContext.Provider>
@@ -48,33 +52,8 @@ test('renders header', () => {
   expect(screen.getByText('Please sign in')).toBeInTheDocument();
 });
 
-test('redirects when logged in', () => {
-  mockResponse.mockReturnValueOnce({
-    mutateAsync: mockMutate,
-    reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
-    isSuccess: true,
-    isPending: false,
-    isError: false,
-    error: '',
-  });
-
-  renderWithClient(
-    <MemoryRouter initialEntries={['/login']}>
-      <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}
-      >
-        <Login />
-        <LocationDisplay />
-      </UserContext.Provider>
-    </MemoryRouter>
-  );
-
-  expect(screen.getByTestId('location-display')).toHaveTextContent('/main');
-});
-
 test('handles login success', async () => {
-  mockResponse.mockReturnValueOnce({
+  mockApiKeyResponse.mockReturnValueOnce({
     mutateAsync: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
@@ -91,7 +70,7 @@ test('handles login success', async () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Login />
       </UserContext.Provider>
@@ -118,7 +97,7 @@ test('handles login success', async () => {
 });
 
 test('handles login error', async () => {
-  mockResponse.mockReturnValueOnce({
+  mockApiKeyResponse.mockReturnValueOnce({
     mutateAsync: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
@@ -131,7 +110,7 @@ test('handles login error', async () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Login />
       </UserContext.Provider>
