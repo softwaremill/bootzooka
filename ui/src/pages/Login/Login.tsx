@@ -26,7 +26,7 @@ export const Login = () => {
   });
 
   const { data: user, isSuccess } = useGetUser(
-    { headers: { Authorization: `Bearer ${apiKey}` } },
+    { headers: { Authorization: `Bearer ${apiKeyState?.apiKey}` } },
     {
       enabled: Boolean(apiKey),
       retry: false,

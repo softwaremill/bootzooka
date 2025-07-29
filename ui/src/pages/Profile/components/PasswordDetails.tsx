@@ -44,7 +44,6 @@ export const PasswordDetails = () => {
                 onSubmit={(values) =>
                   mutation.mutate({
                     body: values,
-                    headers: { Authorization: `Bearer ${apiKey}` },
                   })
                 }
                 validationSchema={validationSchema}

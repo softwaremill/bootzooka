@@ -53,7 +53,6 @@ export const Top = () => {
                   onClick={() => {
                     logout({
                       body: { apiKey },
-                      headers: { Authorization: `Bearer ${apiKey}` },
                     });
                   }}
                 >

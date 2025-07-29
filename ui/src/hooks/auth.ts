@@ -12,6 +12,7 @@ export const useApiKeyState = () =>
 
 export const useUserCheck = () => {
   const [apiKeyState] = useApiKeyState();
+  console.log(apiKeyState);
   const { dispatch } = useUserContext();
 
   const { data, isSuccess, isError } = useGetUser(
