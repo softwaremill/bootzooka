@@ -21,7 +21,7 @@ maintainers:
 icon: https://raw.githubusercontent.com/softwaremill/bootzooka/master/banner.png
 dependencies:
  - name: postgresql
-   version: ^9
+   version: ^16
    repository: https://charts.bitnami.com/bitnami
    condition: postgresql.enabled
 annotations:
