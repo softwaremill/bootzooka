@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "./ui"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
