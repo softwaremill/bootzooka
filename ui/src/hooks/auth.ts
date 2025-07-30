@@ -2,13 +2,14 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import { useGetUser } from 'api/apiComponents';
 import { useUserContext } from 'contexts/UserContext/User.context';
 import { useEffect } from 'react';
+import { STORAGE_API_KEY } from '../consts';
 
 export interface ApiKeyState {
   apiKey: string | null;
 }
 
 export const useApiKeyState = () =>
-  useLocalStorage<ApiKeyState | null>('apiKey');
+  useLocalStorage<ApiKeyState | null>(STORAGE_API_KEY);
 
 export const useUserCheck = () => {
   const [apiKeyState] = useApiKeyState();

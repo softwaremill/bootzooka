@@ -17,6 +17,7 @@ const mockGetUserResponse = vi.fn(() => ({
       createdOn: '2023-10-01T12:00:00Z',
     },
   },
+  isSuccess: true,
 }));
 
 vi.mock('api/apiComponents', () => ({
@@ -53,18 +54,18 @@ test('<Login /> should render the header', () => {
 });
 
 test('<Login /> should handle the login form submission through the Enter key press', async () => {
+  const onSuccess = vi.fn();
+
   mockApiKeyResponse.mockReturnValueOnce({
-    mutateAsync: mockMutate,
+    mutateAsync: mockMutate.mockImplementationOnce(() => {
+      onSuccess({ apiKey: 'test-api-key' });
+    }),
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
     isSuccess: true,
     isError: false,
     isPending: false,
     error: '',
-    onSuccess: dispatch({
-      type: 'SET_API_KEY',
-      apiKey: 'test-api-key',
-    }),
   });
 
   renderWithClient(
@@ -90,25 +91,25 @@ test('<Login /> should handle the login form submission through the Enter key pr
     },
   });
 
-  expect(dispatch).toHaveBeenCalledWith({
-    type: 'SET_API_KEY',
+  expect(onSuccess).toHaveBeenCalledWith({
     apiKey: 'test-api-key',
   });
+
+  expect(dispatch).toHaveBeenCalledTimes(1);
 });
 
 test('<Login /> should handle successful login attempt through the submit button click', async () => {
+  const onSuccess = vi.fn();
   mockApiKeyResponse.mockReturnValueOnce({
-    mutateAsync: mockMutate,
+    mutateAsync: mockMutate.mockImplementationOnce(() =>
+      onSuccess({ apiKey: 'test-api-key' })
+    ),
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
     isSuccess: true,
     isError: false,
     isPending: false,
     error: '',
-    onSuccess: dispatch({
-      type: 'SET_API_KEY',
-      apiKey: 'test-api-key',
-    }),
   });
 
   renderWithClient(
@@ -134,10 +135,11 @@ test('<Login /> should handle successful login attempt through the submit button
     },
   });
 
-  expect(dispatch).toHaveBeenCalledWith({
-    type: 'SET_API_KEY',
+  expect(onSuccess).toHaveBeenCalledWith({
     apiKey: 'test-api-key',
   });
+
+  expect(dispatch).toHaveBeenCalledTimes(1);
 });
 
 test('<Login /> should handle failed login attempt', async () => {

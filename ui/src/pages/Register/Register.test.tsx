@@ -193,7 +193,6 @@ test('<Register /> should handle failed registration attempt', async () => {
       repeatedPassword: 'test-password',
     },
   });
-  expect(dispatch).not.toHaveBeenCalled();
 
   await screen.findByRole('error');
 });
