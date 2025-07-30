@@ -5,6 +5,7 @@ import { renderWithClient } from 'tests';
 import { Register } from './Register';
 import { UserContext } from 'contexts/UserContext/User.context';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
+import { Mock } from 'vitest';
 
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
@@ -13,6 +14,30 @@ const mockResponse = vi.fn();
 vi.mock('api/apiComponents', () => ({
   usePostUserRegister: () => mockResponse(),
 }));
+
+const mockCustomSuccessfulResponse = (
+  apiKey = 'test-api-key',
+  onSuccess?: Mock
+) => {
+  const mockMutateWithCallback = vi.fn().mockImplementation(async () => {
+    if (onSuccess) {
+      onSuccess({ apiKey });
+    }
+  });
+
+  const mutateToUse = onSuccess ? mockMutateWithCallback : mockMutate;
+
+  const mockResult = mockResponse.mockReturnValueOnce({
+    mutate: mutateToUse,
+    reset: vi.fn(),
+    data: { apiKey },
+    isSuccess: true,
+    isError: false,
+    error: '',
+  });
+
+  return { mockResult, mutate: mutateToUse };
+};
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -27,10 +52,6 @@ test('<Register /> should render the header text', () => {
     data: { apiKey: 'test-api-key' },
     isError: false,
     error: '',
-    onSuccess: dispatch({
-      type: 'SET_API_KEY',
-      apiKey: 'test-api-key',
-    }),
   });
 
   renderWithClient(
@@ -47,18 +68,9 @@ test('<Register /> should render the header text', () => {
 });
 
 test('<Register /> should handle successful registration through the submit button click', async () => {
-  mockResponse.mockReturnValueOnce({
-    mutate: mockMutate,
-    reset: vi.fn(),
-    isSuccess: true,
-    data: { apiKey: 'test-api-key' },
-    isError: false,
-    error: '',
-    onSuccess: dispatch({
-      type: 'SET_API_KEY',
-      apiKey: 'test-api-key',
-    }),
-  });
+  const onSuccess = vi.fn();
+
+  const { mutate } = mockCustomSuccessfulResponse('test-api-key', onSuccess);
 
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
@@ -84,7 +96,7 @@ test('<Register /> should handle successful registration through the submit butt
 
   await screen.findByRole('success');
 
-  expect(mockMutate).toHaveBeenCalledWith({
+  expect(mutate).toHaveBeenCalledWith({
     body: {
       login: 'test-login',
       email: 'test@email.address.pl',
@@ -93,25 +105,15 @@ test('<Register /> should handle successful registration through the submit butt
     },
   });
 
-  expect(dispatch).toHaveBeenCalledWith({
+  expect(onSuccess).toHaveBeenCalledWith({
     apiKey: 'test-api-key',
-    type: 'SET_API_KEY',
   });
 });
 
 test('<Register /> should handle successful registration through the Enter key press', async () => {
-  mockResponse.mockReturnValueOnce({
-    mutate: mockMutate,
-    reset: vi.fn(),
-    isSuccess: true,
-    data: { apiKey: 'test-api-key' },
-    isError: false,
-    error: '',
-    onSuccess: dispatch({
-      type: 'SET_API_KEY',
-      apiKey: 'test-api-key',
-    }),
-  });
+  const onSuccess = vi.fn();
+
+  const { mutate } = mockCustomSuccessfulResponse('test-api-key', onSuccess);
 
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
@@ -137,7 +139,7 @@ test('<Register /> should handle successful registration through the Enter key p
 
   await screen.findByRole('success');
 
-  expect(mockMutate).toHaveBeenCalledWith({
+  expect(mutate).toHaveBeenCalledWith({
     body: {
       login: 'test-login',
       email: 'test@email.address.pl',
@@ -146,9 +148,8 @@ test('<Register /> should handle successful registration through the Enter key p
     },
   });
 
-  expect(dispatch).toHaveBeenCalledWith({
+  expect(onSuccess).toHaveBeenCalledWith({
     apiKey: 'test-api-key',
-    type: 'SET_API_KEY',
   });
 });
 
