@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.email
 
+import com.augustnagro.magnum.DbTx
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.infrastructure.DB
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator

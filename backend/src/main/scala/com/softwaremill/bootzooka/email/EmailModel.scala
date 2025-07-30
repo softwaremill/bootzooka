@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.email
 
-import com.augustnagro.magnum.{PostgresDbType, Repo, Spec, SqlNameMapper, Table}
-import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
+import com.augustnagro.magnum.{DbTx, PostgresDbType, Repo, Spec, SqlNameMapper, Table}
+import com.softwaremill.bootzooka.infrastructure.Magnum.given
 import com.softwaremill.bootzooka.util.Strings.Id
 import ox.discard
 

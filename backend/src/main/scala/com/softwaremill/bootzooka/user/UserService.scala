@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.user
 
+import com.augustnagro.magnum.DbTx
 import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util.*

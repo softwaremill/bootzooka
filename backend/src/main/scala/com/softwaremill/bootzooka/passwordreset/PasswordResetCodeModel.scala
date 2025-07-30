@@ -1,7 +1,7 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import com.augustnagro.magnum.{PostgresDbType, Repo, SqlName, SqlNameMapper, Table}
-import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
+import com.augustnagro.magnum.{DbCodec, DbTx, PostgresDbType, Repo, SqlName, SqlNameMapper, Table}
+import com.softwaremill.bootzooka.infrastructure.Magnum.given
 import com.softwaremill.bootzooka.security.AuthTokenOps
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.Strings.Id
