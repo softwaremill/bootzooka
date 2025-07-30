@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka.passwordreset
 
+import com.augustnagro.magnum.DbTx
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
 import com.softwaremill.bootzooka.infrastructure.DB
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.Auth
 import com.softwaremill.bootzooka.user.{User, UserModel}

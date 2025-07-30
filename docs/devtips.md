@@ -41,20 +41,24 @@ There are two imports that are useful when developing a new functionality:
 
 ### Database
 
-If you are defining database queries or running transactions, add the following import:
+If you are defining database queries or running transactions, add the following imports:
 
 ```scala
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
+import com.softwaremill.bootzooka.infrastructure.Magnum.given
+import com.augustnagro.magnum.{sql, DbTx}
 ```
 
-This will bring into scope custom [Magnum](https://github.com/AugustNagro/magnum) codecs.
+This will bring into scope custom [Magnum](https://github.com/AugustNagro/magnum) codecs, the sql query interpolator
+as well as the given instance which is required by methods that should run in a transaction.
 
 ### HTTP API
 
-If you are describing new endpoints, import all members of `Http`:
+If you are defining new endpoints, import the base endpoints from `Http`, as well as Tapir:
 
 ```scala
 import com.softwaremill.bootzooka.http.Http.*
+import sttp.tapir.*
+import sttp.tapir.json.jsoniter.*
 ```
 
 This will bring into scope Tapir builder methods and schemas for documentation, along with Bootzooka-specific

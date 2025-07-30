@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.security
 
-import com.softwaremill.bootzooka.infrastructure.Magnum.DbTx
+import com.augustnagro.magnum.DbTx
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.Strings.Id

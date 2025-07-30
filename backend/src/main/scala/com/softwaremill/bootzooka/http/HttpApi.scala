@@ -47,6 +47,9 @@ class HttpApi(
     .corsInterceptor(CORSInterceptor.default[Identity])
     .metricsInterceptor(OpenTelemetryMetrics.default[Identity](otel).metricsInterceptor())
     .options
+    // when the frontend cancels a request, and the server-side logic is then interrupted, this often causes DB connections
+    // to be marked as broken; re-establishing might be more costly, then just running the cancelled request to completion
+    .copy(interruptServerLogicWhenRequestCancelled = false)
 
   val allEndpoints: List[ServerEndpoint[Any, Identity]] =
     // The /api/v1 context path is added using Swagger's options, not to the endpoints.
