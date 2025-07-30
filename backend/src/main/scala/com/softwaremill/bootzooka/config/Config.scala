@@ -8,7 +8,6 @@ import com.softwaremill.bootzooka.passwordreset.PasswordResetConfig
 import com.softwaremill.bootzooka.user.UserConfig
 import com.softwaremill.bootzooka.version.BuildInfo
 import pureconfig.{ConfigReader, ConfigSource}
-import pureconfig.generic.derivation.default.*
 
 import scala.collection.immutable.TreeMap
 
@@ -39,3 +38,4 @@ object Config extends Logging:
   end log
 
   def read: Config = ConfigSource.default.loadOrThrow[Config]
+end Config

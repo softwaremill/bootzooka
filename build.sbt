@@ -2,59 +2,54 @@ import sbtbuildinfo.BuildInfoKey.action
 import sbtbuildinfo.BuildInfoKeys.{buildInfoKeys, buildInfoOptions, buildInfoPackage}
 import sbtbuildinfo.{BuildInfoKey, BuildInfoOption}
 
-import sbt._
-import Keys._
-
 import scala.util.Try
 import scala.sys.process.Process
 import complete.DefaultParsers._
 
-val password4jVersion = "1.8.2"
-val sttpVersion = "4.0.3"
-val tapirVersion = "1.11.25"
-val oxVersion = "0.5.13"
-val otelVersion = "1.49.0"
-val otelInstrumentationVersion = "2.8.0-alpha"
+val password4jVersion = "1.8.4"
+val sttpVersion = "4.0.9"
+val tapirVersion = "1.11.40"
+val oxVersion = "0.7.3"
+val otelVersion = "1.52.0"
+val otelInstrumentationVersion = "2.17.1-alpha"
 
 val dbDependencies = Seq(
-  "com.augustnagro" %% "magnum" % "1.3.1",
-  "org.postgresql" % "postgresql" % "42.7.5",
-  "com.zaxxer" % "HikariCP" % "6.3.0",
-  "org.flywaydb" % "flyway-database-postgresql" % "11.8.0"
+  "com.augustnagro" %% "magnum" % "1.3.1", // Scala DB client
+  "org.postgresql" % "postgresql" % "42.7.7", // JDBC driver
+  "com.zaxxer" % "HikariCP" % "7.0.0", // connection pool
+  "org.flywaydb" % "flyway-database-postgresql" % "11.10.4" // database migrations
 )
 
 val httpDependencies = Seq(
-  "com.softwaremill.sttp.client4" %% "core" % sttpVersion,
+  "com.softwaremill.sttp.client4" %% "core" % sttpVersion, // HTTP client
   "com.softwaremill.sttp.client4" %% "slf4j-backend" % sttpVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % tapirVersion, // HTTP server, using the synchronous Netty backend
+  "com.softwaremill.sttp.tapir" %% "tapir-files" % tapirVersion // serving static files
 )
 
 val observabilityDependencies = Seq(
-  "com.softwaremill.sttp.client4" %% "opentelemetry-backend" % sttpVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion,
-  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-tracing" % tapirVersion,
-  "com.softwaremill.ox" %% "otel-context" % oxVersion,
-  "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion,
+  "com.softwaremill.sttp.client4" %% "opentelemetry-backend" % sttpVersion, // OTEL <-> sttp integation
+  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion, // OTEL <-> Tapir integation
+  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-tracing" % tapirVersion, // OTEL <-> Tapir integation
+  "com.softwaremill.ox" %% "otel-context" % oxVersion, // OTEL context propagation in Ox scopes
+  "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion exclude ("io.opentelemetry", "opentelemetry-exporter-sender-okhttp"),
+  "io.opentelemetry" % "opentelemetry-exporter-sender-jdk" % otelVersion,
   "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
-  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java8" % otelInstrumentationVersion,
-  "io.opentelemetry.instrumentation" % "opentelemetry-logback-appender-1.0" % otelInstrumentationVersion
+  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java8" % otelInstrumentationVersion, // OTEL JVM metrics
+  "io.opentelemetry.instrumentation" % "opentelemetry-logback-appender-1.0" % otelInstrumentationVersion // send logs via OTEL
 )
 
 val jsonDependencies = Seq(
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.35.1",
-  "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion,
-  "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion
+  "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion, // main JSON library
+  "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion, // Tapir <-> jsoniter integation
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.37.0" // automatic codec derivation
 )
 
 val loggingDependencies = Seq(
-  "ch.qos.logback" % "logback-classic" % "1.5.18",
-  "org.slf4j" % "jul-to-slf4j" % "2.0.17", // forward e.g. otel logs which use JUL to SLF4J
-  "com.softwaremill.ox" %% "mdc-logback" % oxVersion,
-  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17" % Runtime,
-  "org.codehaus.janino" % "janino" % "3.1.12" % Runtime,
-  "net.logstash.logback" % "logstash-logback-encoder" % "8.1" % Runtime
+  "ch.qos.logback" % "logback-classic" % "1.5.18", // main logging library
+  "org.slf4j" % "jul-to-slf4j" % "2.0.17", // forward e.g. OTEL and Magnum logs which use JUL to SLF4J
+  "com.softwaremill.ox" %% "mdc-logback" % oxVersion, // support MDCs which propagate within Ox scopes
+  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17" % Runtime // route Java's platform logging (separate from JUL) to SLF4J
 )
 
 val configDependencies = Seq(
@@ -62,128 +57,92 @@ val configDependencies = Seq(
 )
 
 val baseDependencies = Seq(
-  "com.softwaremill.ox" %% "core" % oxVersion,
+  "com.softwaremill.ox" %% "core" % oxVersion, // concurrency, streaming & error handling utilities
   "com.softwaremill.quicklens" %% "quicklens" % "1.9.12",
-  "com.softwaremill.macwire" %% "macros" % "2.6.6" % Provided
+  "com.softwaremill.macwire" %% "macros" % "2.6.6" % Provided // compile-time generation of dependency tree (DI replacement)
 )
 
 val apiDocsDependencies = Seq(
-  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion
+  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion // Swagger UI for the HTTP API
 )
 
 val securityDependencies = Seq(
-  "com.password4j" % "password4j" % password4jVersion
+  "com.password4j" % "password4j" % password4jVersion // password hashing
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation")
+  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation") // JavaMail API when emails are sent directly
 )
 
 val testingDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-  "com.opentable.components" % "otj-pg-embedded" % "1.1.0" % Test
-)
+  "org.scalatest" %% "scalatest" % "3.2.19",
+  "com.opentable.components" % "otj-pg-embedded" % "1.1.1", // embedded PostgreSQL for tests
+  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub4-server" % tapirVersion, // integration testing HTTP endpoints without starting a server
+  "com.softwaremill.sttp.tapir" %% "tapir-sttp-client4" % tapirVersion // interpreting endpoint descriptions as HTTP requests
+).map(_ % Test)
 
-lazy val uiProjectName = "ui"
-lazy val uiDirectory = settingKey[File]("Path to the ui project directory")
-lazy val updateYarn = taskKey[Unit]("Update yarn")
-lazy val yarnTask = inputKey[Unit]("Run yarn with arguments")
-lazy val copyWebapp = taskKey[Unit]("Copy webapp")
-lazy val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI description for the HTTP API")
+val allBackendDependencies = baseDependencies ++ testingDependencies ++ loggingDependencies ++ configDependencies ++
+  dbDependencies ++ httpDependencies ++ jsonDependencies ++ apiDocsDependencies ++ observabilityDependencies ++
+  securityDependencies ++ emailDependencies
+
+// other constants
+
+val mainClassName = "com.softwaremill.bootzooka.Main"
+val uiProjectName = "ui"
+
+// custom tasks & settings
+
+val uiDirectory = settingKey[File]("Path to the ui project directory") // capturing as a setting to run yarn during the build
+val updateYarn = taskKey[Unit]("Update yarn") // separate task so that update is run once per build
+val yarnTask = inputKey[Unit]("Run yarn with arguments")
+val copyWebapp = taskKey[Unit]("Copy webapp")
+val generateOpenAPIDescription = taskKey[Unit]("Generate the OpenAPI description for the HTTP API")
+
+def haltOnCmdResultError(result: Int): Unit = if (result != 0) { throw new Exception("Build failed.") }
 
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "3.6.4",
-  uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName,
-  updateYarn := {
-    streams.value.log("Updating npm/yarn dependencies")
-    haltOnCmdResultError(Process("yarn install", uiDirectory.value).!)
-  },
-  yarnTask := {
-    val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
-    updateYarn.value
-    val localYarnCommand = "yarn " + taskName
-    def runYarnTask() = Process(localYarnCommand, uiDirectory.value).!
-    streams.value.log("Running yarn task: " + taskName)
-    haltOnCmdResultError(runYarnTask())
-  }
-)
-
-lazy val buildInfoSettings = Seq(
-  buildInfoKeys := Seq[BuildInfoKey](
-    name,
-    version,
-    scalaVersion,
-    sbtVersion,
-    action("lastCommitHash") {
-      import scala.sys.process._
-      // if the build is done outside of a git repository, we still want it to succeed
-      Try("git rev-parse HEAD".!!.trim).getOrElse("?")
-    }
-  ),
-  buildInfoOptions += BuildInfoOption.ToJson,
-  buildInfoOptions += BuildInfoOption.ToMap,
-  buildInfoPackage := "com.softwaremill.bootzooka.version",
-  buildInfoObject := "BuildInfo"
-)
-
-lazy val fatJarSettings = Seq(
-  assembly / assemblyJarName := "bootzooka.jar",
-  assembly := assembly.dependsOn(copyWebapp).value,
-  assembly / assemblyMergeStrategy := {
-    // SwaggerUI: https://tapir.softwaremill.com/en/latest/docs/openapi.html#using-swaggerui-with-sbt-assembly
-    case PathList("META-INF", "maven", "org.webjars", "swagger-ui", "pom.properties") => MergeStrategy.singleOrError
-    case PathList("META-INF", "resources", "webjars", "swagger-ui", _*)               => MergeStrategy.singleOrError
-    // other
-    case PathList(ps @ _*) if ps.last endsWith "io.netty.versions.properties" => MergeStrategy.first
-    case PathList(ps @ _*) if ps.last endsWith "pom.properties"               => MergeStrategy.discard
-    case PathList(ps @ _*) if ps.last endsWith "module-info.class"            => MergeStrategy.discard
-    case PathList(ps @ _*) if ps.last endsWith "okio.kotlin_module"           => MergeStrategy.discard
-    case x =>
-      val oldStrategy = (assembly / assemblyMergeStrategy).value
-      oldStrategy(x)
-  }
-)
-
-lazy val dockerSettings = Seq(
-  dockerExposedPorts := Seq(8080),
-  dockerBaseImage := "eclipse-temurin:21",
-  Docker / packageName := "bootzooka",
-  dockerUsername := Some("softwaremill"),
-  dockerUpdateLatest := true,
-  Docker / stage := (Docker / stage).dependsOn(copyWebapp).value,
-  Docker / version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest")),
-  git.uncommittedSignifier := Some("dirty"),
-  ThisBuild / git.formattedShaVersion := {
+  scalaVersion := "3.7.1",
+  // version
+  git.formattedShaVersion := {
     val base = git.baseVersion.?.value
-    val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
-    git.gitHeadCommit.value.map { sha =>
-      git.defaultFormatShaVersion(base, sha.take(7), suffix)
-    }
-  }
+    val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, Some("dirty"))
+    git.gitHeadCommit.value.map(sha => git.defaultFormatShaVersion(base, sha.take(7), suffix))
+  },
+  version := git.gitDescribedVersion.value.getOrElse(git.formattedShaVersion.value.getOrElse("latest"))
 )
 
-def haltOnCmdResultError(result: Int): Unit = if (result != 0) {
-  throw new Exception("Build failed.")
+// defining the updateYarn task in the global scope so that it's always run at most once per build
+// otherwise, two `yarn install` might end up running concurrently, which leads to errors
+ThisBuild / uiDirectory := (ThisBuild / baseDirectory).value / uiProjectName
+ThisBuild / updateYarn := {
+  val log = (ThisBuild / streams).value.log
+  val uiDir = (ThisBuild / uiDirectory).value
+  log.info("Updating npm/yarn dependencies")
+  haltOnCmdResultError(Process("yarn install", uiDir).!)
+}
+ThisBuild / yarnTask := {
+  (ThisBuild / updateYarn).value
+  val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
+  val localYarnCommand = "yarn " + taskName
+  val log = (ThisBuild / streams).value.log
+  val uiDir = (ThisBuild / uiDirectory).value
+  def runYarnTask() = Process(localYarnCommand, uiDir).!
+  log.info("Running yarn task: " + taskName)
+  haltOnCmdResultError(runYarnTask())
 }
 
-def now(): String = {
-  import java.text.SimpleDateFormat
-  import java.util.Date
-  new SimpleDateFormat("yyyy-MM-dd-hhmmss").format(new Date())
-}
-
-lazy val rootProject = (project in file("."))
+lazy val rootProject: Project = (project in file("."))
   .settings(commonSettings)
   .settings(name := "bootzooka")
-  .aggregate(backend, ui)
+  .aggregate(backend, ui, docker)
 
 lazy val backend: Project = (project in file("backend"))
+  .settings(commonSettings)
   .settings(
-    libraryDependencies ++= baseDependencies ++ testingDependencies ++ loggingDependencies ++
-      configDependencies ++ dbDependencies ++ httpDependencies ++ jsonDependencies ++
-      apiDocsDependencies ++ observabilityDependencies ++ securityDependencies ++ emailDependencies,
-    Compile / mainClass := Some("com.softwaremill.bootzooka.Main"),
+    libraryDependencies ++= allBackendDependencies,
+    // in case the backend jar is used outside of Docker, specifying the main class
+    Compile / mainClass := Some(mainClassName),
     // generates the target/openapi.yaml file which is then used by the UI to generate service stubs
     generateOpenAPIDescription := Def.taskDyn {
       val log = streams.value.log
@@ -192,34 +151,69 @@ lazy val backend: Project = (project in file("backend"))
         (Compile / runMain).toTask(s" com.softwaremill.bootzooka.writeOpenAPIDescription $targetPath").value
       }
     }.value,
-    // used by fat-jar and docker builds, to copy the UI files to a single bundle
-    copyWebapp := {
-      val source = uiDirectory.value / "build"
-      val target = (Compile / classDirectory).value / "webapp"
-      streams.value.log.info(s"Copying the webapp resources from $source to $target")
-      IO.copyDirectory(source, target)
-    },
-    copyWebapp := copyWebapp.dependsOn(Def.sequential(generateOpenAPIDescription, yarnTask.toTask(" build"))).value,
-    // used by backend-start.sh, to restart the application when sources change
+    // used by backend-start.sh, to restart the application when sources change; the OpenAPI spec needs to be
+    // regenerated so that the UI updates accordingly
     reStart := {
       generateOpenAPIDescription.value
       reStart.evaluated
     },
     // needed so that a ctrl+c issued when running the backend from the sbt console properly interrupts the application
     run / fork := true,
-    scalacOptions ++= List("-Wunused:all", "-Wvalue-discard")
+    // use sbt-tpolecat, but without fatal warnings
+    scalacOptions ~= (_.filterNot(Set("-Xfatal-warnings"))),
+    // silence unused assertion results warnings in tests
+    Test / scalacOptions += "-Wconf:msg=unused value of type org.scalatest.Assertion:s",
+    Test / scalacOptions += "-Wconf:msg=unused value of type org.scalatest.compatible.Assertion:s"
   )
+  // the build information is displayed in the UI, and provided by an API endpoint
   .enablePlugins(BuildInfoPlugin)
-  .settings(commonSettings)
-  .settings(buildInfoSettings)
-  .settings(fatJarSettings)
-  .enablePlugins(DockerPlugin)
-  .enablePlugins(JavaServerAppPackaging)
-  .settings(dockerSettings)
+  .settings(
+    buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
+      scalaVersion,
+      sbtVersion,
+      action("lastCommitHash") {
+        import scala.sys.process._
+        // if the build is done outside of a git repository, we still want it to succeed
+        Try("git rev-parse HEAD".!!.trim).getOrElse("?")
+      }
+    ),
+    buildInfoOptions += BuildInfoOption.ToJson,
+    buildInfoOptions += BuildInfoOption.ToMap,
+    buildInfoPackage := "com.softwaremill.bootzooka.version",
+    buildInfoObject := "BuildInfo"
+  )
 
-lazy val ui = (project in file(uiProjectName))
+lazy val ui: Project = (project in file(uiProjectName))
   .settings(commonSettings)
   .settings(Test / test := (Test / test).dependsOn(yarnTask.toTask(" test:ci")).value)
-  .settings(cleanFiles += baseDirectory.value / "build")
+  .settings(cleanFiles += baseDirectory.value / "dist")
+
+lazy val docker: Project = (project in file("docker"))
+  .settings(commonSettings)
+  .settings(
+    copyWebapp := {
+      val source = uiDirectory.value / "dist"
+      val target = (Compile / classDirectory).value / "webapp"
+      streams.value.log.info(s"Copying the webapp resources from $source to $target")
+      IO.copyDirectory(source, target)
+    },
+    // There are no source files in this project, we're just using it to generate a jar with the UI files.
+    // To do that, we need to first generate the OpenAPI spec, build the UI, and copy the UI files.
+    Compile / compile := (Compile / compile)
+      .dependsOn(Def.sequential(backend / generateOpenAPIDescription, yarnTask.toTask(" build"), copyWebapp))
+      .value,
+    // Docker settings
+    Compile / mainClass := Some(mainClassName),
+    dockerExposedPorts := Seq(8080),
+    dockerBaseImage := "eclipse-temurin:21",
+    Docker / packageName := "bootzooka",
+    dockerUsername := Some("softwaremill"),
+    dockerUpdateLatest := true
+  )
+  .dependsOn(backend, ui)
+  .enablePlugins(DockerPlugin)
+  .enablePlugins(JavaServerAppPackaging)
 
 RenameProject.settings

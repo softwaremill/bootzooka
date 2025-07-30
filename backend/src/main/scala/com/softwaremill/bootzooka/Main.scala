@@ -2,7 +2,7 @@ package com.softwaremill.bootzooka
 
 import com.softwaremill.bootzooka.logging.Logging
 import ox.logback.InheritableMDC
-import ox.{Ox, OxApp, never}
+import ox.{Ox, OxApp, discard, never}
 import org.slf4j.bridge.SLF4JBridgeHandler
 import ox.OxApp.Settings
 import ox.otel.context.PropagatingVirtualThreadFactory
@@ -24,8 +24,10 @@ object Main extends OxApp.Simple with Logging:
     val deps = Dependencies.create
 
     deps.emailService.startProcesses()
-    deps.httpApi.start()
+    deps.httpApi.start().discard
     logger.info(s"Bootzooka started")
 
     // blocking until the application is shut down
     never
+  end run
+end Main

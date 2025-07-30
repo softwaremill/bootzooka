@@ -1,12 +1,11 @@
 package com.softwaremill.bootzooka.passwordreset
 
 import com.softwaremill.bootzooka.email.sender.DummyEmailSender
-import com.softwaremill.bootzooka.passwordreset.PasswordResetApi.{ForgotPassword_OUT, PasswordReset_OUT}
 import com.softwaremill.bootzooka.test.*
 import org.scalatest.concurrent.Eventually
 import sttp.model.StatusCode
 
-class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies with TestSupport:
+class PasswordResetApiTest extends BaseTest with Eventually with TestDependencies:
 
   "/passwordreset" should "reset the password" in {
     // given
@@ -15,7 +14,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     // when
     val response1 = requests.forgotPassword(login)
-    response1.body.shouldDeserializeTo[ForgotPassword_OUT]
+    response1.body should matchPattern { case Right(_) => }
 
     // then
     val code = eventually {
@@ -24,7 +23,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     // when
     val response2 = requests.resetPassword(code, newPassword)
-    response2.body.shouldDeserializeTo[PasswordReset_OUT]
+    response2.body should matchPattern { case Right(_) => }
 
     // then
     requests.loginUser(login, password, None).code shouldBe StatusCode.Unauthorized
@@ -39,7 +38,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     // when
     val response1 = requests.forgotPassword(login)
-    response1.body.shouldDeserializeTo[ForgotPassword_OUT]
+    response1.body should matchPattern { case Right(_) => }
 
     // then
     val code = eventually {
@@ -47,8 +46,8 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
     }
 
     // when
-    requests.resetPassword(code, newPassword).body.shouldDeserializeTo[PasswordReset_OUT]
-    requests.resetPassword(code, newPassword).body.shouldDeserializeToError
+    requests.resetPassword(code, newPassword).body should matchPattern { case Right(_) => }
+    requests.resetPassword(code, newPassword).body should matchPattern { case Left(_) => }
 
     // then
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Ok
@@ -76,14 +75,14 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     // when
     val response2 = requests.resetPassword("invalid", newPassword)
-    response2.body.shouldDeserializeToError
+    response2.body should matchPattern { case Left(_) => }
 
     // then
     requests.loginUser(login, password, None).code shouldBe StatusCode.Ok
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Unauthorized
   }
 
-  def codeSentToEmail(email: String): String = {
+  def codeSentToEmail(email: String): String =
     dependencies.emailService.sendBatch()
 
     val emailData = DummyEmailSender
@@ -92,18 +91,19 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
 
     codeFromResetPasswordEmail(emailData.content)
       .getOrElse(throw new IllegalStateException(s"No code found in: $emailData"))
-  }
+  end codeSentToEmail
 
   def codeWasNotSentToEmail(email: String): Unit =
     dependencies.emailService.sendBatch()
 
     val maybeEmail = DummyEmailSender.findSentEmail(email, "SoftwareMill Bootzooka password reset")
-    maybeEmail match {
+    maybeEmail match
       case Some(emailData) =>
         throw new IllegalStateException(s"There should be no password reset email sent to $email, but instead found $emailData")
       case None => ()
-    }
+  end codeWasNotSentToEmail
 
   def codeFromResetPasswordEmail(email: String): Option[String] =
     val regexp = "code=([\\w]*)".r
     regexp.findFirstMatchIn(email).map(_.group(1))
+end PasswordResetApiTest

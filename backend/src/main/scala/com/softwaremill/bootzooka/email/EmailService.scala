@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.email
 
+import com.augustnagro.magnum.DbTx
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.infrastructure.DB
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.util.IdGenerator
@@ -38,12 +38,13 @@ class EmailService(
   def startProcesses()(using Ox): Unit =
     foreverPeriodically("Exception when sending emails") {
       sendBatch()
-    }
+    }.discard
 
     foreverPeriodically("Exception when counting emails") {
       val count = db.transact(emailModel.count())
       metrics.emailQueueGauge.set(count.toDouble)
     }.discard
+  end startProcesses
 
   private def foreverPeriodically(errorMsg: String)(t: => Unit)(using Ox): Fork[Nothing] =
     fork {

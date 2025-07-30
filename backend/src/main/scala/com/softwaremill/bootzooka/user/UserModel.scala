@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.user
 
-import com.augustnagro.magnum.{Frag, PostgresDbType, Repo, Spec, SqlName, SqlNameMapper, Table, TableInfo}
+import com.augustnagro.magnum.{DbCodec, DbTx, Frag, PostgresDbType, Repo, Spec, SqlName, SqlNameMapper, Table, TableInfo, sql}
 import com.password4j.{Argon2Function, Password}
-import com.softwaremill.bootzooka.infrastructure.Magnum.{*, given}
+import com.softwaremill.bootzooka.infrastructure.Magnum.given
 import com.softwaremill.bootzooka.user.User.PasswordHashing
 import com.softwaremill.bootzooka.user.User.PasswordHashing.Argon2Config.*
 import com.softwaremill.bootzooka.util.PasswordVerificationStatus
@@ -53,12 +53,12 @@ case class User(
     createdOn: Instant
 ):
   def verifyPassword(password: String): PasswordVerificationStatus =
-    if (Password.check(password, passwordHash) `with` PasswordHashing.Argon2) PasswordVerificationStatus.Verified
+    if Password.check(password, passwordHash).`with`(PasswordHashing.Argon2) then PasswordVerificationStatus.Verified
     else PasswordVerificationStatus.VerificationFailed
 end User
 
 object User:
-  object PasswordHashing:
+  private[user] object PasswordHashing:
     val Argon2: Argon2Function =
       Argon2Function.getInstance(MemoryInKib, NumberOfIterations, LevelOfParallelism, LengthOfTheFinalHash, Type, Version)
 

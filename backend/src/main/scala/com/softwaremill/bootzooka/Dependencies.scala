@@ -40,6 +40,7 @@ object Dependencies:
     val db: DB = useCloseableInScope(DB.createTestMigrate(config.db))
 
     create(config, otel, sttpBackend, db, DefaultClock)
+  end create
 
   /** Create the service graph using the given infrastructure services & configuration. */
   def create(config: Config, otel: OpenTelemetry, sttpBackend: SyncBackend, db: DB, clock: Clock): Dependencies =
@@ -68,6 +69,7 @@ object Dependencies:
         Cpu.registerObservers(otel)
         MemoryPools.registerObservers(otel)
         Threads.registerObservers(otel)
-        GarbageCollector.registerObservers(otel).discard
+        GarbageCollector.registerObservers(otel, false).discard
       }
       .tap(OpenTelemetryAppender.install)
+end Dependencies

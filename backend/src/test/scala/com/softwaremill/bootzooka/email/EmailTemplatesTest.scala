@@ -15,3 +15,4 @@ class EmailTemplatesTest extends AnyFlatSpec with Matchers:
     email.content should include("Dear john,")
     email.content should include("Regards,")
   }
+end EmailTemplatesTest

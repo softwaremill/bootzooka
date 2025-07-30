@@ -5,11 +5,11 @@ import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.util.Strings.{Id, asId}
 import sttp.model.StatusCode
-import sttp.tapir.json.jsoniter.TapirJsonJsoniter
-import sttp.tapir.{Codec, Endpoint, EndpointOutput, PublicEndpoint, Schema, SchemaType, Tapir}
+import sttp.tapir.*
+import sttp.tapir.json.jsoniter.*
 
-/** Helper object for defining HTTP endpoints. Import as `Http.*` to gain access to Tapir's API and customizations. */
-object Http extends Tapir with TapirJsonJsoniter with Logging:
+/** Common definitions used when defining HTTP endpoints. */
+object Http extends Logging:
   private val internalServerError = (StatusCode.InternalServerError, "Internal server error")
   private val failToResponseData: Fail => (StatusCode, String) = {
     case Fail.NotFound(what)      => (StatusCode.NotFound, what)
@@ -18,6 +18,17 @@ object Http extends Tapir with TapirJsonJsoniter with Logging:
     case Fail.Forbidden           => (StatusCode.Forbidden, "Forbidden")
     case Fail.Unauthorized(msg)   => (StatusCode.Unauthorized, msg)
     case _                        => internalServerError
+  }
+  // inverse of failToResponseData, used in tests to parse the response data into a Fail instance
+  private val responseDataToFail: (StatusCode, String) => Fail = {
+    case (StatusCode.NotFound, what)    => Fail.NotFound(what)
+    case (StatusCode.Conflict, msg)     => Fail.Conflict(msg)
+    case (StatusCode.BadRequest, msg)   => Fail.IncorrectInput(msg)
+    case (StatusCode.Forbidden, _)      => Fail.Forbidden
+    case (StatusCode.Unauthorized, msg) => Fail.Unauthorized(msg)
+    case (code, msg) =>
+      new Fail:
+        override def toString = msg
   }
 
   //
@@ -28,8 +39,7 @@ object Http extends Tapir with TapirJsonJsoniter with Logging:
   private val failOutput: EndpointOutput[Fail] =
     statusCode
       .and(jsonErrorOutOutput.map(_.error)(Error_OUT.apply))
-      // we're not interpreting the endpoints as clients, so we don't need the mapping in one direction
-      .map((_, _) => throw new UnsupportedOperationException())(failToResponseData)
+      .map(responseDataToFail.tupled)(failToResponseData)
 
   /** Base endpoint description for non-secured endpoints. Specifies that errors are always returned as JSON values corresponding to the
     * [[Error_OUT]] class, translated from a [[Fail]] instance.

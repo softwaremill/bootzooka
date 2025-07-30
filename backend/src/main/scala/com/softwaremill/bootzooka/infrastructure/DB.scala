@@ -1,20 +1,16 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import java.net.URI
-import org.flywaydb.core.Flyway
-
-import scala.concurrent.duration.*
-import Magnum.*
-import com.augustnagro.magnum.{SqlLogger, Transactor, connect}
-import com.softwaremill.bootzooka.config.Sensitive
+import com.augustnagro.magnum.{DbCodec, DbTx, SqlLogger, Transactor, connect, sql}
 import com.softwaremill.bootzooka.infrastructure.DB.LeftException
 import com.softwaremill.bootzooka.logging.Logging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
-import ox.{discard, sleep}
+import org.flywaydb.core.Flyway
+import ox.*
 
 import java.io.Closeable
 import javax.sql.DataSource
 import scala.annotation.tailrec
+import scala.concurrent.duration.*
 import scala.util.NotGiven
 import scala.util.control.{NoStackTrace, NonFatal}
 
@@ -36,31 +32,22 @@ class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
     com.augustnagro.magnum.transact(transactor)(f)
 
   override def close(): Unit = dataSource.close()
+end DB
 
 object DB extends Logging:
   private class LeftException[E](val left: E) extends RuntimeException with NoStackTrace
 
   /** Configures the database, setting up the connection pool and performing migrations. */
-  def createTestMigrate(_config: DBConfig): DB =
-    val config: DBConfig =
-      if (_config.url.startsWith("postgres://")) {
-        val dbUri = URI.create(_config.url)
-        val usernamePassword = dbUri.getUserInfo.split(":")
-        _config.copy(
-          username = usernamePassword(0),
-          password = Sensitive(if (usernamePassword.length > 1) usernamePassword(1) else ""),
-          url = "jdbc:postgresql://" + dbUri.getHost + ':' + dbUri.getPort + dbUri.getPath
-        )
-      } else _config
-    end config
-
+  def createTestMigrate(config: DBConfig): DB =
     val hikariConfig = new HikariConfig()
-    hikariConfig.setJdbcUrl(_config.url)
+    hikariConfig.setJdbcUrl(config.url)
     hikariConfig.setUsername(config.username)
     hikariConfig.setPassword(config.password.value)
     hikariConfig.addDataSourceProperty("cachePrepStmts", "true")
     hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250")
     hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+    hikariConfig.setConnectionTestQuery("SELECT 1")
+    hikariConfig.addHealthCheckProperty("connectivityCheckTimeoutMs", "1000")
     hikariConfig.setThreadFactory(Thread.ofVirtual().factory())
 
     val flyway = Flyway
@@ -86,3 +73,5 @@ object DB extends Logging:
     val ds = new HikariDataSource(hikariConfig)
     connectAndMigrate(ds)
     DB(ds)
+  end createTestMigrate
+end DB

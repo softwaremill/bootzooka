@@ -12,13 +12,14 @@ services:
       SQL_HOST: 'bootzooka-db'
       SQL_PORT: '5432'
       API_HOST: '0.0.0.0'
-      OTEL_EXPORTER_OTLP_ENDPOINT: 'http://observability:4317'
+      OTEL_EXPORTER_OTLP_ENDPOINT: 'http://observability:4318'
+      OTEL_EXPORTER_OTLP_PROTOCOL: 'http/protobuf'
       OTEL_SERVICE_NAME: 'bootzooka'
       OTEL_METRIC_EXPORT_INTERVAL: '500' # The default is 60s, in development it's useful to see the metrics faster
       OTEL_RESOURCE_ATTRIBUTES: 'service.instance.id=local,service.version=latest'
 
   bootzooka-db:
-    image: 'postgres'
+    image: 'postgres:17.5'
     ports:
       - '25432:5432'
     environment:
@@ -31,4 +32,3 @@ services:
     image: 'grafana/otel-lgtm'
     ports:
       - '3000:3000' # Grafana's UI
-      - '4317:4317' # Exporter

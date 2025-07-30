@@ -12,3 +12,4 @@ class EmailTemplates:
 
   def profileDetailsChangeNotification(userName: String): EmailSubjectContent =
     EmailTemplateRenderer("profileDetailsChangeNotification", Map("userName" -> userName))
+end EmailTemplates

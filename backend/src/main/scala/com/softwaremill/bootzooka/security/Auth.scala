@@ -1,14 +1,13 @@
 package com.softwaremill.bootzooka.security
 
+import com.augustnagro.magnum.DbTx
 import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.infrastructure.DB
-import com.softwaremill.bootzooka.infrastructure.Magnum.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.*
 import com.softwaremill.bootzooka.util.Strings.Id
 import ox.sleep
-import ox.either.{fail, ok}
 
 import java.security.SecureRandom
 import java.time.Instant
@@ -23,22 +22,22 @@ class Auth[T](authTokenOps: AuthTokenOps[T], db: DB, clock: Clock) extends Loggi
     * returns the id of the authenticated user .
     */
   def apply(id: Id[T]): Either[Fail.Unauthorized, Id[User]] =
-    db.transact(authTokenOps.findById(id)) match {
+    db.transact(authTokenOps.findById(id)) match
       case None =>
         logger.debug(s"Auth failed for: ${authTokenOps.tokenName} $id")
         // random sleep to prevent timing attacks
-        sleep(random.nextInt(1000).millis)
+        sleep(random.nextInt(100).millis)
         Left(Fail.Unauthorized("Unauthorized"))
       case Some(token) if expired(token) =>
         logger.info(s"${authTokenOps.tokenName} expired: $token")
         db.transact(authTokenOps.delete(token))
         Left(Fail.Unauthorized("Unauthorized"))
       case Some(token) =>
-        if (authTokenOps.deleteWhenValid) db.transact(authTokenOps.delete(token))
+        if authTokenOps.deleteWhenValid then db.transact(authTokenOps.delete(token))
         Right(authTokenOps.userId(token))
-    }
 
   private def expired(token: T): Boolean = clock.now().isAfter(authTokenOps.validUntil(token))
+end Auth
 
 /** A set of operations on an authentication token, which are performed during authentication. Supports both one-time tokens (when
   * `deleteWhenValid=true`) and multi-use tokens.

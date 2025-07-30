@@ -3,17 +3,9 @@ layout: default
 title:  "Production deployment"
 ---
 
-## Fat jar
-
-To build an executable jar, simply run (in sbt) `backend/assembly` (that is, the `assembly` task in the `backend` subproject). This will create a fat-jar with all the code, processed javascript, css and html. You can run the jar simply by running java:
-
-```
-java -jar backend/target/scala-VERSION/bootzooka.jar
-```
-
 ## Docker
 
-To build a docker image, run `backend/Docker/publishLocal`. This will create the `docker:latest` image.
+To build a docker image, run `docker/Docker/publishLocal`. This will create the `docker:latest` image.
 
 You can test the image by using the provided `docker-compose.yml` file.
 
@@ -40,4 +32,6 @@ helm fetch softwaremill/bootzooka --untar
 helm install --generate-name bootzooka
 ```
 
-Please see [Bootzooka Helm Chart documentation](https://github.com/softwaremill/bootzooka/blob/master/helm/bootzooka/README.md) for more information, including configuration options.
+Please see [Bootzooka Helm Chart
+documentation](https://github.com/softwaremill/bootzooka/blob/master/helm/bootzooka/README.md) for more information,
+including configuration options.

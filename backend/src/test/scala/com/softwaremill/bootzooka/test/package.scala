@@ -1,9 +1,9 @@
 package com.softwaremill.bootzooka
 
 import com.softwaremill.bootzooka.config.Config
-import com.softwaremill.quicklens._
+import com.softwaremill.quicklens.*
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 package object test:
   val DefaultConfig: Config = Config.read

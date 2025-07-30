@@ -12,14 +12,15 @@ import ox.discard
 import scala.compiletime.uninitialized
 
 /** Base trait for tests which use the database. The database is cleaned after each test. */
-trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll with Logging { self: Suite =>
+trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll with Logging:
+  self: Suite =>
   private var postgres: EmbeddedPostgres = uninitialized
   private var currentDbConfig: DBConfig = uninitialized
   var currentDb: DB = uninitialized
 
   //
 
-  override protected def beforeAll(): Unit = {
+  override protected def beforeAll(): Unit =
     super.beforeAll()
     postgres = EmbeddedPostgres.builder().start()
     val url = postgres.getJdbcUrl("postgres")
@@ -31,7 +32,7 @@ trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll wit
       migrateOnStart = true
     )
     currentDb = DB.createTestMigrate(currentDbConfig)
-  }
+  end beforeAll
 
   override protected def afterAll(): Unit =
     currentDb.close()
@@ -55,4 +56,4 @@ trait TestEmbeddedPostgres extends BeforeAndAfterEach with BeforeAndAfterAll wit
     .dataSource(currentDbConfig.url, currentDbConfig.username, currentDbConfig.password.value)
     .cleanDisabled(false)
     .load()
-}
+end TestEmbeddedPostgres
