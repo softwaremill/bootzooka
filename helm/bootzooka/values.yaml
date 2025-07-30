@@ -39,6 +39,13 @@ bootzooka:
     from: "hello@bootzooka.example.com"
     password: "bootzooka"
 
+  otel:
+    enabled: false
+    endpoint: ""
+    protocol: ""
+    service_name: "bootzooka"
+    metric_export_interval: "60s"
+
   image:
     repository: softwaremill/bootzooka
     tag: latest
