@@ -54,7 +54,10 @@ export async function apiFetch<
           requestHeaders.Authorization = `Bearer ${state.apiKey}`;
         }
       } catch (e) {
-        console.error('Failed to parse apiKey from localStorage', e);
+        console.error(
+          'Failed to parse API key from localStorage. Proceeding without an authorization header.',
+          e
+        );
       }
     }
 

@@ -135,7 +135,7 @@ test('<PasswordDetails /> should successfully submit the form by clicking the su
   expect(storageHandler).toHaveBeenCalledTimes(1);
 });
 
-test('<PasswordDetails /> should succesfully submit the form by pressing the Enter key', async () => {
+test('<PasswordDetails /> should successfully submit the form by pressing the Enter key', async () => {
   setStorageApiKeyState();
 
   const storageHandler = vi.fn();
