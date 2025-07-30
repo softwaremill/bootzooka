@@ -25,7 +25,7 @@ jobs:
 
       - name: Run chart-testing (lint)
         id: ct-lint
-        uses: helm/chart-testing-action@v1.1.0
+        uses: helm/chart-testing-action@v2.7.0
         with:
           command: lint
           config: .github/helm-ct.yml
