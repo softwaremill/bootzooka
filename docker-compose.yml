@@ -19,7 +19,7 @@ services:
       OTEL_RESOURCE_ATTRIBUTES: 'service.instance.id=local,service.version=latest'
 
   bootzooka-db:
-    image: 'postgres'
+    image: 'postgres:17.5'
     ports:
       - '25432:5432'
     environment:
