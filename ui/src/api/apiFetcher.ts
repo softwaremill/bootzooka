@@ -56,7 +56,7 @@ export async function apiFetch<
       } catch (e) {
         console.error(
           'Failed to parse API key from localStorage. Proceeding without an authorization header.',
-          e
+          e instanceof Error ? e.message : 'Unknown error'
         );
       }
     }

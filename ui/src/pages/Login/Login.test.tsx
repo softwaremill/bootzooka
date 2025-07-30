@@ -18,6 +18,8 @@ const mockGetUserResponse = vi.fn(() => ({
     },
   },
   isSuccess: true,
+  isPending: false,
+  isError: false,
 }));
 
 vi.mock('api/apiComponents', () => ({
@@ -143,14 +145,27 @@ test('<Login /> should handle successful login attempt through the submit button
 });
 
 test('<Login /> should handle failed login attempt', async () => {
-  mockApiKeyResponse.mockReturnValueOnce({
+  mockApiKeyResponse.mockReturnValue({
     mutateAsync: mockMutate,
     reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
+    data: undefined,
     isSuccess: false,
     isError: true,
     error: 'Test error',
     isPending: false,
+  });
+
+  mockGetUserResponse.mockReturnValueOnce({
+    data: {
+      user: {
+        login: 'test-user',
+        email: 'test-user@example.com',
+        createdOn: '2023-10-01T12:00:00Z',
+      },
+    },
+    isSuccess: false,
+    isPending: false,
+    isError: false,
   });
 
   renderWithClient(
