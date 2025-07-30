@@ -51,6 +51,11 @@ The following table lists the configurable parameters of the chart and the defau
 | bootzooka.ingress.tls_enabled | bool | `false` |  |
 | bootzooka.nameOverride | string | `""` |  |
 | bootzooka.nodeSelector | object | `{}` |  |
+| bootzooka.otel.enabled | bool | `false` |  |
+| bootzooka.otel.endpoint | string | `""` |  |
+| bootzooka.otel.metric_export_interval | string | `"60s"` |  |
+| bootzooka.otel.protocol | string | `""` |  |
+| bootzooka.otel.service_name | string | `"bootzooka"` |  |
 | bootzooka.replicaCount | int | `1` |  |
 | bootzooka.reset_password_url | string | `"https://bootzooka.example.com/password-reset?code=%s"` |  |
 | bootzooka.resources | object | `{}` |  |
@@ -65,17 +70,17 @@ The following table lists the configurable parameters of the chart and the defau
 | bootzooka.smtp.ssl_ver | string | `"false"` |  |
 | bootzooka.smtp.username | string | `"server.example.com"` |  |
 | bootzooka.sql.host | string | `"{{ .Values.postgresql.fullnameOverride }}"` | Value will be taken from 'postgresql.fullnameOverride' setting |
-| bootzooka.sql.name | string | `"{{ .Values.postgresql.postgresqlDatabase }}"` | Value will be taken from 'postgresql.postgresqlDatabase' setting |
-| bootzooka.sql.password | string | `"{{ .Values.postgresql.postgresqlPassword }}"` | Value will be taken from 'postgresql.postgresqlPassword' setting |
+| bootzooka.sql.name | string | `"{{ .Values.postgresql.auth.database }}"` | Value will be taken from 'postgresql.postgresqlDatabase' setting |
+| bootzooka.sql.password | string | `"{{ .Values.postgresql.auth.password }}"` | Value will be taken from 'postgresql.postgresqlPassword' setting |
 | bootzooka.sql.port | string | `"{{ .Values.postgresql.service.port }}"` | Value will be taken from 'postgresql.service.port' setting |
-| bootzooka.sql.username | string | `"{{ .Values.postgresql.postgresqlUsername }}"` | Value will be taken from 'postgresql.postgresqlUsername' setting |
+| bootzooka.sql.username | string | `"{{ .Values.postgresql.auth.username }}"` | Value will be taken from 'postgresql.postgresqlUsername' setting |
 | bootzooka.tolerations | list | `[]` |  |
+| postgresql.auth.database | string | `"bootzooka"` | Database name for Bootzooka |
+| postgresql.auth.password | string | `"bootzooka"` | Password for PostgreSQL user |
+| postgresql.auth.username | string | `"postgres"` | Username for PostgreSQL user |
 | postgresql.connectionTest.image.pullPolicy | string | `"IfNotPresent"` |  |
 | postgresql.connectionTest.image.repository | string | `"bitnami/postgresql"` |  |
 | postgresql.connectionTest.image.tag | int | `11` |  |
 | postgresql.enabled | bool | `true` | Disable if you already have PostgreSQL running in cluster where Bootzooka chart is being deployed |
 | postgresql.fullnameOverride | string | `"bootzooka-pgsql-postgresql"` |  |
-| postgresql.postgresqlDatabase | string | `"bootzooka"` |  |
-| postgresql.postgresqlPassword | string | `"bootzooka"` |  |
-| postgresql.postgresqlUsername | string | `"postgres"` |  |
 | postgresql.service.port | int | `5432` |  |
