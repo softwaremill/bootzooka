@@ -48,6 +48,34 @@ jobs:
         run: yarn build
         working-directory: ./ui
 
+  publish:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    needs: [ verify ]
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check-out repository
+        id: repo-checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'sbt'
+
+      - uses: sbt/setup-sbt@v1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate OpenAPI Spec
+        id: generate-openapi-spec
+        run: sbt "backend/generateOpenAPIDescription"
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
