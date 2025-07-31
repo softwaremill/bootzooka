@@ -49,7 +49,6 @@ jobs:
         working-directory: ./ui
 
   publish:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
     needs: [verify]
     runs-on: ubuntu-24.04
 
