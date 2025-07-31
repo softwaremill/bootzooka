@@ -1,4 +1,6 @@
+import { ApiKeyState } from 'hooks/auth';
 import { ApiContext } from './apiContext';
+import { STORAGE_API_KEY } from '../consts';
 
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
@@ -43,8 +45,20 @@ export async function apiFetch<
       ...headers,
     };
 
-    if (!requestHeaders.Authorization && localStorage.getItem('apiKey')) {
-      requestHeaders.Authorization = `Bearer ${localStorage.getItem('apiKey')}`;
+    if (!requestHeaders.Authorization) {
+      try {
+        const state: ApiKeyState | null = JSON.parse(
+          localStorage.getItem(STORAGE_API_KEY) || 'null'
+        );
+        if (state?.apiKey) {
+          requestHeaders.Authorization = `Bearer ${state.apiKey}`;
+        }
+      } catch (e) {
+        console.error(
+          'Failed to parse API key from localStorage. Proceeding without an authorization header.',
+          e instanceof Error ? e.message : 'Unknown error'
+        );
+      }
     }
 
     /**

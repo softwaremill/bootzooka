@@ -1,4 +1,3 @@
-import { useContext, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -6,32 +5,23 @@ import Row from 'react-bootstrap/Row';
 import { BiArrowFromBottom } from 'react-icons/bi';
 import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
-import { UserContext } from 'contexts/UserContext/User.context';
 import { FormikInput, FeedbackButton } from 'components';
 import { usePostUserChangepassword } from 'api/apiComponents';
 import { validationSchema } from './PasswordDetails.validations';
+import { useApiKeyState } from 'hooks/auth';
 
 type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
 
 export const PasswordDetails = () => {
-  const {
-    state: { apiKey },
-    dispatch,
-  } = useContext(UserContext);
+  const [storageApiKeyState, setStorageApiKeyState] = useApiKeyState();
 
-  const mutation = usePostUserChangepassword();
-  const { isSuccess, data } = mutation;
+  const mutation = usePostUserChangepassword({
+    onSuccess: ({ apiKey: newApiKey }) => {
+      setStorageApiKeyState({ apiKey: newApiKey });
+    },
+  });
 
-  useEffect(() => {
-    if (isSuccess) {
-      const { apiKey } = data;
-      dispatch({ type: 'SET_API_KEY', apiKey });
-    }
-  }, [isSuccess, data, dispatch]);
-
-  useEffect(() => {
-    localStorage.setItem('apiKey', apiKey || '');
-  }, [apiKey]);
+  const apiKey = storageApiKeyState?.apiKey;
 
   return (
     <Container className="py-5">
@@ -46,7 +36,11 @@ export const PasswordDetails = () => {
                   newPassword: '',
                   repeatedPassword: '',
                 }}
-                onSubmit={(values) => mutation.mutate({ body: values })}
+                onSubmit={(values) =>
+                  mutation.mutate({
+                    body: values,
+                  })
+                }
                 validationSchema={validationSchema}
               >
                 <Form as={FormikForm}>

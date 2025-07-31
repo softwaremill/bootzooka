@@ -11,23 +11,11 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('shows loader on unspecified logged in status', () => {
-  renderWithClient(
-    <MemoryRouter initialEntries={['']}>
-      <UserContext.Provider value={{ state: initialUserState, dispatch }}>
-        <Main />
-      </UserContext.Provider>
-    </MemoryRouter>
-  );
-
-  expect(screen.getByRole('loader')).toBeInTheDocument();
-});
-
-test('shows app on logged in status', () => {
+test('<Main /> should show the app for logged-in users', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Main />
       </UserContext.Provider>
@@ -37,11 +25,11 @@ test('shows app on logged in status', () => {
   expect(screen.getByText('Welcome to Bootzooka!')).toBeInTheDocument();
 });
 
-test('shows app on logged out status', () => {
+test('<Main /> should show the app for logged-out users', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Main />
       </UserContext.Provider>

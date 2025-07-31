@@ -1,31 +1,20 @@
-import { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import Form from 'react-bootstrap/Form';
 import { BiUserPlus } from 'react-icons/bi';
 import { Formik, Form as FormikForm } from 'formik';
 import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
-import { UserContext } from 'contexts/UserContext/User.context';
 import { usePostUserRegister } from 'api/apiComponents';
 import { validationSchema } from './Register.validations';
 import { initialValues, RegisterParams } from './Register.utils';
+import { useApiKeyState } from 'hooks/auth';
 
 export const Register = () => {
-  const {
-    dispatch,
-    state: { loggedIn },
-  } = useContext(UserContext);
-
-  const navigate = useNavigate();
+  const [, setApiKeyState] = useApiKeyState();
 
   const mutation = usePostUserRegister({
     onSuccess: ({ apiKey }) => {
-      dispatch({ type: 'SET_API_KEY', apiKey });
+      setApiKeyState({ apiKey });
     },
   });
-
-  useEffect(() => {
-    if (loggedIn) navigate('/main');
-  }, [loggedIn, navigate]);
 
   return (
     <TwoColumnHero>

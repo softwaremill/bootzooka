@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useFormikContext } from 'formik';
 
-const useFormikValuesChanged = (onChange: () => void) => {
+export const useFormikValuesChanged = (onChange: () => void) => {
   const { values } = useFormikContext();
   const onChangeRef = useRef(onChange);
 
@@ -13,5 +13,3 @@ const useFormikValuesChanged = (onChange: () => void) => {
     onChangeRef.current();
   }, [values]);
 };
-
-export default useFormikValuesChanged;

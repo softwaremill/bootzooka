@@ -1,30 +1,49 @@
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { MemoryRouter, useLocation } from 'react-router';
+import { MemoryRouter } from 'react-router';
 import { renderWithClient } from 'tests';
 import { Register } from './Register';
 import { UserContext } from 'contexts/UserContext/User.context';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
+import { Mock } from 'vitest';
 
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
 const mockResponse = vi.fn();
 
-const LocationDisplay = () => {
-  const location = useLocation();
-
-  return <div data-testid="location-display">{location.pathname}</div>;
-};
-
 vi.mock('api/apiComponents', () => ({
   usePostUserRegister: () => mockResponse(),
 }));
+
+const mockCustomSuccessfulResponse = (
+  apiKey = 'test-api-key',
+  onSuccess?: Mock
+) => {
+  const mockMutateWithCallback = vi.fn().mockImplementation(async () => {
+    if (onSuccess) {
+      onSuccess({ apiKey });
+    }
+  });
+
+  const mutateToUse = onSuccess ? mockMutateWithCallback : mockMutate;
+
+  const mockResult = mockResponse.mockReturnValueOnce({
+    mutate: mutateToUse,
+    reset: vi.fn(),
+    data: { apiKey },
+    isSuccess: true,
+    isError: false,
+    error: '',
+  });
+
+  return { mockResult, mutate: mutateToUse };
+};
 
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('renders header', () => {
+test('<Register /> should render the header text', () => {
   mockResponse.mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -33,16 +52,12 @@ test('renders header', () => {
     data: { apiKey: 'test-api-key' },
     isError: false,
     error: '',
-    onSuccess: dispatch({
-      type: 'SET_API_KEY',
-      apiKey: 'test-api-key',
-    }),
   });
 
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Register />
       </UserContext.Provider>
@@ -52,49 +67,15 @@ test('renders header', () => {
   expect(screen.getByText('Please sign up')).toBeInTheDocument();
 });
 
-test('redirects when registered', () => {
-  mockResponse.mockReturnValueOnce({
-    mutate: mockMutate,
-    reset: vi.fn(),
-    isSuccess: true,
-    isPending: false,
-    data: { apiKey: 'test-api-key' },
-    isError: false,
-    error: '',
-  });
+test('<Register /> should handle successful registration through the submit button click', async () => {
+  const onSuccess = vi.fn();
+
+  const { mutate } = mockCustomSuccessfulResponse('test-api-key', onSuccess);
 
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: true }, dispatch }}
-      >
-        <Register />
-        <LocationDisplay />
-      </UserContext.Provider>
-    </MemoryRouter>
-  );
-
-  expect(screen.getByTestId('location-display')).toHaveTextContent('/main');
-});
-
-test('handles register success', async () => {
-  mockResponse.mockReturnValueOnce({
-    mutate: mockMutate,
-    reset: vi.fn(),
-    isSuccess: true,
-    data: { apiKey: 'test-api-key' },
-    isError: false,
-    error: '',
-    onSuccess: dispatch({
-      type: 'SET_API_KEY',
-      apiKey: 'test-api-key',
-    }),
-  });
-
-  renderWithClient(
-    <MemoryRouter initialEntries={['/login']}>
-      <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Register />
       </UserContext.Provider>
@@ -115,7 +96,7 @@ test('handles register success', async () => {
 
   await screen.findByRole('success');
 
-  expect(mockMutate).toHaveBeenCalledWith({
+  expect(mutate).toHaveBeenCalledWith({
     body: {
       login: 'test-login',
       email: 'test@email.address.pl',
@@ -124,13 +105,55 @@ test('handles register success', async () => {
     },
   });
 
-  expect(dispatch).toHaveBeenCalledWith({
+  expect(onSuccess).toHaveBeenCalledWith({
     apiKey: 'test-api-key',
-    type: 'SET_API_KEY',
   });
 });
 
-test('handles register error', async () => {
+test('<Register /> should handle successful registration through the Enter key press', async () => {
+  const onSuccess = vi.fn();
+
+  const { mutate } = mockCustomSuccessfulResponse('test-api-key', onSuccess);
+
+  renderWithClient(
+    <MemoryRouter initialEntries={['/login']}>
+      <UserContext.Provider
+        value={{ state: { ...initialUserState }, dispatch }}
+      >
+        <Register />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
+
+  await userEvent.type(screen.getByLabelText('Login'), 'test-login');
+  await userEvent.type(
+    screen.getByLabelText('Email address'),
+    'test@email.address.pl'
+  );
+  await userEvent.type(screen.getByLabelText('Password'), 'test-password');
+  await userEvent.type(
+    screen.getByLabelText('Repeat password'),
+    'test-password'
+  );
+  await userEvent.keyboard('{Enter}');
+
+  await screen.findByRole('success');
+
+  expect(mutate).toHaveBeenCalledWith({
+    body: {
+      login: 'test-login',
+      email: 'test@email.address.pl',
+      password: 'test-password',
+      repeatedPassword: 'test-password',
+    },
+  });
+
+  expect(onSuccess).toHaveBeenCalledWith({
+    apiKey: 'test-api-key',
+  });
+});
+
+test('<Register /> should handle failed registration attempt', async () => {
   mockResponse.mockReturnValueOnce({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -143,7 +166,7 @@ test('handles register error', async () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
-        value={{ state: { ...initialUserState, loggedIn: false }, dispatch }}
+        value={{ state: { ...initialUserState }, dispatch }}
       >
         <Register />
       </UserContext.Provider>
@@ -170,7 +193,6 @@ test('handles register error', async () => {
       repeatedPassword: 'test-password',
     },
   });
-  expect(dispatch).not.toHaveBeenCalled();
 
   await screen.findByRole('error');
 });

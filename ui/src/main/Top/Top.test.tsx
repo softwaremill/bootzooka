@@ -8,13 +8,11 @@ import { Top } from './Top';
 import { renderWithClient } from '../../tests';
 
 const loggedUserState: UserState = {
-  apiKey: 'test-api-key',
   user: {
     login: 'user-login',
     email: 'email@address.pl',
     createdOn: '2020-10-09T09:57:17.995288Z',
   },
-  loggedIn: true,
 };
 
 const dispatch = vi.fn();
@@ -23,15 +21,15 @@ const mockMutate = vi.fn();
 vi.mock('api/apiComponents', () => ({
   usePostUserLogout: () => ({
     mutateAsync: mockMutate,
-    isSuccess: false,
   }),
 }));
 
 beforeEach(() => {
+  localStorage.clear();
   vi.clearAllMocks();
 });
 
-test('renders brand name', () => {
+test('<Top /> shoud render the brand name', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['']}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
@@ -43,7 +41,7 @@ test('renders brand name', () => {
   expect(screen.getByText('Bootzooka')).toBeInTheDocument();
 });
 
-test('renders nav bar unlogged user', () => {
+test('<Top /> should render the nav bar for unlogged user', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['/main']}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
@@ -58,7 +56,8 @@ test('renders nav bar unlogged user', () => {
   expect(screen.getByText('Register')).toBeInTheDocument();
 });
 
-test('renders nav bar for logged user', () => {
+test('<Top /> should render the nav bar for logged-in user', () => {
+  localStorage.setItem('apiKey', '{ "apiKey": "test-api-key" }');
   renderWithClient(
     <MemoryRouter initialEntries={['/main']}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -67,13 +66,14 @@ test('renders nav bar for logged user', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Welcome')).toBeInTheDocument();
-  expect(screen.getByText('Home')).toBeInTheDocument();
-  expect(screen.getByText('user-login')).toBeInTheDocument();
-  expect(screen.getByText('Logout')).toBeInTheDocument();
+  expect(screen.getByText('Welcome')).toBeVisible();
+  expect(screen.getByText('Home')).toBeVisible();
+  expect(screen.getByText('user-login')).toBeVisible();
+  expect(screen.getByText('Logout')).toBeVisible();
 });
 
-test('handles logout logged user', async () => {
+test('<Top /> should handle the logout for logged-in user', async () => {
+  localStorage.setItem('apiKey', '{ "apiKey": "test-api-key" }');
   renderWithClient(
     <MemoryRouter initialEntries={['/main']}>
       <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
@@ -84,4 +84,19 @@ test('handles logout logged user', async () => {
   await userEvent.click(screen.getByText(/logout/i));
   expect(mockMutate).toHaveBeenCalledTimes(1);
   expect(mockMutate).toHaveBeenCalledWith({ body: { apiKey: 'test-api-key' } });
+});
+
+test('<Top /> should render login and logout items for anonymous users', () => {
+  renderWithClient(
+    <MemoryRouter initialEntries={['/main']}>
+      <UserContext.Provider value={{ state: initialUserState, dispatch }}>
+        <Top />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
+
+  expect(screen.queryByText('user-login')).not.toBeInTheDocument();
+  expect(screen.queryByText('Logout')).not.toBeInTheDocument();
+  expect(screen.getByText('Login')).toBeVisible();
+  expect(screen.getByText('Register')).toBeVisible();
 });

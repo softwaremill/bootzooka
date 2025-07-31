@@ -1,6 +1,5 @@
 import { screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
-import { UserState } from 'contexts';
 import { UserContext } from 'contexts/UserContext/User.context';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { renderWithClient } from 'tests';
@@ -13,7 +12,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('renders protected route for unlogged user', () => {
+test('<ProtectedRoute /> should not render protected route for anonymous user', () => {
   renderWithClient(
     <MemoryRouter initialEntries={['']}>
       <UserContext.Provider value={{ state: initialUserState, dispatch }}>
@@ -30,24 +29,30 @@ test('renders protected route for unlogged user', () => {
   expect(screen.getByText('Please sign in')).toBeInTheDocument();
 });
 
-test('renders protected route for logged user', () => {
-  const loggedUserState: UserState = {
-    ...initialUserState,
-    loggedIn: true,
-  };
-
+test('<ProtectedRoute /> should render protected route to a logged-in user', () => {
   renderWithClient(
-    <MemoryRouter initialEntries={['']}>
-      <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
+    <MemoryRouter initialEntries={['/protected-page']}>
+      <UserContext.Provider
+        value={{
+          state: {
+            user: {
+              createdOn: '2023-10-01T12:00:00Z',
+              login: 'test-user',
+              email: 'test-user@example.com',
+            },
+          },
+          dispatch,
+        }}
+      >
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route element={<ProtectedRoute />}>
+          <Route path="/protected-page" element={<ProtectedRoute />}>
             <Route index element={<>Protected Text</>} />
           </Route>
+          <Route path="/login" element={<>Login page</>} />
         </Routes>
       </UserContext.Provider>
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Protected Text')).toBeInTheDocument();
+  expect(screen.getByText('Protected Text')).toBeVisible();
 });

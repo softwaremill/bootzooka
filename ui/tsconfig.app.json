@@ -33,7 +33,8 @@
       "pages": ["./src/pages"],
       "pages/*": ["./src/pages/*"],
       "tests": ["./src/tests"],
-      "tests/*": ["./src/tests/*"]
+      "tests/*": ["./src/tests/*"],
+      "hooks/*": ["./src/hooks/*"]
     }
   },
   "include": ["src", "src/setupTest.ts"],
