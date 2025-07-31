@@ -22,7 +22,7 @@ icon: https://raw.githubusercontent.com/softwaremill/bootzooka/master/banner.png
 dependencies:
  - name: postgresql
    version: ^16
-   repository: https://charts.bitnami.com/bitnami
+   repository: oci://registry-1.docker.io/bitnamicharts
    condition: postgresql.enabled
 annotations:
  artifacthub.io/links: |
