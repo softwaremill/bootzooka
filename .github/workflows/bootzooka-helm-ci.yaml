@@ -137,7 +137,7 @@ jobs:
 
       - name: Publish Helm Chart
         id: helm-publish-chart
-        uses: stefanprodan/helm-gh-pages@v1.2.0
+        uses: stefanprodan/helm-gh-pages@v1.7.0
         with:
           token: ${{ secrets.CR_TOKEN }}
           charts_dir: helm
