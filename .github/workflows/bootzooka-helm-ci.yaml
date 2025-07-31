@@ -144,5 +144,5 @@ jobs:
           charts_url: https://softwaremill.github.io/sml-helm-public-repo
           owner: softwaremill
           repository: sml-helm-public-repo
-          helm_version: 3.7.1
+          helm_version: 3.10.0
           linting: off
