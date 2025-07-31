@@ -24,9 +24,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '21'
-          cache: 'sbt'
+          distribution: "zulu"
+          java-version: "21"
+          cache: "sbt"
 
       - uses: sbt/setup-sbt@v1
 
@@ -50,7 +50,7 @@ jobs:
 
   publish:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-    needs: [ verify ]
+    needs: [verify]
     runs-on: ubuntu-24.04
 
     steps:
@@ -61,9 +61,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '21'
-          cache: 'sbt'
+          distribution: "zulu"
+          java-version: "21"
+          cache: "sbt"
 
       - uses: sbt/setup-sbt@v1
 
@@ -83,11 +83,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Publish docker image
-        run: sbt docker/docker:publish
+        run: sbt -Ddocker.tag=${GITHUB_RUN_ID} docker/docker:publish
 
   deploy:
     if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
-    needs: [ verify ]
+    needs: [verify]
     runs-on: ubuntu-24.04
 
     steps:
@@ -98,9 +98,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '21'
-          cache: 'sbt'
+          distribution: "zulu"
+          java-version: "21"
+          cache: "sbt"
 
       - name: Extract version
         run: |
@@ -126,5 +126,5 @@ jobs:
   auto-merge:
     # only for PRs by softwaremill-ci
     if: github.event.pull_request.user.login == 'softwaremill-ci'
-    needs: [ verify, label ]
+    needs: [verify, label]
     uses: softwaremill/github-actions-workflows/.github/workflows/auto-merge.yml@main
