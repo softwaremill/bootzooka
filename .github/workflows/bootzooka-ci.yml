@@ -82,7 +82,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Publish docker image
-        run: sbt -Ddocker.tag=${GITHUB_RUN_ID} docker/docker:publish
+        run: sbt 'set docker / dockerAlias := dockerAlias.value.withTag(Some("'${GITHUB_RUN_ID}'"))' docker/docker:publish
 
   deploy:
     if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
