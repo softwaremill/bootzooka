@@ -51,7 +51,7 @@ jobs:
   publish:
     needs: [verify]
     runs-on: ubuntu-24.04
-
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Check-out repository
         id: repo-checkout
@@ -84,7 +84,7 @@ jobs:
       - name: Publish docker image
         run: sbt 'set docker / version := "'${GITHUB_RUN_ID}'"' docker/docker:publish
 
-  deploy:
+  release:
     if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
     needs: [verify]
     runs-on: ubuntu-24.04
