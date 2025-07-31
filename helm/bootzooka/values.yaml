@@ -4,9 +4,13 @@ postgresql:
   # -- Disable if you already have PostgreSQL running in cluster where Bootzooka chart is being deployed
   enabled: true
   fullnameOverride: "bootzooka-pgsql-postgresql"
-  postgresqlUsername: "postgres"
-  postgresqlPassword: "bootzooka"
-  postgresqlDatabase: "bootzooka"
+  auth:
+    # -- Username for PostgreSQL user
+    username: "postgres"
+    # -- Password for PostgreSQL user
+    password: "bootzooka"  # Change this
+    # -- Database name for Bootzooka
+    database: "bootzooka"
   service:
     port: 5432
   connectionTest:
@@ -24,11 +28,11 @@ bootzooka:
     # -- Value will be taken from 'postgresql.service.port' setting
     port: '{{ .Values.postgresql.service.port }}'
     # -- Value will be taken from 'postgresql.postgresqlUsername' setting
-    username: '{{ .Values.postgresql.postgresqlUsername }}'
+    username: '{{ .Values.postgresql.auth.username }}'
     # -- Value will be taken from 'postgresql.postgresqlDatabase' setting
-    name: '{{ .Values.postgresql.postgresqlDatabase }}'
+    name: '{{ .Values.postgresql.auth.database }}'
     # -- Value will be taken from 'postgresql.postgresqlPassword' setting
-    password: '{{ .Values.postgresql.postgresqlPassword }}'
+    password: '{{ .Values.postgresql.auth.password }}'
   smtp:
     enabled: true
     host: "server.example.com"
@@ -38,6 +42,13 @@ bootzooka:
     username: "server.example.com"
     from: "hello@bootzooka.example.com"
     password: "bootzooka"
+
+  otel:
+    enabled: false
+    endpoint: ""
+    protocol: ""
+    service_name: "bootzooka"
+    metric_export_interval: "60s"
 
   image:
     repository: softwaremill/bootzooka

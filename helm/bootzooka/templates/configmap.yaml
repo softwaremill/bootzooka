@@ -15,3 +15,8 @@ data:
   SQL_DBNAME: "{{ tpl .Values.bootzooka.sql.name . }}"
   SQL_HOST: "{{ tpl .Values.bootzooka.sql.host . }}"
   SQL_PORT: "{{ tpl .Values.bootzooka.sql.port . }}"
+  OTEL_SDK_DISABLED: "{{ not .Values.bootzooka.otel.enabled }}"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "{{ .Values.bootzooka.otel.endpoint }}"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "{{ .Values.bootzooka.otel.protocol }}"
+  OTEL_SERVICE_NAME: "{{ .Values.bootzooka.otel.service_name }}"
+  OTEL_METRIC_EXPORT_INTERVAL: "{{ .Values.bootzooka.otel.metric_export_interval }}"
