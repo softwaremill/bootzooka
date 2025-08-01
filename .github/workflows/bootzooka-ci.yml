@@ -24,9 +24,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '21'
-          cache: 'sbt'
+          distribution: "zulu"
+          java-version: "21"
+          cache: "sbt"
 
       - uses: sbt/setup-sbt@v1
 
@@ -49,10 +49,9 @@ jobs:
         working-directory: ./ui
 
   publish:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-    needs: [ verify ]
+    needs: [verify]
     runs-on: ubuntu-24.04
-
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Check-out repository
         id: repo-checkout
@@ -61,9 +60,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '21'
-          cache: 'sbt'
+          distribution: "zulu"
+          java-version: "21"
+          cache: "sbt"
 
       - uses: sbt/setup-sbt@v1
 
@@ -83,40 +82,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Publish docker image
-        run: sbt docker/docker:publish
-
-  deploy:
-    if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
-    needs: [ verify ]
-    runs-on: ubuntu-24.04
-
-    steps:
-      - name: Check-out repository
-        id: repo-checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '21'
-          cache: 'sbt'
-
-      - name: Extract version
-        run: |
-          version=${GITHUB_REF/refs\/tags\/v/}
-          echo "VERSION=$version" >> $GITHUB_ENV
-
-      - name: Publish release notes
-        uses: release-drafter/release-drafter@v5
-        with:
-          config-name: release-drafter.yaml
-          publish: true
-          name: "v${{ env.VERSION }}"
-          tag: "v${{ env.VERSION }}"
-          version: "v${{ env.VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: sbt 'set docker / version := "'${GITHUB_RUN_ID}'"' docker/docker:publish
 
   label:
     # only for PRs by softwaremill-ci
@@ -126,5 +92,5 @@ jobs:
   auto-merge:
     # only for PRs by softwaremill-ci
     if: github.event.pull_request.user.login == 'softwaremill-ci'
-    needs: [ verify, label ]
+    needs: [verify, label]
     uses: softwaremill/github-actions-workflows/.github/workflows/auto-merge.yml@main

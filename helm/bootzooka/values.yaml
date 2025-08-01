@@ -21,6 +21,8 @@ postgresql:
 
 bootzooka:
   replicaCount: 1
+  liveness_initial_delay: 60
+  readiness_initial_delay: 60
   reset_password_url: "https://bootzooka.example.com/password-reset?code=%s"
   sql:
     # -- Value will be taken from 'postgresql.fullnameOverride' setting
@@ -54,6 +56,9 @@ bootzooka:
     repository: softwaremill/bootzooka
     tag: latest
     pullPolicy: Always
+
+  java_opts: "-XX:MaxRAMPercentage=60"
+  logback_json_encode: false
 
   nameOverride: ""
   fullnameOverride: ""

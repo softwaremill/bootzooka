@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "bootzooka.fullname" . }}-config
 data:
+  JAVA_OPTS: "{{ .Values.bootzooka.java_opts }}"
   SMTP_ENABLED: "{{ .Values.bootzooka.smtp.enabled }}"
   SMTP_HOST: "{{ .Values.bootzooka.smtp.host }}"
   SMTP_PORT: "{{ .Values.bootzooka.smtp.port }}"
@@ -20,3 +21,4 @@ data:
   OTEL_EXPORTER_OTLP_PROTOCOL: "{{ .Values.bootzooka.otel.protocol }}"
   OTEL_SERVICE_NAME: "{{ .Values.bootzooka.otel.service_name }}"
   OTEL_METRIC_EXPORT_INTERVAL: "{{ .Values.bootzooka.otel.metric_export_interval }}"
+  LOGBACK_JSON_ENCODE: "{{ .Values.bootzooka.logback_json_encode }}"

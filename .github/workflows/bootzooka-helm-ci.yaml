@@ -134,15 +134,3 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      - name: Publish Helm Chart
-        id: helm-publish-chart
-        uses: stefanprodan/helm-gh-pages@v1.7.0
-        with:
-          token: ${{ secrets.CR_TOKEN }}
-          charts_dir: helm
-          charts_url: https://softwaremill.github.io/sml-helm-public-repo
-          owner: softwaremill
-          repository: sml-helm-public-repo
-          helm_version: 3.10.0
-          linting: off
