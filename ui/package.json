@@ -20,17 +20,24 @@
     "start:frontend": "yarn start"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.2.3",
+    "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.62.7",
     "@uidotdev/usehooks": "^2.4.1",
     "bootstrap": "^5.3.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "formik": "^2.4.5",
     "immer": "^10.0.3",
+    "lucide-react": "^0.536.0",
     "react": "^19.1.1",
     "react-bootstrap": "^2.9.2",
-    "react-router": "^7.5.2",
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",
+    "react-router": "^7.5.2",
     "react-router-bootstrap": "^0.26.2",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.11",
     "yup": "^1.3.3"
   },
   "devDependencies": {
@@ -57,6 +64,7 @@
     "globals": "^15.14.0",
     "jsdom": "^26.0.0",
     "prettier": "^3.4.2",
+    "tw-animate-css": "^1.3.6",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^7.0.6",
