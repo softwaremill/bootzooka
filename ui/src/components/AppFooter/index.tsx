@@ -34,8 +34,15 @@ export const AppFooter: FC = () => {
           )}
           {mutation.isSuccess && (
             <>
-              <span className="text-sm overflow-hidden text-ellipsis hidden lg:inline">
-                Version: {mutation.data.buildSha}
+              <span className="text-sm overflow-hidden hidden lg:inline max-w-[180px] text-ellipsis">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span>Version: {mutation.data.buildSha}</span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <span className="text-sm">{mutation.data.buildSha}</span>
+                  </TooltipContent>
+                </Tooltip>
               </span>
               <span className="lg:hidden mt-2">
                 <Tooltip>

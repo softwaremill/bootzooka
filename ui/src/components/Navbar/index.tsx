@@ -10,6 +10,12 @@ import { NavLink } from 'react-router';
 import { Button } from '../ui/button';
 import { usePostUserLogout } from '@/api/apiComponents';
 import { useQueryClient } from '@tanstack/react-query';
+import {
+  LogInIcon,
+  LogOutIcon,
+  UserIcon,
+  UserRoundPlusIcon,
+} from 'lucide-react';
 
 export const Navbar: FC = () => {
   const {
@@ -34,7 +40,7 @@ export const Navbar: FC = () => {
       <NavigationMenuList className="col-start-1 col-end-2">
         <NavigationMenuItem asChild>
           <NavLink to="/" className="col-start-1 col-end-2 px-2">
-            <h1 className="text-4xl text-blue-600">Bootzooka</h1>
+            <h1 className="text-4xl">Bootzooka</h1>
           </NavLink>
         </NavigationMenuItem>
       </NavigationMenuList>
@@ -50,26 +56,36 @@ export const Navbar: FC = () => {
         {user && apiKey ? (
           <>
             <NavigationMenuItem asChild>
-              <NavLink to="/profile">{user.login}</NavLink>
+              <NavLink to="/profile" className="flex items-center gap-2">
+                <UserIcon className="w-5 h-5" />
+                {user.login}
+              </NavLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Button
-                size="sm"
                 variant="ghost"
                 className="text-md font-normal cursor-pointer"
                 onClick={() => logout({ body: { apiKey } })}
               >
-                Logout
+                <LogOutIcon className="w-5 h-5" />
+
+                <span>Logout</span>
               </Button>
             </NavigationMenuItem>
           </>
         ) : (
           <>
             <NavigationMenuItem asChild>
-              <NavLink to="/register">Register</NavLink>
+              <NavLink to="/register" className="flex items-center gap-2">
+                <UserRoundPlusIcon className="w-5 h-5" />
+                Register
+              </NavLink>
             </NavigationMenuItem>
             <NavigationMenuItem asChild>
-              <NavLink to="/login">Login</NavLink>
+              <NavLink to="/login" className="flex items-center gap-2">
+                <LogInIcon className="w-5 h-5" />
+                Login
+              </NavLink>
             </NavigationMenuItem>
           </>
         )}
