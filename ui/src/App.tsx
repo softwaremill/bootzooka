@@ -6,6 +6,7 @@ import './index.css';
 import { PublicOnlyRoute } from './main/Routes/PublicOnlyRoute';
 import { NewLogin } from './pages/Login/NewLogin';
 import { Toaster } from '@/components/ui/sonner';
+import { RegisterPage } from './pages/Register/NewRegister';
 
 const queryClient = new QueryClient();
 
@@ -19,7 +20,7 @@ export const App = () => (
 
             <Route element={<PublicOnlyRoute />}>
               <Route path="/login" element={<NewLogin />} />
-              <Route path="/register" element={<></>} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route path="/recover-lost-password" element={<></>} />
             </Route>
 

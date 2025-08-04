@@ -1,13 +1,13 @@
-import { useEffect, type FC } from 'react';
+import type { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useGetUser, usePostUserLogin } from '@/api/apiComponents';
-import { useUserContext } from '@/contexts/UserContext/User.context';
+import { usePostUserRegister } from '@/api/apiComponents';
 import { useApiKeyState } from '@/hooks/auth';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,78 +23,70 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { UserIcon } from 'lucide-react';
+import { UserRoundPlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/components';
 
 const schema = z.object({
-  loginOrEmail: z.email().or(z.string().min(1)),
-  password: z.string().min(1, 'Password is required'),
+  login: z.string('Login is required').min(1),
+  email: z.email('Email is required'),
+  password: z.string('Password is required').min(8),
 });
 
-export const NewLogin: FC = () => {
-  const form = useForm({
-    resolver: zodResolver(schema),
-  });
+export const RegisterPage: FC = () => {
+  const [, setApiKeyState] = useApiKeyState();
 
-  const [apiKeyState, setApiKeyState] = useApiKeyState();
-
-  const { dispatch } = useUserContext();
-
-  const apiKey = apiKeyState?.apiKey;
-
-  const { mutateAsync, error: postUserError } = usePostUserLogin({
+  const { mutate, error } = usePostUserRegister({
     onSuccess: ({ apiKey }) => {
       setApiKeyState({ apiKey });
+      toast.success('Registration successful! Welcome aboard!');
     },
   });
 
-  const { data: user, isSuccess } = useGetUser(
-    apiKey ? { headers: { Authorization: `Bearer ${apiKey}` } } : {},
-    {
-      enabled: Boolean(apiKey),
-      retry: false,
-    }
-  );
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch({ type: 'LOG_IN', user });
-      toast.success('Login successful!');
-    }
-  }, [user, dispatch, isSuccess]);
+  const form = useForm({
+    resolver: zodResolver(schema),
+    mode: 'onBlur',
+  });
 
   return (
     <div className="flex items-center justify-center h-full">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Enter your credentials to login</CardDescription>
+          <CardTitle>Register</CardTitle>
+          <CardDescription>Enter your credentials to register</CardDescription>
           <CardAction>
-            <UserIcon className="w-7 h-7 mt-2" />
+            <UserRoundPlusIcon className="w-7 h-7 mt-2" />
           </CardAction>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form
-              id="login-form"
+              id="registration-form"
               className="grid grid-rows-2 gap-6"
-              onSubmit={form.handleSubmit((data) =>
-                mutateAsync({ body: data })
-              )}
+              onSubmit={form.handleSubmit((data) => mutate({ body: data }))}
             >
               <FormField
                 control={form.control}
-                name="loginOrEmail"
+                name="login"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Login or email</FormLabel>
+                    <FormLabel>Login</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Enter your login or email"
-                        {...field}
-                      />
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -108,12 +100,11 @@ export const NewLogin: FC = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        {...field}
-                      />
+                      <Input type="password" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Password must be at least 8 characters long
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -124,13 +115,13 @@ export const NewLogin: FC = () => {
         <CardFooter className="grid grid-rows-2 gap-4">
           <Button
             type="submit"
-            form="login-form"
+            form="registration-form"
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            Login
+            Register
           </Button>
-          {postUserError && <ErrorMessage error={postUserError} />}
+          {error && <ErrorMessage error={error} />}
         </CardFooter>
       </Card>
     </div>
