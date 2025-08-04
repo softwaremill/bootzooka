@@ -51,7 +51,7 @@ jobs:
   publish:
     needs: [verify]
     runs-on: ubuntu-24.04
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Check-out repository
         id: repo-checkout
