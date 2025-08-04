@@ -61,6 +61,12 @@ export const RegisterPage: FC = () => {
   const form = useForm({
     resolver: zodResolver(schema),
     mode: 'onBlur',
+    defaultValues: {
+      login: '',
+      email: '',
+      password: '',
+      repeatedPassword: '',
+    },
   });
 
   return (
