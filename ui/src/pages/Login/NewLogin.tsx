@@ -27,6 +27,7 @@ import { UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/components';
+import { NavLink } from 'react-router';
 
 const schema = z.object({
   loginOrEmail: z.email().or(z.string().min(1)),
@@ -38,6 +39,11 @@ const FORM_ID = 'login-form';
 export const NewLogin: FC = () => {
   const form = useForm({
     resolver: zodResolver(schema),
+    mode: 'onBlur',
+    defaultValues: {
+      loginOrEmail: '',
+      password: '',
+    },
   });
 
   const [apiKeyState, setApiKeyState] = useApiKeyState();
@@ -131,6 +137,11 @@ export const NewLogin: FC = () => {
             disabled={form.formState.isSubmitting}
           >
             Login
+          </Button>
+          <Button type="button" variant="link" asChild>
+            <NavLink to="/recover-lost-password" className="ml-2">
+              <span className="text-sm">Forgot password?</span>
+            </NavLink>
           </Button>
           {postUserError && <ErrorMessage error={postUserError} />}
         </CardFooter>
