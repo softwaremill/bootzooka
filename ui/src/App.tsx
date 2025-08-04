@@ -13,6 +13,8 @@ export const App = () => (
         <Routes>
           <Route element={<AppLayout />}>
             <Route path="/" element={<></>} />
+
+            <Route path="/*" element={<>Placeholder view</>} />
           </Route>
         </Routes>
       </UserContextProvider>
