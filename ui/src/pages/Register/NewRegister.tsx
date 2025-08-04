@@ -28,11 +28,25 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/components';
 
-const schema = z.object({
-  login: z.string('Login is required').min(1),
-  email: z.email('Email is required'),
-  password: z.string('Password is required').min(8),
-});
+const schema = z
+  .object({
+    login: z.string('Login is required').min(1),
+    email: z.email('Email is required'),
+    password: z.string('Password is required').min(8),
+    repeatedPassword: z.string('Please repeat your password'),
+  })
+  .refine((data) => data.password === data.repeatedPassword, {
+    message: 'Passwords do not match',
+    path: ['repeatedPassword'],
+
+    when(payload) {
+      return schema
+        .pick({ password: true, repeatedPassword: true })
+        .safeParse(payload.value).success;
+    },
+  });
+
+const FORM_ID = 'registration-form';
 
 export const RegisterPage: FC = () => {
   const [, setApiKeyState] = useApiKeyState();
@@ -62,7 +76,7 @@ export const RegisterPage: FC = () => {
         <CardContent>
           <Form {...form}>
             <form
-              id="registration-form"
+              id={FORM_ID}
               className="grid grid-rows-2 gap-6"
               onSubmit={form.handleSubmit((data) => mutate({ body: data }))}
             >
@@ -109,13 +123,27 @@ export const RegisterPage: FC = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="repeatedPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Repeat Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </form>
           </Form>
         </CardContent>
         <CardFooter className="grid grid-rows-2 gap-4">
           <Button
             type="submit"
-            form="registration-form"
+            form={FORM_ID}
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
