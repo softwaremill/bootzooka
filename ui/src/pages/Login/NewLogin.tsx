@@ -33,6 +33,8 @@ const schema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
+const FORM_ID = 'login-form';
+
 export const NewLogin: FC = () => {
   const form = useForm({
     resolver: zodResolver(schema),
@@ -78,7 +80,7 @@ export const NewLogin: FC = () => {
         <CardContent>
           <Form {...form}>
             <form
-              id="login-form"
+              id={FORM_ID}
               className="grid grid-rows-2 gap-6"
               onSubmit={form.handleSubmit((data) =>
                 mutateAsync({ body: data })
@@ -124,7 +126,7 @@ export const NewLogin: FC = () => {
         <CardFooter className="grid grid-rows-2 gap-4">
           <Button
             type="submit"
-            form="login-form"
+            form={FORM_ID}
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
