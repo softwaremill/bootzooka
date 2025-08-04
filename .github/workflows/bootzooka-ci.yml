@@ -51,7 +51,7 @@ jobs:
   publish:
     needs: [verify]
     runs-on: ubuntu-24.04
-    if: github.ref == 'refs/heads/master'
+    # if: github.ref == 'refs/heads/master'
     steps:
       - name: Check-out repository
         id: repo-checkout
@@ -82,7 +82,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Publish docker image
-        run: sbt 'set docker / version := "'${GITHUB_RUN_ID}'"' docker/docker:publish
+        run: sbt 'set docker / version := "'${GITHUB_RUN_ID}-${GITHUB_SHA:0:7}'"' docker/docker:publish
 
   label:
     # only for PRs by softwaremill-ci
