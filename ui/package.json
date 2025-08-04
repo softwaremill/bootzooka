@@ -20,8 +20,10 @@
     "start:frontend": "yarn start"
   },
   "dependencies": {
+    "@icons-pack/react-simple-icons": "^13.7.0",
     "@radix-ui/react-navigation-menu": "^1.2.13",
     "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tooltip": "^1.2.7",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.62.7",
     "@uidotdev/usehooks": "^2.4.1",
