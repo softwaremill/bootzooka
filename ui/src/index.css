@@ -1,13 +1,7 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
-
-html,
-body,
-#root {
-  height: 100%;
-}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

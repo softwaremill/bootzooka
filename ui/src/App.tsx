@@ -1,7 +1,8 @@
-import { BrowserRouter } from 'react-router';
+import { BrowserRouter, Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Main } from 'main/Main/Main';
 import { UserContextProvider } from 'contexts';
+import { AppLayout } from '@/components/AppLayout';
+import './index.css';
 
 const queryClient = new QueryClient();
 
@@ -9,7 +10,11 @@ export const App = () => (
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
       <UserContextProvider>
-        <Main />
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<></>} />
+          </Route>
+        </Routes>
       </UserContextProvider>
     </QueryClientProvider>
   </BrowserRouter>
