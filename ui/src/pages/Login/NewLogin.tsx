@@ -1,0 +1,145 @@
+import { useEffect, type FC } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useGetUser, usePostUserLogin } from '@/api/apiComponents';
+import { useUserContext } from '@/contexts/UserContext/User.context';
+import { useApiKeyState } from '@/hooks/auth';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { UserIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { ErrorMessage } from '@/components';
+
+const schema = z.object({
+  loginOrEmail: z.email().or(z.string().min(1)),
+  password: z.string().min(1, 'Password is required'),
+});
+
+export const NewLogin: FC = () => {
+  const form = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const [apiKeyState, setApiKeyState] = useApiKeyState();
+
+  const { dispatch } = useUserContext();
+
+  const apiKey = apiKeyState?.apiKey;
+
+  const { mutateAsync, error: postUserError } = usePostUserLogin({
+    onSuccess: ({ apiKey }) => {
+      setApiKeyState({ apiKey });
+    },
+  });
+
+  const { data: user, isSuccess } = useGetUser(
+    apiKey ? { headers: { Authorization: `Bearer ${apiKey}` } } : {},
+    {
+      enabled: Boolean(apiKey),
+      retry: false,
+    }
+  );
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch({ type: 'LOG_IN', user });
+      toast.success('Login successful!');
+    }
+  }, [user, dispatch, isSuccess]);
+
+  return (
+    <div className="flex items-center justify-center h-full">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>Enter your credentials to log in</CardDescription>
+          <CardAction>
+            <UserIcon className="w-7 h-7 mt-2" />
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              id="login-form"
+              className="grid grid-rows-2 gap-6"
+              onSubmit={form.handleSubmit((data) =>
+                mutateAsync({ body: data })
+              )}
+            >
+              <FormField
+                control={form.control}
+                name="loginOrEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Login or email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter your login or email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Please enter your login or email address
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Please enter your password
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </CardContent>
+        <CardFooter className="grid grid-rows-2 gap-4">
+          <Button
+            type="submit"
+            form="login-form"
+            className="w-full"
+            disabled={form.formState.isSubmitting}
+          >
+            Login
+          </Button>
+          {postUserError && <ErrorMessage error={postUserError} />}
+        </CardFooter>
+      </Card>
+    </div>
+  );
+};

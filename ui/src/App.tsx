@@ -4,6 +4,8 @@ import { UserContextProvider } from 'contexts';
 import { AppLayout } from '@/components/AppLayout';
 import './index.css';
 import { PublicOnlyRoute } from './main/Routes/PublicOnlyRoute';
+import { NewLogin } from './pages/Login/NewLogin';
+import { Toaster } from '@/components/ui/sonner';
 
 const queryClient = new QueryClient();
 
@@ -16,7 +18,7 @@ export const App = () => (
             <Route path="/" element={<></>} />
 
             <Route element={<PublicOnlyRoute />}>
-              <Route path="/login" element={<></>} />
+              <Route path="/login" element={<NewLogin />} />
               <Route path="/register" element={<></>} />
               <Route path="/recover-lost-password" element={<></>} />
             </Route>
@@ -24,6 +26,7 @@ export const App = () => (
             <Route path="/*" element={<>Placeholder view</>} />
           </Route>
         </Routes>
+        <Toaster />
       </UserContextProvider>
     </QueryClientProvider>
   </BrowserRouter>

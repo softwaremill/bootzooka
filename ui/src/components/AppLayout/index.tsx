@@ -9,10 +9,10 @@ export const AppLayout: FC = () => {
 
   return (
     <div className="w-full h-screen max-h-full grid grid-cols-1 lg:grid-cols-[2fr_minmax(800px,1200px)_2fr] grid-rows-[minmax(60px,90px)_12fr_minmax(130px,200px)]">
-      <header className="col-start-1 lg:col-start-2 lg:col-end-3 px-8 flex items-center">
+      <header className="col-start-1 lg:col-start-2 lg:col-end-3 px-8 flex items-center border-b-primary-foreground border-b-2">
         <Navbar />
       </header>
-      <main className="col-start-1 lg:col-start-2 lg:col-end-3">
+      <main className="col-start-1 lg:col-start-2 lg:col-end-3 px-10 py-8">
         <Outlet />
       </main>
       <footer className="col-start-1 lg:col-start-2 lg:col-end-3 px-8 bg-primary-foreground">

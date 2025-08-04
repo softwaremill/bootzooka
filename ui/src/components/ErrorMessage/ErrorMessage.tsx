@@ -3,7 +3,7 @@ interface ErrorMessageProps {
 }
 
 export const ErrorMessage: React.FC<ErrorMessageProps> = ({ error }) => (
-  <span className="text-danger">
+  <span className="text-sm text-red-500 font-semibold">
     {(
       error?.stack?.error ||
       error?.response?.data?.error ||
