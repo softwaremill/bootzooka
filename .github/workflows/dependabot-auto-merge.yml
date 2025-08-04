@@ -1,0 +1,39 @@
+name: Dependabot auto-merge
+on: pull_request_target
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Debug info
+        run: |
+          echo "PR Actor: ${{ github.actor }}"
+          echo "PR URL: ${{ github.event.pull_request.html_url }}"
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1.6.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Add labels to frontend dependency PRs
+        run: |
+          gh pr edit "$PR_URL" --add-label "dependency,automerge"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge for all dependency updates
+        run: |
+          echo "Enabling auto-merge for PR: $PR_URL"
+          gh pr merge --auto --squash "$PR_URL"
+          echo "Auto-merge enabled successfully"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
