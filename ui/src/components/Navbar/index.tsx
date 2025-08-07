@@ -40,7 +40,7 @@ export const Navbar: FC = () => {
       <NavigationMenuList className="col-start-1 col-end-2">
         <NavigationMenuItem asChild>
           <NavLink to="/" className="col-start-1 col-end-2 px-2">
-            <h1 className="text-4xl">Bootzooka</h1>
+            <h1 className="text-3xl font-semibold">Bootzooka</h1>
           </NavLink>
         </NavigationMenuItem>
       </NavigationMenuList>
