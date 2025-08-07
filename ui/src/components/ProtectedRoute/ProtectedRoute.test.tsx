@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
-import { UserContext } from 'contexts/UserContext/User.context';
-import { initialUserState } from 'contexts/UserContext/UserContext.constants';
-import { renderWithClient } from 'tests';
-import { Login } from 'pages';
+import { UserContext } from '@/contexts/UserContext/User.context';
+import { initialUserState } from '@/contexts/UserContext/UserContext.constants';
+import { renderWithClient } from '@/tests';
+import { Login } from '@/pages';
 import { ProtectedRoute } from '.';
 
 const dispatch = vi.fn();
@@ -26,7 +26,9 @@ test('<ProtectedRoute /> should not render protected route for anonymous user', 
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Please sign in')).toBeInTheDocument();
+  expect(
+    screen.getByText('Enter your credentials to login')
+  ).toBeInTheDocument();
 });
 
 test('<ProtectedRoute /> should render protected route to a logged-in user', () => {

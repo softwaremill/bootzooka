@@ -18,15 +18,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
-        api: path.resolve(__dirname, './src/api'),
-        assets: path.resolve(__dirname, './src/assets'),
-        components: path.resolve(__dirname, './src/components'),
-        contexts: path.resolve(__dirname, './src/contexts'),
-        main: path.resolve(__dirname, './src/main'),
-        pages: path.resolve(__dirname, './src/pages'),
-        tests: path.resolve(__dirname, './src/tests'),
-        hooks: path.resolve(__dirname, './src/hooks'),
       },
+    },
+    test: {
+      setupFiles: [path.resolve(__dirname, './src/tests/setup.ts')],
     },
   };
 });

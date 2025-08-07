@@ -97,8 +97,8 @@ test('<AppNavbar /> should render login and logout items for anonymous users', (
     </MemoryRouter>
   );
 
-  expect(screen.queryByText('user-login')).not.toBeVisible();
-  expect(screen.queryByText('Logout')).not.toBeVisible();
+  expect(screen.queryByText('user-login')).not.toBeInTheDocument();
+  expect(screen.queryByText('Logout')).not.toBeInTheDocument();
   expect(screen.getByText('Login')).toBeVisible();
   expect(screen.getByText('Register')).toBeVisible();
 });

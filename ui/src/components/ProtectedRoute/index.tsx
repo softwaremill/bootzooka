@@ -1,5 +1,5 @@
 import { useLocation, Outlet, Navigate } from 'react-router';
-import { useUserContext } from 'contexts/UserContext/User.context';
+import { useUserContext } from '@/contexts/UserContext/User.context';
 
 export const ProtectedRoute: React.FC = () => {
   const {

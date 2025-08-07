@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { UserContextProvider } from 'contexts';
+import { UserContextProvider } from '@/contexts';
 import { AppLayout } from '@/components/AppLayout';
 import { PublicOnlyRoute } from './components/PublicOnlyRoute';
 import { Login } from './pages/Login';

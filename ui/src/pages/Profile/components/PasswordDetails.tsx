@@ -6,8 +6,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { usePostUserChangepassword } from 'api/apiComponents';
-import { useApiKeyState } from 'hooks/auth';
+import { usePostUserChangepassword } from '@/api/apiComponents';
+import { useApiKeyState } from '@/hooks/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useForm } from 'react-hook-form';
 import z from 'zod';

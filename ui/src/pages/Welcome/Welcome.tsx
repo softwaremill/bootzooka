@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import logo from 'assets/sml-logo-vertical-rgb-trans.png';
+import logo from '@/assets/sml-logo-vertical-rgb-trans.png';
 
 export const Welcome: FC = () => (
   <div className="w-full h-full flex flex-col justify-center items-center">

@@ -1,4 +1,4 @@
-import { useUserContext } from 'contexts/UserContext/User.context';
+import { useUserContext } from '@/contexts/UserContext/User.context';
 import { useMemo, type FC } from 'react';
 import { useApiKeyState } from '@/hooks/auth';
 import { usePostUserLogout } from '@/api/apiComponents';

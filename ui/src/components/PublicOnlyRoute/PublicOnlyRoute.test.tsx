@@ -1,8 +1,8 @@
-import { UserContext } from 'contexts/UserContext/User.context';
-import { initialUserState } from 'contexts/UserContext/UserContext.constants';
-import { Login } from 'pages';
+import { UserContext } from '@/contexts/UserContext/User.context';
+import { initialUserState } from '@/contexts/UserContext/UserContext.constants';
+import { Login } from '@/pages';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { renderWithClient } from 'tests';
+import { renderWithClient } from '@/tests';
 import { PublicOnlyRoute } from '.';
 import { screen } from '@testing-library/react';
 
@@ -22,7 +22,7 @@ test('<PublicOnlyRoute /> should render login page for anonymous', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Please sign in')).toBeVisible();
+  expect(screen.getByText('Enter your credentials to login')).toBeVisible();
 });
 
 test('<PublicOnlyRoute /> should not render login page to logged in users', () => {

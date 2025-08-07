@@ -1,4 +1,4 @@
-import { useUserContext } from 'contexts/UserContext/User.context';
+import { useUserContext } from '@/contexts/UserContext/User.context';
 import { type FC, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { usePostUser } from 'api/apiComponents';
-import { useUserContext } from 'contexts/UserContext/User.context';
+import { usePostUser } from '@/api/apiComponents';
+import { useUserContext } from '@/contexts/UserContext/User.context';
 import z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
