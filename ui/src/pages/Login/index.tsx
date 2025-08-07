@@ -26,7 +26,7 @@ import {
 import { UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ErrorMessage } from '@/components';
+import { ErrorMessage } from '@/components/ErrorMessage';
 import { NavLink } from 'react-router';
 
 const schema = z.object({

@@ -6,7 +6,7 @@ import { PublicOnlyRoute } from './components/PublicOnlyRoute';
 import { Login } from './pages/Login';
 import { Toaster } from '@/components/ui/sonner';
 import { Register } from './pages/Register';
-import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { NotFound, SecretMain, Welcome } from './pages';
 import { RecoverLostPassword } from './pages/RecoverLostPassword';
 import { Profile } from './pages/Profile';

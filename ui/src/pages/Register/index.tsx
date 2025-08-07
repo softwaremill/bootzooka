@@ -26,7 +26,7 @@ import {
 import { UserRoundPlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ErrorMessage } from '@/components';
+import { ErrorMessage } from '@/components/ErrorMessage';
 
 const schema = z
   .object({
