@@ -6,10 +6,11 @@ import './index.css';
 import { PublicOnlyRoute } from './main/Routes/PublicOnlyRoute';
 import { NewLogin } from './pages/Login/NewLogin';
 import { Toaster } from '@/components/ui/sonner';
-import { Register } from './pages/Register/Register';
+import { Register } from './pages/Register';
 import { ProtectedRoute } from './main/Routes/ProtectedRoute';
 import { SecretMain, Welcome } from './pages';
 import { RecoverLostPassword } from './pages/RecoverLostPassword';
+import { Profile } from './pages/Profile/Profile';
 
 const queryClient = new QueryClient();
 
@@ -32,7 +33,7 @@ export const App = () => (
 
             <Route element={<ProtectedRoute />}>
               <Route path="/main" element={<SecretMain />} />
-              <Route path="/profile" element={<>Profile</>} />
+              <Route path="/profile" element={<Profile />} />
             </Route>
 
             <Route path="/*" element={<>Placeholder view</>} />
