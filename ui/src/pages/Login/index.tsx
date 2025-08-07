@@ -36,7 +36,7 @@ const schema = z.object({
 
 const FORM_ID = 'login-form';
 
-export const NewLogin: FC = () => {
+export const Login: FC = () => {
   const form = useForm({
     resolver: zodResolver(schema),
     mode: 'onBlur',

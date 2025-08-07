@@ -2,15 +2,15 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { UserContextProvider } from 'contexts';
 import { AppLayout } from '@/components/AppLayout';
-import './index.css';
 import { PublicOnlyRoute } from './main/Routes/PublicOnlyRoute';
-import { NewLogin } from './pages/Login/NewLogin';
+import { Login } from './pages/Login';
 import { Toaster } from '@/components/ui/sonner';
 import { Register } from './pages/Register';
 import { ProtectedRoute } from './main/Routes/ProtectedRoute';
-import { SecretMain, Welcome } from './pages';
+import { NotFound, SecretMain, Welcome } from './pages';
 import { RecoverLostPassword } from './pages/RecoverLostPassword';
-import { Profile } from './pages/Profile/Profile';
+import { Profile } from './pages/Profile';
+import './index.css';
 
 const queryClient = new QueryClient();
 
@@ -23,7 +23,7 @@ export const App = () => (
             <Route path="/" element={<Welcome />} />
 
             <Route element={<PublicOnlyRoute />}>
-              <Route path="/login" element={<NewLogin />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route
                 path="/recover-lost-password"
@@ -36,7 +36,7 @@ export const App = () => (
               <Route path="/profile" element={<Profile />} />
             </Route>
 
-            <Route path="/*" element={<>Placeholder view</>} />
+            <Route path="/*" element={<NotFound />} />
           </Route>
         </Routes>
         <Toaster />

@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { UserState } from 'contexts';
 import { UserContext } from 'contexts/UserContext/User.context';
 import { renderWithClient } from 'tests';
-import { Profile } from './Profile';
+import { Profile } from '.';
 
 const mockState: UserState = {
   user: {

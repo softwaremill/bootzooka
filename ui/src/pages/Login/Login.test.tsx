@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router';
 import { UserContext } from 'contexts/UserContext/User.context';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { renderWithClient } from 'tests';
-import { Login } from './Login';
+import { Login } from './index';
 
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
