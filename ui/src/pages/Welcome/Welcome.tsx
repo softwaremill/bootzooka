@@ -16,16 +16,16 @@ export const Welcome: FC = () => (
           rel="noopener noreferrer"
           className="underline"
         >
-          Documentation
+          documentation
         </a>{' '}
-        or{' '}
+        or the{' '}
         <a
           href="https://github.com/softwaremill/bootzooka"
           target="blank"
           rel="noopener noreferrer"
           className="underline"
         >
-          Source code
+          source code
         </a>
         .
       </p>

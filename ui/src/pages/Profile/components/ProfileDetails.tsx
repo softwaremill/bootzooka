@@ -46,7 +46,7 @@ export const ProfileDetails = () => {
   }, [isSuccess, dispatch, data]);
 
   return (
-    <Card className="col-start-1 col-end-3 row-start-1 row-end-2 lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-2">
+    <Card>
       <CardHeader>
         <CardTitle>Profile details</CardTitle>
       </CardHeader>

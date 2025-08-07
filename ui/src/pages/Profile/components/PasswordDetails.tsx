@@ -43,7 +43,7 @@ export const PasswordDetails: FC = () => {
   const apiKey = storageApiKeyState?.apiKey;
 
   return (
-    <Card className="col-start-1 col-end-3 row-start-2 row-end-3 lg:col-start-2 lg:col-end-3 lg:row-start-1 lg:row-end-2">
+    <Card>
       <CardHeader>
         <CardTitle>Password details</CardTitle>
       </CardHeader>
