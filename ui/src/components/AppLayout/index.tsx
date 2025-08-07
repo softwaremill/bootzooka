@@ -12,10 +12,10 @@ export const AppLayout: FC = () => {
       <header className="col-start-1 lg:col-start-2 lg:col-end-3 px-8 flex items-center border-b-primary-foreground border-b-2">
         <Navbar />
       </header>
-      <main className="col-start-1 lg:col-start-2 lg:col-end-3 px-10 py-8">
+      <main className="col-start-1 lg:col-start-2 lg:col-end-3 lg:px-10 py-8">
         <Outlet />
       </main>
-      <footer className="col-start-1 lg:col-start-2 lg:col-end-3 px-8 bg-primary-foreground">
+      <footer className="col-start-1 lg:col-start-2 lg:col-end-3 lg:px-8 bg-primary-foreground">
         <AppFooter />
       </footer>
     </div>

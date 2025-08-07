@@ -3,10 +3,10 @@ import logo from 'assets/sml-logo-vertical-rgb-trans.png';
 
 export const Welcome: FC = () => (
   <div className="w-full h-full flex flex-col justify-center items-center">
-    <div className="lg:w-full h-[50%] flex flex-col items-center justify-center bg-foreground text-background">
+    <div className="w-full h-[50%] flex flex-col items-center justify-center bg-foreground text-background text-center p-4 lg:p-0">
       <h3 className="text-xl mb-2">Hi there!</h3>
       <h1 className="text-3xl mb-3">Welcome to Bootzooka!</h1>
-      <p>
+      <p className="text-center">
         If you are interested in how Bootzooka works,
         <br />
         you can browse the{' '}
@@ -20,7 +20,7 @@ export const Welcome: FC = () => (
         .
       </p>
     </div>
-    <div className="lg:w-full h-[50%] flex flex-col items-center justify-center text-center">
+    <div className="w-full h-[50%] flex flex-col items-center justify-center text-center">
       <p className="fs-3">Brought to you by</p>
       <a
         href="http://softwaremill.com"
