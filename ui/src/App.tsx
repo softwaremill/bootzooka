@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { RegisterPage } from './pages/Register/NewRegister';
 import { ProtectedRoute } from './main/Routes/ProtectedRoute';
 import { SecretMain, Welcome } from './pages';
+import { RecoverPasswordPage } from './pages/RecoverLostPassword/NewRecoverLostPassword';
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,10 @@ export const App = () => (
             <Route element={<PublicOnlyRoute />}>
               <Route path="/login" element={<NewLogin />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/recover-lost-password" element={<></>} />
+              <Route
+                path="/recover-lost-password"
+                element={<RecoverPasswordPage />}
+              />
             </Route>
 
             <Route element={<ProtectedRoute />}>

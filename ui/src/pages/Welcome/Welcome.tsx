@@ -10,11 +10,21 @@ export const Welcome: FC = () => (
         If you are interested in how Bootzooka works,
         <br />
         you can browse the{' '}
-        <a href="http://softwaremill.github.io/bootzooka/" target="blank">
+        <a
+          href="http://softwaremill.github.io/bootzooka/"
+          target="blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
           Documentation
         </a>{' '}
         or{' '}
-        <a href="https://github.com/softwaremill/bootzooka" target="blank">
+        <a
+          href="https://github.com/softwaremill/bootzooka"
+          target="blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
           Source code
         </a>
         .

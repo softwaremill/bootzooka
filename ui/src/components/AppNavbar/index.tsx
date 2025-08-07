@@ -26,7 +26,7 @@ const COMMON_NAVBAR_ITEMS: NavbarMenuItem[] = [
   },
 ];
 
-export const Navbar: FC = () => {
+export const AppNavbar: FC = () => {
   const {
     state: { user },
     dispatch,
