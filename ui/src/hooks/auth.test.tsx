@@ -1,12 +1,12 @@
 import { renderHook } from '@testing-library/react';
 import { useApiKeyState, useUserCheck } from './auth';
-import { UserContext } from 'contexts/UserContext/User.context';
+import { UserContext } from '@/contexts/UserContext/User.context';
 
 const mockMutate = vi.fn();
 const mockResponse = vi.fn();
 const mockDispatch = vi.fn();
 
-vi.mock('api/apiComponents', () => ({
+vi.mock('@/api/apiComponents', () => ({
   useGetUser: () => mockResponse(),
 }));
 

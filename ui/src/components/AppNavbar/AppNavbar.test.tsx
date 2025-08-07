@@ -18,7 +18,7 @@ const loggedUserState: UserState = {
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
 
-vi.mock('api/apiComponents', () => ({
+vi.mock('@/api/apiComponents', () => ({
   usePostUserLogout: () => ({
     mutateAsync: mockMutate,
   }),

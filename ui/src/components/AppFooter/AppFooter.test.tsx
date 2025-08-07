@@ -1,10 +1,9 @@
-import { Mock } from 'vitest';
 import { screen } from '@testing-library/react';
-import { renderWithClient } from 'tests';
-import { useGetAdminVersion } from 'api/apiComponents';
+import { renderWithClient } from '@/tests';
 import { AppFooter } from './';
+import { useGetAdminVersion } from '@/api/apiComponents';
 
-vi.mock('api/apiComponents', () => ({
+vi.mock('@/api/apiComponents', () => ({
   useGetAdminVersion: vi.fn(),
 }));
 
@@ -13,9 +12,7 @@ beforeEach(() => {
 });
 
 test('<AppFooter />should render Bootzooka version info', async () => {
-  const mockedUseGetAdminVersion = useGetAdminVersion as Mock;
-
-  mockedUseGetAdminVersion.mockReturnValue({
+  (useGetAdminVersion as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
     isPending: false,
     isLoading: false,
     isError: false,
@@ -27,6 +24,6 @@ test('<AppFooter />should render Bootzooka version info', async () => {
 
   const buildSha = await screen.findByText('Version: testSha');
 
-  expect(mockedUseGetAdminVersion).toHaveBeenCalled();
+  expect(useGetAdminVersion).toHaveBeenCalled();
   expect(buildSha).toBeVisible();
 });
