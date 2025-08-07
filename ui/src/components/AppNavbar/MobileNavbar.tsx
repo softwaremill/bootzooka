@@ -11,7 +11,10 @@ import type { NavbarProps } from './types';
 import { NavLink } from 'react-router';
 
 export const MobileNavbar: FC<NavbarProps> = ({ items }) => (
-  <div className="w-full flex items-center justify-between lg:hidden">
+  <nav
+    data-testid="mobile-navbar"
+    className="w-full flex items-center justify-between lg:hidden"
+  >
     <NavLink to="/" className="col-start-1 col-end-2 px-2">
       <h1 className="text-3xl font-semibold">Bootzooka</h1>
     </NavLink>
@@ -43,5 +46,5 @@ export const MobileNavbar: FC<NavbarProps> = ({ items }) => (
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  </div>
+  </nav>
 );

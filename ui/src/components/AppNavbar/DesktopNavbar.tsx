@@ -9,7 +9,10 @@ import { NavLink } from 'react-router';
 import { Button } from '../ui/button';
 
 export const DesktopNavbar: FC<NavbarProps> = ({ items }) => (
-  <NavigationMenu className="hidden lg:max-w-full lg:flex gap-4 items-center justify-between">
+  <NavigationMenu
+    data-testid="desktop-navbar"
+    className="hidden lg:max-w-full lg:flex gap-4 items-center justify-between"
+  >
     <NavigationMenuList>
       <NavigationMenuItem asChild>
         <NavLink to="/" className="col-start-1 col-end-2 px-2">
