@@ -395,6 +395,14 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@jridgewell/trace-mapping@^0.3.29":
+  version "0.3.29"
+  resolved "https://registry.yarnpkg.com/@jridgewell/trace-mapping/-/trace-mapping-0.3.29.tgz#a58d31eaadaf92c6695680b2e1d464a9b8fbf7fc"
+  integrity sha512-uw6guiW/gcAGPDhLmd77/6lW8QLeiV5RUTsAX46Db6oLhGaVj4lhnPwb184s1bkc8kdVg/+h988dro8GRDpmYQ==
+  dependencies:
+    "@jridgewell/resolve-uri" "^3.1.0"
+    "@jridgewell/sourcemap-codec" "^1.4.14"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -946,21 +954,22 @@
   dependencies:
     "@swc/core" "^1.7.26"
 
-"@vitest/coverage-v8@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@vitest/coverage-v8/-/coverage-v8-3.0.2.tgz#7d1f8e27fb0ebbc0c3133161e32883fc89244004"
-  integrity sha512-U+hZYb0FtgNDb6B3E9piAHzXXIuxuBw2cd6Lvepc9sYYY4KjgiwCBmo3Sird9ZRu3ggLpLBTfw1ZRr77ipiSfw==
+"@vitest/coverage-v8@^3.2.4":
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/@vitest/coverage-v8/-/coverage-v8-3.2.4.tgz#a2d8d040288c1956a1c7d0a0e2cdcfc7a3319f13"
+  integrity sha512-EyF9SXU6kS5Ku/U82E259WSnvg6c8KTjppUncuNdm5QHpe17mwREHnjDzozC8x9MZ0xfBUFSaLkRv4TMA75ALQ==
   dependencies:
     "@ampproject/remapping" "^2.3.0"
     "@bcoe/v8-coverage" "^1.0.2"
-    debug "^4.4.0"
+    ast-v8-to-istanbul "^0.3.3"
+    debug "^4.4.1"
     istanbul-lib-coverage "^3.2.2"
     istanbul-lib-report "^3.0.1"
     istanbul-lib-source-maps "^5.0.6"
     istanbul-reports "^3.1.7"
     magic-string "^0.30.17"
     magicast "^0.3.5"
-    std-env "^3.8.0"
+    std-env "^3.9.0"
     test-exclude "^7.0.1"
     tinyrainbow "^2.0.0"
 
@@ -1234,6 +1243,15 @@ assertion-error@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-2.0.1.tgz#f641a196b335690b1070bf00b6e7593fec190bf7"
   integrity sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==
+
+ast-v8-to-istanbul@^0.3.3:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/ast-v8-to-istanbul/-/ast-v8-to-istanbul-0.3.4.tgz#1463bb1d35eb4f097c7e6161ae2f64a17e498fef"
+  integrity sha512-cxrAnZNLBnQwBPByK4CeDaw5sWZtMilJE/Q3iDA0aamgaIVNDF9T6K2/8DfYDZEejZ2jNnDrG9m8MY72HFd0KA==
+  dependencies:
+    "@jridgewell/trace-mapping" "^0.3.29"
+    estree-walker "^3.0.3"
+    js-tokens "^9.0.1"
 
 astral-regex@^2.0.0:
   version "2.0.0"
@@ -1628,7 +1646,7 @@ date-fns@^2.30.0:
   dependencies:
     "@babel/runtime" "^7.21.0"
 
-debug@4, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4, debug@^4.4.0, debug@^4.4.1:
+debug@4, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4, debug@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.4.1.tgz#e5a8bc6cbc4c6cd3e64308b0693a3d4fa550189b"
   integrity sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==
@@ -4050,7 +4068,7 @@ stackback@0.0.2:
   resolved "https://registry.yarnpkg.com/stackback/-/stackback-0.0.2.tgz#1ac8a0d9483848d1695e418b6d031a3c3ce68e3b"
   integrity sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==
 
-std-env@^3.8.0, std-env@^3.9.0:
+std-env@^3.9.0:
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/std-env/-/std-env-3.9.0.tgz#1a6f7243b339dca4c9fd55e1c7504c77ef23e8f1"
   integrity sha512-UGvjygr6F6tpH7o2qyqR6QYpwraIjKSdtzyBdyytFOHmPZY917kwdwLG0RbOjWOnKmnm3PeHjaoLLMie7kPLQw==
