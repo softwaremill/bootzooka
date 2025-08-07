@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithClient } from 'tests';
-import { RecoverLostPassword } from './RecoverLostPassword';
+import { RecoverLostPassword } from './index';
 
 const mockMutate = vi.fn();
 const mockResponse = vi.fn();

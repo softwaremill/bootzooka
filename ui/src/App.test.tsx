@@ -4,5 +4,5 @@ import { App } from './App';
 test('should render', () => {
   render(<App />);
   const header = screen.getByText('Welcome to Bootzooka!');
-  expect(header).toBeInTheDocument();
+  expect(header).toBeVisible();
 });

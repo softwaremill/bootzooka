@@ -6,10 +6,10 @@ import './index.css';
 import { PublicOnlyRoute } from './main/Routes/PublicOnlyRoute';
 import { NewLogin } from './pages/Login/NewLogin';
 import { Toaster } from '@/components/ui/sonner';
-import { RegisterPage } from './pages/Register/NewRegister';
+import { Register } from './pages/Register/Register';
 import { ProtectedRoute } from './main/Routes/ProtectedRoute';
 import { SecretMain, Welcome } from './pages';
-import { RecoverPasswordPage } from './pages/RecoverLostPassword/NewRecoverLostPassword';
+import { RecoverLostPassword } from './pages/RecoverLostPassword';
 
 const queryClient = new QueryClient();
 
@@ -23,10 +23,10 @@ export const App = () => (
 
             <Route element={<PublicOnlyRoute />}>
               <Route path="/login" element={<NewLogin />} />
-              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/register" element={<Register />} />
               <Route
                 path="/recover-lost-password"
-                element={<RecoverPasswordPage />}
+                element={<RecoverLostPassword />}
               />
             </Route>
 

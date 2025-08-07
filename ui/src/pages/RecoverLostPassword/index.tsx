@@ -32,7 +32,7 @@ const schema = z.object({
 
 const FORM_ID = 'recover-password-form';
 
-export const RecoverPasswordPage: FC = () => {
+export const RecoverLostPassword: FC = () => {
   const { mutate, error } = usePostPasswordresetForgot({
     onSuccess: () => {
       toast.success('Password recovery email sent successfully!');
