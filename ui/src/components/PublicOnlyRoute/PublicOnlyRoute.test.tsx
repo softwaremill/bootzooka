@@ -3,7 +3,7 @@ import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { Login } from 'pages';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { renderWithClient } from 'tests';
-import { PublicOnlyRoute } from './PublicOnlyRoute';
+import { PublicOnlyRoute } from '.';
 import { screen } from '@testing-library/react';
 
 const dispatch = vi.fn();

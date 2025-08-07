@@ -4,7 +4,7 @@ import { UserContext } from 'contexts/UserContext/User.context';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { renderWithClient } from 'tests';
 import { Login } from 'pages';
-import { ProtectedRoute } from './ProtectedRoute';
+import { ProtectedRoute } from '.';
 
 const dispatch = vi.fn();
 
