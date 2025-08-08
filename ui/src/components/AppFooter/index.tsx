@@ -1,5 +1,5 @@
 import { useGetAdminVersion } from '@/api/apiComponents';
-import { FC } from 'react';
+import type { FC } from 'react';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { InfoIcon } from 'lucide-react';
