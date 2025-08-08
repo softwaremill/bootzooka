@@ -9,5 +9,5 @@ test('renders text content', () => {
     </MemoryRouter>
   );
   const header = screen.getByText('Welcome to Bootzooka!');
-  expect(header).toBeInTheDocument();
+  expect(header).toBeVisible();
 });
