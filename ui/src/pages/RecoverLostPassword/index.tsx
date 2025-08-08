@@ -63,7 +63,7 @@ export const RecoverLostPassword: FC = () => {
           <Form {...form}>
             <form
               id={FORM_ID}
-              className="grid grid-rows-2 gap-6"
+              className="grid grid-rows-1 gap-6"
               onSubmit={form.handleSubmit((data) => mutate({ body: data }))}
             >
               <FormField
@@ -71,7 +71,7 @@ export const RecoverLostPassword: FC = () => {
                 name="loginOrEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Login or Email</FormLabel>
+                    <FormLabel>Login or email</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -89,7 +89,7 @@ export const RecoverLostPassword: FC = () => {
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            Recover Password
+            Reset Password
           </Button>
           {error && <ErrorMessage error={error} />}
         </CardFooter>
