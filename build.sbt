@@ -8,7 +8,7 @@ import complete.DefaultParsers._
 
 val password4jVersion = "1.8.4"
 val sttpVersion = "4.0.9"
-val tapirVersion = "1.11.40"
+val tapirVersion = "1.11.41"
 val oxVersion = "0.7.3"
 val otelVersion = "1.52.0"
 val otelInstrumentationVersion = "2.17.1-alpha"
@@ -42,7 +42,7 @@ val observabilityDependencies = Seq(
 val jsonDependencies = Seq(
   "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion, // main JSON library
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion, // Tapir <-> jsoniter integation
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.37.0" // automatic codec derivation
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.37.1" // automatic codec derivation
 )
 
 val loggingDependencies = Seq(
