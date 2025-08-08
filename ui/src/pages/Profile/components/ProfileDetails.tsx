@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { usePostUser } from '@/api/apiComponents';
 import { useUserContext } from '@/contexts/UserContext/User.context';
 import z from 'zod';
@@ -15,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const schema = z.object({
   login: z.string().min(1, 'Login is required'),
@@ -27,8 +27,12 @@ export const ProfileDetails = () => {
     state: { user },
   } = useUserContext();
 
-  const mutation = usePostUser();
-  const { data, isSuccess } = mutation;
+  const mutation = usePostUser({
+    onSuccess: (data) => {
+      dispatch({ type: 'UPDATE_USER_DATA', user: data });
+      toast('Profile details changed');
+    },
+  });
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -39,60 +43,58 @@ export const ProfileDetails = () => {
     },
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch({ type: 'UPDATE_USER_DATA', user: data });
-    }
-  }, [isSuccess, dispatch, data]);
-
   return (
     <Card>
       <CardHeader>
         <CardTitle>Profile details</CardTitle>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
-          <form
-            id="profile-details"
-            className="grid grid-rows-3 gap-6"
-            onSubmit={form.handleSubmit((body) => mutation.mutate({ body }))}
-          >
-            <FormField
-              control={form.control}
-              name="login"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Login</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={form.formState.isSubmitting}
+        {user ? (
+          <Form {...form}>
+            <form
+              id="profile-details"
+              className="grid grid-rows-3 gap-6"
+              onSubmit={form.handleSubmit((body) => mutation.mutate({ body }))}
             >
-              Update profile details
-            </Button>
-          </form>
-        </Form>
+              <FormField
+                control={form.control}
+                name="login"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Login</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={form.formState.isSubmitting}
+              >
+                Update profile details
+              </Button>
+            </form>
+          </Form>
+        ) : (
+          <p>Profile details not available</p>
+        )}
       </CardContent>
     </Card>
   );
