@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { FC } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { ErrorMessage } from '@/components/ErrorMessage';
 
 const schema = z.object({
   currentPassword: z.string().min(8),
@@ -34,7 +35,7 @@ export const PasswordDetails: FC = () => {
     },
   });
 
-  const mutation = usePostUserChangepassword({
+  const { mutate, isSuccess, isError, error } = usePostUserChangepassword({
     onSuccess: ({ apiKey: newApiKey }) => {
       setStorageApiKeyState({ apiKey: newApiKey });
     },
@@ -53,7 +54,7 @@ export const PasswordDetails: FC = () => {
             <form
               id="password-details-form"
               className="grid grid-rows-4 gap-6"
-              onSubmit={form.handleSubmit((body) => mutation.mutate({ body }))}
+              onSubmit={form.handleSubmit((body) => mutate({ body }))}
             >
               <FormField
                 control={form.control}
@@ -109,6 +110,10 @@ export const PasswordDetails: FC = () => {
         ) : (
           <h3 className="mb-4">Password details not available</h3>
         )}
+
+        {isSuccess && <p>Password changed</p>}
+
+        {isError && <ErrorMessage error={error} />}
       </CardContent>
     </Card>
   );
