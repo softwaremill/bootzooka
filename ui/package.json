@@ -12,6 +12,7 @@
     "build": "yarn generate:openapi-types && tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest",
+    "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:ci": "CI=true vitest",
     "lint": "eslint .",
