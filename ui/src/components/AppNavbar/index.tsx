@@ -4,6 +4,7 @@ import { useApiKeyState } from '@/hooks/auth';
 import { usePostUserLogout } from '@/api/apiComponents';
 import { useQueryClient } from '@tanstack/react-query';
 import {
+  GitFork,
   LogInIcon,
   LogOutIcon,
   UserIcon,
@@ -23,6 +24,12 @@ const COMMON_NAVBAR_ITEMS: NavbarMenuItem[] = [
     id: 'home',
     label: 'Home',
     href: '/main',
+  },
+  {
+    id: 'fork',
+    label: 'Fork',
+    href: 'https://github.com/softwaremill/bootzooka',
+    icon: GitFork,
   },
 ];
 
