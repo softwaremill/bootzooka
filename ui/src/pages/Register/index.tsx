@@ -153,7 +153,7 @@ export const Register: FC = () => {
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            Register
+            Create new account
           </Button>
           {error && <ErrorMessage error={error} />}
         </CardFooter>
