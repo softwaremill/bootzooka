@@ -3724,7 +3724,7 @@ reusify@^1.0.4:
   resolved "https://registry.yarnpkg.com/reusify/-/reusify-1.1.0.tgz#0fe13b9522e1473f51b558ee796e08f11f9b489f"
   integrity sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==
 
-rollup@^4.40.0:
+rollup@^4.43.0:
   version "4.46.2"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-4.46.2.tgz#09b1a45d811e26d09bed63dc3ecfb6831c16ce32"
   integrity sha512-WMmLFI+Boh6xbop+OAGo9cQ3OgX9MIg7xOQjn+pTCwOkk+FNDAeAemXkJ3HzDJrVXleLOFVa1ipuc1AmEx1Dwg==
@@ -4524,16 +4524,16 @@ vite-node@3.2.4:
     pathe "^2.0.3"
     vite "^5.0.0 || ^6.0.0 || ^7.0.0-0"
 
-"vite@^5.0.0 || ^6.0.0 || ^7.0.0-0", vite@^7.0.6:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-7.0.6.tgz#7866ccb176db4bbeec0adfb3f907f077881591d0"
-  integrity sha512-MHFiOENNBd+Bd9uvc8GEsIzdkn1JxMmEeYX35tI3fv0sJBUTfW5tQsoaOwuY4KhBI09A3dUJ/DXf2yxPVPUceg==
+"vite@^5.0.0 || ^6.0.0 || ^7.0.0-0", vite@^7.1.2:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-7.1.2.tgz#62ffd8a915977ff387fbe7a731af1a650ec5006e"
+  integrity sha512-J0SQBPlQiEXAF7tajiH+rUooJPo0l8KQgyg4/aMunNtrOa7bwuZJsJbDWzeljqQpgftxuq5yNJxQ91O9ts29UQ==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.4.6"
     picomatch "^4.0.3"
     postcss "^8.5.6"
-    rollup "^4.40.0"
+    rollup "^4.43.0"
     tinyglobby "^0.2.14"
   optionalDependencies:
     fsevents "~2.3.3"
