@@ -469,10 +469,10 @@
     typanion "^3.14.0"
     typescript "5.7.3"
 
-"@openapi-codegen/typescript@^8.0.2":
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/@openapi-codegen/typescript/-/typescript-8.0.2.tgz#8c5f2d4295ea7fc9123defa0c8738f885f01a44f"
-  integrity sha512-7X9WR+qlIMcMxiBgheGzyQcChLSPVqNYf9SAFJdTOJQLWfy+gaXiDonUC8WC7p6Hpz7eM6OLU1i7f/h+2RlH1w==
+"@openapi-codegen/typescript@^11.0.1":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@openapi-codegen/typescript/-/typescript-11.0.1.tgz#afccca4d5d8e79840abe9f876f8da903f6b83a38"
+  integrity sha512-01WsAQeurbDtXryHJmeZh4h/piVwqUXuMq/uWzkVcSRDc/5Oz3nxTdPyF0YoVl6c0GSTLBuxolrsgWzFyk8Ngw==
   dependencies:
     case "^1.6.3"
     lodash "^4.17.21"
