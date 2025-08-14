@@ -16,9 +16,9 @@
     "@jridgewell/trace-mapping" "^0.3.24"
 
 "@apollo/client@^3.5.10":
-  version "3.12.6"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.12.6.tgz#06172e0f25a3279f3f4f8fd895c186b8bbd7cdfd"
-  integrity sha512-MOEtkojZagMKB7nxlwQ426eaBYwEs/Xfn+JeLOd81wv6j7toKo57eEGAbJdZwyXGRgtiqDkX5gx3EzE7qtarXA==
+  version "3.13.9"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.13.9.tgz#311e0df1734aaa5598e01a292bb7982df49cc062"
+  integrity sha512-RStSzQfL1XwL6/NWd7W8avhGQYTgPCtJ+qHkkTTSj9Upp3VVm6Oppv81YWdXG1FgEpDPW4hvCrTUELdcC4inCQ==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.1"
     "@wry/caches" "^1.0.0"
@@ -29,7 +29,6 @@
     optimism "^0.18.0"
     prop-types "^15.7.2"
     rehackt "^0.1.0"
-    response-iterator "^0.2.6"
     symbol-observable "^4.0.0"
     ts-invariant "^0.10.3"
     tslib "^2.3.0"
@@ -3688,11 +3687,6 @@ resolve@^2.0.0-next.5:
     is-core-module "^2.13.0"
     path-parse "^1.0.7"
     supports-preserve-symlinks-flag "^1.0.0"
-
-response-iterator@^0.2.6:
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/response-iterator/-/response-iterator-0.2.25.tgz#5e8dae715ed9ca68b37919f4eae0a90d3ab1ae64"
-  integrity sha512-15K4tT8X35W0zJ5bv3fAf4eEKqOwS7yzd+Bg6YEE9NLltVbPbuTcYo3J2AP6AMQGMJmJkFCG421+kP2/iCBfDA==
 
 responselike@^3.0.0:
   version "3.0.0"
