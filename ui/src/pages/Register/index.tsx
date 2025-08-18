@@ -32,7 +32,7 @@ const schema = z
   .object({
     login: z.string('Login is required').min(1),
     email: z.email('Email is required'),
-    password: z.string('Password is required').min(8),
+    password: z.string('Password is required').min(5),
     repeatedPassword: z.string('Please repeat your password'),
   })
   .refine((data) => data.password === data.repeatedPassword, {
@@ -123,7 +123,7 @@ export const Register: FC = () => {
                       <Input type="password" {...field} />
                     </FormControl>
                     <FormDescription>
-                      Password must be at least 8 characters long
+                      Password must be at least 5 characters long
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
