@@ -17,11 +17,22 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ErrorMessage } from '@/components/ErrorMessage';
 
-const schema = z.object({
-  currentPassword: z.string().min(8),
-  newPassword: z.string().min(8),
-  repeatedPassword: z.string().min(8),
-});
+const schema = z
+  .object({
+    currentPassword: z.string().min(8),
+    newPassword: z.string().min(8),
+    repeatedPassword: z.string().min(8),
+  })
+  .refine((data) => data.newPassword === data.repeatedPassword, {
+    message: 'Passwords do not match',
+    path: ['repeatedPassword'],
+
+    when(payload) {
+      return schema
+        .pick({ newPassword: true, repeatedPassword: true })
+        .safeParse(payload.value).success;
+    },
+  });
 
 export const PasswordDetails: FC = () => {
   const [storageApiKeyState, setStorageApiKeyState] = useApiKeyState();
