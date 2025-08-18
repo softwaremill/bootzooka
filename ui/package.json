@@ -27,7 +27,7 @@
     "immer": "^10.0.3",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
-    "react-router": "^7.8.0",
+    "react-router": "^7.8.1",
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",
     "react-router-bootstrap": "^0.26.2",
