@@ -19,9 +19,9 @@ import { ErrorMessage } from '@/components/ErrorMessage';
 
 const schema = z
   .object({
-    currentPassword: z.string().min(8),
-    newPassword: z.string().min(8),
-    repeatedPassword: z.string().min(8),
+    currentPassword: z.string().min(5),
+    newPassword: z.string().min(5),
+    repeatedPassword: z.string().min(5),
   })
   .refine((data) => data.newPassword === data.repeatedPassword, {
     message: 'Passwords do not match',
@@ -44,6 +44,7 @@ export const PasswordDetails: FC = () => {
       newPassword: '',
       repeatedPassword: '',
     },
+    mode: 'onChange',
   });
 
   const { mutate, isSuccess, isError, error } = usePostUserChangepassword({
