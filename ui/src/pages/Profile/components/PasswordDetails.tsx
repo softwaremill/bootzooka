@@ -19,9 +19,15 @@ import { ErrorMessage } from '@/components/ErrorMessage';
 
 const schema = z
   .object({
-    currentPassword: z.string().min(5),
-    newPassword: z.string().min(5),
-    repeatedPassword: z.string().min(5),
+    currentPassword: z
+      .string()
+      .min(5, { message: 'Current password must be at least 5 characters' }),
+    newPassword: z
+      .string()
+      .min(5, { message: 'New password must be at least 5 characters' }),
+    repeatedPassword: z
+      .string()
+      .min(5, { message: 'Repeat password must be at least 5 characters' }),
   })
   .refine((data) => data.newPassword === data.repeatedPassword, {
     message: 'Passwords do not match',

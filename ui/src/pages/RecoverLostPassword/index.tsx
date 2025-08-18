@@ -27,10 +27,13 @@ import { toast } from 'sonner';
 import { ErrorMessage } from '@/components/ErrorMessage';
 
 const schema = z.object({
-  loginOrEmail: z.union([
-    z.email('Login or email is required'),
-    z.string().min(1),
-  ]),
+  loginOrEmail: z
+    .string()
+    .min(3, 'Login or email is required')
+    .refine((val) => z.email().safeParse(val).success || z.string().min(3), {
+      message:
+        'Must be a valid email or login (alphanumeric, at least 3 characters)',
+    }),
 });
 
 const FORM_ID = 'recover-password-form';

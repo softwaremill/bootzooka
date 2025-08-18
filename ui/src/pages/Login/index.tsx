@@ -29,11 +29,18 @@ import { toast } from 'sonner';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { NavLink } from 'react-router';
 
+const isValidEmail = (value: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(value);
+};
+
 const schema = z.object({
-  loginOrEmail: z.union([
-    z.email('Login or email is required'),
-    z.string().min(1),
-  ]),
+  loginOrEmail: z
+    .string()
+    .min(1, 'Login or email is required')
+    .refine((val) => isValidEmail(val) || val.length > 0, {
+      message: 'Please enter a valid email or login.',
+    }),
   password: z.string().min(1, 'Password is required'),
 });
 

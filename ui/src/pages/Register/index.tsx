@@ -30,7 +30,9 @@ import { ErrorMessage } from '@/components/ErrorMessage';
 
 const schema = z
   .object({
-    login: z.string('Login is required').min(1),
+    login: z
+      .string('Login is required')
+      .min(3, 'Login must be at least 3 characters long'),
     email: z.email('Email is required'),
     password: z.string('Password is required').min(5),
     repeatedPassword: z.string('Please repeat your password'),
