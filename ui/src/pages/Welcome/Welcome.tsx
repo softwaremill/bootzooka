@@ -31,7 +31,7 @@ export const Welcome: FC = () => (
       </p>
     </div>
     <div className="w-full h-[50%] flex flex-col items-center justify-center text-center">
-      <p className="fs-3">Brought to you by</p>
+      <p className="text-sm">Brought to you by</p>
       <a
         href="http://softwaremill.com"
         rel="noopener noreferrer"

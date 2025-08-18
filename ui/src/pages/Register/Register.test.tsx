@@ -95,11 +95,6 @@ test('<Register /> should handle failed registration attempt', async () => {
     error: 'Test error',
   } as unknown as ReturnType<typeof apiComponents.usePostUserRegister>);
 
-  console.log(
-    'Mock setup correctly:',
-    vi.mocked(apiComponents.usePostUserRegister).mock.results[0]?.value
-  );
-
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider

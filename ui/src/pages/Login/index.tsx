@@ -30,7 +30,7 @@ import { ErrorMessage } from '@/components/ErrorMessage';
 import { NavLink } from 'react-router';
 
 const schema = z.object({
-  loginOrEmail: z.email().or(z.string().min(1)),
+  loginOrEmail: z.union([z.email(), z.string().min(1)]),
   password: z.string().min(1, 'Password is required'),
 });
 
