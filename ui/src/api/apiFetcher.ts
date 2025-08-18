@@ -1,4 +1,4 @@
-import { ApiKeyState } from 'hooks/auth';
+import { ApiKeyState } from '@/hooks/auth';
 import { ApiContext } from './apiContext';
 import { STORAGE_API_KEY } from '../consts';
 
