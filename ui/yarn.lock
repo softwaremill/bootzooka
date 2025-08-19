@@ -533,10 +533,10 @@
     uncontrollable "^8.0.4"
     warning "^4.0.3"
 
-"@rolldown/pluginutils@1.0.0-beta.30":
-  version "1.0.0-beta.30"
-  resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.30.tgz#ac55a2215c78a54ba67276524ac3dc8c195316d0"
-  integrity sha512-whXaSoNUFiyDAjkUF8OBpOm77Szdbk5lGNqFe6CbVbJFrhCCPinCbRA3NjawwlNHla1No7xvXXh+CpSxnPfUEw==
+"@rolldown/pluginutils@1.0.0-beta.32":
+  version "1.0.0-beta.32"
+  resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.32.tgz#40a51db68a3c967183a9d58c5f5179adf6214cce"
+  integrity sha512-QReCdvxiUZAPkvp1xpAg62IeNzykOFA6syH2CnClif4YmALN1XKpB39XneL80008UbtMShthSVDKmrx05N1q/g==
 
 "@rollup/rollup-android-arm-eabi@4.46.3":
   version "4.46.3"
@@ -964,12 +964,12 @@
   resolved "https://registry.yarnpkg.com/@uidotdev/usehooks/-/usehooks-2.4.1.tgz#4b733eaeae09a7be143c6c9ca158b56cc1ea75bf"
   integrity sha512-1I+RwWyS+kdv3Mv0Vmc+p0dPYH0DTRAo04HLyXReYBL9AeseDWUJyi4THuksBJcu9F0Pih69Ak150VDnqbVnXg==
 
-"@vitejs/plugin-react-swc@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@vitejs/plugin-react-swc/-/plugin-react-swc-4.0.0.tgz#bcf1dfff53f4e434d0aa664bcbcf5c45839e8ccc"
-  integrity sha512-4A1dThI578v07mpG4M+ziNn6lmlMlhtVCheL+2WLvClnLvEULi8rpAZThn2oEKn3GtFXFTOeko6eLRhx2V2kgA==
+"@vitejs/plugin-react-swc@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-react-swc/-/plugin-react-swc-4.0.1.tgz#c6b9f6be06f6eb00293e47a56617bb50e3171678"
+  integrity sha512-NQhPjysi5duItyrMd5JWZFf2vNOuSMyw+EoZyTBDzk+DkfYD8WNrsUs09sELV2cr1P15nufsN25hsUBt4CKF9Q==
   dependencies:
-    "@rolldown/pluginutils" "1.0.0-beta.30"
+    "@rolldown/pluginutils" "1.0.0-beta.32"
     "@swc/core" "^1.13.2"
 
 "@vitest/coverage-v8@^3.2.4":
