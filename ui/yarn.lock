@@ -1357,9 +1357,9 @@ case@^1.6.3:
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
 chai@^5.2.0:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/chai/-/chai-5.3.1.tgz#f9e9a7e03f93d69e24b78d30db253780e26deb44"
-  integrity sha512-48af6xm9gQK8rhIcOxWwdGzIervm8BVTin+yRp9HEvU20BtVZ2lBywlIJBzwaDtvo0FvjeL7QdCADoUoqIbV3A==
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/chai/-/chai-5.3.2.tgz#e2c35570b8fa23b5b7129b4114d5dc03b3fd3401"
+  integrity sha512-kx7GHSOBiiIQ+DDgMP6YMtYkb/3Usm2nUYblNEM9P+/OfkuP7OjfoDlq/DCe1OU0GsREUa0rNAxZmzxgO6+jWg==
   dependencies:
     assertion-error "^2.0.1"
     check-error "^2.1.1"
