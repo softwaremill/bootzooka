@@ -4,11 +4,16 @@
  * @version 1.0
  */
 import * as reactQuery from "@tanstack/react-query";
-import { useApiContext, ApiContext } from "./apiContext";
+import { useApiContext, ApiContext, queryKeyFn } from "./apiContext";
+import { deepMerge } from "./apiUtils";
 import type * as Fetcher from "./apiFetcher";
 import { apiFetch } from "./apiFetcher";
 import type * as Schemas from "./apiSchemas";
 import type { ClientErrorStatus, ServerErrorStatus } from "./apiUtils";
+
+type QueryFnOptions = {
+  signal?: AbortController["signal"];
+};
 
 export type PostUserRegisterError = Fetcher.ErrorWrapper<{
   status: Exclude<ClientErrorStatus | ServerErrorStatus, 200 | 400>;
@@ -55,7 +60,7 @@ export const usePostUserRegister = (
     PostUserRegisterVariables
   >({
     mutationFn: (variables: PostUserRegisterVariables) =>
-      fetchPostUserRegister({ ...fetcherOptions, ...variables }),
+      fetchPostUserRegister(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -103,7 +108,7 @@ export const usePostUserLogin = (
     PostUserLoginVariables
   >({
     mutationFn: (variables: PostUserLoginVariables) =>
-      fetchPostUserLogin({ ...fetcherOptions, ...variables }),
+      fetchPostUserLogin(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -153,7 +158,7 @@ export const usePostUserLogout = (
     PostUserLogoutVariables
   >({
     mutationFn: (variables: PostUserLogoutVariables) =>
-      fetchPostUserLogout({ ...fetcherOptions, ...variables }),
+      fetchPostUserLogout(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -197,7 +202,7 @@ export const usePostUserChangepassword = (
     PostUserChangepasswordVariables
   >({
     mutationFn: (variables: PostUserChangepasswordVariables) =>
-      fetchPostUserChangepassword({ ...fetcherOptions, ...variables }),
+      fetchPostUserChangepassword(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -226,18 +231,71 @@ export const fetchGetUser = (
 /**
  * Gets the currently logged in user's information.
  */
-export const useGetUser = <TData = Schemas.GetUserOUT,>(
+export function getUserQuery(variables: GetUserVariables): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetUserOUT>;
+};
+
+export function getUserQuery(
+  variables: GetUserVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.GetUserOUT>)
+    | reactQuery.SkipToken;
+};
+
+export function getUserQuery(
+  variables: GetUserVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/user",
+      operationId: "getUser",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) => fetchGetUser(variables, signal),
+  };
+}
+
+/**
+ * Gets the currently logged in user's information.
+ */
+export const useSuspenseGetUser = <TData = Schemas.GetUserOUT,>(
   variables: GetUserVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<Schemas.GetUserOUT, GetUserError, TData>,
     "queryKey" | "queryFn" | "initialData"
   >,
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  const { queryOptions, fetcherOptions } = useApiContext(options);
+  return reactQuery.useSuspenseQuery<Schemas.GetUserOUT, GetUserError, TData>({
+    ...getUserQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Gets the currently logged in user's information.
+ */
+export const useGetUser = <TData = Schemas.GetUserOUT,>(
+  variables: GetUserVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<Schemas.GetUserOUT, GetUserError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useApiContext(options);
   return reactQuery.useQuery<Schemas.GetUserOUT, GetUserError, TData>({
-    queryKey: queryKeyFn({ path: "/user", operationId: "getUser", variables }),
-    queryFn: ({ signal }) =>
-      fetchGetUser({ ...fetcherOptions, ...variables }, signal),
+    ...getUserQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
     ...options,
     ...queryOptions,
   });
@@ -282,7 +340,7 @@ export const usePostUser = (
     PostUserVariables
   >({
     mutationFn: (variables: PostUserVariables) =>
-      fetchPostUser({ ...fetcherOptions, ...variables }),
+      fetchPostUser(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -326,7 +384,7 @@ export const usePostPasswordresetReset = (
     PostPasswordresetResetVariables
   >({
     mutationFn: (variables: PostPasswordresetResetVariables) =>
-      fetchPostPasswordresetReset({ ...fetcherOptions, ...variables }),
+      fetchPostPasswordresetReset(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -370,7 +428,7 @@ export const usePostPasswordresetForgot = (
     PostPasswordresetForgotVariables
   >({
     mutationFn: (variables: PostPasswordresetForgotVariables) =>
-      fetchPostPasswordresetForgot({ ...fetcherOptions, ...variables }),
+      fetchPostPasswordresetForgot(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -393,22 +451,70 @@ export const fetchGetAdminVersion = (
     signal,
   });
 
-export const useGetAdminVersion = <TData = Schemas.VersionOUT,>(
+export function getAdminVersionQuery(variables: GetAdminVersionVariables): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.VersionOUT>;
+};
+
+export function getAdminVersionQuery(
+  variables: GetAdminVersionVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.VersionOUT>)
+    | reactQuery.SkipToken;
+};
+
+export function getAdminVersionQuery(
+  variables: GetAdminVersionVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/version",
+      operationId: "getAdminVersion",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchGetAdminVersion(variables, signal),
+  };
+}
+
+export const useSuspenseGetAdminVersion = <TData = Schemas.VersionOUT,>(
   variables: GetAdminVersionVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<Schemas.VersionOUT, GetAdminVersionError, TData>,
     "queryKey" | "queryFn" | "initialData"
   >,
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  const { queryOptions, fetcherOptions } = useApiContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.VersionOUT,
+    GetAdminVersionError,
+    TData
+  >({
+    ...getAdminVersionQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useGetAdminVersion = <TData = Schemas.VersionOUT,>(
+  variables: GetAdminVersionVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<Schemas.VersionOUT, GetAdminVersionError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useApiContext(options);
   return reactQuery.useQuery<Schemas.VersionOUT, GetAdminVersionError, TData>({
-    queryKey: queryKeyFn({
-      path: "/admin/version",
-      operationId: "getAdminVersion",
-      variables,
-    }),
-    queryFn: ({ signal }) =>
-      fetchGetAdminVersion({ ...fetcherOptions, ...variables }, signal),
+    ...getAdminVersionQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
     ...options,
     ...queryOptions,
   });
@@ -418,10 +524,10 @@ export type QueryOperation =
   | {
       path: "/user";
       operationId: "getUser";
-      variables: GetUserVariables;
+      variables: GetUserVariables | reactQuery.SkipToken;
     }
   | {
       path: "/admin/version";
       operationId: "getAdminVersion";
-      variables: GetAdminVersionVariables;
+      variables: GetAdminVersionVariables | reactQuery.SkipToken;
     };
