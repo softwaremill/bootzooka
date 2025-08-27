@@ -43,7 +43,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.11",
-    "@types/react-dom": "^19.1.7",
+    "@types/react-dom": "^19.1.8",
     "@vitejs/plugin-react-swc": "^4.0.1",
     "@vitest/coverage-v8": "^3.2.4",
     "chokidar-cli": "^3.0.0",
