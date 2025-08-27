@@ -4675,10 +4675,10 @@ tsutils@^3.21.0:
   dependencies:
     tslib "^1.8.1"
 
-tw-animate-css@^1.3.6:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/tw-animate-css/-/tw-animate-css-1.3.6.tgz#55e4a672445bfd3e9c17e808bec154ba180635b3"
-  integrity sha512-9dy0R9UsYEGmgf26L8UcHiLmSFTHa9+D7+dAt/G/sF5dCnPePZbfgDYinc7/UzAM7g/baVrmS6m9yEpU46d+LA==
+tw-animate-css@^1.3.7:
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/tw-animate-css/-/tw-animate-css-1.3.7.tgz#39bd63799cf5a67d17de33fd1b9714f1e2c60967"
+  integrity sha512-lvLb3hTIpB5oGsk8JmLoAjeCHV58nKa2zHYn8yWOoG5JJusH3bhJlF2DLAZ/5NmJ+jyH3ssiAx/2KmbhavJy/A==
 
 typanion@^3.14.0, typanion@^3.8.0:
   version "3.14.0"
