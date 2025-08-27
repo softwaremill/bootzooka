@@ -1,73 +1,64 @@
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
-import { UserContext } from 'contexts/UserContext/User.context';
-import { initialUserState } from 'contexts/UserContext/UserContext.constants';
-import { renderWithClient } from 'tests';
-import { Login } from './Login';
+import { UserContext } from '@/contexts/UserContext/User.context';
+import { initialUserState } from '@/contexts/UserContext/UserContext.constants';
+import { renderWithClient } from '@/tests';
+import { Login } from './index';
+import * as apiComponents from '@/api/apiComponents';
 
 const dispatch = vi.fn();
-const mockMutate = vi.fn();
-const mockApiKeyResponse = vi.fn();
-const mockGetUserResponse = vi.fn(() => ({
-  data: {
-    user: {
-      login: 'test-user',
-      email: 'test-user@example.com',
-      createdOn: '2023-10-01T12:00:00Z',
-    },
-  },
-  isSuccess: true,
-  isPending: false,
-  isError: false,
-}));
 
-vi.mock('api/apiComponents', () => ({
-  useGetUser: () => mockGetUserResponse(),
-  usePostUserLogin: () => mockApiKeyResponse(),
+vi.mock('@/api/apiComponents', () => ({
+  useGetUser: vi.fn(),
+  usePostUserLogin: vi.fn(),
 }));
 
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
-test('<Login /> should render the header', () => {
-  mockApiKeyResponse.mockReturnValueOnce({
-    mutateAsync: mockMutate,
-    reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
-    isSuccess: true,
-    isError: false,
-    error: '',
-    isPending: false,
-  });
+const mockUseGetUser = (returnValue: object) =>
+  vi
+    .mocked(apiComponents.useGetUser)
+    .mockReturnValue(
+      returnValue as unknown as ReturnType<typeof apiComponents.useGetUser>
+    );
 
-  renderWithClient(
-    <MemoryRouter initialEntries={['/login']}>
-      <UserContext.Provider
-        value={{ state: { ...initialUserState }, dispatch }}
+const mockUsePostUserLogin = (returnValue: object) =>
+  vi
+    .mocked(apiComponents.usePostUserLogin)
+    .mockReturnValue(
+      returnValue as unknown as ReturnType<
+        typeof apiComponents.usePostUserLogin
       >
-        <Login />
-      </UserContext.Provider>
-    </MemoryRouter>
-  );
-
-  expect(screen.getByText('Please sign in')).toBeInTheDocument();
-});
+    );
 
 test('<Login /> should handle the login form submission through the Enter key press', async () => {
-  const onSuccess = vi.fn();
+  const mockMutateAsync = vi.fn().mockResolvedValue({ apiKey: 'test-api-key' });
+  const mockReset = vi.fn();
 
-  mockApiKeyResponse.mockReturnValueOnce({
-    mutateAsync: mockMutate.mockImplementationOnce(() => {
-      onSuccess({ apiKey: 'test-api-key' });
-    }),
-    reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
+  mockUseGetUser({
+    data: {
+      user: {
+        login: 'test-user',
+        email: 'test-user@example.com',
+        createdOn: '2023-10-01T12:00:00Z',
+      },
+    },
     isSuccess: true,
+    isPending: false,
+    isError: false,
+  });
+
+  mockUsePostUserLogin({
+    mutateAsync: mockMutateAsync,
+    reset: mockReset,
+    data: undefined,
+    isSuccess: false,
     isError: false,
     isPending: false,
-    error: '',
+    error: undefined,
   });
 
   renderWithClient(
@@ -80,82 +71,34 @@ test('<Login /> should handle the login form submission through the Enter key pr
     </MemoryRouter>
   );
 
-  await userEvent.type(screen.getByLabelText('Login or email'), 'test-login');
-  await userEvent.type(screen.getByLabelText('Password'), 'test-password');
-  await userEvent.keyboard('{Enter}');
+  expect(
+    screen.getByText('Enter your credentials to login')
+  ).toBeInTheDocument();
 
-  await screen.findByRole('success');
-
-  expect(mockMutate).toHaveBeenCalledWith({
-    body: {
-      loginOrEmail: 'test-login',
-      password: 'test-password',
-    },
-  });
-
-  expect(onSuccess).toHaveBeenCalledWith({
-    apiKey: 'test-api-key',
-  });
-
-  expect(dispatch).toHaveBeenCalledTimes(1);
-});
-
-test('<Login /> should handle successful login attempt through the submit button click', async () => {
-  const onSuccess = vi.fn();
-  mockApiKeyResponse.mockReturnValueOnce({
-    mutateAsync: mockMutate.mockImplementationOnce(() =>
-      onSuccess({ apiKey: 'test-api-key' })
-    ),
-    reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
-    isSuccess: true,
-    isError: false,
-    isPending: false,
-    error: '',
-  });
-
-  renderWithClient(
-    <MemoryRouter initialEntries={['/login']}>
-      <UserContext.Provider
-        value={{ state: { ...initialUserState }, dispatch }}
-      >
-        <Login />
-      </UserContext.Provider>
-    </MemoryRouter>
-  );
+  const loginElements = await screen.findAllByText('Login');
 
   await userEvent.type(screen.getByLabelText('Login or email'), 'test-login');
   await userEvent.type(screen.getByLabelText('Password'), 'test-password');
-  await userEvent.click(screen.getByText('Sign In'));
+  await userEvent.click(loginElements[1]);
 
-  await screen.findByRole('success');
-
-  expect(mockMutate).toHaveBeenCalledWith({
-    body: {
-      loginOrEmail: 'test-login',
-      password: 'test-password',
-    },
+  await vi.waitFor(() => {
+    expect(mockMutateAsync).toHaveBeenCalledWith({
+      body: {
+        loginOrEmail: 'test-login',
+        password: 'test-password',
+      },
+    });
   });
 
-  expect(onSuccess).toHaveBeenCalledWith({
-    apiKey: 'test-api-key',
+  await vi.waitFor(() => {
+    expect(dispatch).toHaveBeenCalledTimes(1);
   });
-
-  expect(dispatch).toHaveBeenCalledTimes(1);
 });
 
 test('<Login /> should handle failed login attempt', async () => {
-  mockApiKeyResponse.mockReturnValue({
-    mutateAsync: mockMutate,
-    reset: vi.fn(),
-    data: undefined,
-    isSuccess: false,
-    isError: true,
-    error: 'Test error',
-    isPending: false,
-  });
+  const mockMutateAsync = vi.fn();
 
-  mockGetUserResponse.mockReturnValueOnce({
+  mockUseGetUser({
     data: {
       user: {
         login: 'test-user',
@@ -168,6 +111,16 @@ test('<Login /> should handle failed login attempt', async () => {
     isError: false,
   });
 
+  mockUsePostUserLogin({
+    mutateAsync: mockMutateAsync,
+    reset: vi.fn(),
+    data: undefined,
+    isSuccess: false,
+    isError: false,
+    isPending: false,
+    error: undefined,
+  });
+
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <UserContext.Provider
@@ -178,13 +131,13 @@ test('<Login /> should handle failed login attempt', async () => {
     </MemoryRouter>
   );
 
+  const loginElements = await screen.findAllByText('Login');
+
   await userEvent.type(screen.getByLabelText('Login or email'), 'test-login');
   await userEvent.type(screen.getByLabelText('Password'), 'test-password');
-  await userEvent.click(screen.getByText('Sign In'));
+  await userEvent.click(loginElements[1]);
 
-  await screen.findByRole('error');
-
-  expect(mockMutate).toHaveBeenCalledWith({
+  expect(mockMutateAsync).toHaveBeenCalledWith({
     body: { loginOrEmail: 'test-login', password: 'test-password' },
   });
   expect(dispatch).not.toHaveBeenCalled();

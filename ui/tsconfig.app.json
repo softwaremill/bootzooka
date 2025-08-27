@@ -20,21 +20,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
 
     "paths": {
-      "api/*": ["./src/api/*"],
-      "assets/*": ["./src/assets/*"],
-      "components": ["./src/components"],
-      "components/*": ["./src/components/*"],
-      "contexts": ["./src/contexts"],
-      "contexts/*": ["./src/contexts/*"],
-      "main": ["./src/main"],
-      "main/*": ["./src/main/*"],
-      "pages": ["./src/pages"],
-      "pages/*": ["./src/pages/*"],
-      "tests": ["./src/tests"],
-      "tests/*": ["./src/tests/*"],
-      "hooks/*": ["./src/hooks/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src", "src/setupTest.ts"],

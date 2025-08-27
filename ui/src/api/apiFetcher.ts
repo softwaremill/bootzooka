@@ -1,6 +1,6 @@
-import { ApiKeyState } from 'hooks/auth';
+import { ApiKeyState } from '@/hooks/auth';
 import { ApiContext } from './apiContext';
-import { STORAGE_API_KEY } from '../consts';
+import { STORAGE_API_KEY } from '@/consts';
 
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
@@ -39,6 +39,7 @@ export async function apiFetch<
   TQueryParams,
   TPathParams
 >): Promise<TData> {
+  let error: ErrorWrapper<TError>;
   try {
     const requestHeaders: HeadersInit = {
       'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ export async function apiFetch<
      */
     if (
       requestHeaders['Content-Type']
-        .toLowerCase()
+        ?.toLowerCase()
         .includes('multipart/form-data')
     ) {
       delete requestHeaders['Content-Type'];
@@ -89,7 +90,6 @@ export async function apiFetch<
       }
     );
     if (!response.ok) {
-      let error: ErrorWrapper<TError>;
       try {
         error = await response.json();
       } catch (e) {
@@ -101,11 +101,7 @@ export async function apiFetch<
               : 'Unexpected error',
         };
       }
-
-      throw error;
-    }
-
-    if (response.headers.get('content-type')?.includes('json')) {
+    } else if (response.headers.get('content-type')?.includes('json')) {
       return await response.json();
     } else {
       // if it is not a json response, assume it is a blob and cast it to TData
@@ -120,6 +116,7 @@ export async function apiFetch<
     };
     throw errorObject;
   }
+  throw error;
 }
 
 const resolveUrl = (
@@ -129,5 +126,7 @@ const resolveUrl = (
 ) => {
   let query = new URLSearchParams(queryParams).toString();
   if (query) query = `?${query}`;
-  return url.replace(/\{\w*\}/g, (key) => pathParams[key.slice(1, -1)]) + query;
+  return (
+    url.replace(/\{\w*\}/g, (key) => pathParams[key.slice(1, -1)] ?? '') + query
+  );
 };
