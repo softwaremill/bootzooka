@@ -8,6 +8,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ error }) => (
       error?.stack?.error ||
       error?.response?.data?.error ||
       error?.message ||
+      error?.error ||
       'Unknown error'
     ).toString()}
   </span>
