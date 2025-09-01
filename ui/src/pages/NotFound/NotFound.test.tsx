@@ -2,8 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { NotFound } from './NotFound';
 
-test('renders text content', () => {
+test('<NotFound /> should render', () => {
   render(<NotFound />, { wrapper: MemoryRouter });
-  const header = screen.getByText(/You shouldn't be here for sure :\)/i);
-  expect(header).toBeInTheDocument();
+
+  expect(screen.getByText("You shouldn't be here for sure 😅")).toBeVisible();
+  expect(screen.getByText('Home page')).toBeVisible();
+  expect(screen.getByText('SoftwareMill - our company website')).toBeVisible();
+  expect(screen.getByText('Bootzooka on GitHub')).toBeVisible();
 });
