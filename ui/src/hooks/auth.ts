@@ -1,6 +1,6 @@
 import { useLocalStorage } from '@uidotdev/usehooks';
-import { useGetUser } from 'api/apiComponents';
-import { useUserContext } from 'contexts/UserContext/User.context';
+import { useGetUser } from '@/api/apiComponents';
+import { useUserContext } from '@/contexts/UserContext/User.context';
 import { useEffect } from 'react';
 import { STORAGE_API_KEY } from '../consts';
 
