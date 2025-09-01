@@ -124,7 +124,9 @@ ThisBuild / updateYarn := {
 ThisBuild / yarnTask := {
   (ThisBuild / updateYarn).value
   val taskName = spaceDelimited("<arg>").parsed.mkString(" ")
-  val localYarnCommand = "yarn " + taskName
+  // use the "docker" mode to use the .env.docker file, which assumes the UI & API is available at
+  // the same domain
+  val localYarnCommand = "yarn " + taskName + " --mode docker"
   val log = (ThisBuild / streams).value.log
   val uiDir = (ThisBuild / uiDirectory).value
   def runYarnTask() = Process(localYarnCommand, uiDir).!
