@@ -4,6 +4,7 @@ import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http.*
 import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
 import com.softwaremill.bootzooka.version.BuildInfo
+import com.softwaremill.macwire.wireList
 import sttp.shared.Identity
 import sttp.tapir.*
 import sttp.tapir.json.jsoniter.*
@@ -17,7 +18,7 @@ class VersionApi extends ServerEndpoints:
     Version_OUT(BuildInfo.lastCommitHash)
   }
 
-  override val endpoints = List(versionServerEndpoint)
+  override val endpoints = wireList
 end VersionApi
 
 object VersionApi extends EndpointsForDocs:
@@ -27,7 +28,7 @@ object VersionApi extends EndpointsForDocs:
     .in(AdminPath / "version")
     .out(jsonBody[Version_OUT])
 
-  override val endpointsForDocs = List(versionEndpoint).map(_.tag("admin"))
+  override val endpointsForDocs = wireList[AnyEndpoint].map(_.tag("admin"))
 
   case class Version_OUT(buildSha: String) derives ConfiguredJsonValueCodec, Schema
 end VersionApi

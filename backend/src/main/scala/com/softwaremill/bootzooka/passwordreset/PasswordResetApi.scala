@@ -4,6 +4,7 @@ import com.github.plokhotnyuk.jsoniter_scala.macros.ConfiguredJsonValueCodec
 import com.softwaremill.bootzooka.http.Http.*
 import com.softwaremill.bootzooka.http.{EndpointsForDocs, ServerEndpoints}
 import com.softwaremill.bootzooka.infrastructure.DB
+import com.softwaremill.macwire.wireList
 import sttp.tapir.*
 import sttp.tapir.json.jsoniter.*
 
@@ -19,10 +20,7 @@ class PasswordResetApi(passwordResetService: PasswordResetService, db: DB) exten
     ForgotPassword_OUT()
   }
 
-  override val endpoints = List(
-    passwordResetServerEndpoint,
-    forgotPasswordServerEndpoint
-  )
+  override val endpoints = wireList
 end PasswordResetApi
 
 object PasswordResetApi extends EndpointsForDocs:
@@ -38,10 +36,7 @@ object PasswordResetApi extends EndpointsForDocs:
     .in(jsonBody[ForgotPassword_IN])
     .out(jsonBody[ForgotPassword_OUT])
 
-  override val endpointsForDocs = List(
-    passwordResetEndpoint,
-    forgotPasswordEndpoint
-  ).map(_.tag("passwordreset"))
+  override val endpointsForDocs = wireList[AnyEndpoint].map(_.tag("passwordreset"))
 
   //
 

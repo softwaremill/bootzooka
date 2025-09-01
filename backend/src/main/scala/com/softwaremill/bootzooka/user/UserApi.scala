@@ -8,6 +8,7 @@ import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.security.{ApiKey, Auth}
 import com.softwaremill.bootzooka.util.Strings.{Id, asId}
+import com.softwaremill.macwire.wireList
 import sttp.tapir.*
 import sttp.tapir.json.jsoniter.*
 
@@ -51,14 +52,7 @@ class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Met
     db.transactEither(userService.changeUser(id, data.login, data.email)).map(_ => UpdateUser_OUT())
   }
 
-  override val endpoints = List(
-    registerUserServerEndpoint,
-    loginServerEndpoint,
-    logoutServerEndpoint,
-    changePasswordServerEndpoint,
-    getUserServerEndpoint,
-    updateUserServerEndpoint
-  )
+  override val endpoints = wireList
 end UserApi
 
 object UserApi extends EndpointsForDocs:
@@ -99,14 +93,7 @@ object UserApi extends EndpointsForDocs:
     .in(jsonBody[UpdateUser_IN])
     .out(jsonBody[UpdateUser_OUT])
 
-  override val endpointsForDocs = List(
-    registerUserEndpoint,
-    loginEndpoint,
-    logoutEndpoint,
-    changePasswordEndpoint,
-    getUserEndpoint,
-    updateUserEndpoint
-  ).map(_.tag("user"))
+  override val endpointsForDocs = wireList[AnyEndpoint].map(_.tag("user"))
 
   //
 
