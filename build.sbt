@@ -71,7 +71,7 @@ val securityDependencies = Seq(
 )
 
 val emailDependencies = Seq(
-  "com.sun.mail" % "javax.mail" % "1.6.2" exclude ("javax.activation", "activation") // JavaMail API when emails are sent directly
+  "com.sun.mail" % "javax.mail" % "1.6.2" // JavaMail API when emails are sent directly
 )
 
 val testingDependencies = Seq(
