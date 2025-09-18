@@ -27,9 +27,9 @@
     lru-cache "^11.1.0"
 
 "@asamuzakjp/dom-selector@^6.5.4":
-  version "6.5.4"
-  resolved "https://registry.yarnpkg.com/@asamuzakjp/dom-selector/-/dom-selector-6.5.4.tgz#df382244b43f31292caf915e35a1e73411910955"
-  integrity sha512-RNSNk1dnB8lAn+xdjlRoM4CzdVrHlmXZtSXAWs2jyl4PiBRWqTZr9ML5M710qgd9RPTBsVG6P0SLy7dwy0Foig==
+  version "6.5.5"
+  resolved "https://registry.yarnpkg.com/@asamuzakjp/dom-selector/-/dom-selector-6.5.5.tgz#72bbf54a07bbae7dd5a1732318d3fe6a6717625c"
+  integrity sha512-kI2MX9pmImjxWT8nxDZY+MuN6r1jJGe7WxizEbsAEPB/zxfW5wYLIiPG1v3UKgEOOP8EsDkp0ZL99oRFAdPM8g==
   dependencies:
     "@asamuzakjp/nwsapi" "^2.3.9"
     bidi-js "^1.0.3"
