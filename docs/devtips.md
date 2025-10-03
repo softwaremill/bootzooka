@@ -21,7 +21,7 @@ If you are planning to use Bootzooka as scaffolding for your own project, consid
 * `test` - run all the tests
 * `project <sub-project-name>` - switch context to the given sub-project, then all the commands will be executed only
 for that sub-project, this can be also achieved with e.g.: `<sub-project-name>/test`
-* `~backend/re-start` - runs the backend server and waits for source code changes to automatically compile changed file
+* `~backend/reStart` - runs the backend server and waits for source code changes to automatically compile changed file
   and to reload it. Used by the `./backend-start.sh` script
 
 ## Database schema evolution
