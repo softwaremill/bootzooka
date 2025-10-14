@@ -10,7 +10,7 @@ val password4jVersion = "1.8.4"
 val sttpVersion = "4.0.12"
 val tapirVersion = "1.11.49"
 val oxVersion = "1.0.1"
-val otelVersion = "1.54.1"
+val otelVersion = "1.55.0"
 val otelInstrumentationVersion = "2.17.1-alpha"
 
 val dbDependencies = Seq(
