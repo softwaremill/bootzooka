@@ -26,7 +26,7 @@ object Http extends Logging:
     case (StatusCode.BadRequest, msg)   => Fail.IncorrectInput(msg)
     case (StatusCode.Forbidden, _)      => Fail.Forbidden
     case (StatusCode.Unauthorized, msg) => Fail.Unauthorized(msg)
-    case (code, msg) =>
+    case (code, msg)                    =>
       new Fail:
         override def toString = msg
   }
