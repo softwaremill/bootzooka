@@ -76,7 +76,7 @@ class UserService(
       userModel.findByLogin(newLogintoLowerCased) match
         case Some(user) if user.id != userId           => Left(Fail.IncorrectInput(LoginAlreadyUsed))
         case Some(user) if user.login == newLoginClean => Right(false)
-        case _ =>
+        case _                                         =>
           either:
             validateLogin().ok()
             logger.debug(s"Changing login for user: $userId, to: $newLoginClean")
@@ -91,7 +91,7 @@ class UserService(
       userModel.findByEmail(newEmailtoLowerCased) match
         case Some(user) if user.id != userId                           => Left(Fail.IncorrectInput(EmailAlreadyUsed))
         case Some(user) if user.emailLowerCase == newEmailtoLowerCased => Right(false)
-        case _ =>
+        case _                                                         =>
           either:
             validateEmail().ok()
             logger.debug(s"Changing email for user: $userId, to: $newEmailClean")
