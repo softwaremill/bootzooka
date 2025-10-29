@@ -12,6 +12,10 @@ on:
     types:
       - released
 
+permissions:
+  contents: write        # release-drafter, auto-merge requirement
+  pull-requests: write   # labeler, auto-merge requirement
+
 jobs:
   verify:
     runs-on: ubuntu-24.04
@@ -28,7 +32,7 @@ jobs:
           java-version: "21"
           cache: "sbt"
 
-      - uses: sbt/setup-sbt@v1
+      - uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1, specifically v1.1.14
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -64,7 +68,7 @@ jobs:
           java-version: "21"
           cache: "sbt"
 
-      - uses: sbt/setup-sbt@v1
+      - uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1, specifically v1.1.14
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -76,7 +80,7 @@ jobs:
         run: sbt "backend/generateOpenAPIDescription"
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3, specifically v3.6.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -85,12 +89,12 @@ jobs:
         run: sbt 'set docker / version := "'${GITHUB_RUN_ID}-${GITHUB_SHA:0:7}'"' docker/docker:publish
 
   label:
-    # only for PRs by softwaremill-ci
-    if: github.event.pull_request.user.login == 'softwaremill-ci'
+    # only for PRs by github-actions[bot]
+    if: github.event.pull_request.user.login == 'github-actions[bot]'
     uses: softwaremill/github-actions-workflows/.github/workflows/label.yml@main
 
   auto-merge:
-    # only for PRs by softwaremill-ci
-    if: github.event.pull_request.user.login == 'softwaremill-ci'
+    # only for PRs by github-actions[bot]
+    if: github.event.pull_request.user.login == 'github-actions[bot]'
     needs: [verify, label]
     uses: softwaremill/github-actions-workflows/.github/workflows/auto-merge.yml@main
