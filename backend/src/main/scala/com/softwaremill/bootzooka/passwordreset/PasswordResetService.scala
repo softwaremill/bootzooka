@@ -25,7 +25,7 @@ class PasswordResetService(
 ) extends Logging:
   def forgotPassword(loginOrEmail: String)(using DbTx): Unit =
     userModel.findByLoginOrEmail(loginOrEmail.toLowerCased) match
-      case None => logger.debug(s"Could not find user with $loginOrEmail login/email")
+      case None       => logger.debug(s"Could not find user with $loginOrEmail login/email")
       case Some(user) =>
         val pcr = createCode(user)
         sendCode(user, pcr)
