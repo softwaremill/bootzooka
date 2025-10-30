@@ -89,12 +89,12 @@ jobs:
         run: sbt 'set docker / version := "'${GITHUB_RUN_ID}-${GITHUB_SHA:0:7}'"' docker/docker:publish
 
   label:
-    # only for PRs by github-actions[bot]
-    if: github.event.pull_request.user.login == 'github-actions[bot]'
+    # only for PRs by softwaremill-ci
+    if: github.event.pull_request.user.login == 'softwaremill-ci'
     uses: softwaremill/github-actions-workflows/.github/workflows/label.yml@main
 
   auto-merge:
-    # only for PRs by github-actions[bot]
-    if: github.event.pull_request.user.login == 'github-actions[bot]'
+    # only for PRs by softwaremill-ci
+    if: github.event.pull_request.user.login == 'softwaremill-ci'
     needs: [verify, label]
     uses: softwaremill/github-actions-workflows/.github/workflows/auto-merge.yml@main
