@@ -102,7 +102,7 @@ def haltOnCmdResultError(result: Int): Unit = if (result != 0) { throw new Excep
 
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "3.7.3",
+  scalaVersion := "3.7.4",
   // version
   git.formattedShaVersion := {
     val base = git.baseVersion.?.value
