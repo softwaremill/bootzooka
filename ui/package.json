@@ -31,7 +31,7 @@
     "@tailwindcss/vite": "^4.1.17",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "@tanstack/react-query": "^5.90.9",
+    "@tanstack/react-query": "^5.90.10",
     "@uidotdev/usehooks": "^2.4.1",
     "immer": "^10.2.0",
     "lucide-react": "^0.553.0",
