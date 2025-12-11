@@ -3,9 +3,9 @@
 
 
 "@acemir/cssom@^0.9.28":
-  version "0.9.28"
-  resolved "https://registry.yarnpkg.com/@acemir/cssom/-/cssom-0.9.28.tgz#0acadfea9362ef9376adeed6de6666d36d9da4e4"
-  integrity sha512-LuS6IVEivI75vKN8S04qRD+YySP0RmU/cV8UNukhQZvprxF+76Z43TNo/a08eCodaGhT1Us8etqS1ZRY9/Or0A==
+  version "0.9.29"
+  resolved "https://registry.yarnpkg.com/@acemir/cssom/-/cssom-0.9.29.tgz#3ae97903c49b388a5ff5d231a7a6d42a32e5b148"
+  integrity sha512-G90x0VW+9nW4dFajtjCoT+NM0scAfH9Mb08IcjgFHYbfiL/lU04dTF9JuVOi3/OH+DJCQdcIseSXkdCB9Ky6JA==
 
 "@adobe/css-tools@^4.4.0":
   version "4.4.4"
