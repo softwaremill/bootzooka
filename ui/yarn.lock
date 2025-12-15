@@ -2366,6 +2366,66 @@ es-abstract@^1.17.5, es-abstract@^1.23.2, es-abstract@^1.23.3, es-abstract@^1.23
     unbox-primitive "^1.1.0"
     which-typed-array "^1.1.19"
 
+es-abstract@^1.24.1:
+  version "1.24.1"
+  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.24.1.tgz#f0c131ed5ea1bb2411134a8dd94def09c46c7899"
+  integrity sha512-zHXBLhP+QehSSbsS9Pt23Gg964240DPd6QCf8WpkqEXxQ7fhdZzYsocOr5u7apWonsS5EjZDmTF+/slGMyasvw==
+  dependencies:
+    array-buffer-byte-length "^1.0.2"
+    arraybuffer.prototype.slice "^1.0.4"
+    available-typed-arrays "^1.0.7"
+    call-bind "^1.0.8"
+    call-bound "^1.0.4"
+    data-view-buffer "^1.0.2"
+    data-view-byte-length "^1.0.2"
+    data-view-byte-offset "^1.0.1"
+    es-define-property "^1.0.1"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.1.1"
+    es-set-tostringtag "^2.1.0"
+    es-to-primitive "^1.3.0"
+    function.prototype.name "^1.1.8"
+    get-intrinsic "^1.3.0"
+    get-proto "^1.0.1"
+    get-symbol-description "^1.1.0"
+    globalthis "^1.0.4"
+    gopd "^1.2.0"
+    has-property-descriptors "^1.0.2"
+    has-proto "^1.2.0"
+    has-symbols "^1.1.0"
+    hasown "^2.0.2"
+    internal-slot "^1.1.0"
+    is-array-buffer "^3.0.5"
+    is-callable "^1.2.7"
+    is-data-view "^1.0.2"
+    is-negative-zero "^2.0.3"
+    is-regex "^1.2.1"
+    is-set "^2.0.3"
+    is-shared-array-buffer "^1.0.4"
+    is-string "^1.1.1"
+    is-typed-array "^1.1.15"
+    is-weakref "^1.1.1"
+    math-intrinsics "^1.1.0"
+    object-inspect "^1.13.4"
+    object-keys "^1.1.1"
+    object.assign "^4.1.7"
+    own-keys "^1.0.1"
+    regexp.prototype.flags "^1.5.4"
+    safe-array-concat "^1.1.3"
+    safe-push-apply "^1.0.0"
+    safe-regex-test "^1.1.0"
+    set-proto "^1.0.0"
+    stop-iteration-iterator "^1.1.0"
+    string.prototype.trim "^1.2.10"
+    string.prototype.trimend "^1.0.9"
+    string.prototype.trimstart "^1.0.8"
+    typed-array-buffer "^1.0.3"
+    typed-array-byte-length "^1.0.3"
+    typed-array-byte-offset "^1.0.4"
+    typed-array-length "^1.0.7"
+    unbox-primitive "^1.1.0"
+    which-typed-array "^1.1.19"
+
 es-define-property@^1.0.0, es-define-property@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/es-define-property/-/es-define-property-1.0.1.tgz#983eb2f9a6724e9303f61addf011c72e09e0b0fa"
@@ -2377,25 +2437,25 @@ es-errors@^1.3.0:
   integrity sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==
 
 es-iterator-helpers@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/es-iterator-helpers/-/es-iterator-helpers-1.2.1.tgz#d1dd0f58129054c0ad922e6a9a1e65eef435fe75"
-  integrity sha512-uDn+FE1yrDzyC0pCo961B2IHbdM8y/ACZsKD4dG6WqrjV53BADjwa7D+1aom2rsNVfLyDgU/eigvlJGJ08OQ4w==
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/es-iterator-helpers/-/es-iterator-helpers-1.2.2.tgz#d979a9f686e2b0b72f88dbead7229924544720bc"
+  integrity sha512-BrUQ0cPTB/IwXj23HtwHjS9n7O4h9FX94b4xc5zlTHxeLgTAdzYUDyy6KdExAl9lbN5rtfe44xpjpmj9grxs5w==
   dependencies:
     call-bind "^1.0.8"
-    call-bound "^1.0.3"
+    call-bound "^1.0.4"
     define-properties "^1.2.1"
-    es-abstract "^1.23.6"
+    es-abstract "^1.24.1"
     es-errors "^1.3.0"
-    es-set-tostringtag "^2.0.3"
+    es-set-tostringtag "^2.1.0"
     function-bind "^1.1.2"
-    get-intrinsic "^1.2.6"
+    get-intrinsic "^1.3.0"
     globalthis "^1.0.4"
     gopd "^1.2.0"
     has-property-descriptors "^1.0.2"
     has-proto "^1.2.0"
     has-symbols "^1.1.0"
     internal-slot "^1.1.0"
-    iterator.prototype "^1.1.4"
+    iterator.prototype "^1.1.5"
     safe-array-concat "^1.1.3"
 
 es-module-lexer@^1.7.0:
@@ -2410,7 +2470,7 @@ es-object-atoms@^1.0.0, es-object-atoms@^1.1.1:
   dependencies:
     es-errors "^1.3.0"
 
-es-set-tostringtag@^2.0.3, es-set-tostringtag@^2.1.0:
+es-set-tostringtag@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/es-set-tostringtag/-/es-set-tostringtag-2.1.0.tgz#f31dbbe0c183b00a6d26eb6325c810c0fd18bd4d"
   integrity sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==
@@ -3315,7 +3375,7 @@ istanbul-reports@^3.1.7:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-iterator.prototype@^1.1.4:
+iterator.prototype@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/iterator.prototype/-/iterator.prototype-1.1.5.tgz#12c959a29de32de0aa3bbbb801f4d777066dae39"
   integrity sha512-H0dkQoCa3b2VEeKQBOxFph+JAbcrQdE7KC0UkqwpLmv2EC4P41QXP+rqo9wYodACiG5/WM5s9oDApTU8utwj9g==
