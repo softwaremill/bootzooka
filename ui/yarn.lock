@@ -2127,13 +2127,14 @@ css.escape@^1.5.1:
   integrity sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==
 
 cssstyle@^5.3.4:
-  version "5.3.5"
-  resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-5.3.5.tgz#00bd24f150773bef3b1d7530366e413b74d06394"
-  integrity sha512-GlsEptulso7Jg0VaOZ8BXQi3AkYM5BOJKEO/rjMidSCq70FkIC5y0eawrCXeYzxgt3OCf4Ls+eoxN+/05vN0Ag==
+  version "5.3.6"
+  resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-5.3.6.tgz#af8b9cf6cdebac06d399aa70d8982d2fd43888d5"
+  integrity sha512-legscpSpgSAeGEe0TNcai97DKt9Vd9AsAdOL7Uoetb52Ar/8eJm3LIa39qpv8wWzLFlNG4vVvppQM+teaMPj3A==
   dependencies:
     "@asamuzakjp/css-color" "^4.1.1"
     "@csstools/css-syntax-patches-for-csstree" "^1.0.21"
     css-tree "^3.1.0"
+    lru-cache "^11.2.4"
 
 csstype@^3.2.2:
   version "3.2.3"
