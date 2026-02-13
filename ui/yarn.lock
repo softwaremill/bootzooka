@@ -219,9 +219,9 @@
   integrity sha512-NmXRccUJMk2AWA5A7e5a//3bCIMyOu2hAtdRYrhPPHjDxINuCwX1w6rnIZ4xjLcp0ayv6h8Pc3X0eJUGiAAXHQ==
 
 "@csstools/css-calc@^3.0.0":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@csstools/css-calc/-/css-calc-3.0.1.tgz#a8c1301c91b249d5ea445f90f3f8b03b2b7eb87f"
-  integrity sha512-bsDKIP6f4ta2DO9t+rAbSSwv4EMESXy5ZIvzQl1afmD6Z1XHkVu9ijcG9QR/qSgQS1dVa+RaQ/MfQ7FIB/Dn1Q==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@csstools/css-calc/-/css-calc-3.1.1.tgz#78b494996dac41a02797dcca18ac3b46d25b3fd7"
+  integrity sha512-HJ26Z/vmsZQqs/o3a6bgKslXGFAungXGbinULZO3eMsOyNJHeBBZfup5FiZInOghgoM4Hwnmw+OgbJCNg1wwUQ==
 
 "@csstools/css-color-parser@^4.0.1":
   version "4.0.1"
