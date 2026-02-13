@@ -472,9 +472,9 @@
     levn "^0.4.1"
 
 "@exodus/bytes@^1.11.0", "@exodus/bytes@^1.6.0":
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/@exodus/bytes/-/bytes-1.14.0.tgz#d6bbe4449e0762d65fca2543abd6ca1532de9cf9"
-  integrity sha512-YiY1OmY6Qhkvmly8vZiD8wZRpW/npGZNg+0Sk8mstxirRHCg6lolHt5tSODCfuNPE/fBsAqRwDJE417x7jDDHA==
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/@exodus/bytes/-/bytes-1.14.1.tgz#9b5c29077162a35f1bd25613e0cd3c239f6e7ad8"
+  integrity sha512-OhkBFWI6GcRMUroChZiopRiSp2iAMvEBK47NhJooDqz1RERO4QuZIZnjP63TXX8GAiLABkYmX+fuQsdJ1dd2QQ==
 
 "@exodus/schemasafe@^1.0.0-rc.2":
   version "1.3.0"
