@@ -32,15 +32,15 @@
     lru-cache "^11.2.5"
 
 "@asamuzakjp/dom-selector@^6.7.6":
-  version "6.7.8"
-  resolved "https://registry.yarnpkg.com/@asamuzakjp/dom-selector/-/dom-selector-6.7.8.tgz#caac36d625ddc34d33dd9e092d80be5dd8e315ba"
-  integrity sha512-stisC1nULNc9oH5lakAj8MH88ZxeGxzyWNDfbdCxvJSJIvDsHNZqYvscGTgy/ysgXWLJPt6K/4t0/GjvtKcFJQ==
+  version "6.8.1"
+  resolved "https://registry.yarnpkg.com/@asamuzakjp/dom-selector/-/dom-selector-6.8.1.tgz#39b20993672b106f7cd9a3a9a465212e87e0bfd1"
+  integrity sha512-MvRz1nCqW0fsy8Qz4dnLIvhOlMzqDVBabZx6lH+YywFDdjXhMY37SmpV1XFX3JzG5GWHn63j6HX6QPr3lZXHvQ==
   dependencies:
     "@asamuzakjp/nwsapi" "^2.3.9"
     bidi-js "^1.0.3"
     css-tree "^3.1.0"
     is-potential-custom-element-name "^1.0.1"
-    lru-cache "^11.2.5"
+    lru-cache "^11.2.6"
 
 "@asamuzakjp/nwsapi@^2.3.9":
   version "2.3.9"
@@ -3607,6 +3607,11 @@ lru-cache@^11.2.5:
   version "11.2.5"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.2.5.tgz#6811ae01652ae5d749948cdd80bcc22218c6744f"
   integrity sha512-vFrFJkWtJvJnD5hg+hJvVE8Lh/TcMzKnTgCWmtBipwI5yLX/iX+5UB2tfuyODF5E7k9xEzMdYgGqaSb1c0c5Yw==
+
+lru-cache@^11.2.6:
+  version "11.2.6"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.2.6.tgz#356bf8a29e88a7a2945507b31f6429a65a192c58"
+  integrity sha512-ESL2CrkS/2wTPfuend7Zhkzo2u0daGJ/A2VucJOgQ/C48S/zB8MMeMHSGKYpXhIjbPxfuezITkaBH1wqv00DDQ==
 
 lru-cache@^5.1.1:
   version "5.1.1"
