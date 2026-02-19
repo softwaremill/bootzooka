@@ -4761,10 +4761,15 @@ tailwind-merge@^3.4.1:
   resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-3.4.1.tgz#37e12eeb8bf49d15c116ff2018fa01fac10e2b9e"
   integrity sha512-2OA0rFqWOkITEAOFWSBSApYkDeH9t2B3XSJuI4YztKBzK3mX0737A2qtxDZ7xkw9Zfh0bWl+r34sF3HXV+Ig7Q==
 
-tailwindcss@4.1.18, tailwindcss@^4.1.18:
+tailwindcss@4.1.18:
   version "4.1.18"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-4.1.18.tgz#f488ba47853abdb5354daf9679d3e7791fc4f4e3"
   integrity sha512-4+Z+0yiYyEtUVCScyfHCxOYP06L5Ne+JiHhY2IjR2KWMIWhJOYZKLSGZaP5HkZ8+bY0cxfzwDE5uOmzFXyIwxw==
+
+tailwindcss@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-4.2.0.tgz#fe0a67ddebe0c383096f68d22c677ae8af428ded"
+  integrity sha512-yYzTZ4++b7fNYxFfpnberEEKu43w44aqDMNM9MHMmcKuCH7lL8jJ4yJ7LGHv7rSwiqM0nkiobF9I6cLlpS2P7Q==
 
 tapable@^2.3.0:
   version "2.3.0"
