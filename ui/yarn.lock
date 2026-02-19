@@ -4764,10 +4764,10 @@ synckit@^0.11.12:
   dependencies:
     "@pkgr/core" "^0.2.9"
 
-tailwind-merge@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-3.4.1.tgz#37e12eeb8bf49d15c116ff2018fa01fac10e2b9e"
-  integrity sha512-2OA0rFqWOkITEAOFWSBSApYkDeH9t2B3XSJuI4YztKBzK3mX0737A2qtxDZ7xkw9Zfh0bWl+r34sF3HXV+Ig7Q==
+tailwind-merge@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-3.5.0.tgz#06502f4496ba15151445d97d916a26564d50d1ca"
+  integrity sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A==
 
 tailwindcss@4.2.0, tailwindcss@^4.1.18:
   version "4.2.0"
