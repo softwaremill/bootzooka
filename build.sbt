@@ -7,10 +7,10 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val password4jVersion = "1.8.4"
-val sttpVersion = "4.0.13"
-val tapirVersion = "1.13.4"
-val oxVersion = "1.0.2"
-val otelVersion = "1.57.0"
+val sttpVersion = "4.0.15"
+val tapirVersion = "1.13.6"
+val oxVersion = "1.0.3"
+val otelVersion = "1.59.0"
 val otelInstrumentationVersion = "2.17.1-alpha"
 
 val dbDependencies = Seq(
@@ -46,7 +46,7 @@ val jsonDependencies = Seq(
 )
 
 val loggingDependencies = Seq(
-  "ch.qos.logback" % "logback-classic" % "1.5.23", // main logging library
+  "ch.qos.logback" % "logback-classic" % "1.5.29", // main logging library
   "org.slf4j" % "jul-to-slf4j" % "2.0.17", // forward e.g. OTEL and Magnum logs which use JUL to SLF4J
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion, // support MDCs which propagate within Ox scopes
   "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17" % Runtime // route Java's platform logging (separate from JUL) to SLF4J
