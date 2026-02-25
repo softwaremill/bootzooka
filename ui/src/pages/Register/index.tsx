@@ -28,25 +28,28 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/components/ErrorMessage';
 
-const schema = z
-  .object({
-    login: z
-      .string('Login is required')
-      .min(3, 'Login must be at least 3 characters long'),
-    email: z.email('Email is required'),
-    password: z.string('Password is required').min(5),
-    repeatedPassword: z.string('Please repeat your password'),
-  })
-  .refine((data) => data.password === data.repeatedPassword, {
+const baseSchema = z.object({
+  login: z
+    .string('Login is required')
+    .min(3, 'Login must be at least 3 characters long'),
+  email: z.email('Email is required'),
+  password: z.string('Password is required').min(5),
+  repeatedPassword: z.string('Please repeat your password'),
+});
+
+const schema = baseSchema.refine(
+  (data) => data.password === data.repeatedPassword,
+  {
     message: 'Passwords do not match',
     path: ['repeatedPassword'],
 
     when(payload) {
-      return schema
+      return baseSchema
         .pick({ password: true, repeatedPassword: true })
         .safeParse(payload.value).success;
     },
-  });
+  }
+);
 
 const FORM_ID = 'registration-form';
 
