@@ -7,17 +7,17 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val password4jVersion = "1.8.4"
-val sttpVersion = "4.0.13"
-val tapirVersion = "1.13.2"
-val oxVersion = "1.0.2"
-val otelVersion = "1.57.0"
+val sttpVersion = "4.0.15"
+val tapirVersion = "1.13.6"
+val oxVersion = "1.0.3"
+val otelVersion = "1.59.0"
 val otelInstrumentationVersion = "2.17.1-alpha"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.1", // Scala DB client
   "org.postgresql" % "postgresql" % "42.7.8", // JDBC driver
   "com.zaxxer" % "HikariCP" % "7.0.2", // connection pool
-  "org.flywaydb" % "flyway-database-postgresql" % "11.19.0" // database migrations
+  "org.flywaydb" % "flyway-database-postgresql" % "11.20.0" // database migrations
 )
 
 val httpDependencies = Seq(
@@ -42,11 +42,11 @@ val observabilityDependencies = Seq(
 val jsonDependencies = Seq(
   "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion, // main JSON library
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion, // Tapir <-> jsoniter integation
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.38.5" // automatic codec derivation
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.38.7" // automatic codec derivation
 )
 
 val loggingDependencies = Seq(
-  "ch.qos.logback" % "logback-classic" % "1.5.22", // main logging library
+  "ch.qos.logback" % "logback-classic" % "1.5.29", // main logging library
   "org.slf4j" % "jul-to-slf4j" % "2.0.17", // forward e.g. OTEL and Magnum logs which use JUL to SLF4J
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion, // support MDCs which propagate within Ox scopes
   "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.17" % Runtime // route Java's platform logging (separate from JUL) to SLF4J
