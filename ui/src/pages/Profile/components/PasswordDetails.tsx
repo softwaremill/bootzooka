@@ -17,28 +17,31 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ErrorMessage } from '@/components/ErrorMessage';
 
-const schema = z
-  .object({
-    currentPassword: z
-      .string()
-      .min(5, { message: 'Current password must be at least 5 characters' }),
-    newPassword: z
-      .string()
-      .min(5, { message: 'New password must be at least 5 characters' }),
-    repeatedPassword: z
-      .string()
-      .min(5, { message: 'Repeat password must be at least 5 characters' }),
-  })
-  .refine((data) => data.newPassword === data.repeatedPassword, {
+const baseSchema = z.object({
+  currentPassword: z
+    .string()
+    .min(5, { message: 'Current password must be at least 5 characters' }),
+  newPassword: z
+    .string()
+    .min(5, { message: 'New password must be at least 5 characters' }),
+  repeatedPassword: z
+    .string()
+    .min(5, { message: 'Repeat password must be at least 5 characters' }),
+});
+
+const schema = baseSchema.refine(
+  (data) => data.newPassword === data.repeatedPassword,
+  {
     message: 'Passwords do not match',
     path: ['repeatedPassword'],
 
     when(payload) {
-      return schema
+      return baseSchema
         .pick({ newPassword: true, repeatedPassword: true })
         .safeParse(payload.value).success;
     },
-  });
+  }
+);
 
 export const PasswordDetails: FC = () => {
   const [storageApiKeyState, setStorageApiKeyState] = useApiKeyState();
