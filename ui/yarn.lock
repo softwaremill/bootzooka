@@ -20,7 +20,7 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@asamuzakjp/css-color@^5.0.0":
+"@asamuzakjp/css-color@^5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@asamuzakjp/css-color/-/css-color-5.0.1.tgz#3b9462a9b52f3c6680a0945a3d0851881017550f"
   integrity sha512-2SZFvqMyvboVV1d15lMf7XiI3m7SDqXUuKaTymJYLN6dSGadqp+fVojqJlVoMlbZnlTmu3S0TLwLTJpvBMO1Aw==
@@ -2159,11 +2159,11 @@ css.escape@^1.5.1:
   integrity sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==
 
 cssstyle@^6.0.1:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-6.1.0.tgz#07ae112dd2fbc590d11f6e11c73699bd50f27d51"
-  integrity sha512-Ml4fP2UT2K3CUBQnVlbdV/8aFDdlY69E+YnwJM+3VUWl08S3J8c8aRuJqCkD9Py8DHZ7zNNvsfKl8psocHZEFg==
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-6.2.0.tgz#c41b59955c19c7a1223352d67ca462750204ad0f"
+  integrity sha512-Fm5NvhYathRnXNVndkUsCCuR63DCLVVwGOOwQw782coXFi5HhkXdu289l59HlXZBawsyNccXfWRYvLzcDCdDig==
   dependencies:
-    "@asamuzakjp/css-color" "^5.0.0"
+    "@asamuzakjp/css-color" "^5.0.1"
     "@csstools/css-syntax-patches-for-csstree" "^1.0.28"
     css-tree "^3.1.0"
     lru-cache "^11.2.6"
