@@ -495,7 +495,7 @@
   dependencies:
     "@floating-ui/utils" "^0.2.11"
 
-"@floating-ui/dom@^1.7.5":
+"@floating-ui/dom@^1.7.6":
   version "1.7.6"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.6.tgz#f915bba5abbb177e1f227cacee1b4d0634b187bf"
   integrity sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ==
@@ -504,11 +504,11 @@
     "@floating-ui/utils" "^0.2.11"
 
 "@floating-ui/react-dom@^2.0.0":
-  version "2.1.7"
-  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-2.1.7.tgz#529475cc16ee4976ba3387968117e773d9aa703e"
-  integrity sha512-0tLRojf/1Go2JgEVm+3Frg9A3IW8bJgKgdO0BN5RkF//ufuz2joZM63Npau2ff3J6lUVYgDSNzNkR+aH3IVfjg==
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-2.1.8.tgz#5fb5a20d10aafb9505f38c24f38d00c8e1598893"
+  integrity sha512-cC52bHwM/n/CxS87FH0yWdngEZrjdtLW/qVruo68qg+prK7ZQ4YGdut2GyDVpoGeAYe/h899rVeOVm6Oi40k2A==
   dependencies:
-    "@floating-ui/dom" "^1.7.5"
+    "@floating-ui/dom" "^1.7.6"
 
 "@floating-ui/utils@^0.2.11":
   version "0.2.11"
