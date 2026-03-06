@@ -2146,9 +2146,9 @@ cross-spawn@^7.0.6:
     which "^2.0.1"
 
 css-tree@^3.0.0, css-tree@^3.1.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/css-tree/-/css-tree-3.2.0.tgz#5b88416ca65faaaff45721a617e179b4f99a1f58"
-  integrity sha512-t99A4LolkP0ZX9WUoaHz4YrPT1FKNlV8IDCeCPPpGaWyxegh64tt/BSUqN3u5necrYRon+ddZ6mPMjxIlfpobg==
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/css-tree/-/css-tree-3.2.1.tgz#86cac7011561272b30e6b1e042ba6ce047aa7518"
+  integrity sha512-X7sjQzceUhu1u7Y/ylrRZFU2FS6LRiFVp6rKLPg23y3x3c3DOKAwuXGDp+PAGjh6CSnCjYeAul8pcT8bAl+lSA==
   dependencies:
     mdn-data "2.27.1"
     source-map-js "^1.2.1"
