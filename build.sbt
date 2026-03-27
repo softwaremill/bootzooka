@@ -75,7 +75,7 @@ val emailDependencies = Seq(
 )
 
 val testingDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.2.19",
+  "org.scalatest" %% "scalatest" % "3.2.20",
   "com.opentable.components" % "otj-pg-embedded" % "1.1.1", // embedded PostgreSQL for tests
   "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub4-server" % tapirVersion, // integration testing HTTP endpoints without starting a server
   "com.softwaremill.sttp.tapir" %% "tapir-sttp-client4" % tapirVersion // interpreting endpoint descriptions as HTTP requests
