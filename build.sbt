@@ -17,7 +17,7 @@ val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.1", // Scala DB client
   "org.postgresql" % "postgresql" % "42.7.10", // JDBC driver
   "com.zaxxer" % "HikariCP" % "7.0.2", // connection pool
-  "org.flywaydb" % "flyway-database-postgresql" % "12.1.1" // database migrations
+  "org.flywaydb" % "flyway-database-postgresql" % "12.2.0" // database migrations
 )
 
 val httpDependencies = Seq(
@@ -75,7 +75,7 @@ val emailDependencies = Seq(
 )
 
 val testingDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.2.19",
+  "org.scalatest" %% "scalatest" % "3.2.20",
   "com.opentable.components" % "otj-pg-embedded" % "1.1.1", // embedded PostgreSQL for tests
   "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub4-server" % tapirVersion, // integration testing HTTP endpoints without starting a server
   "com.softwaremill.sttp.tapir" %% "tapir-sttp-client4" % tapirVersion // interpreting endpoint descriptions as HTTP requests
