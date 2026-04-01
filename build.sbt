@@ -35,7 +35,7 @@ val observabilityDependencies = Seq(
   "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion exclude ("io.opentelemetry", "opentelemetry-exporter-sender-okhttp"),
   "io.opentelemetry" % "opentelemetry-exporter-sender-jdk" % otelVersion,
   "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
-  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java8" % otelInstrumentationVersion, // OTEL JVM metrics
+  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java17" % otelInstrumentationVersion, // OTEL JVM metrics
   "io.opentelemetry.instrumentation" % "opentelemetry-logback-appender-1.0" % otelInstrumentationVersion // send logs via OTEL
 )
 
