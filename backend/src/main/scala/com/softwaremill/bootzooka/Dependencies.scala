@@ -14,7 +14,7 @@ import com.softwaremill.bootzooka.util.{Clock, DefaultClock, DefaultIdGenerator,
 import com.softwaremill.macwire.{autowire, autowireMembersOf}
 import io.opentelemetry.api.OpenTelemetry
 import io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender
-import io.opentelemetry.instrumentation.runtimemetrics.java8.{Classes, Cpu, GarbageCollector, MemoryPools, Threads}
+import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk
 import ox.{Ox, discard, tap, useCloseableInScope, useInScope}
 import sttp.client4.SyncBackend
@@ -63,13 +63,6 @@ object Dependencies:
     AutoConfiguredOpenTelemetrySdk
       .initialize()
       .getOpenTelemetrySdk()
-      .tap { otel =>
-        // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/runtime-telemetry/runtime-telemetry-java8/library
-        Classes.registerObservers(otel)
-        Cpu.registerObservers(otel)
-        MemoryPools.registerObservers(otel)
-        Threads.registerObservers(otel)
-        GarbageCollector.registerObservers(otel, false).discard
-      }
+      .tap(otel => RuntimeMetrics.create(otel).discard)
       .tap(OpenTelemetryAppender.install)
 end Dependencies
