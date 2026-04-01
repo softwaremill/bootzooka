@@ -17,7 +17,7 @@ val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.1", // Scala DB client
   "org.postgresql" % "postgresql" % "42.7.10", // JDBC driver
   "com.zaxxer" % "HikariCP" % "7.0.2", // connection pool
-  "org.flywaydb" % "flyway-database-postgresql" % "12.2.0" // database migrations
+  "org.flywaydb" % "flyway-database-postgresql" % "12.3.0" // database migrations
 )
 
 val httpDependencies = Seq(
@@ -35,7 +35,7 @@ val observabilityDependencies = Seq(
   "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion exclude ("io.opentelemetry", "opentelemetry-exporter-sender-okhttp"),
   "io.opentelemetry" % "opentelemetry-exporter-sender-jdk" % otelVersion,
   "io.opentelemetry" % "opentelemetry-sdk-extension-autoconfigure" % otelVersion,
-  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java8" % otelInstrumentationVersion, // OTEL JVM metrics
+  "io.opentelemetry.instrumentation" % "opentelemetry-runtime-telemetry-java17" % otelInstrumentationVersion, // OTEL JVM metrics
   "io.opentelemetry.instrumentation" % "opentelemetry-logback-appender-1.0" % otelInstrumentationVersion // send logs via OTEL
 )
 
@@ -102,7 +102,7 @@ def haltOnCmdResultError(result: Int): Unit = if (result != 0) { throw new Excep
 
 lazy val commonSettings = Seq(
   organization := "com.softwaremill.bootzooka",
-  scalaVersion := "3.8.2",
+  scalaVersion := "3.8.3",
   // version
   git.formattedShaVersion := {
     val base = git.baseVersion.?.value
