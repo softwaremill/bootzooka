@@ -5169,10 +5169,10 @@ vite-node@3.2.4:
   optionalDependencies:
     fsevents "~2.3.3"
 
-vite@^8.0.3:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-8.0.3.tgz#036d9e3b077ff57b128660b3e3a5d2d12bac9b42"
-  integrity sha512-B9ifbFudT1TFhfltfaIPgjo9Z3mDynBTJSUYxTjOQruf/zHH+ezCQKcoqO+h7a9Pw9Nm/OtlXAiGT1axBgwqrQ==
+vite@^8.0.4:
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-8.0.4.tgz#3e1d20c979dfa88386428c6b8c300b864ffd0449"
+  integrity sha512-baBr4jUVSLJ0RPyZ2nK0zS2+W8hNHbM4hEzfvllukmRPVS3xDG5ATTNtbRXrKIOE2b8/FsPWJAOnuIxcs7g3cw==
   dependencies:
     lightningcss "^1.32.0"
     picomatch "^4.0.4"
