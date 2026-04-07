@@ -27,15 +27,14 @@
     lru-cache "^11.2.7"
 
 "@asamuzakjp/dom-selector@^7.0.3":
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/@asamuzakjp/dom-selector/-/dom-selector-7.0.6.tgz#9f5f0b0a7e6ea3dfa881aa2ec7ee80bce8d85af7"
-  integrity sha512-Tgmk6EQM0nc9xvp7sEHRVavbknhb/vGKht+04yAT3t5KQwZ02CSobCtcFgaHH04ZrjD1BhEKNA8tRhzFV20gkA==
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/@asamuzakjp/dom-selector/-/dom-selector-7.0.7.tgz#eaa7c72adac70ea451fa3c5c4f40b9be3c752b67"
+  integrity sha512-d2BgqDUOS1Hfp4IzKUZqCNz+Kg3Y88AkaBvJK/ZVSQPU1f7OpPNi7nQTH6/oI47Dkdg+Z3e8Yp6ynOu4UMINAQ==
   dependencies:
     "@asamuzakjp/nwsapi" "^2.3.9"
     bidi-js "^1.0.3"
     css-tree "^3.2.1"
     is-potential-custom-element-name "^1.0.1"
-    lru-cache "^11.2.7"
 
 "@asamuzakjp/nwsapi@^2.3.9":
   version "2.3.9"
