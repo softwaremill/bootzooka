@@ -16,9 +16,9 @@
     "@jridgewell/trace-mapping" "^0.3.24"
 
 "@asamuzakjp/css-color@^5.0.1":
-  version "5.1.6"
-  resolved "https://registry.yarnpkg.com/@asamuzakjp/css-color/-/css-color-5.1.6.tgz#8c57d67dfc90c2aed90c11a64e64bd3a6e978a83"
-  integrity sha512-BXWCh8dHs9GOfpo/fWGDJtDmleta2VePN9rn6WQt3GjEbxzutVF4t0x2pmH+7dbMCLtuv3MlwqRsAuxlzFXqFg==
+  version "5.1.8"
+  resolved "https://registry.yarnpkg.com/@asamuzakjp/css-color/-/css-color-5.1.8.tgz#b61d5b6852fb1c835b35b483191e32b529da859d"
+  integrity sha512-OISPR9c2uPo23rUdvfEQiLPjoMLOpEeLNnP5iGkxr6tDDxJd3NjD+6fxY0mdaMbIPUjFGL4HFOJqLvow5q4aqQ==
   dependencies:
     "@csstools/css-calc" "^3.1.1"
     "@csstools/css-color-parser" "^4.0.2"
