@@ -2451,9 +2451,9 @@ entities@^6.0.0:
   integrity sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==
 
 es-abstract@^1.17.5, es-abstract@^1.23.2, es-abstract@^1.23.3, es-abstract@^1.23.5, es-abstract@^1.23.6, es-abstract@^1.23.9, es-abstract@^1.24.0, es-abstract@^1.24.1:
-  version "1.24.1"
-  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.24.1.tgz#f0c131ed5ea1bb2411134a8dd94def09c46c7899"
-  integrity sha512-zHXBLhP+QehSSbsS9Pt23Gg964240DPd6QCf8WpkqEXxQ7fhdZzYsocOr5u7apWonsS5EjZDmTF+/slGMyasvw==
+  version "1.24.2"
+  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.24.2.tgz#2dbd38c180735ee983f77585140a2706a963ed9a"
+  integrity sha512-2FpH9Q5i2RRwyEP1AylXe6nYLR5OhaJTZwmlcP0dL/+JCbgg7yyEo/sEK6HeGZRf3dFpWwThaRHVApXSkW3xeg==
   dependencies:
     array-buffer-byte-length "^1.0.2"
     arraybuffer.prototype.slice "^1.0.4"
