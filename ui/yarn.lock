@@ -563,9 +563,9 @@
     wrap-ansi-cjs "npm:wrap-ansi@^7.0.0"
 
 "@istanbuljs/schema@^0.1.2":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
-  integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.6.tgz#8dc9afa2ac1506cb1a58f89940f1c124446c8df3"
+  integrity sha512-+Sg6GCR/wy1oSmQDFq4LQDAhm3ETKnorxN+y5nbLULOR3P0c14f2Wurzj3/xqPXtasLFfHd5iRFQ7AJt4KH2cw==
 
 "@jridgewell/gen-mapping@^0.3.12", "@jridgewell/gen-mapping@^0.3.5":
   version "0.3.13"
