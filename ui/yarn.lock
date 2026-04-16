@@ -26,14 +26,20 @@
     "@csstools/css-tokenizer" "^4.0.0"
 
 "@asamuzakjp/dom-selector@^7.0.6":
-  version "7.0.9"
-  resolved "https://registry.yarnpkg.com/@asamuzakjp/dom-selector/-/dom-selector-7.0.9.tgz#6d672a18a4572a4f02de49b20793b3c99958e68f"
-  integrity sha512-r3ElRr7y8ucyN2KdICwGsmj19RoN13CLCa/pvGydghWK6ZzeKQ+TcDjVdtEZz2ElpndM5jXw//B9CEee0mWnVg==
+  version "7.0.10"
+  resolved "https://registry.yarnpkg.com/@asamuzakjp/dom-selector/-/dom-selector-7.0.10.tgz#8e24dd686a89b17dcc8a20f3d23aa7006a15b1de"
+  integrity sha512-KyOb19eytNSELkmdqzZZUXWCU25byIlOld5qVFg0RYdS0T3tt7jeDByxk9hIAC73frclD8GKrHttr0SUjKCCdQ==
   dependencies:
+    "@asamuzakjp/generational-cache" "^1.0.1"
     "@asamuzakjp/nwsapi" "^2.3.9"
     bidi-js "^1.0.3"
     css-tree "^3.2.1"
     is-potential-custom-element-name "^1.0.1"
+
+"@asamuzakjp/generational-cache@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@asamuzakjp/generational-cache/-/generational-cache-1.0.1.tgz#3d0bf6be4fc059851390a7070720c6007af793ec"
+  integrity sha512-wajfB8KqzMCN2KGNFdLkReeHncd0AslUSrvHVvvYWuU8ghncRJoA50kT3zP9MVL0+9g4/67H+cdvBskj9THPzg==
 
 "@asamuzakjp/nwsapi@^2.3.9":
   version "2.3.9"
