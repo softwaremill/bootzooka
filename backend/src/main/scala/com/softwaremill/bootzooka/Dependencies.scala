@@ -64,9 +64,10 @@ object Dependencies extends Logging:
     )
 
   private def initializeOtel(): OpenTelemetry =
-    val sdk = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk
     logOtel()
-    sdk
+    AutoConfiguredOpenTelemetrySdk
+      .initialize()
+      .getOpenTelemetrySdk
       .tap(otel => RuntimeMetrics.create(otel).discard)
       .tap(OpenTelemetryAppender.install)
 
