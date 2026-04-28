@@ -6,6 +6,7 @@ import com.softwaremill.bootzooka.email.EmailService
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.http.{HttpApi, HttpConfig}
 import com.softwaremill.bootzooka.infrastructure.DB
+import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.metrics.Metrics
 import com.softwaremill.bootzooka.passwordreset.{PasswordResetApi, PasswordResetAuthToken}
 import com.softwaremill.bootzooka.security.{ApiKeyAuthToken, ApiKeyService, Auth}
@@ -15,17 +16,20 @@ import com.softwaremill.macwire.{autowire, autowireMembersOf}
 import io.opentelemetry.api.OpenTelemetry
 import io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender
 import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics
+import io.opentelemetry.sdk.OpenTelemetrySdk
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk
-import ox.{Ox, discard, tap, useCloseableInScope, useInScope}
+import ox.*
 import sttp.client4.SyncBackend
 import sttp.client4.httpclient.HttpClientSyncBackend
 import sttp.client4.logging.slf4j.Slf4jLoggingBackend
 import sttp.client4.opentelemetry.{OpenTelemetryMetricsBackend, OpenTelemetryTracingBackend}
 import sttp.tapir.AnyEndpoint
 
+import scala.jdk.CollectionConverters.*
+
 case class Dependencies(httpApi: HttpApi, emailService: EmailService)
 
-object Dependencies:
+object Dependencies extends Logging:
   val endpointsForDocs: List[AnyEndpoint] = List(UserApi, PasswordResetApi, VersionApi).flatMap(_.endpointsForDocs)
 
   private case class Apis(userApi: UserApi, passwordResetApi: PasswordResetApi, versionApi: VersionApi):
@@ -60,9 +64,30 @@ object Dependencies:
     )
 
   private def initializeOtel(): OpenTelemetry =
-    AutoConfiguredOpenTelemetrySdk
-      .initialize()
-      .getOpenTelemetrySdk()
+    val sdk = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk
+    logOtel()
+    sdk
       .tap(otel => RuntimeMetrics.create(otel).discard)
       .tap(OpenTelemetryAppender.install)
+
+  private def logOtel(): Unit =
+    def render(overrides: Seq[(String, String)]): String =
+      if overrides.isEmpty then ""
+      else "Overrides:\n" + overrides.sortBy(_._1).map((k, v) => s"$k=$v").mkString("\n")
+
+    val overrides =
+      System.getenv.asScala.toSeq.filter((k, _) => k.startsWith("OTEL_")) ++ sys.props.toSeq.filter((k, _) => k.startsWith("otel."))
+
+    val message = if overrides.isEmpty then "No configuration overrides" else render(overrides)
+
+    logger.info(
+      s"""
+         |OpenTelemetry configuration:
+         |-----------------------
+         |$message
+         |For defaults refer to https://opentelemetry.io/docs/languages/java/configuration/
+         |""".stripMargin
+    )
+  end logOtel
+
 end Dependencies
