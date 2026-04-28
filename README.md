@@ -38,7 +38,7 @@ SQL_PASSWORD=bootzooka ./backend-start.sh
 ```
 
 By default, OpenTelemetry is disabled to avoid telemetry export exceptions (which is available and explorable if you are
-using the Docker compose setup). If you have a collector running, edit the startp script appropriately.
+using the Docker compose setup). If you have a collector running, edit the startup script appropriately.
 
 The backend will start on [`http://localhost:8080`](http://localhost:8080). You can explore the API docs using the
 Swagger UI by navigating to [`http://localhost:8080/api/v1/docs`](http://localhost:8080/api/v1/docs).

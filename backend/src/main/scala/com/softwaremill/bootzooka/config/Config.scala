@@ -27,7 +27,7 @@ object Config extends Logging:
                       |User:           ${config.user}
                       |
                       |Build & env info:
-                      |-----------------
+                      |-----------------------
                       |""".stripMargin
 
     val info = TreeMap(BuildInfo.toMap.toSeq*).foldLeft(baseInfo) { case (str, (k, v)) =>

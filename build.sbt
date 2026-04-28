@@ -28,9 +28,9 @@ val httpDependencies = Seq(
 )
 
 val observabilityDependencies = Seq(
-  "com.softwaremill.sttp.client4" %% "opentelemetry-backend" % sttpVersion, // OTEL <-> sttp integation
-  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion, // OTEL <-> Tapir integation
-  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-tracing" % tapirVersion, // OTEL <-> Tapir integation
+  "com.softwaremill.sttp.client4" %% "opentelemetry-backend" % sttpVersion, // OTEL <-> sttp integration
+  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-metrics" % tapirVersion, // OTEL <-> Tapir integration
+  "com.softwaremill.sttp.tapir" %% "tapir-opentelemetry-tracing" % tapirVersion, // OTEL <-> Tapir integration
   "com.softwaremill.ox" %% "otel-context" % oxVersion, // OTEL context propagation in Ox scopes
   "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion exclude ("io.opentelemetry", "opentelemetry-exporter-sender-okhttp"),
   "io.opentelemetry" % "opentelemetry-exporter-sender-jdk" % otelVersion,
@@ -41,7 +41,7 @@ val observabilityDependencies = Seq(
 
 val jsonDependencies = Seq(
   "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion, // main JSON library
-  "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion, // Tapir <-> jsoniter integation
+  "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion, // Tapir <-> jsoniter integration
   "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.38.9" // automatic codec derivation
 )
 
