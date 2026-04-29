@@ -15,7 +15,7 @@ val otelInstrumentationVersion = "2.17.1-alpha"
 
 val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.1", // Scala DB client
-  "org.postgresql" % "postgresql" % "42.7.10", // JDBC driver
+  "org.postgresql" % "postgresql" % "42.7.11", // JDBC driver
   "com.zaxxer" % "HikariCP" % "7.0.2", // connection pool
   "org.flywaydb" % "flyway-database-postgresql" % "12.4.0" // database migrations
 )
