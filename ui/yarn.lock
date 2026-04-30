@@ -4948,17 +4948,17 @@ tinyspy@^4.0.3:
   resolved "https://registry.yarnpkg.com/tinyspy/-/tinyspy-4.0.4.tgz#d77a002fb53a88aa1429b419c1c92492e0c81f78"
   integrity sha512-azl+t0z7pw/z958Gy9svOTuzqIk6xq+NSheJzn5MMWtWTFywIacg2wUlzKFGtt3cthx0r2SxMK0yzJOR0IES7Q==
 
-tldts-core@^7.0.28:
+tldts-core@^7.0.29:
   version "7.0.29"
   resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-7.0.29.tgz#c3806f5af57b0351ed9415899be2a8dafa3f56dc"
   integrity sha512-W99NuU7b1DcG3uJ3v9k9VztCH3WialNbBkBft5wCs8V8mexu0XQqaZEYb9l9RNNzK8+3EJ9PKWB0/RUtTQ/o+Q==
 
 tldts@^7.0.5:
-  version "7.0.28"
-  resolved "https://registry.yarnpkg.com/tldts/-/tldts-7.0.28.tgz#5a5bb26ef3f70008d88c6e53ff58cd59ed8d4c68"
-  integrity sha512-+Zg3vWhRUv8B1maGSTFdev9mjoo8Etn2Ayfs4cnjlD3CsGkxXX4QyW3j2WJ0wdjYcYmy7Lx2RDsZMhgCWafKIw==
+  version "7.0.29"
+  resolved "https://registry.yarnpkg.com/tldts/-/tldts-7.0.29.tgz#5a246d4ffcdf8b34cd9cc2dea424162a653f69d1"
+  integrity sha512-JIXCerhudr/N6OWLwLF1HVsTTUo7ry6qHa5eWZEkiMuxsIiAACL55tGLfqfHfoH7QaMQUW8fngD7u7TxWexYQg==
   dependencies:
-    tldts-core "^7.0.28"
+    tldts-core "^7.0.29"
 
 to-regex-range@^5.0.1:
   version "5.0.1"
