@@ -3861,9 +3861,9 @@ node-readfiles@^0.2.0:
     es6-promise "^3.2.1"
 
 node-releases@^2.0.36:
-  version "2.0.45"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.45.tgz#d84e1efff3ed4ed0fdee86a840c0a8589f0ec527"
-  integrity sha512-iIbHXV9eBB2nB0wa7oTsrrXq+qQt+9SIlx9AX3T96YgobtEQfis5n6TJ6vV+3QP8DwdriEAcGhARaFCu37peBg==
+  version "2.0.46"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.46.tgz#d188a129a83f5e03a101aacb58f260f2ee8faaa1"
+  integrity sha512-GYVXHE2KnrzAfsAjl4uP++evGFCrAU1jta4ubEjIG7YWt/64Gqv66a30yKwWczVjA6j3bM4nBwH7Pk1JmDHaxQ==
 
 normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
