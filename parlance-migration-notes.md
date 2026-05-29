@@ -24,13 +24,13 @@ parlance 0.1.0 is a redesigned, Active-Record-inspired ORM (92 core source files
 |---|---|---|
 | `import com.augustnagro.magnum.*` | `import ma.chinespirit.parlance.*` | package rename |
 | `DbCodec`, `.biMap(to, from)` | same | ✓ identical |
-| `DbCodec.StringCodec` | `DbCodec[String]` (i.e. `summon[DbCodec[String]]`) | `StringCodec` given exists; prefer `DbCodec[String]` |
+| `DbCodec.StringCodec` | `DbCodec.StringCodec` (also `DbCodec[String]`) | ✓ `StringCodec` is a given in `object DbCodec`; `DbCodec.StringCodec.biMap(...)` compiles as-is |
 | `summon[DbCodec[OffsetDateTime]]` | same | ✓ `OffsetDateTimeCodec` given exists |
-| custom `given DbCodec[Instant]` (in `infrastructure/Magnum.scala`) | **remove** | parlance already ships `given DbCodec[Instant]`; keeping the custom one is an ambiguous-given conflict |
-| `Transactor(dataSource = ds, sqlLogger = ...)` | `Transactor(Postgres, ds, SqlLogger.logSlowQueries(200.millis))` | **DB type is now a required first arg**; `Transactor[D <: DatabaseType]` |
+| custom `given DbCodec[Instant]` (in `infrastructure/Codecs.scala`) | **keep** | parlance ships `given InstantCodec: DbCodec[Instant]` in `object DbCodec`, but an *imported* given (via `import Codecs.given`) takes precedence over implicit/companion scope — **verified: no ambiguity**. (Corrects the earlier note that said to remove it.) |
+| `Transactor(dataSource = ds, sqlLogger = ...)` | `Transactor[Postgres](Postgres, ds, SqlLogger.logSlowQueries(200.millis))` | **DB type is a required first arg** AND must be **pinned** as `[Postgres]` — `Transactor(Postgres, ...)` infers the singleton `Postgres.type`, which then mismatches `DbTx[Postgres]` everywhere. |
 | `SqlLogger.logSlowQueries(200.millis)` | same | ✓ |
-| top-level `transact(transactor)(f)` | **`transactor.transact(f)`** (instance method) | `def transact[T](f: DbTx[D] ?=> T): T` |
-| top-level `connect(ds)(f)` | **`transactor.connect(f)`** (instance method) | `connect` takes no DataSource — needs a `Transactor`; `def connect[T](f: DbCon[D] ?=> T): T`. DB.scala `testConnection(ds)` must build/reuse a Transactor instead of passing a raw `DataSource`. |
+| top-level `transact(transactor)(f)` | **`transactor.transact(f)`** (instance method) | `def transact[T](f: DbTx[D] ?=> T): T`. Rolls back only on a thrown exception (then rethrows) — so the `LeftException` rollback-on-`Left` trick still works unchanged. |
+| top-level `connect(ds)(f)` | **`transactor.connect(f)`** (instance method) | `connect` takes no DataSource — needs a `Transactor`; `def connect[T](f: DbCon[D] ?=> T): T`. DB.scala `testConnection(ds)` builds a throwaway `Transactor[Postgres](Postgres, ds)` to run the test query. |
 | `(using DbTx)`, `DbTx ?=> T` | **`(using DbTx[Postgres])`, `DbTx[Postgres] ?=> T`** | `DbCon`/`DbTx` are parameterized by DB type. Touches *every* model/service/api file with a `DbTx` param (UserModel, UserService, ApiKeyModel, ApiKeyService, Auth, PasswordResetCodeModel, PasswordResetService, EmailModel, EmailService, the `*Api` files, `AuthTokenOps`). Read-only sites may use `DbCon[Postgres]`. |
 | `sql"..."` interpolator | same | ✓ available via wildcard import; if selectively imported, confirm the `sql` name is importable |
 | `.query[T].run()`, `.update.run()` | same | ✓ require a `DbCon`/`DbTx` in scope |
@@ -52,6 +52,6 @@ parlance 0.1.0 is a redesigned, Active-Record-inspired ORM (92 core source files
 2. `TableInfo` column-reference + `sql"$u"` table interpolation: confirm the API matches Magnum's usage in `UserModel`/`ApiKeyModel`.
 3. Add `derives EntityMeta` to all entities; drop the DB-type arg from every `@Table`.
 4. Parameterize all `DbTx`/`DbCon` usages with `[Postgres]`.
-5. Rework `DB.scala`: `Transactor(Postgres, ds, ...)`, instance `transact`/`connect`, and `testConnection` (no raw-DataSource `connect`).
-6. Remove the custom `given DbCodec[Instant]`; switch `DbCodec.StringCodec` → `DbCodec[String]`.
+5. ~~Rework `DB.scala`~~ **DONE** (and `infrastructure/Magnum.scala` → `infrastructure/Codecs.scala`, with the four import sites updated).
+6. ~~Remove the custom `given DbCodec[Instant]`~~ — keep it; `DbCodec.StringCodec` works as-is (see table).
 7. `insert` → `rawInsert`; add `()` to `Repo[...]` constructions.

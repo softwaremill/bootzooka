@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.infrastructure
 
-import com.augustnagro.magnum.{DbCodec, DbTx, SqlLogger, Transactor, connect, sql}
+import ma.chinespirit.parlance.{DbTx, Postgres, SqlLogger, Transactor, sql}
 import com.softwaremill.bootzooka.infrastructure.DB.LeftException
 import com.softwaremill.bootzooka.logging.Logging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
@@ -15,21 +15,20 @@ import scala.util.NotGiven
 import scala.util.control.{NoStackTrace, NonFatal}
 
 class DB(dataSource: DataSource & Closeable) extends Logging with AutoCloseable:
-  private val transactor = Transactor(
-    dataSource = dataSource,
-    sqlLogger = SqlLogger.logSlowQueries(200.millis)
-  )
+  // the database type is pinned explicitly so that the `DbTx[Postgres]` context type matches throughout the codebase
+  // (otherwise `Transactor(Postgres, ...)` would infer the singleton type `Postgres.type`)
+  private val transactor = Transactor[Postgres](Postgres, dataSource, SqlLogger.logSlowQueries(200.millis))
 
   /** Runs `f` in a transaction. The transaction is commited if the result is a [[Right]], and rolled back otherwise. */
-  def transactEither[E, T](f: DbTx ?=> Either[E, T]): Either[E, T] =
-    try com.augustnagro.magnum.transact(transactor)(Right(f.fold(e => throw LeftException(e), identity)))
+  def transactEither[E, T](f: DbTx[Postgres] ?=> Either[E, T]): Either[E, T] =
+    try transactor.transact(Right(f.fold(e => throw LeftException(e), identity)))
     catch case e: LeftException[E] @unchecked => Left(e.left)
 
   /** Runs `f` in a transaction. The result cannot be an `Either`, as then [[transactEither]] should be used. The transaction is commited if
     * no exception is thrown.
     */
-  def transact[T](f: DbTx ?=> T)(using NotGiven[T <:< Either[?, ?]]): T =
-    com.augustnagro.magnum.transact(transactor)(f)
+  def transact[T](f: DbTx[Postgres] ?=> T)(using NotGiven[T <:< Either[?, ?]]): T =
+    transactor.transact(f)
 
   override def close(): Unit = dataSource.close()
 end DB
@@ -56,7 +55,7 @@ object DB extends Logging:
       .load()
 
     def migrate(): Unit = if config.migrateOnStart then flyway.migrate().discard
-    def testConnection(ds: DataSource): Unit = connect(ds)(sql"SELECT 1".query[Int].run()).discard
+    def testConnection(ds: DataSource): Unit = Transactor[Postgres](Postgres, ds).connect(sql"SELECT 1".query[Int].run()).discard
 
     @tailrec
     def connectAndMigrate(ds: DataSource): Unit =
