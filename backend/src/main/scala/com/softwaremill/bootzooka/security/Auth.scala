@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.security
 
-import com.augustnagro.magnum.DbTx
+import ma.chinespirit.parlance.{DbTx, Postgres}
 import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.logging.Logging
@@ -44,8 +44,8 @@ end Auth
   */
 trait AuthTokenOps[T]:
   def tokenName: String
-  def findById: DbTx ?=> Id[T] => Option[T]
-  def delete: DbTx ?=> T => Unit
+  def findById: DbTx[Postgres] ?=> Id[T] => Option[T]
+  def delete: DbTx[Postgres] ?=> T => Unit
   def userId: T => Id[User]
   def validUntil: T => Instant
   def deleteWhenValid: Boolean

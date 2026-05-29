@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.passwordreset
 
-import com.augustnagro.magnum.DbTx
+import ma.chinespirit.parlance.{DbTx, Postgres}
 import com.softwaremill.bootzooka.Fail
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailSubjectContent, EmailTemplates}
 import com.softwaremill.bootzooka.infrastructure.DB
@@ -23,14 +23,14 @@ class PasswordResetService(
     clock: Clock,
     db: DB
 ) extends Logging:
-  def forgotPassword(loginOrEmail: String)(using DbTx): Unit =
+  def forgotPassword(loginOrEmail: String)(using DbTx[Postgres]): Unit =
     userModel.findByLoginOrEmail(loginOrEmail.toLowerCased) match
       case None       => logger.debug(s"Could not find user with $loginOrEmail login/email")
       case Some(user) =>
         val pcr = createCode(user)
         sendCode(user, pcr)
 
-  private def createCode(user: User)(using DbTx): PasswordResetCode =
+  private def createCode(user: User)(using DbTx[Postgres]): PasswordResetCode =
     logger.debug(s"Creating password reset code for user: ${user.id}")
     val id = idGenerator.nextId[PasswordResetCode]()
     val validUntil = clock.now().plusMillis(config.codeValid.toMillis)
@@ -38,7 +38,7 @@ class PasswordResetService(
     passwordResetCodeModel.insert(passwordResetCode)
     passwordResetCode
 
-  private def sendCode(user: User, code: PasswordResetCode)(using DbTx): Unit =
+  private def sendCode(user: User, code: PasswordResetCode)(using DbTx[Postgres]): Unit =
     logger.debug(s"Scheduling e-mail with reset code for user: ${user.id}")
     emailScheduler.schedule(EmailData(user.emailLowerCase, prepareResetEmail(user, code)))
 

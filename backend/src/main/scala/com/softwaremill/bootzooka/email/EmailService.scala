@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.email
 
-import com.augustnagro.magnum.DbTx
+import ma.chinespirit.parlance.{DbTx, Postgres}
 import com.softwaremill.bootzooka.email.sender.EmailSender
 import com.softwaremill.bootzooka.infrastructure.DB
 import com.softwaremill.bootzooka.logging.Logging
@@ -21,7 +21,7 @@ class EmailService(
 ) extends EmailScheduler
     with Logging:
 
-  def schedule(data: EmailData)(using DbTx): Unit =
+  def schedule(data: EmailData)(using DbTx[Postgres]): Unit =
     logger.debug(s"Scheduling email to be sent to: ${data.recipient}")
     val id = idGenerator.nextId[Email]()
     emailModel.insert(Email(id, data))
@@ -57,4 +57,4 @@ class EmailService(
 end EmailService
 
 trait EmailScheduler:
-  def schedule(data: EmailData)(using DbTx): Unit
+  def schedule(data: EmailData)(using DbTx[Postgres]): Unit
