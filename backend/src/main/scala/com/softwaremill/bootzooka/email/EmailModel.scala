@@ -1,7 +1,8 @@
 package com.softwaremill.bootzooka.email
 
-import ma.chinespirit.parlance.{DbTx, EntityMeta, Postgres, QueryBuilder, Repo, SqlNameMapper, Table}
+import ma.chinespirit.parlance.{EntityMeta, QueryBuilder, Repo, SqlNameMapper, Table}
 import com.softwaremill.bootzooka.infrastructure.Codecs.given
+import com.softwaremill.bootzooka.infrastructure.Tx
 import com.softwaremill.bootzooka.util.Strings.Id
 import ox.discard
 
@@ -9,10 +10,10 @@ import ox.discard
 class EmailModel:
   private val emailRepo = Repo[ScheduledEmails, ScheduledEmails, Id[Email]]()
 
-  def insert(email: Email)(using DbTx[Postgres]): Unit = emailRepo.rawInsert(ScheduledEmails(email))
-  def find(limit: Int)(using DbTx[Postgres]): Vector[Email] = QueryBuilder.from[ScheduledEmails].limit(limit).run().map(_.toEmail)
-  def count()(using DbTx[Postgres]): Long = emailRepo.count
-  def delete(ids: Vector[Id[Email]])(using DbTx[Postgres]): Unit = emailRepo.deleteAllById(ids).discard
+  def insert(email: Email)(using Tx): Unit = emailRepo.rawInsert(ScheduledEmails(email))
+  def find(limit: Int)(using Tx): Vector[Email] = QueryBuilder.from[ScheduledEmails].limit(limit).run().map(_.toEmail)
+  def count()(using Tx): Long = emailRepo.count
+  def delete(ids: Vector[Id[Email]])(using Tx): Unit = emailRepo.deleteAllById(ids).discard
 
 @Table(SqlNameMapper.CamelToSnakeCase)
 private case class ScheduledEmails(id: Id[Email], recipient: String, subject: String, content: String) derives EntityMeta:

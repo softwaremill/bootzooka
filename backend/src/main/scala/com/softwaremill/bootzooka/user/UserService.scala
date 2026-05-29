@@ -1,8 +1,8 @@
 package com.softwaremill.bootzooka.user
 
-import ma.chinespirit.parlance.{DbTx, Postgres}
 import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.email.{EmailData, EmailScheduler, EmailTemplates}
+import com.softwaremill.bootzooka.infrastructure.Tx
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.security.{ApiKey, ApiKeyService}
 import com.softwaremill.bootzooka.util.*
@@ -26,7 +26,7 @@ class UserService(
   private val EmailAlreadyUsed = "E-mail already in use!"
   private val IncorrectLoginOrPassword = "Incorrect login/email or password"
 
-  def registerNewUser(login: String, email: String, password: String)(using DbTx[Postgres]): Either[Fail, ApiKey] =
+  def registerNewUser(login: String, email: String, password: String)(using Tx): Either[Fail, ApiKey] =
     val loginClean = login.trim()
     val emailClean = email.trim()
 
@@ -56,17 +56,17 @@ class UserService(
       doRegister()
   end registerNewUser
 
-  def findById(id: Id[User])(using DbTx[Postgres]): Either[Fail, User] = userOrNotFound(userModel.findById(id))
+  def findById(id: Id[User])(using Tx): Either[Fail, User] = userOrNotFound(userModel.findById(id))
 
-  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration])(using DbTx[Postgres]): Either[Fail, ApiKey] = either:
+  def login(loginOrEmail: String, password: String, apiKeyValid: Option[Duration])(using Tx): Either[Fail, ApiKey] = either:
     val loginOrEmailClean = loginOrEmail.trim()
     val user = userOrNotFound(userModel.findByLoginOrEmail(loginOrEmailClean.toLowerCased)).ok()
     verifyPassword(user, password, validationErrorMsg = IncorrectLoginOrPassword).ok()
     apiKeyService.create(user.id, apiKeyValid.getOrElse(config.defaultApiKeyValid))
 
-  def logout(id: Id[ApiKey])(using DbTx[Postgres]): Unit = apiKeyService.invalidate(id)
+  def logout(id: Id[ApiKey])(using Tx): Unit = apiKeyService.invalidate(id)
 
-  def changeUser(userId: Id[User], newLogin: String, newEmail: String)(using DbTx[Postgres]): Either[Fail, Unit] =
+  def changeUser(userId: Id[User], newLogin: String, newEmail: String)(using Tx): Either[Fail, Unit] =
     val newLoginClean = newLogin.trim()
     val newEmailClean = newEmail.trim()
     val newEmailtoLowerCased = newEmailClean.toLowerCased
@@ -111,7 +111,7 @@ class UserService(
       if anyUpdate then sendMail(findById(userId).ok())
   end changeUser
 
-  def changePassword(userId: Id[User], currentPassword: String, newPassword: String)(using DbTx[Postgres]): Either[Fail, ApiKey] =
+  def changePassword(userId: Id[User], currentPassword: String, newPassword: String)(using Tx): Either[Fail, ApiKey] =
     def validateUserPassword(userId: Id[User], currentPassword: String): Either[Fail, User] =
       for
         user <- userOrNotFound(userModel.findById(userId))

@@ -1,8 +1,9 @@
 package com.softwaremill.bootzooka.user
 
-import ma.chinespirit.parlance.{DbTx, EntityMeta, Frag, Postgres, QueryBuilder, Repo, SqlName, SqlNameMapper, Table, TableInfo, sql, unsafeAsWhere}
+import ma.chinespirit.parlance.{===, ||, EntityMeta, QueryBuilder, Repo, SqlName, SqlNameMapper, Table, TableInfo, sql}
 import com.password4j.{Argon2Function, Password}
 import com.softwaremill.bootzooka.infrastructure.Codecs.given
+import com.softwaremill.bootzooka.infrastructure.Tx
 import com.softwaremill.bootzooka.user.User.PasswordHashing
 import com.softwaremill.bootzooka.user.User.PasswordHashing.Argon2Config.*
 import com.softwaremill.bootzooka.util.PasswordVerificationStatus
@@ -17,25 +18,23 @@ class UserModel:
 
   export userRepo.{rawInsert as insert, findById}
 
-  def findByEmail(email: LowerCased)(using DbTx[Postgres]): Option[User] =
-    findBy(sql"${u.emailLowerCase} = $email")
-  def findByLogin(login: LowerCased)(using DbTx[Postgres]): Option[User] =
-    findBy(sql"${u.loginLowerCase} = $login")
-  def findByLoginOrEmail(loginOrEmail: LowerCased)(using DbTx[Postgres]): Option[User] =
-    findBy(sql"${u.loginLowerCase} = ${loginOrEmail: String} OR ${u.emailLowerCase} = $loginOrEmail")
+  // queries use parlance's typed column DSL (`_.col === value`), which is checked against the entity's fields at compile time
+  def findByEmail(email: LowerCased)(using Tx): Option[User] =
+    QueryBuilder.from[User].where(_.emailLowerCase === email).first()
+  def findByLogin(login: LowerCased)(using Tx): Option[User] =
+    QueryBuilder.from[User].where(_.loginLowerCase === login).first()
+  def findByLoginOrEmail(loginOrEmail: LowerCased)(using Tx): Option[User] =
+    QueryBuilder.from[User].where(u => u.loginLowerCase === loginOrEmail || u.emailLowerCase === loginOrEmail).first()
 
-  private def findBy(condition: Frag)(using DbTx[Postgres]): Option[User] =
-    QueryBuilder.from[User].where(condition.unsafeAsWhere).first()
-
-  def updatePassword(userId: Id[User], newPassword: Hashed)(using DbTx[Postgres]): Unit =
+  def updatePassword(userId: Id[User], newPassword: Hashed)(using Tx): Unit =
     sql"""UPDATE $u SET ${u.passwordHash} = $newPassword WHERE ${u.id} = $userId""".update.run().discard
 
-  def updateLogin(userId: Id[User], newLogin: String, newLoginLowerCase: LowerCased)(using DbTx[Postgres]): Unit =
+  def updateLogin(userId: Id[User], newLogin: String, newLoginLowerCase: LowerCased)(using Tx): Unit =
     sql"""UPDATE $u SET ${u.login} = $newLogin, login_lowercase = ${newLoginLowerCase: String} WHERE ${u.id} = $userId""".update
       .run()
       .discard
 
-  def updateEmail(userId: Id[User], newEmail: LowerCased)(using DbTx[Postgres]): Unit =
+  def updateEmail(userId: Id[User], newEmail: LowerCased)(using Tx): Unit =
     sql"""UPDATE $u SET ${u.emailLowerCase} = $newEmail WHERE ${u.id} = $userId""".update.run().discard
 
 end UserModel
