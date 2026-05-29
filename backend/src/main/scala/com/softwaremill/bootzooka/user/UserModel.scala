@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.user
 
-import com.augustnagro.magnum.{DbCodec, DbTx, Frag, PostgresDbType, Repo, Spec, SqlName, SqlNameMapper, Table, TableInfo, sql}
+import ma.chinespirit.parlance.{DbTx, EntityMeta, Frag, Postgres, QueryBuilder, Repo, SqlName, SqlNameMapper, Table, TableInfo, sql, unsafeAsWhere}
 import com.password4j.{Argon2Function, Password}
 import com.softwaremill.bootzooka.infrastructure.Codecs.given
 import com.softwaremill.bootzooka.user.User.PasswordHashing
@@ -12,37 +12,35 @@ import ox.discard
 import java.time.Instant
 
 class UserModel:
-  private val userRepo = Repo[User, User, Id[User]]
+  private val userRepo = Repo[User, User, Id[User]]()
   private val u = TableInfo[User, User, Id[User]]
 
-  export userRepo.{insert, findById}
+  export userRepo.{rawInsert as insert, findById}
 
-  def findByEmail(email: LowerCased)(using DbTx): Option[User] = findBy(
-    Spec[User].where(sql"${u.emailLowerCase} = $email")
-  )
-  def findByLogin(login: LowerCased)(using DbTx): Option[User] = findBy(
-    Spec[User].where(sql"${u.loginLowerCase} = $login")
-  )
-  def findByLoginOrEmail(loginOrEmail: LowerCased)(using DbTx): Option[User] =
-    findBy(Spec[User].where(sql"${u.loginLowerCase} = ${loginOrEmail: String} OR ${u.emailLowerCase} = $loginOrEmail"))
+  def findByEmail(email: LowerCased)(using DbTx[Postgres]): Option[User] =
+    findBy(sql"${u.emailLowerCase} = $email")
+  def findByLogin(login: LowerCased)(using DbTx[Postgres]): Option[User] =
+    findBy(sql"${u.loginLowerCase} = $login")
+  def findByLoginOrEmail(loginOrEmail: LowerCased)(using DbTx[Postgres]): Option[User] =
+    findBy(sql"${u.loginLowerCase} = ${loginOrEmail: String} OR ${u.emailLowerCase} = $loginOrEmail")
 
-  private def findBy(by: Spec[User])(using DbTx): Option[User] =
-    userRepo.findAll(by).headOption
+  private def findBy(condition: Frag)(using DbTx[Postgres]): Option[User] =
+    QueryBuilder.from[User].where(condition.unsafeAsWhere).first()
 
-  def updatePassword(userId: Id[User], newPassword: Hashed)(using DbTx): Unit =
+  def updatePassword(userId: Id[User], newPassword: Hashed)(using DbTx[Postgres]): Unit =
     sql"""UPDATE $u SET ${u.passwordHash} = $newPassword WHERE ${u.id} = $userId""".update.run().discard
 
-  def updateLogin(userId: Id[User], newLogin: String, newLoginLowerCase: LowerCased)(using DbTx): Unit =
+  def updateLogin(userId: Id[User], newLogin: String, newLoginLowerCase: LowerCased)(using DbTx[Postgres]): Unit =
     sql"""UPDATE $u SET ${u.login} = $newLogin, login_lowercase = ${newLoginLowerCase: String} WHERE ${u.id} = $userId""".update
       .run()
       .discard
 
-  def updateEmail(userId: Id[User], newEmail: LowerCased)(using DbTx): Unit =
+  def updateEmail(userId: Id[User], newEmail: LowerCased)(using DbTx[Postgres]): Unit =
     sql"""UPDATE $u SET ${u.emailLowerCase} = $newEmail WHERE ${u.id} = $userId""".update.run().discard
 
 end UserModel
 
-@Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
+@Table(SqlNameMapper.CamelToSnakeCase)
 @SqlName("users")
 case class User(
     id: Id[User],
@@ -51,7 +49,7 @@ case class User(
     @SqlName("email_lowercase") emailLowerCase: LowerCased,
     @SqlName("password") passwordHash: Hashed,
     createdOn: Instant
-):
+) derives EntityMeta:
   def verifyPassword(password: String): PasswordVerificationStatus =
     if Password.check(password, passwordHash).`with`(PasswordHashing.Argon2) then PasswordVerificationStatus.Verified
     else PasswordVerificationStatus.VerificationFailed
