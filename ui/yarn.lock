@@ -4968,9 +4968,9 @@ tinyspy@^4.0.3:
   integrity sha512-azl+t0z7pw/z958Gy9svOTuzqIk6xq+NSheJzn5MMWtWTFywIacg2wUlzKFGtt3cthx0r2SxMK0yzJOR0IES7Q==
 
 tldts-core@^7.4.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-7.4.0.tgz#a169874d111f2b56f8bcaba1971de312feb586b8"
-  integrity sha512-/mb9kRld+x1sIMXxWNOAp5m6C+D4GrAORWlJkOJ5dElvxdN1eutz/o7qHLp9gFvDF4Y3/L2xeScoxz6AbEo8rQ==
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-7.4.1.tgz#f39e64eb84fd136503876b2ea61c5de6a07380d3"
+  integrity sha512-sc2nGvGbixlJRHwTh/qQdPXTxJU1UDJboGPQm4d/01YUJ9r/u6aeIulQvEaxUlvKDN7hb1qCLjax+jhVAPLa/g==
 
 tldts@^7.0.5:
   version "7.4.0"
