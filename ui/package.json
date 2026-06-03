@@ -59,7 +59,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.3.1",
     "@vitest/coverage-v8": "^4.1.8",
-    "@vitest/ui": "3.2.4",
+    "@vitest/ui": "4.1.8",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^10.0.1",
     "eslint": "^9.39.2",
