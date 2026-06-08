@@ -2232,7 +2232,7 @@ es-module-lexer@^2.0.0:
   resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-2.1.0.tgz#1dfcbb5ea3bbfb63f28e1fc3676c3676d1c9624c"
   integrity sha512-n27zTYMjYu1aj4MjCWzSP7G9r75utsaoc8m61weK+W8JMBGGQybd43GstCXZ3WNmSFtGT9wi59qQTW6mhTR5LQ==
 
-es-object-atoms@^1.0.0, es-object-atoms@^1.1.1:
+es-object-atoms@^1.0.0, es-object-atoms@^1.1.1, es-object-atoms@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/es-object-atoms/-/es-object-atoms-1.1.2.tgz#a2d0b373205724dfa525d23b0c3e1b1ca582c99b"
   integrity sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw==
@@ -4278,17 +4278,18 @@ string.prototype.repeat@^1.0.0:
     es-abstract "^1.17.5"
 
 string.prototype.trim@^1.2.10:
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/string.prototype.trim/-/string.prototype.trim-1.2.10.tgz#40b2dd5ee94c959b4dcfb1d65ce72e90da480c81"
-  integrity sha512-Rs66F0P/1kedk5lyYyH9uBzuiI/kNRmwJAR9quK6VOtIpZ2G+hMZd+HQbbv25MgCA6gEffoMZYxlTod4WcdrKA==
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/string.prototype.trim/-/string.prototype.trim-1.2.11.tgz#e6bd19cda3985d05a42dda31f3ddf4d35d3430e3"
+  integrity sha512-PwvK7BU+CMTJGYQCTZb5RWXIML92lftJLhQz1tBzgKiqGxJaMlBAa48POXaNAC2s4y8jr3EFqrkF9+44neS46w==
   dependencies:
-    call-bind "^1.0.8"
-    call-bound "^1.0.2"
+    call-bind "^1.0.9"
+    call-bound "^1.0.4"
     define-data-property "^1.1.4"
     define-properties "^1.2.1"
-    es-abstract "^1.23.5"
-    es-object-atoms "^1.0.0"
+    es-abstract "^1.24.2"
+    es-object-atoms "^1.1.2"
     has-property-descriptors "^1.0.2"
+    safe-regex-test "^1.1.0"
 
 string.prototype.trimend@^1.0.9:
   version "1.0.9"
