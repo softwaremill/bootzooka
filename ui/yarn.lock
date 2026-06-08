@@ -4421,17 +4421,18 @@ string.prototype.repeat@^1.0.0:
     es-abstract "^1.17.5"
 
 string.prototype.trim@^1.2.10:
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/string.prototype.trim/-/string.prototype.trim-1.2.10.tgz#40b2dd5ee94c959b4dcfb1d65ce72e90da480c81"
-  integrity sha512-Rs66F0P/1kedk5lyYyH9uBzuiI/kNRmwJAR9quK6VOtIpZ2G+hMZd+HQbbv25MgCA6gEffoMZYxlTod4WcdrKA==
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/string.prototype.trim/-/string.prototype.trim-1.2.11.tgz#e6bd19cda3985d05a42dda31f3ddf4d35d3430e3"
+  integrity sha512-PwvK7BU+CMTJGYQCTZb5RWXIML92lftJLhQz1tBzgKiqGxJaMlBAa48POXaNAC2s4y8jr3EFqrkF9+44neS46w==
   dependencies:
-    call-bind "^1.0.8"
-    call-bound "^1.0.2"
+    call-bind "^1.0.9"
+    call-bound "^1.0.4"
     define-data-property "^1.1.4"
     define-properties "^1.2.1"
-    es-abstract "^1.23.5"
-    es-object-atoms "^1.0.0"
+    es-abstract "^1.24.2"
+    es-object-atoms "^1.1.2"
     has-property-descriptors "^1.0.2"
+    safe-regex-test "^1.1.0"
 
 string.prototype.trimend@^1.0.9:
   version "1.0.10"
