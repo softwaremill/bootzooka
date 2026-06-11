@@ -8,7 +8,8 @@ import ox.OxApp.Settings
 import ox.otel.context.PropagatingVirtualThreadFactory
 
 object Main extends OxApp.Simple with Logging:
-  // route JUL to SLF4J (JUL is used by Magnum & OTEL for logging)
+  // route JUL to SLF4J (JUL is used by OTEL for logging); parlance instead logs via java.lang.System.Logger,
+  // which is routed to SLF4J by the slf4j-jdk-platform-logging runtime dependency, not by this bridge
   SLF4JBridgeHandler.removeHandlersForRootLogger()
   SLF4JBridgeHandler.install()
 

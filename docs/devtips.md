@@ -44,11 +44,11 @@ There are two imports that are useful when developing a new functionality:
 If you are defining database queries or running transactions, add the following imports:
 
 ```scala
-import com.softwaremill.bootzooka.infrastructure.Magnum.given
-import com.augustnagro.magnum.{sql, DbTx}
+import com.softwaremill.bootzooka.infrastructure.Codecs.given
+import ma.chinespirit.parlance.{sql, DbTx, Postgres}
 ```
 
-This will bring into scope custom [Magnum](https://github.com/AugustNagro/magnum) codecs, the sql query interpolator
+This will bring into scope custom [parlance](https://github.com/lbialy/parlance) codecs, the sql query interpolator
 as well as the given instance which is required by methods that should run in a transaction.
 
 ### HTTP API

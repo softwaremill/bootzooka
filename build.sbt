@@ -14,7 +14,7 @@ val otelVersion = "1.62.0"
 val otelInstrumentationVersion = "2.17.1-alpha"
 
 val dbDependencies = Seq(
-  "com.augustnagro" %% "magnum" % "1.3.1", // Scala DB client
+  "ma.chinespirit" %% "parlance" % "0.1.0", // Scala DB client (Magnum-inspired)
   "org.postgresql" % "postgresql" % "42.7.11", // JDBC driver
   "com.zaxxer" % "HikariCP" % "7.0.2", // connection pool
   "org.flywaydb" % "flyway-database-postgresql" % "12.7.0" // database migrations
@@ -47,9 +47,10 @@ val jsonDependencies = Seq(
 
 val loggingDependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.33", // main logging library
-  "org.slf4j" % "jul-to-slf4j" % "2.0.18", // forward e.g. OTEL and Magnum logs which use JUL to SLF4J
+  "org.slf4j" % "jul-to-slf4j" % "2.0.18", // forward e.g. OTEL logs which use JUL to SLF4J
   "com.softwaremill.ox" %% "mdc-logback" % oxVersion, // support MDCs which propagate within Ox scopes
-  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.18" % Runtime // route Java's platform logging (separate from JUL) to SLF4J
+  // route Java's platform logging (java.lang.System.Logger, separate from JUL) to SLF4J; parlance logs via this
+  "org.slf4j" % "slf4j-jdk-platform-logging" % "2.0.18" % Runtime
 )
 
 val configDependencies = Seq(
