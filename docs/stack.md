@@ -15,7 +15,7 @@ Bootzooka's stack consists of the following technologies/tools, on the backend:
 - [Tapir](https://github.com/softwaremill/tapir) (endpoint description library) + [netty](https://netty.io) (backend
   networking layer)
 - SQL database, by default [PostgreSQL](https://www.postgresql.org) (persistence)
-- [Magnum](https://github.com/AugustNagro/magnum) (type-safe database access) + [flyway](https://flywaydb.org) (schema
+- [parlance](https://github.com/lbialy/parlance) (type-safe database access) + [flyway](https://flywaydb.org) (schema
   evolution)
 - [Ox](https://github.com/softwaremill/ox) (error handling, concurrency & resource management)
 - [SBT](https://www.scala-sbt.org) (build tool)

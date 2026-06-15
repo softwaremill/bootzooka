@@ -1,6 +1,6 @@
 package com.softwaremill.bootzooka.security
 
-import com.augustnagro.magnum.DbTx
+import com.softwaremill.bootzooka.infrastructure.Tx
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.user.User
 import com.softwaremill.bootzooka.util.Strings.Id
@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit
 import scala.concurrent.duration.Duration
 
 class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: Clock) extends Logging:
-  def create(userId: Id[User], valid: Duration)(using DbTx): ApiKey =
+  def create(userId: Id[User], valid: Duration)(using Tx): ApiKey =
     val id = idGenerator.nextId[ApiKey]()
     val now = clock.now()
     val validUntil = now.plus(valid.toMillis, ChronoUnit.MILLIS)
@@ -20,11 +20,11 @@ class ApiKeyService(apiKeyModel: ApiKeyModel, idGenerator: IdGenerator, clock: C
     apiKey
   end create
 
-  def invalidate(id: Id[ApiKey])(using DbTx): Unit =
+  def invalidate(id: Id[ApiKey])(using Tx): Unit =
     logger.debug(s"Invalidating api key $id")
     apiKeyModel.delete(id)
 
-  def invalidateAllForUser(userId: Id[User])(using DbTx): Unit =
+  def invalidateAllForUser(userId: Id[User])(using Tx): Unit =
     logger.debug(s"Invalidating all api keys for user $userId")
     apiKeyModel.deleteAllForUser(userId)
 end ApiKeyService
