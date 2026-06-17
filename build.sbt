@@ -58,7 +58,7 @@ val configDependencies = Seq(
 
 val baseDependencies = Seq(
   "com.softwaremill.ox" %% "core" % oxVersion, // concurrency, streaming & error handling utilities
-  "com.softwaremill.quicklens" %% "quicklens" % "1.9.12",
+  "com.softwaremill.quicklens" %% "quicklens" % "1.9.15",
   "com.softwaremill.macwire" %% "macros" % "2.6.7" % Provided // compile-time generation of dependency tree (DI replacement)
 )
 
