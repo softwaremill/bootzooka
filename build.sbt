@@ -42,7 +42,7 @@ val observabilityDependencies = Seq(
 val jsonDependencies = Seq(
   "com.softwaremill.sttp.client4" %% "jsoniter" % sttpVersion, // main JSON library
   "com.softwaremill.sttp.tapir" %% "tapir-jsoniter-scala" % tapirVersion, // Tapir <-> jsoniter integration
-  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.38.15" // automatic codec derivation
+  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.38.16" // automatic codec derivation
 )
 
 val loggingDependencies = Seq(
