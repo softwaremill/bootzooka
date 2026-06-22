@@ -223,9 +223,9 @@
   integrity sha512-DtdHlgXh5ZkA43cwBcAm+huzgJiwx3ZTWVjBs94kwz2xKqSimDA3lBgCjphYgwgVUMWatSM0pDd8TILB1yrVVg==
 
 "@csstools/css-color-parser@^4.1.0":
-  version "4.1.7"
-  resolved "https://registry.yarnpkg.com/@csstools/css-color-parser/-/css-color-parser-4.1.7.tgz#ca32fc74a3cdec7c288651fe01241fcd59f95a0e"
-  integrity sha512-CmjJFQTFQx/U/xNJhSjCQ0ilpesPmNQ8+eOUeM/+kDOVW33qsIjeOXc27vrQDdWVkf83ZSWwtg7kXSUvKDJ8cQ==
+  version "4.1.8"
+  resolved "https://registry.yarnpkg.com/@csstools/css-color-parser/-/css-color-parser-4.1.8.tgz#54c156703a4072a23b0f5e53915ce3479f4d29ec"
+  integrity sha512-3chWb7PRLijpJpPIKkDxdu6IBeO5MrFACND57On0j8OPpc0wZibcGc3xAHrSEbOx/KDRyMHoIxGn0w1PhXMYHw==
   dependencies:
     "@csstools/color-helpers" "^6.0.2"
     "@csstools/css-calc" "^3.2.1"
