@@ -2266,11 +2266,12 @@ es-shim-unscopables@^1.0.2:
     hasown "^2.0.2"
 
 es-to-primitive@^1.3.0:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/es-to-primitive/-/es-to-primitive-1.3.1.tgz#abd6ef5b12d7c25bcd9eb3a7ef63e568b451ba4a"
-  integrity sha512-CxN9N56HYfd2m/acc/NOFrZQsN9kU4eh+2kk6A707Kz1krH8tKmfrs5RnftB8WNX80T0NS7vSQsDOlg23diR2g==
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/es-to-primitive/-/es-to-primitive-1.3.4.tgz#0c854291cf0d7b439d6b9e5771ea837ffaf1f991"
+  integrity sha512-yPDz7wqpg1/mmHLmS3tcfTfbw5f1eryXvyghYBffGdERwe+mV7ZcWzTR8LR17Kvqt3qfPurjlonmnq3MKXIOXw==
   dependencies:
     es-abstract-get "^1.0.0"
+    es-define-property "^1.0.1"
     es-errors "^1.3.0"
     is-callable "^1.2.7"
     is-date-object "^1.1.0"
