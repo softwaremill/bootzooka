@@ -212,7 +212,7 @@
     picocolors "^1.0.0"
     sisteransi "^1.0.5"
 
-"@csstools/color-helpers@^6.0.2":
+"@csstools/color-helpers@^6.1.0":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@csstools/color-helpers/-/color-helpers-6.1.0.tgz#18903248db1da28285e8458793b038f60d738cf1"
   integrity sha512-064IFJdjTfUqnjpCVpMOdbr8FLQBhinbZj6yRv2An2E41O/pLEXqfFRWqGq/SxlE5PEUYTlvWsG2r8MswAVvkg==
@@ -223,11 +223,11 @@
   integrity sha512-DtdHlgXh5ZkA43cwBcAm+huzgJiwx3ZTWVjBs94kwz2xKqSimDA3lBgCjphYgwgVUMWatSM0pDd8TILB1yrVVg==
 
 "@csstools/css-color-parser@^4.1.0":
-  version "4.1.8"
-  resolved "https://registry.yarnpkg.com/@csstools/css-color-parser/-/css-color-parser-4.1.8.tgz#54c156703a4072a23b0f5e53915ce3479f4d29ec"
-  integrity sha512-3chWb7PRLijpJpPIKkDxdu6IBeO5MrFACND57On0j8OPpc0wZibcGc3xAHrSEbOx/KDRyMHoIxGn0w1PhXMYHw==
+  version "4.1.9"
+  resolved "https://registry.yarnpkg.com/@csstools/css-color-parser/-/css-color-parser-4.1.9.tgz#a39145a8582dfe07640dff5ccab8b92934242987"
+  integrity sha512-paQcIaOO53Rk5+YrBaBjm/SgrV4INImjo2BT1DtQRYr+XeTRbeAYlS+jxXp9drqvKmtFnWRJKIalDLhZZDu42A==
   dependencies:
-    "@csstools/color-helpers" "^6.0.2"
+    "@csstools/color-helpers" "^6.1.0"
     "@csstools/css-calc" "^3.2.1"
 
 "@csstools/css-parser-algorithms@^4.0.0":
