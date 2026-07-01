@@ -17,7 +17,7 @@ val dbDependencies = Seq(
   "com.augustnagro" %% "magnum" % "1.3.1", // Scala DB client
   "org.postgresql" % "postgresql" % "42.7.12", // JDBC driver
   "com.zaxxer" % "HikariCP" % "7.1.0", // connection pool
-  "org.flywaydb" % "flyway-database-postgresql" % "12.9.0" // database migrations
+  "org.flywaydb" % "flyway-database-postgresql" % "12.10.0" // database migrations
 )
 
 val httpDependencies = Seq(
