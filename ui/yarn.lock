@@ -555,13 +555,6 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/primitive/-/primitive-1.1.4.tgz#47ef0f6cff4a1a1c09ebbf6d79159b7f01b967cf"
   integrity sha512-7AdCK9PQyiljKoBDbN8OuctCbd/esdwZPQ8RtOE3SsyQtUpiPb+ND75q0jEhC1m1ecBI0MFNeLJvwIh9iKHRcQ==
 
-"@radix-ui/react-arrow@1.1.10":
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-arrow/-/react-arrow-1.1.10.tgz#67b778e5811d21d2ed6d8e6cafdbe5e6280abeb0"
-  integrity sha512-j2VTDz1vgCsmuG0k5lBfOcM8n5JPFqZBcMryasFjHYMhwxYL5SRUV5lMSUpRdNtw3D/Sv8pzJtrlAgkssYSsQQ==
-  dependencies:
-    "@radix-ui/react-primitive" "2.1.6"
-
 "@radix-ui/react-arrow@1.1.11":
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-arrow/-/react-arrow-1.1.11.tgz#be2a068bffe4453bd6941fc44eed1f1ea0e8226f"
@@ -711,22 +704,6 @@
     "@radix-ui/react-use-previous" "1.1.2"
     "@radix-ui/react-visually-hidden" "1.2.6"
 
-"@radix-ui/react-popper@1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-popper/-/react-popper-1.3.1.tgz#4f7d36a7ec49959e1f48d2629ca98323eaf95cb1"
-  integrity sha512-bhnq/0DEPTi2lsOD3J5rTL65qUKHbKbhqHsmN9TMiclSXpipi651ooUKPPp6G5lF/WiHBdn1s0Wuqsn+myVAvw==
-  dependencies:
-    "@floating-ui/react-dom" "^2.0.0"
-    "@radix-ui/react-arrow" "1.1.10"
-    "@radix-ui/react-compose-refs" "1.1.3"
-    "@radix-ui/react-context" "1.1.4"
-    "@radix-ui/react-primitive" "2.1.6"
-    "@radix-ui/react-use-callback-ref" "1.1.2"
-    "@radix-ui/react-use-layout-effect" "1.1.2"
-    "@radix-ui/react-use-rect" "1.1.2"
-    "@radix-ui/react-use-size" "1.1.2"
-    "@radix-ui/rect" "1.1.2"
-
 "@radix-ui/react-popper@1.3.2":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-popper/-/react-popper-1.3.2.tgz#5c24ca8a68ae2d52437760b59b041f6b96e1a9ec"
@@ -742,14 +719,6 @@
     "@radix-ui/react-use-rect" "1.1.2"
     "@radix-ui/react-use-size" "1.1.2"
     "@radix-ui/rect" "1.1.2"
-
-"@radix-ui/react-portal@1.1.12":
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-portal/-/react-portal-1.1.12.tgz#e62f8b5882c71bdda87cf74465ebb6a219a09971"
-  integrity sha512-m309havGzsjLHHaIX50G5PlvRs3xkgPCsGk/5PTvYm8D5q33yG0J7w/712PTOhid7NTaFETtnSXjngHQavvhVw==
-  dependencies:
-    "@radix-ui/react-primitive" "2.1.6"
-    "@radix-ui/react-use-layout-effect" "1.1.2"
 
 "@radix-ui/react-portal@1.1.13":
   version "1.1.13"
@@ -802,23 +771,23 @@
   dependencies:
     "@radix-ui/react-compose-refs" "1.1.3"
 
-"@radix-ui/react-tooltip@^1.2.10":
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-tooltip/-/react-tooltip-1.2.10.tgz#e20b87d625f78961b4997987190a744266b242b6"
-  integrity sha512-NlNe8D0dWEpVfXFli90IO6X07Josx/b1iu98tDnx9Xv0HT4wLIL+m2VOheMHhK7qbp2HoTBqALEFzGyZs/levw==
+"@radix-ui/react-tooltip@^1.2.11":
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-tooltip/-/react-tooltip-1.2.11.tgz#c01e24cce73388deade85287a16ff65da81b3e72"
+  integrity sha512-8XZ6Py3y3W2nEzAUGCN5cfVKaUi+CVApcz1d6lrNVVf2hvYEixMRkq8k9ggPKnQUpRRuOV5avt8uvxViH2jLwA==
   dependencies:
     "@radix-ui/primitive" "1.1.4"
     "@radix-ui/react-compose-refs" "1.1.3"
     "@radix-ui/react-context" "1.1.4"
-    "@radix-ui/react-dismissable-layer" "1.1.13"
+    "@radix-ui/react-dismissable-layer" "1.1.14"
     "@radix-ui/react-id" "1.1.2"
-    "@radix-ui/react-popper" "1.3.1"
-    "@radix-ui/react-portal" "1.1.12"
+    "@radix-ui/react-popper" "1.3.2"
+    "@radix-ui/react-portal" "1.1.13"
     "@radix-ui/react-presence" "1.1.6"
-    "@radix-ui/react-primitive" "2.1.6"
+    "@radix-ui/react-primitive" "2.1.7"
     "@radix-ui/react-slot" "1.3.0"
     "@radix-ui/react-use-controllable-state" "1.2.3"
-    "@radix-ui/react-visually-hidden" "1.2.6"
+    "@radix-ui/react-visually-hidden" "1.2.7"
 
 "@radix-ui/react-use-callback-ref@1.1.2":
   version "1.1.2"
@@ -877,6 +846,13 @@
   integrity sha512-jCE0WljWifTI4niIMCll06kGpsJTAPiZVU9H4WR1N6qW7At9ystHbN7dDB+we2xH535roFHj7qKS+RGj0FMDWQ==
   dependencies:
     "@radix-ui/react-primitive" "2.1.6"
+
+"@radix-ui/react-visually-hidden@1.2.7":
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-visually-hidden/-/react-visually-hidden-1.2.7.tgz#64fc5994ebd39b3b19f4e93c11da22bf03af684b"
+  integrity sha512-1wNZBggTDK3GRuuQ6nP4k2yi7a6l7I5qbMPbZcRsrGsGVead/f/d5FhEzUvqFs0bcrDLx7n1zKQ3JvLR6whaaw==
+  dependencies:
+    "@radix-ui/react-primitive" "2.1.7"
 
 "@radix-ui/rect@1.1.2":
   version "1.1.2"
