@@ -632,12 +632,12 @@
   dependencies:
     "@radix-ui/react-use-layout-effect" "1.1.2"
 
-"@radix-ui/react-label@^2.1.10":
-  version "2.1.10"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-label/-/react-label-2.1.10.tgz#5b7725f808a853ba0c56a619f380ce66cb86438e"
-  integrity sha512-ib0zvq2ZsAqKm5tRnqGJn3vOxSgIts5ToxsXT0q1S/GfLD1Zj7UOEnkw8u2w6sRmn47djpQWuSU1DCL1R29/yw==
+"@radix-ui/react-label@^2.1.11":
+  version "2.1.11"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-label/-/react-label-2.1.11.tgz#dafdacfe284326ea64eaefa1d329b9809e02f9c0"
+  integrity sha512-3PKvDDxOn62k0oV1n4QtNtD2vpu+zYjXR7ojLBPaO6SPvhy53yg0vAmgNeBQeJW5rV3dffoRG+HYfLBZuzw0CQ==
   dependencies:
-    "@radix-ui/react-primitive" "2.1.6"
+    "@radix-ui/react-primitive" "2.1.7"
 
 "@radix-ui/react-menu@2.1.19":
   version "2.1.19"
@@ -713,13 +713,6 @@
   integrity sha512-zdTk4PlUO0E18HnZ3wYbW0KkJJxWCdiNYp6g6X1PtONFhxVkg01vliTJAmwIszU6mHiyBOoW9P0rAugl5/hULQ==
   dependencies:
     "@radix-ui/react-use-layout-effect" "1.1.2"
-
-"@radix-ui/react-primitive@2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-primitive/-/react-primitive-2.1.6.tgz#8e7c170a35d538325a5ff9194f7a842562a1d57d"
-  integrity sha512-wetd0QI77DbvrPpTAvH1SqOxsYF2wZe5TNxqwOd5Ty4XDpV3dpV0s8K/1MGMJBeY5o7lg8ub5VIt1Ub+yVen6g==
-  dependencies:
-    "@radix-ui/react-slot" "1.3.0"
 
 "@radix-ui/react-primitive@2.1.7":
   version "2.1.7"
