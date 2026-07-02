@@ -2216,9 +2216,9 @@ es-iterator-helpers@^1.2.1:
     math-intrinsics "^1.1.0"
 
 es-module-lexer@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-2.2.0.tgz#fe824f12e3f28bde741bb572b5a182786eaf3764"
-  integrity sha512-3lGxdTXCLfe1MYfTz1y2ksAAUM4NAOP6rPEjxGJVKO7TZ5+tvHCaQWGpC4Y3IXvW3ece0Cz1cIP4FWBxOnGCTQ==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-2.3.0.tgz#fda770234c345064c122eb905e1c4200ffa4ce7e"
+  integrity sha512-KLdwQm2NvGLDkQDCGvmiQrhkd0JbMzXthwQAUgWjQuQdBLFa3eiBP5arXZyA+f8x+x7OXgud6bq2rxjGtHV2tw==
 
 es-object-atoms@^1.0.0, es-object-atoms@^1.1.1, es-object-atoms@^1.1.2:
   version "1.1.2"
