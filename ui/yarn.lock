@@ -4436,17 +4436,17 @@ tinyrainbow@^3.1.0:
   resolved "https://registry.yarnpkg.com/tinyrainbow/-/tinyrainbow-3.1.0.tgz#1d8a623893f95cf0a2ddb9e5d11150e191409421"
   integrity sha512-Bf+ILmBgretUrdJxzXM0SgXLZ3XfiaUuOj/IKQHuTXip+05Xn+uyEYdVg0kYDipTBcLrCVyUzAPz7QmArb0mmw==
 
-tldts-core@^7.4.5:
-  version "7.4.5"
-  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-7.4.5.tgz#4d1a77adbf274206be79e9d5fd602089a4e99c72"
-  integrity sha512-pGrwzZDvPwKe+7NNUqAunb6rqTfynr0VOUhCMdqbu5xlvNiszsAJygRzwvpVycdzejlbpY+SWJOn+s75Og7FEA==
+tldts-core@^7.4.6:
+  version "7.4.6"
+  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-7.4.6.tgz#4cc8ccdae554742f09e5999708cac5a7d83cb287"
+  integrity sha512-TkQNGJIhlEphpHCjKodMTSe23egUZr/g+flI2qkLgiJ/maAzSgXypSLRTNH3nCmqgayEmtcJBiLcfODSAr1xoA==
 
 tldts@^7.0.5:
-  version "7.4.5"
-  resolved "https://registry.yarnpkg.com/tldts/-/tldts-7.4.5.tgz#19648239527391393b49f0ae5eccc418f638deec"
-  integrity sha512-RfEzKWcq5fHUOFq7J3rl3Oz6ylKGtcHqUznzj4EcXsxLSIjJcvpbXAQtWGeJQ0xKnimR5e0Cn+cn9TssfMzm+g==
+  version "7.4.6"
+  resolved "https://registry.yarnpkg.com/tldts/-/tldts-7.4.6.tgz#3af5da04b35afd0e00cf0fe2827af30393a28202"
+  integrity sha512-rbP0Gyx8b3Ae9yO//CU2wbSnQNoQ66m1nJdSbSHmnwKwzkkz/u8mERYU8T2rmlmy+bJvRNn84yNCW8gYqox44Q==
   dependencies:
-    tldts-core "^7.4.5"
+    tldts-core "^7.4.6"
 
 to-regex-range@^5.0.1:
   version "5.0.1"
