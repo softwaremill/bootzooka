@@ -7,7 +7,7 @@ import scala.sys.process.Process
 import complete.DefaultParsers._
 
 val password4jVersion = "1.8.4"
-val sttpVersion = "4.0.25"
+val sttpVersion = "4.0.26"
 val tapirVersion = "1.13.26"
 val oxVersion = "1.0.5"
 val otelVersion = "1.63.0"
