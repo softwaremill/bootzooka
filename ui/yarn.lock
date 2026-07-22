@@ -3748,9 +3748,9 @@ possible-typed-array-names@^1.0.0, possible-typed-array-names@^1.1.0:
   integrity sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==
 
 postcss@^8.5.17:
-  version "8.5.21"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.21.tgz#47a779bd831733ff620e608d233b195ee1e7d66c"
-  integrity sha512-v4sDNP3fdNiWMfabO7OwOQdOX8TiQSztKyT1Wj0w+j7LDallJThJRBBBmzVGyYj0crMh7jlV4zepPkiNu9UwDQ==
+  version "8.5.22"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.22.tgz#086a0d5685a715acf5950ebbcb1538faf3051697"
+  integrity sha512-KBDEIpLrvpv16pp3K0Fw+UCoZfopFjjgeB+0tA/aaThfEE74kKDLrgg603YvOWJyg3+WYtyq3xYsQWsIyZlPqQ==
   dependencies:
     nanoid "^3.3.16"
     picocolors "^1.1.1"
