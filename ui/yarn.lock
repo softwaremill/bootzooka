@@ -642,12 +642,12 @@
   dependencies:
     "@radix-ui/react-use-layout-effect" "1.1.2"
 
-"@radix-ui/react-label@^2.1.12":
-  version "2.1.12"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-label/-/react-label-2.1.12.tgz#c30eb3e357ef6aaa8b996320c9c77c46b9ec2d5d"
-  integrity sha512-dxioNQ7VOrYKKWJIxMRmJPDSWQN0gNCUy3zaqUSBwsuFAiFzI0yLGJr2q3ml07k/HlOk55N8KEfwa1ZgfprJ3w==
+"@radix-ui/react-label@^2.1.13":
+  version "2.1.13"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-label/-/react-label-2.1.13.tgz#86266bd0c788e2b2ac4ef852b8eb12acc02bf57f"
+  integrity sha512-kj7BXyM4uG0dyeoEdVmPQAOFN291+iJOtiGTvkXe1ijJWLQbAHpFNkopvqquaMVn+zjqTZRhnefESAinMErHKg==
   dependencies:
-    "@radix-ui/react-primitive" "2.1.7"
+    "@radix-ui/react-primitive" "2.1.8"
 
 "@radix-ui/react-menu@2.1.21":
   version "2.1.21"
@@ -731,6 +731,13 @@
   dependencies:
     "@radix-ui/react-slot" "1.3.0"
 
+"@radix-ui/react-primitive@2.1.8":
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-primitive/-/react-primitive-2.1.8.tgz#133f8d100d39a38ea4727cb8b739e757a39603b5"
+  integrity sha512-DOlK1BdcIeYYUcFkSYFka4v1h95XTov93b0jCgW1EEiZuIhdwHY2NlE1teLIh+p0uBsuZI5A+voay+iVWpprfA==
+  dependencies:
+    "@radix-ui/react-slot" "1.3.1"
+
 "@radix-ui/react-roving-focus@1.1.16":
   version "1.1.16"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-roving-focus/-/react-roving-focus-1.1.16.tgz#e325471ed2f33109c21c66552b5997a751575fb6"
@@ -755,7 +762,7 @@
   dependencies:
     "@radix-ui/react-compose-refs" "1.1.3"
 
-"@radix-ui/react-slot@^1.3.1":
+"@radix-ui/react-slot@1.3.1", "@radix-ui/react-slot@^1.3.1":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-slot/-/react-slot-1.3.1.tgz#01cb530502d362046348542e074639e31368123c"
   integrity sha512-Bu/aAQHFFh6/QAvXAeUMurJ9fbW0JUIqlojU/yBXZ7cAVqy75Y7JYYyuCr9zLNF0p4WWoJYV54CTUIf4l7FzTw==
