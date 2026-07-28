@@ -675,12 +675,12 @@
   dependencies:
     "@radix-ui/react-use-layout-effect" "1.1.4"
 
-"@radix-ui/react-label@^2.1.13":
-  version "2.1.13"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-label/-/react-label-2.1.13.tgz#86266bd0c788e2b2ac4ef852b8eb12acc02bf57f"
-  integrity sha512-kj7BXyM4uG0dyeoEdVmPQAOFN291+iJOtiGTvkXe1ijJWLQbAHpFNkopvqquaMVn+zjqTZRhnefESAinMErHKg==
+"@radix-ui/react-label@^2.1.15":
+  version "2.1.15"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-label/-/react-label-2.1.15.tgz#d6df361e853d8de9e3a512f6772b646fdb8d34e7"
+  integrity sha512-o/rdYEwZTTo5tjknnPeyQFU45kUC4i/XyeDPP+HGyi6XqpOP6Zf5Ya5vh/Yfe9Id5JiuWnnAx2XqIeD3UYZt0g==
   dependencies:
-    "@radix-ui/react-primitive" "2.1.8"
+    "@radix-ui/react-primitive" "2.1.10"
 
 "@radix-ui/react-menu@2.1.24":
   version "2.1.24"
