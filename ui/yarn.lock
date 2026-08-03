@@ -74,6 +74,17 @@
     "@jridgewell/trace-mapping" "^0.3.28"
     jsesc "^3.0.2"
 
+"@babel/generator@^7.29.8":
+  version "7.29.8"
+  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.29.8.tgz#4b0b887885422643339e09022148a4c4ebaa4979"
+  integrity sha512-gZbepsdh3WDtgZKWL+vTPh71LSBrm/Y4/QDZBVCcYfmeTEEuoOYwlSy+G1StfJg+/Zy550u/3TATbm7qDbbMtg==
+  dependencies:
+    "@babel/parser" "^7.29.8"
+    "@babel/types" "^7.29.8"
+    "@jridgewell/gen-mapping" "^0.3.12"
+    "@jridgewell/trace-mapping" "^0.3.28"
+    jsesc "^3.0.2"
+
 "@babel/helper-compilation-targets@^7.29.7":
   version "7.29.7"
   resolved "https://registry.yarnpkg.com/@babel/helper-compilation-targets/-/helper-compilation-targets-7.29.7.tgz#7a1def704302401c47f64fa85589e974ae217042"
@@ -159,19 +170,27 @@
     "@babel/types" "^7.29.7"
 
 "@babel/traverse@^7.29.7":
-  version "7.29.7"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.29.7.tgz#c47b07a41b95da0907d026b5dd894d98de7d2f2d"
-  integrity sha512-EhlfNQtZ+NK22w5BM61ciuiq1m58ed33Wr1Xan//ZRTy6hgjnwyCffRYwzsGXdASJSUJ1guZILsErh1eQcl+zw==
+  version "7.29.8"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.29.8.tgz#4111014cdc71a0f95d9471907590baa0b8a6b28a"
+  integrity sha512-I5z7H3bf/41ktsNVLtpN0wAa336HkqIHQ5BuPLEhTkt1jVSyZpeNKIzTgEWmlxjdg81R0IgUCcaE+Ok3NvrfZg==
   dependencies:
     "@babel/code-frame" "^7.29.7"
-    "@babel/generator" "^7.29.7"
+    "@babel/generator" "^7.29.8"
     "@babel/helper-globals" "^7.29.7"
-    "@babel/parser" "^7.29.7"
+    "@babel/parser" "^7.29.8"
     "@babel/template" "^7.29.7"
-    "@babel/types" "^7.29.7"
+    "@babel/types" "^7.29.8"
     debug "^4.3.1"
 
 "@babel/types@^7.29.7":
+  version "7.29.8"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.8.tgz#1229eef31d85156d70fa3f4cd859376d0eaf6863"
+  integrity sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==
+  dependencies:
+    "@babel/helper-string-parser" "^7.29.7"
+    "@babel/helper-validator-identifier" "^7.29.7"
+
+"@babel/types@^7.29.8":
   version "7.29.8"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.8.tgz#1229eef31d85156d70fa3f4cd859376d0eaf6863"
   integrity sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==
