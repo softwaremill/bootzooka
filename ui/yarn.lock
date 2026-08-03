@@ -182,15 +182,7 @@
     "@babel/types" "^7.29.8"
     debug "^4.3.1"
 
-"@babel/types@^7.29.7":
-  version "7.29.8"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.8.tgz#1229eef31d85156d70fa3f4cd859376d0eaf6863"
-  integrity sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==
-  dependencies:
-    "@babel/helper-string-parser" "^7.29.7"
-    "@babel/helper-validator-identifier" "^7.29.7"
-
-"@babel/types@^7.29.8":
+"@babel/types@^7.29.7", "@babel/types@^7.29.8":
   version "7.29.8"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.8.tgz#1229eef31d85156d70fa3f4cd859376d0eaf6863"
   integrity sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==
@@ -326,9 +318,9 @@
     "@types/json-schema" "^7.0.15"
 
 "@eslint/eslintrc@^3.3.1":
-  version "3.3.5"
-  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-3.3.5.tgz#c131793cfc1a7b96f24a83e0a8bbd4b881558c60"
-  integrity sha512-4IlJx0X0qftVsN5E+/vGujTRIFtwuLbNsVUe7TO6zYPDR1O6nFwvwhIKEKSrl6dZchmYBITazxKoUYOjdtjlRg==
+  version "3.3.6"
+  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-3.3.6.tgz#d22bfd6b3a7d8e1f2c0b2f2e6de111b53ec6e13e"
+  integrity sha512-l2Ul9PrHsPCKcEY/ac7VgFj9D80C7S68sOKc618SyHDPK36s1XcFebXY0iTzUVn4Yq+YbwvSnDmCz9yxjX+QrA==
   dependencies:
     ajv "^6.14.0"
     debug "^4.3.2"
@@ -336,7 +328,7 @@
     globals "^14.0.0"
     ignore "^5.2.0"
     import-fresh "^3.2.1"
-    js-yaml "^4.1.1"
+    js-yaml "^4.3.0"
     minimatch "^3.1.5"
     strip-json-comments "^3.1.1"
 
@@ -3130,7 +3122,7 @@ js-tokens@^10.0.0:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-yaml@^4.1.0, js-yaml@^4.1.1:
+js-yaml@^4.1.0, js-yaml@^4.3.0:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.3.1.tgz#01216c001d67f48e2cd560d708c7af21090a3848"
   integrity sha512-CY6crGq313MX8GkwvB7tzgp99vjQxY1++5y10/BKN/GUfHqWaOGQMNZkBvqSzsZKWk/ijwHlWzzkLulsGHhjWQ==
