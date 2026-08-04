@@ -8,7 +8,7 @@ import complete.DefaultParsers._
 
 val password4jVersion = "1.8.4"
 val sttpVersion = "4.0.26"
-val tapirVersion = "1.13.29"
+val tapirVersion = "1.13.30"
 val oxVersion = "1.0.6"
 val otelVersion = "1.64.0"
 val otelInstrumentationVersion = "2.17.1-alpha"
