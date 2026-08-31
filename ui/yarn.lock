@@ -225,9 +225,9 @@
   integrity sha512-+B87qS7fIG3L5h3qwJ/IFbjoVoOe/bpOdh9hAjXbvx0o8ImEmUsGXN0inFOnk2ChCFgqkkGFQ+TpM5rbhkKe4w==
 
 "@csstools/css-syntax-patches-for-csstree@^1.1.7":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@csstools/css-syntax-patches-for-csstree/-/css-syntax-patches-for-csstree-1.1.8.tgz#0a724ea81d560ba94df3ae3fc239f451bc449b36"
-  integrity sha512-CpMLjAvwQg3BL5S0IeqsZNMH7EQrEWi0kLKOC13ZBF0ZwERiLWlibNPJr8G1kdU3Ms/r2KiNrF81pUh2HwAHdg==
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@csstools/css-syntax-patches-for-csstree/-/css-syntax-patches-for-csstree-1.1.10.tgz#52b7c11f8efc555c331f4d210b279af8fae871d9"
+  integrity sha512-xBja6gaAaH2R2c7eNyl0TY4dhnnZ2uhj+KXpLdEQ6M/wuk9bYFZM8wY0ykw3VO4TgEJ56KGlerXS/9KBKVR/Cg==
 
 "@csstools/css-tokenizer@^4.0.0":
   version "4.0.0"
