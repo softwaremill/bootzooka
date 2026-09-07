@@ -5,8 +5,13 @@ import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.util.Strings.{Id, asId}
 import sttp.model.StatusCode
+import sttp.shared.Identity
 import sttp.tapir.*
 import sttp.tapir.json.jsoniter.*
+import sttp.tapir.server.interceptor.{EndpointInterceptor, RequestHandler, RequestInterceptor, RequestResult, Responder}
+import sttp.tapir.server.model.ValuedEndpointOutput
+import java.util.LinkedList
+import java.util.concurrent.ConcurrentHashMap
 
 /** Common definitions used when defining HTTP endpoints. */
 object Http extends Logging:
