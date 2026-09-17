@@ -206,12 +206,7 @@
   resolved "https://registry.yarnpkg.com/@csstools/color-helpers/-/color-helpers-6.1.1.tgz#1890f29a4347486b54048d24c6ab8fbef039ee61"
   integrity sha512-gLNsunvwf3mCi5u5o46/Z/JcJMnhbHSaZ69rkgPzNM3J4s8hWwpPUQB6/tt0EDFyCiWzxANlx+2LJwpYj4zS1w==
 
-"@csstools/css-calc@^3.3.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@csstools/css-calc/-/css-calc-3.4.0.tgz#fe91cb64d01b562ebc5c028940657c7631516890"
-  integrity sha512-XQKj5B7QiZcHiegCOCAzcAOJdhGgWOHbbu62h5e5mkHnn8lWcfiJhllkqWmxu5zWR9jucPHuo1iTB56P033hcg==
-
-"@csstools/css-calc@^3.4.0":
+"@csstools/css-calc@^3.3.0", "@csstools/css-calc@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/css-calc/-/css-calc-3.4.0.tgz#fe91cb64d01b562ebc5c028940657c7631516890"
   integrity sha512-XQKj5B7QiZcHiegCOCAzcAOJdhGgWOHbbu62h5e5mkHnn8lWcfiJhllkqWmxu5zWR9jucPHuo1iTB56P033hcg==
@@ -4982,7 +4977,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-4.0.2.tgz#bc605eba49ce0fcd598c127fee1c236be3f22918"
   integrity sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==
 
-"zod@^3.25.0 || ^4.0.0", zod@^4.6.4:
-  version "4.6.4"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-4.6.4.tgz#1466178e4d8f9cedac31d093ccb7a1f0f97c99dc"
-  integrity sha512-AXSD6hvGdvRjajG/l1cC+d6IrhH+sjmPKtYeQdJIK8MFJl3LyClzS+o/YsVC+zQZPupAaeH5skwwm8YqYH7BqA==
+"zod@^3.25.0 || ^4.0.0", zod@^4.6.5:
+  version "4.6.5"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-4.6.5.tgz#e3af3edbdc260239c52f73caad05dbbffe6e82cd"
+  integrity sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==
