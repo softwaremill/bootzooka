@@ -40,6 +40,7 @@ class HttpApi(
   private val apiContextPath = List("api", "v1")
 
   private val serverOptions: NettySyncServerOptions = NettySyncServerOptions.customiseInterceptors
+    .prependInterceptor(RateLimitInterceptor)
     .prependInterceptor(OpenTelemetryTracing(otel))
     .prependInterceptor(SetTraceIdInMDCInterceptor)
     // all errors are formatted as JSON, and no additional routes are added to the server

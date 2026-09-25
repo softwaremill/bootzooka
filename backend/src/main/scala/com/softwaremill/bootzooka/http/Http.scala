@@ -5,8 +5,12 @@ import com.softwaremill.bootzooka.*
 import com.softwaremill.bootzooka.logging.Logging
 import com.softwaremill.bootzooka.util.Strings.{Id, asId}
 import sttp.model.StatusCode
+import sttp.shared.Identity
 import sttp.tapir.*
 import sttp.tapir.json.jsoniter.*
+import sttp.tapir.server.interceptor.{EndpointInterceptor, RequestHandler, RequestInterceptor, Responder}
+
+import java.util.concurrent.ConcurrentHashMap
 
 /** Common definitions used when defining HTTP endpoints. */
 object Http extends Logging:
@@ -59,3 +63,29 @@ object Http extends Logging:
 end Http
 
 case class Error_OUT(error: String) derives ConfiguredJsonValueCodec, Schema
+
+/** Signals that a client has exceeded the allowed request rate; translated into an error response by the default exception handler. */
+class TooManyRequestsException(msg: String) extends RuntimeException(msg)
+
+/** A Tapir server interceptor which throttles requests per client (identified by remote address), protecting public endpoints (login,
+  * registration, password reset, API key validation) against unlimited, unthrottled request volumes (CWE-770).
+  */
+object RateLimitInterceptor extends RequestInterceptor[Identity]:
+  private val maxRequestsPerWindow = 100
+  private val windowMillis = 60000L
+  private val requestCounts = new ConcurrentHashMap[String, (Long, Int)]()
+
+  override def apply[R, B](
+      responder: Responder[Identity, B],
+      requestHandler: EndpointInterceptor[Identity] => RequestHandler[Identity, R, B]
+  ): RequestHandler[Identity, R, B] =
+    RequestHandler.from { case (request, endpoints, monad) =>
+      val clientId = request.connectionInfo.remote.map(_.toString).getOrElse("unknown")
+      val now = System.currentTimeMillis()
+      val (windowStart, count) = requestCounts.getOrDefault(clientId, (now, 0))
+      val (newWindowStart, newCount) = if now - windowStart > windowMillis then (now, 1) else (windowStart, count + 1)
+      requestCounts.put(clientId, (newWindowStart, newCount))
+      if newCount > maxRequestsPerWindow then throw new TooManyRequestsException(s"Rate limit exceeded for client: $clientId")
+      requestHandler(EndpointInterceptor.noop)(request, endpoints)(using monad)
+    }
+end RateLimitInterceptor
