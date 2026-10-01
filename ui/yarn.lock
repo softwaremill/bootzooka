@@ -4454,9 +4454,9 @@ tinyrainbow@^3.1.1:
   integrity sha512-yau8yJdTt989Mm0Bd/236QnzEiPf2xLLTqUZRUJOo/3CB078LSwzei343DgtJVmfJKJE3TMINY1u42SQsP6mXw==
 
 tldts-core@^7.4.15:
-  version "7.4.15"
-  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-7.4.15.tgz#9ba216e1256dfd86b89da8fcb6bdf8b0ffdf360b"
-  integrity sha512-ERuv0p98XgSzmlSLJr8vDNxX+uATGInlN97V3R+JpYWaSqn5IG3ewWgCwczk4bkOpgth/o8Nt5FOi4B4w0n/1A==
+  version "7.4.16"
+  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-7.4.16.tgz#f4b1711fd30e5d9a742d94f6b391d8649acc8ae1"
+  integrity sha512-MDolfaSJtlSK5Y0A1xl3277ekubZwobpBjugknDizI9O5Rm60a1m8k4ICK+MRsCDzPygT81mp3BBf5RKDlFRfA==
 
 tldts@^7.0.5:
   version "7.4.15"
