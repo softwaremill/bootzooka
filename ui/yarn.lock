@@ -1349,17 +1349,22 @@
     std-env "^4.2.0"
     tinyrainbow "^3.1.1"
 
-"@vitest/istanbul-lib-coverage@1.0.1", "@vitest/istanbul-lib-coverage@^1.0.0":
+"@vitest/istanbul-lib-coverage@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@vitest/istanbul-lib-coverage/-/istanbul-lib-coverage-1.0.2.tgz#6aa430639cfd27809bb4611021ddd43f06d7a24f"
+  integrity sha512-9J/JMwOf9AoJhAywhrn7ScKTL38hsWQP/qPG60OtaAFcQ5OXPwKsxZFlbnuCKmZ61m8/lGgHYnFpdyQZUvG/iA==
+
+"@vitest/istanbul-lib-coverage@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@vitest/istanbul-lib-coverage/-/istanbul-lib-coverage-1.0.1.tgz#8bcff8c5cb100037cd341def96c5c9b857acbc1f"
   integrity sha512-k3DJZ8LhMBK9NS4SclF1ASD3OgXEWDorbIcPTRDK0/Zae6fRvu+fJRxtFdLfHsa9Y24beCdPnoNZ4LviTNstfA==
 
 "@vitest/istanbul-lib-report@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@vitest/istanbul-lib-report/-/istanbul-lib-report-1.0.1.tgz#34a9e0df1b001f531d230f1bbce743067669e90b"
-  integrity sha512-1EOLRfsTMnyAr3+kEAsP4o9dhaDlGPpD7H5iLBBeq//YpNB1VIahkPhB+eRp9N2Dkfw8oySROjE3yf9XDeaIkQ==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@vitest/istanbul-lib-report/-/istanbul-lib-report-1.0.2.tgz#e9eb0a96504d94b947955fcf5c6a56ab778e3ef2"
+  integrity sha512-gUsfXZJbzPamoIY5TvHFiMMoXESBrUMo+xqaj+rYrWI69+EnvRlYBlP96ZnHPY4vX8kyUpgAnFUCg5wZG/HkDQ==
   dependencies:
-    "@vitest/istanbul-lib-coverage" "1.0.1"
+    "@vitest/istanbul-lib-coverage" "1.0.2"
 
 "@vitest/mocker@5.0.0":
   version "5.0.0"
