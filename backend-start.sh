@@ -8,4 +8,5 @@ export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 
 export OTEL_SERVICE_NAME=bootzooka
 
-sbt "~backend/reStart"
+# --server runs sbt in the foreground
+sbt --server "~backend/reStart"

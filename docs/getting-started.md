@@ -8,7 +8,7 @@ title: "Getting started"
 In order to build and develop a Bootzooka-derived application you'll need the following:
 
 - Java JDK >= 21
-- [sbt](http://www.scala-sbt.org/) >= 1.10
+- [sbt](http://www.scala-sbt.org/) >= 2.0
 - Node.js >= 22 (We recommend [nvm](https://github.com/nvm-sh/nvm) - node version manager)
 - PostgreSQL
 
