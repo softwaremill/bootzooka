@@ -1349,15 +1349,10 @@
     std-env "^4.2.0"
     tinyrainbow "^3.1.1"
 
-"@vitest/istanbul-lib-coverage@1.0.2":
+"@vitest/istanbul-lib-coverage@1.0.2", "@vitest/istanbul-lib-coverage@^1.0.0":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@vitest/istanbul-lib-coverage/-/istanbul-lib-coverage-1.0.2.tgz#6aa430639cfd27809bb4611021ddd43f06d7a24f"
   integrity sha512-9J/JMwOf9AoJhAywhrn7ScKTL38hsWQP/qPG60OtaAFcQ5OXPwKsxZFlbnuCKmZ61m8/lGgHYnFpdyQZUvG/iA==
-
-"@vitest/istanbul-lib-coverage@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@vitest/istanbul-lib-coverage/-/istanbul-lib-coverage-1.0.1.tgz#8bcff8c5cb100037cd341def96c5c9b857acbc1f"
-  integrity sha512-k3DJZ8LhMBK9NS4SclF1ASD3OgXEWDorbIcPTRDK0/Zae6fRvu+fJRxtFdLfHsa9Y24beCdPnoNZ4LviTNstfA==
 
 "@vitest/istanbul-lib-report@^1.0.0":
   version "1.0.2"
