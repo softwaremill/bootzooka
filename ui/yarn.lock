@@ -220,9 +220,9 @@
     "@csstools/css-calc" "^3.4.1"
 
 "@csstools/css-parser-algorithms@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@csstools/css-parser-algorithms/-/css-parser-algorithms-4.0.1.tgz#0733e8bd28f0798d0512166bf8da7227826762fa"
-  integrity sha512-ShL8BqPfbKJrJiKFH0xBbN0i7Nrh9HXYRuF+pzyj93R/BL2YAsUxJeqANErzqM+0JGl7vjHp+3OIgd/DL69YIA==
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@csstools/css-parser-algorithms/-/css-parser-algorithms-4.0.2.tgz#689445621dae9f2114db2bee2190d3b4513a2d3c"
+  integrity sha512-40cSKyMvK+tq4qz6Awrlye2WGuOKt3FwPgtGg6KTfbHOWNw+Rk1rzbAtZnZ6IBhsY491HLRnDXwoyBAijmmILA==
 
 "@csstools/css-syntax-patches-for-csstree@^1.1.13":
   version "1.1.14"
