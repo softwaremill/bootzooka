@@ -32,7 +32,7 @@ jobs:
           java-version: "21"
           cache: "sbt"
 
-      - uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1, specifically v1.1.14
+      - uses: sbt/setup-sbt@ce95da69b39609ea153bad087708da5f37366897 # v1, specifically v1.5.10
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -45,7 +45,7 @@ jobs:
 
       - name: Run tests
         id: run-tests
-        run: sbt test
+        run: sbt testFull
 
       - name: Test UI build
         id: test-ui-build
@@ -68,7 +68,7 @@ jobs:
           java-version: "21"
           cache: "sbt"
 
-      - uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1, specifically v1.1.14
+      - uses: sbt/setup-sbt@ce95da69b39609ea153bad087708da5f37366897 # v1, specifically v1.5.10
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -86,7 +86,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Publish docker image
-        run: sbt 'set docker / version := "'${GITHUB_RUN_ID}-${GITHUB_SHA:0:7}'"' docker/docker:publish
+        run: sbt 'set docker / version := "'${GITHUB_RUN_ID}-${GITHUB_SHA:0:7}'" ; docker/Docker/publish'
 
   label:
     # only for PRs by softwaremill-ci

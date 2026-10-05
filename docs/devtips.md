@@ -18,11 +18,12 @@ If you are planning to use Bootzooka as scaffolding for your own project, consid
 
 * `renameProject` - replace Bootzooka with your custom name and adjust scala package names
 * `compile` - compile the whole project
-* `test` - run all the tests
+* `testFull` - run all the tests (`test` only runs the tests affected by changes since the last successful run)
 * `project <sub-project-name>` - switch context to the given sub-project, then all the commands will be executed only
 for that sub-project, this can be also achieved with e.g.: `<sub-project-name>/test`
 * `~backend/reStart` - runs the backend server and waits for source code changes to automatically compile changed file
   and to reload it. Used by the `./backend-start.sh` script
+* `backend/reStop` - stops the backend server started with `backend/reStart`
 
 ## Database schema evolution
 
