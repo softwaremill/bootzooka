@@ -371,10 +371,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.12.tgz#afefe785949f16ac4cdd1e695935a321572dd56a"
   integrity sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==
 
-"@hookform/resolvers@^5.9.2":
-  version "5.9.2"
-  resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-5.9.2.tgz#e28d076f3b690d3d90d8f522aed21aa7aefd7238"
-  integrity sha512-RtjTnZqsC38s4NKp2XO3fD8IA5uyN4tB7McQ5C6uiMPcV+WWO8F+wVa3e+BXUpH2ScgxghAlwFRMVqjT9WChAQ==
+"@hookform/resolvers@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-6.0.0.tgz#1c33be45bafddc9890fe938730f8b5eb09bb6137"
+  integrity sha512-6iBzQnB+YwAveVc8HUi6QYLITn5X+xNKRMFIcNXHZlvp2aTI7yWbj4n/JodXxirMCcBc4VCjb2aYAJh4x07mVw==
   dependencies:
     "@standard-schema/utils" "^0.3.0"
 
