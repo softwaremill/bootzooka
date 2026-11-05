@@ -63,7 +63,18 @@
     json5 "^2.2.3"
     semver "^6.3.1"
 
-"@babel/generator@^7.29.12", "@babel/generator@^7.29.7":
+"@babel/generator@^7.29.13":
+  version "7.29.13"
+  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.29.13.tgz#89bd5d368cde7437920ab3f2e67ef24f0ecfe620"
+  integrity sha512-T5FRo+RzVHvGjWOuF1Ljc44b+NXAOazodHkGUHp4I3zCkQ4/sNVJm56h1S278LMR0bY5xBhztGziSbli8zObIw==
+  dependencies:
+    "@babel/parser" "^7.29.13"
+    "@babel/types" "^7.29.11"
+    "@jridgewell/gen-mapping" "^0.3.12"
+    "@jridgewell/trace-mapping" "^0.3.28"
+    jsesc "^3.0.2"
+
+"@babel/generator@^7.29.7":
   version "7.29.12"
   resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.29.12.tgz#682e578704a8681589f434e7d0cc64296ebb6c63"
   integrity sha512-2W76mhjrpQFO1lK5e8IvGYB2D0YZ7S2R1Z2BjO2ZUYuW+amcpK/z60U6ZZmzskwoa7sJ6XohP/Wg8H5KxXI/IA==
@@ -155,6 +166,13 @@
   dependencies:
     "@babel/types" "^7.29.11"
 
+"@babel/parser@^7.29.13":
+  version "7.29.13"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.29.13.tgz#dbba85be72b94635123d594035fd087fe7e42bb3"
+  integrity sha512-fJM50YYjlTiBhgdkGmC1tBpv+FMAyo4annf2X6Aks+0yRlaiVkYW/3f07xAfVVkYIoZ9fFZp+mEThUFnuybhkQ==
+  dependencies:
+    "@babel/types" "^7.29.11"
+
 "@babel/runtime@^7.12.5":
   version "7.29.13"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.29.13.tgz#6b33e456181ff15b5585d932f3aebfc0669b32dd"
@@ -183,14 +201,14 @@
     debug "^4.3.1"
 
 "@babel/traverse@^7.29.7":
-  version "7.29.12"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.29.12.tgz#60f3196a8bded1e2b2d2efb7e47a99086733865f"
-  integrity sha512-MscXe/NAZcOkYEsRajHZFt3ynsb22PUi6CTrp5U7+RYycR9By84mn9mFN54YgfITiqK4hFx3Ju3tZSyzfpS5ew==
+  version "7.29.13"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.29.13.tgz#2c536b67d36f8d3cb86393fe0f0567bd01b748a5"
+  integrity sha512-0ve0xMlFA73dgY1oyJRY6RoW+/bncdcOQqg6jjYcVfXBK90OdLXjm9R6lmRetdZVrPjXkKIoMVBqYFPjcAlZ4Q==
   dependencies:
     "@babel/code-frame" "^7.29.7"
-    "@babel/generator" "^7.29.12"
+    "@babel/generator" "^7.29.13"
     "@babel/helper-globals" "^7.29.7"
-    "@babel/parser" "^7.29.12"
+    "@babel/parser" "^7.29.13"
     "@babel/template" "^7.29.7"
     "@babel/types" "^7.29.11"
     debug "^4.3.1"
