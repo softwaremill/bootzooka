@@ -98,3 +98,11 @@ jobs:
     if: github.event.pull_request.user.login == 'softwaremill-ci'
     needs: [verify, label]
     uses: softwaremill/github-actions-workflows/.github/workflows/auto-merge.yml@main
+
+  auto-merge-dependabot:
+    # only for PRs by dependabot[bot]
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    needs: [verify]
+    uses: softwaremill/github-actions-workflows/.github/workflows/auto-merge.yml@main
+    secrets:
+      github-token: ${{ secrets.SOFTWAREMILL_CI_PR_TOKEN }}
