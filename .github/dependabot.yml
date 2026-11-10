@@ -6,6 +6,9 @@ updates:
       interval: "daily"
       time: "09:00"
       timezone: "UTC"
+    labels:
+      - "dependency"
+      - "automerge"
     open-pull-requests-limit: 10
     allow:
       - dependency-type: "direct"
