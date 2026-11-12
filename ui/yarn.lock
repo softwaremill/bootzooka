@@ -112,6 +112,11 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.14.tgz#580738bad73cc713688e6bbc0b59ac8760066fe1"
   integrity sha512-CXvKMFvM80ihI7Vox9jb+kQjnyjESQNPM+vB7U0Zz6TWuZA+Z/FL0QPMH300h33qJtIx+REeBhXqWOPW48TcAQ==
 
+"@babel/helper-string-parser@^7.29.14":
+  version "7.29.14"
+  resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.14.tgz#580738bad73cc713688e6bbc0b59ac8760066fe1"
+  integrity sha512-CXvKMFvM80ihI7Vox9jb+kQjnyjESQNPM+vB7U0Zz6TWuZA+Z/FL0QPMH300h33qJtIx+REeBhXqWOPW48TcAQ==
+
 "@babel/helper-validator-identifier@^7.29.7":
   version "7.29.7"
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.29.7.tgz#bd87084ced0c796ec46bda492de6e83d29e89fc2"
@@ -123,12 +128,12 @@
   integrity sha512-N9ZErrD+yW5geCDtBqnOoxmR8+tNKiGuxKlDpuJxfsqpa2dFcexaziGAE/qoHLiDDreVNMupxGmSoNlyvsA3gw==
 
 "@babel/helpers@^7.29.13":
-  version "7.29.13"
-  resolved "https://registry.yarnpkg.com/@babel/helpers/-/helpers-7.29.13.tgz#0f72c9bb2bef0c35f7ef41442358c873487071c5"
-  integrity sha512-laoRpD/kO/iA4CDlgJbixHekg7oPvWALK0PQyK3Ob2I2njZRvVAD77RfWCIImtqWCq6KijoBoZK7bp/HlTWASQ==
+  version "7.29.14"
+  resolved "https://registry.yarnpkg.com/@babel/helpers/-/helpers-7.29.14.tgz#edc82d7dc43a4785c1c1bb80dcda2e2b6f6ab27e"
+  integrity sha512-6E3Mi1r0B0umq6vmZa4/78q+64fqO2YY0THUdjDPKUCKhNb0yQy5NQIaPHCSD3ryTgiTss//P4JsWS80AsZ6LQ==
   dependencies:
     "@babel/template" "^7.29.7"
-    "@babel/types" "^7.29.11"
+    "@babel/types" "^7.29.14"
 
 "@babel/parser@^7.24.4", "@babel/parser@^7.29.13", "@babel/parser@^7.29.7":
   version "7.29.14"
@@ -192,6 +197,14 @@
     debug "^4.3.1"
 
 "@babel/types@^7.29.11", "@babel/types@^7.29.7":
+  version "7.29.14"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.14.tgz#ba8598f80d0eb450d9f8a940270c1e650ef76206"
+  integrity sha512-UjI/dKmwJwT9pOszJitq2G6EObZPnsZUfdCr92z2TlF3EZK9J3EdfOKUrCzHl6wFthbzwhzl1Soc/UIwxRiq6w==
+  dependencies:
+    "@babel/helper-string-parser" "^7.29.14"
+    "@babel/helper-validator-identifier" "^7.29.7"
+
+"@babel/types@^7.29.14":
   version "7.29.14"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.14.tgz#ba8598f80d0eb450d9f8a940270c1e650ef76206"
   integrity sha512-UjI/dKmwJwT9pOszJitq2G6EObZPnsZUfdCr92z2TlF3EZK9J3EdfOKUrCzHl6wFthbzwhzl1Soc/UIwxRiq6w==
