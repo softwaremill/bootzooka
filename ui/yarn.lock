@@ -86,10 +86,10 @@
     "@babel/helper-validator-identifier" "^7.29.7"
     "@babel/traverse" "^7.29.13"
 
-"@babel/helper-string-parser@^7.29.11":
-  version "7.29.13"
-  resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.13.tgz#00a43cc19b8f84e9e3f17f32813e69ae9bfceba8"
-  integrity sha512-fWegr+WsEsiMVW4KUNdIIzzMTZSzNiqhy0//6+2MRi2d5NFNsL/AYwBQW8eBnRbTBVRnDVzjaJEUqKaCWjMMdQ==
+"@babel/helper-string-parser@^7.29.14":
+  version "7.29.14"
+  resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.14.tgz#580738bad73cc713688e6bbc0b59ac8760066fe1"
+  integrity sha512-CXvKMFvM80ihI7Vox9jb+kQjnyjESQNPM+vB7U0Zz6TWuZA+Z/FL0QPMH300h33qJtIx+REeBhXqWOPW48TcAQ==
 
 "@babel/helper-validator-identifier@^7.29.7":
   version "7.29.7"
@@ -144,11 +144,11 @@
     debug "^4.3.1"
 
 "@babel/types@^7.29.11", "@babel/types@^7.29.7":
-  version "7.29.11"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.11.tgz#774cffe8cac2ca494f1334e4052002c96bf628fc"
-  integrity sha512-WCsemW40Cpc6gouC1SrY6PBaZ+oLRlEVY9XBvZBI7il/HyUrb2nJ505wE1MHEFyDZNnrWDEuy4jL50WVHfTTSQ==
+  version "7.29.14"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.14.tgz#ba8598f80d0eb450d9f8a940270c1e650ef76206"
+  integrity sha512-UjI/dKmwJwT9pOszJitq2G6EObZPnsZUfdCr92z2TlF3EZK9J3EdfOKUrCzHl6wFthbzwhzl1Soc/UIwxRiq6w==
   dependencies:
-    "@babel/helper-string-parser" "^7.29.11"
+    "@babel/helper-string-parser" "^7.29.14"
     "@babel/helper-validator-identifier" "^7.29.7"
 
 "@bcoe/v8-coverage@^1.0.2":
