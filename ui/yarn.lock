@@ -42,18 +42,7 @@
     json5 "^2.2.3"
     semver "^6.3.1"
 
-"@babel/generator@^7.29.13":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.29.14.tgz#59a04e5ad227cec73a04291303e3906512a9999a"
-  integrity sha512-qSY56jgW5JnSXzuekLVil6zaOQxOCtOHidr65KkaMBw772IuAY28Qx4ZykAcDn8+FRF15qk80XzKwgSc/RYW6g==
-  dependencies:
-    "@babel/parser" "^7.29.14"
-    "@babel/types" "^7.29.14"
-    "@jridgewell/gen-mapping" "^0.3.12"
-    "@jridgewell/trace-mapping" "^0.3.28"
-    jsesc "^3.0.2"
-
-"@babel/generator@^7.29.14":
+"@babel/generator@^7.29.13", "@babel/generator@^7.29.14":
   version "7.29.14"
   resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.29.14.tgz#59a04e5ad227cec73a04291303e3906512a9999a"
   integrity sha512-qSY56jgW5JnSXzuekLVil6zaOQxOCtOHidr65KkaMBw772IuAY28Qx4ZykAcDn8+FRF15qk80XzKwgSc/RYW6g==
@@ -102,26 +91,6 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.14.tgz#580738bad73cc713688e6bbc0b59ac8760066fe1"
   integrity sha512-CXvKMFvM80ihI7Vox9jb+kQjnyjESQNPM+vB7U0Zz6TWuZA+Z/FL0QPMH300h33qJtIx+REeBhXqWOPW48TcAQ==
 
-"@babel/helper-string-parser@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.14.tgz#580738bad73cc713688e6bbc0b59ac8760066fe1"
-  integrity sha512-CXvKMFvM80ihI7Vox9jb+kQjnyjESQNPM+vB7U0Zz6TWuZA+Z/FL0QPMH300h33qJtIx+REeBhXqWOPW48TcAQ==
-
-"@babel/helper-string-parser@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.14.tgz#580738bad73cc713688e6bbc0b59ac8760066fe1"
-  integrity sha512-CXvKMFvM80ihI7Vox9jb+kQjnyjESQNPM+vB7U0Zz6TWuZA+Z/FL0QPMH300h33qJtIx+REeBhXqWOPW48TcAQ==
-
-"@babel/helper-string-parser@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.14.tgz#580738bad73cc713688e6bbc0b59ac8760066fe1"
-  integrity sha512-CXvKMFvM80ihI7Vox9jb+kQjnyjESQNPM+vB7U0Zz6TWuZA+Z/FL0QPMH300h33qJtIx+REeBhXqWOPW48TcAQ==
-
-"@babel/helper-string-parser@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.29.14.tgz#580738bad73cc713688e6bbc0b59ac8760066fe1"
-  integrity sha512-CXvKMFvM80ihI7Vox9jb+kQjnyjESQNPM+vB7U0Zz6TWuZA+Z/FL0QPMH300h33qJtIx+REeBhXqWOPW48TcAQ==
-
 "@babel/helper-validator-identifier@^7.29.7":
   version "7.29.7"
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.29.7.tgz#bd87084ced0c796ec46bda492de6e83d29e89fc2"
@@ -140,28 +109,7 @@
     "@babel/template" "^7.29.7"
     "@babel/types" "^7.29.14"
 
-"@babel/parser@^7.24.4", "@babel/parser@^7.29.13", "@babel/parser@^7.29.7":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.29.14.tgz#9d3f5e3d62d725aa036ab489057e72fb446d1fad"
-  integrity sha512-VL220vXuyO2z3rNIQwY7ftj9UwpqOt+33sH+sBWkOekbsSR2g7EEMnOx24ZlCH0xOA3DM/33SifVFGbnJD8r/w==
-  dependencies:
-    "@babel/types" "^7.29.14"
-
-"@babel/parser@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.29.14.tgz#9d3f5e3d62d725aa036ab489057e72fb446d1fad"
-  integrity sha512-VL220vXuyO2z3rNIQwY7ftj9UwpqOt+33sH+sBWkOekbsSR2g7EEMnOx24ZlCH0xOA3DM/33SifVFGbnJD8r/w==
-  dependencies:
-    "@babel/types" "^7.29.14"
-
-"@babel/parser@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.29.14.tgz#9d3f5e3d62d725aa036ab489057e72fb446d1fad"
-  integrity sha512-VL220vXuyO2z3rNIQwY7ftj9UwpqOt+33sH+sBWkOekbsSR2g7EEMnOx24ZlCH0xOA3DM/33SifVFGbnJD8r/w==
-  dependencies:
-    "@babel/types" "^7.29.14"
-
-"@babel/parser@^7.29.14":
+"@babel/parser@^7.24.4", "@babel/parser@^7.29.13", "@babel/parser@^7.29.14", "@babel/parser@^7.29.7":
   version "7.29.14"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.29.14.tgz#9d3f5e3d62d725aa036ab489057e72fb446d1fad"
   integrity sha512-VL220vXuyO2z3rNIQwY7ftj9UwpqOt+33sH+sBWkOekbsSR2g7EEMnOx24ZlCH0xOA3DM/33SifVFGbnJD8r/w==
@@ -182,7 +130,7 @@
     "@babel/parser" "^7.29.7"
     "@babel/types" "^7.29.7"
 
-"@babel/traverse@^7.29.13", "@babel/traverse@^7.29.7":
+"@babel/traverse@^7.29.13", "@babel/traverse@^7.29.14", "@babel/traverse@^7.29.7":
   version "7.29.14"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.29.14.tgz#97af2f5e45248b06f94d7e72f4433287cf385339"
   integrity sha512-RAdQJrBgmIH1FWvN0X+1hoDxzMzlP4cv/1Zi4dn4tG1H0cTb+rw7CzUxQJhp1f4ANd8j5vH3fy8BAWFGkBDEsA==
@@ -195,52 +143,7 @@
     "@babel/types" "^7.29.14"
     debug "^4.3.1"
 
-"@babel/traverse@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.29.14.tgz#97af2f5e45248b06f94d7e72f4433287cf385339"
-  integrity sha512-RAdQJrBgmIH1FWvN0X+1hoDxzMzlP4cv/1Zi4dn4tG1H0cTb+rw7CzUxQJhp1f4ANd8j5vH3fy8BAWFGkBDEsA==
-  dependencies:
-    "@babel/code-frame" "^7.29.7"
-    "@babel/generator" "^7.29.14"
-    "@babel/helper-globals" "^7.29.7"
-    "@babel/parser" "^7.29.14"
-    "@babel/template" "^7.29.7"
-    "@babel/types" "^7.29.14"
-    debug "^4.3.1"
-
-"@babel/types@^7.29.11", "@babel/types@^7.29.7":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.14.tgz#ba8598f80d0eb450d9f8a940270c1e650ef76206"
-  integrity sha512-UjI/dKmwJwT9pOszJitq2G6EObZPnsZUfdCr92z2TlF3EZK9J3EdfOKUrCzHl6wFthbzwhzl1Soc/UIwxRiq6w==
-  dependencies:
-    "@babel/helper-string-parser" "^7.29.14"
-    "@babel/helper-validator-identifier" "^7.29.7"
-
-"@babel/types@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.14.tgz#ba8598f80d0eb450d9f8a940270c1e650ef76206"
-  integrity sha512-UjI/dKmwJwT9pOszJitq2G6EObZPnsZUfdCr92z2TlF3EZK9J3EdfOKUrCzHl6wFthbzwhzl1Soc/UIwxRiq6w==
-  dependencies:
-    "@babel/helper-string-parser" "^7.29.14"
-    "@babel/helper-validator-identifier" "^7.29.7"
-
-"@babel/types@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.14.tgz#ba8598f80d0eb450d9f8a940270c1e650ef76206"
-  integrity sha512-UjI/dKmwJwT9pOszJitq2G6EObZPnsZUfdCr92z2TlF3EZK9J3EdfOKUrCzHl6wFthbzwhzl1Soc/UIwxRiq6w==
-  dependencies:
-    "@babel/helper-string-parser" "^7.29.14"
-    "@babel/helper-validator-identifier" "^7.29.7"
-
-"@babel/types@^7.29.14":
-  version "7.29.14"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.14.tgz#ba8598f80d0eb450d9f8a940270c1e650ef76206"
-  integrity sha512-UjI/dKmwJwT9pOszJitq2G6EObZPnsZUfdCr92z2TlF3EZK9J3EdfOKUrCzHl6wFthbzwhzl1Soc/UIwxRiq6w==
-  dependencies:
-    "@babel/helper-string-parser" "^7.29.14"
-    "@babel/helper-validator-identifier" "^7.29.7"
-
-"@babel/types@^7.29.14":
+"@babel/types@^7.29.11", "@babel/types@^7.29.14", "@babel/types@^7.29.7":
   version "7.29.14"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.14.tgz#ba8598f80d0eb450d9f8a940270c1e650ef76206"
   integrity sha512-UjI/dKmwJwT9pOszJitq2G6EObZPnsZUfdCr92z2TlF3EZK9J3EdfOKUrCzHl6wFthbzwhzl1Soc/UIwxRiq6w==
@@ -3985,7 +3888,7 @@ responselike@^3.0.0:
   dependencies:
     lowercase-keys "^3.0.0"
 
-rolldown@~1.2.16:
+rolldown@~1.2.18:
   version "1.2.19"
   resolved "https://registry.yarnpkg.com/rolldown/-/rolldown-1.2.19.tgz#259be7978a73d9f223480f8cd10d39e45075e159"
   integrity sha512-QIiV1J9d0pzN4jeeTH4sjPy0AZ6cAy2cG0ExeoE1+U8Rvj+hR3gYkokx0YbeUNGlZqiQJJ2utcETe0oKXwzsuA==
@@ -4686,15 +4589,15 @@ use-sidecar@^1.1.3:
     detect-node-es "^1.1.0"
     tslib "^2.0.0"
 
-vite@^8.3.6:
-  version "8.3.6"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-8.3.6.tgz#ff2eb6b0b18e910c08a79c59a80faebecd422808"
-  integrity sha512-UI7dK29NnS54Fk+mmo7o+jI6U8Fp7hDl+X5Q1k45WH+d4dSlbLVUETGQ+hfkNgvLQGyoElPj837nZyv4MBc0VA==
+vite@^8.3.7:
+  version "8.3.7"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-8.3.7.tgz#0fb4dc6a6d15129bf9b4cab99b1c331becf68029"
+  integrity sha512-oxh0dMxrayBr33ScJvvBJ2HBQ2jc1TBrXKR2NyL/MJ9WPuX19mN2DXWUmywKdyw5RFVQBo8hmtb2FMC0LHrnng==
   dependencies:
     lightningcss "^1.33.0"
     picomatch "^4.0.7"
     postcss "^8.5.32"
-    rolldown "~1.2.16"
+    rolldown "~1.2.18"
     tinyglobby "^0.2.17"
   optionalDependencies:
     fsevents "~2.3.3"
