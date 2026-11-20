@@ -1160,9 +1160,9 @@
   integrity sha512-8yQV8v+eToBhsUO4oYrZY7fzhpTEMZx4IDx0/iuER/x0Xuy0NdqQOhsaaUNlvXE03N7vQ+4RCXUieKC0NJty9w==
 
 "@tybys/wasm-util@^0.10.3":
-  version "0.10.4"
-  resolved "https://registry.yarnpkg.com/@tybys/wasm-util/-/wasm-util-0.10.4.tgz#3e85ecb266f9d1722250e89bc69528615720b154"
-  integrity sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==
+  version "0.10.5"
+  resolved "https://registry.yarnpkg.com/@tybys/wasm-util/-/wasm-util-0.10.5.tgz#b3404a492dfbd65ba1c41c6f0a21f5e2d19b9053"
+  integrity sha512-dOGOPxlaNV+G046mZzN+9C0dAcQZeSKcXiVaM0TYy/LM4ttTmgSBDxYfovcYI8Em3+eAbiAYpvWLOv8+ZVRJKA==
   dependencies:
     tslib "^2.4.0"
 
