@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@openapi-codegen/cli": "^3.1.0",
+    "@openapi-codegen/cli": "^4.0.1",
     "@openapi-codegen/typescript": "^11.1.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^8.0.0",
