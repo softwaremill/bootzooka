@@ -42,7 +42,7 @@
     "react-hook-form": "^7.92.0",
     "react-icons": "^5.7.0",
     "sonner": "^2.0.8",
-    "tailwind-merge": "^3.7.0",
+    "tailwind-merge": "^3.7.1",
     "tailwindcss": "^4.3.4",
     "zod": "^4.6.7"
   },
