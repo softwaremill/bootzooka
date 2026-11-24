@@ -1208,17 +1208,17 @@
     "@tailwindcss/oxide" "4.3.5"
     tailwindcss "4.3.5"
 
-"@tanstack/query-core@5.108.1":
-  version "5.108.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.108.1.tgz#d9a90082fb6436435b74b3a18896be96a34fc3b2"
-  integrity sha512-GBX6Xsc9E+9eVLLxuM7orQNbssQjpruOCbocBYwT78MjxOWT5I+CWdvEo0N+UM6+oCZEKxuSud1oFLvE3OEmIg==
+"@tanstack/query-core@5.108.2":
+  version "5.108.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.108.2.tgz#31939445cfe8b6d7c4df18f4a52e348ff4a473d8"
+  integrity sha512-0l+0xDKqn71hfJBKaAvFP/X7WYM0TbscEk6nK1pHaWQUWUEA+WJD0VlT8wF+HIJANMV9B/DouPWwDnX3w/l9BA==
 
-"@tanstack/react-query@^5.108.1":
-  version "5.108.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.108.1.tgz#3aabce3fedf32909568a70017473867d50c76d55"
-  integrity sha512-8/p7fpIdmUiKIukQ5ddAMUUSKC7Z8CcgUOBR2r3WqRvMg9Lzc4CXeoFchjfATKvqi23SyYFvesDdOULrvyunNg==
+"@tanstack/react-query@^5.108.2":
+  version "5.108.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.108.2.tgz#6435540ed75608d44fcfd10d16a2025de5877a8b"
+  integrity sha512-wV6hEjVGTfh9rvu3uREYW0hgBfS9klDejGelhPY575jD5jg6qbAb1nzT7hR1Q+wemR66ZjtE5p9pAGUwqK8zbg==
   dependencies:
-    "@tanstack/query-core" "5.108.1"
+    "@tanstack/query-core" "5.108.2"
 
 "@testing-library/dom@^10.4.2":
   version "10.4.2"
