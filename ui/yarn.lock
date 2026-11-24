@@ -334,10 +334,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.12.tgz#afefe785949f16ac4cdd1e695935a321572dd56a"
   integrity sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==
 
-"@hookform/resolvers@^7.0.7":
-  version "7.0.7"
-  resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-7.0.7.tgz#e664352f8bcb49d65e26e15fd05bf1d166ad793d"
-  integrity sha512-sxiEGu5dhg6gMEsGznEQ/++634YiRLmxclw+/B1+yNN9uuhKIfNCRTE4xwqkRcKNqBPwtmDXg5oDhLw3i/wklw==
+"@hookform/resolvers@^7.0.8":
+  version "7.0.8"
+  resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-7.0.8.tgz#580a251b31002460189ca76ffe94409a7dbe0a77"
+  integrity sha512-44+R4PUy3MWIBJR4sOjW0bZaz+H81k26urkTYeXAvEa8h45ueHrvQpZR/96iyLOobL6/yO0BJTaRPwwyDlL1/A==
   dependencies:
     "@standard-schema/utils" "^0.3.0"
 
