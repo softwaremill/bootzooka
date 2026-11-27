@@ -495,18 +495,16 @@
     typanion "^3.14.0"
     typescript "~6.0.2"
 
-"@openapi-codegen/typescript@^11.1.0":
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/@openapi-codegen/typescript/-/typescript-11.1.0.tgz#851c689c34e47a9ec098fbb834d7b3703ac9ff13"
-  integrity sha512-MFWXzxum9gNBKpVucnDZX9SVSYZBRi2+LFt0DsJ+AkYjrGKHDHYsardxapVarhiWOmPsSZ0TMPhUe4rebyY85g==
+"@openapi-codegen/typescript@^12.1.0":
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/@openapi-codegen/typescript/-/typescript-12.1.0.tgz#ef3ac7a9d0e1dbb041037bab8913e6bfc8a10691"
+  integrity sha512-qK1YnYAOwOidNvi6VwvnTw1sR1vUH1hmlFLIYWmKmftgfC0qwKPbthBw/WofF0tZllWFFJrh4CSJuMyXu2ppqQ==
   dependencies:
-    case "^1.6.3"
-    lodash "^4.17.21"
-    openapi3-ts "^4.4.0"
+    case-anything "^3.1.7"
+    lodash-es "^4.18.1"
+    openapi3-ts "^4.6.1"
     pluralize "^8.0.0"
-    tslib "^2.3.1"
-    tsutils "^3.21.0"
-    typescript "4.8.2"
+    typescript "~6.0.2"
 
 "@oxc-project/types@=0.156.0":
   version "0.156.0"
@@ -1840,11 +1838,6 @@ case-anything@^3.1.7:
   version "3.1.7"
   resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-3.1.7.tgz#f10a539a9848f1192fb937150c69faf0b1e19fdc"
   integrity sha512-52UPzAJDZgxaNsYK4kvmov1kVaAfPc+OU2j0OSUZWbdWMuJd7Axi94XWSfSuafMd7K9avhsEnU6W6rXJdAd+Ug==
-
-case@^1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
-  integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
 chai@^6.2.2:
   version "6.3.0"
@@ -3369,6 +3362,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash-es@^4.18.1:
+  version "4.18.1"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.18.1.tgz#b962eeb80d9d983a900bf342961fb7418ca10b1d"
+  integrity sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==
+
 lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
@@ -3383,11 +3381,6 @@ lodash.throttle@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==
-
-lodash@^4.17.21:
-  version "4.18.1"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.18.1.tgz#ff2b66c1f6326d59513de2407bf881439812771c"
-  integrity sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==
 
 loose-envify@^1.4.0:
   version "1.4.0"
@@ -3662,7 +3655,7 @@ obug@^2.1.4:
   resolved "https://registry.yarnpkg.com/obug/-/obug-2.2.1.tgz#9c453efeeda822050eb9774242e969c784d64d78"
   integrity sha512-XrsrhT5sybtKI6wakr2SPOlGZWWYbUXZ7a0jT8/QOeAPau+1X/bSegNe5YR75oJmEZQbKningirmGOEJCIk61Q==
 
-openapi3-ts@^4.4.0, openapi3-ts@^4.6.1:
+openapi3-ts@^4.6.1:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/openapi3-ts/-/openapi3-ts-4.6.2.tgz#3352ef6f2e2783d322da970825686355d75a9f1b"
   integrity sha512-gyyil3DweqhXiEhTqtAs9wwRLfWHmetwhI4kmM5Rn0d6gtmK863Ki7qqbQnp9+Wwlqoe3B1LFWj7kMp5ctE4rQ==
@@ -4583,22 +4576,10 @@ ts-api-utils@^2.5.0:
   resolved "https://registry.yarnpkg.com/ts-api-utils/-/ts-api-utils-2.5.0.tgz#4acd4a155e22734990a5ed1fe9e97f113bcb37c1"
   integrity sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA==
 
-tslib@^1.8.1:
-  version "1.14.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
-  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
-
-tslib@^2.0.0, tslib@^2.1.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.8.1:
+tslib@^2.0.0, tslib@^2.1.0, tslib@^2.4.0, tslib@^2.8.1:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
-
-tsutils@^3.21.0:
-  version "3.21.0"
-  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-3.21.0.tgz#b48717d394cea6c1e096983eed58e9d61715b623"
-  integrity sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==
-  dependencies:
-    tslib "^1.8.1"
 
 tw-animate-css@^1.4.0:
   version "1.4.0"
@@ -4677,11 +4658,6 @@ typescript-eslint@^8.73.0:
     "@typescript-eslint/parser" "8.73.0"
     "@typescript-eslint/typescript-estree" "8.73.0"
     "@typescript-eslint/utils" "8.73.0"
-
-typescript@4.8.2:
-  version "4.8.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.2.tgz#e3b33d5ccfb5914e4eeab6699cf208adee3fd790"
-  integrity sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==
 
 typescript@^6.0.3, typescript@~6.0.2:
   version "6.0.3"
