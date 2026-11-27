@@ -436,9 +436,9 @@
     "@tybys/wasm-util" "^0.10.3"
 
 "@octokit/endpoint@^11.0.5":
-  version "11.0.5"
-  resolved "https://registry.yarnpkg.com/@octokit/endpoint/-/endpoint-11.0.5.tgz#d7ec88843bfeeea692fee97b52e7c2cdc0393db4"
-  integrity sha512-iXa654H3yFafF/ieHkukfbgWo2rmXD2ceD0ZOtrPhw1bc3FDch1d9N/TNs0FQ1/cIbwb7kspUX8jzIs8nzb9DQ==
+  version "11.0.6"
+  resolved "https://registry.yarnpkg.com/@octokit/endpoint/-/endpoint-11.0.6.tgz#bd6f1bf11dd4f359c34543c5c000907075491f58"
+  integrity sha512-H52ocs+dXsxmLtMPqabXz0p+mNWfe5RacpUHq8sB6mJLiMPU6PF/7O0Bl/U8a8WrV1NzWNYpXwZW0zo0BeoT2A==
   dependencies:
     "@octokit/types" "^18.0.0"
     universal-user-agent "^7.0.2"
